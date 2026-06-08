@@ -3,6 +3,78 @@
 // Dashboard Logic
 // Climberforsuccess LLC
 // ===========================
+// ============================================
+// CÓDIGOS VIP - ACCESO GRATUITO
+// ============================================
+const VIP_CODES = {
+  'FAMILIA2026': { 
+    plan: 'pro', 
+    name: 'Familia VIP',
+    unlimited: true 
+  },
+  'BUSINESS2026': { 
+    plan: 'business', 
+    name: 'Business VIP',
+    unlimited: true 
+  }
+};
+
+function validateVIPCode(code) {
+  const upperCode = code.toUpperCase().trim();
+  if (VIP_CODES[upperCode]) {
+    return {
+      valid: true,
+      plan: VIP_CODES[upperCode].plan,
+      name: VIP_CODES[upperCode].name
+    };
+  }
+  return { valid: false };
+}
+
+function applyVIPAccess(code) {
+  const result = validateVIPCode(code);
+  if (result.valid) {
+    localStorage.setItem('financeai_plan', result.plan);
+    localStorage.setItem('vipAccess', 'true');
+    localStorage.setItem('vipCode', code.toUpperCase());
+    localStorage.setItem('planName', result.name);
+    return true;
+  }
+  return false;
+}
+
+function activateVIPCode() {
+  const input = document.getElementById('vipCodeInput');
+  if (!input) return;
+  
+  const code = input.value.trim().toUpperCase();
+  
+  if (!code) {
+    showToast('Please enter a code', 'error');
+    return;
+  }
+
+  const success = applyVIPAccess(code);
+  
+  if (success) {
+    const result = validateVIPCode(code);
+    const planNames = {
+      free: 'Free Plan',
+      personal: 'Personal Plan', 
+      pro: 'Pro Plan',
+      business: 'Business Plan'
+    };
+    showToast(`✅ ${result.name} access activated!`, 'success');
+    document.getElementById('sidebarPlan').textContent = 
+      planNames[result.plan];
+    document.getElementById('currentPlanDisplay').textContent = 
+      planNames[result.plan];
+    input.value = '';
+  } else {
+    showToast('❌ Invalid code. Try again.', 'error');
+  }
+}
+
 
 // ===========================
 // STATE
