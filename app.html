@@ -713,6 +713,62 @@
               <span data-key="settings_upgrade">Upgrade Plan</span>
             </button>
           </div>
+          <!-- VIP Code Input -->
+<div style="margin-top:20px;">
+  <h3 style="
+    font-size:0.95rem; 
+    color:#A0B0C0; 
+    margin-bottom:12px;
+  ">
+    <i class="fas fa-key" style="color:#00EEFF;"></i> 
+    Have a special code?
+  </h3>
+  <div style="display:flex; gap:10px;">
+    <input 
+      type="text" 
+      id="vipCodeInput"
+      placeholder="Enter VIP code"
+      style="
+        flex:1;
+        padding:12px 16px;
+        background:rgba(0,238,255,0.05);
+        border:1px solid rgba(0,238,255,0.2);
+        border-radius:10px;
+        color:#FFFFFF;
+        font-family:'Inter',sans-serif;
+        font-size:0.9rem;
+        text-transform:uppercase;
+        letter-spacing:2px;
+        outline:none;
+      "
+    />
+    <button 
+      onclick="activateVIPCode()"
+      style="
+        padding:12px 20px;
+        background:linear-gradient(135deg,#00EEFF,#0088FF);
+        border:none;
+        border-radius:10px;
+        color:#000;
+        font-weight:700;
+        font-family:'Inter',sans-serif;
+        font-size:0.9rem;
+        cursor:pointer;
+        white-space:nowrap;
+      "
+    >
+      Activate
+    </button>
+  </div>
+  <p style="
+    font-size:0.8rem; 
+    color:#A0B0C0; 
+    margin-top:8px;
+  ">
+    Enter your VIP code to unlock free access
+  </p>
+</div>
+
 
           <h3 style="margin-top:24px;"><i class="fas fa-bell" style="color:#00EEFF"></i> <span data-key="settings_notifications">Notifications</span></h3>
           <div style="margin-top:16px; display:flex; flex-direction:column; gap:14px;">
