@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FinanceAI Pro — Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#00EEFF"/>
+              <stop offset="100%" style="stop-color:#0088FF"/>
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="48" fill="url(#lg1)" opacity="0.15"/>
+          <circle cx="50" cy="50" r="48" fill="none" stroke="url(#lg1)" stroke-width="2"/>
+          <text x="50" y="58" font-family="Inter" font-weight="800" font-size="28" fill="url(#lg1)" text-anchor="middle">F</text>
+        </svg>
+        <span>FinanceAI <span class="accent">Pro</span></span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="showPage('dashboard')">
+        <i class="fas fa-home"></i>
+        <span data-key="dash_dashboard">Dashboard</span>
+      </button>
+      <button class="nav-item" onclick="showPage('scanner')">
+        <i class="fas fa-camera"></i>
+        <span data-key="dash_receipts">Receipt Scanner</span>
+      </button>
+      <button class="nav-item" onclick="showPage('transactions')">
+        <i class="fas fa-list"></i>
+        <span data-key="dash_transactions">Transactions</span>
+      </button>
+      <button class="nav-item" onclick="showPage('cards')">
+        <i class="fas fa-credit-card"></i>
+        <span data-key="dash_cards">My Cards</span>
+      </button>
+      <button class="nav-item" onclick="showPage('debt')">
+        <i class="fas fa-chart-line"></i>
+        <span data-key="dash_debt">Debt Plan</span>
+      </button>
+      <button class="nav-item" onclick="showPage('subscriptions')">
+        <i class="fas fa-sync"></i>
+        <span data-key="dash_subscriptions">Subscriptions</span>
+      </button>
+      <button class="nav-item" onclick="showPage('ai')">
+        <i class="fas fa-robot"></i>
+        <span data-key="dash_ai">AI Assistant</span>
+      </button>
+      <button class="nav-item" onclick="showPage('settings')">
+        <i class="fas fa-cog"></i>
+        <span data-key="dash_settings">Settings</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div style="
+        background: rgba(0,238,255,0.05);
+        border: 1px solid rgba(0,238,255,0.15);
+        border-radius: 12px;
+        padding: 14px;
+        margin-bottom: 12px;
+      ">
+        <div style="font-size:0.75rem; color:#A0B0C0; margin-bottom:4px;" data-key="settings_plan">Current Plan</div>
+        <div style="font-weight:700; color:#00EEFF; font-size:0.9rem;" id="sidebarPlan">Free</div>
+        <button onclick="window.location.href='index.html#pricing'" style="
+          margin-top: 8px;
+          width: 100%;
+          padding: 6px;
+          background: linear-gradient(135deg,#00EEFF,#0088FF);
+          border: none;
+          border-radius: 50px;
+          color: #000;
+          font-size: 0.75rem;
+          font-weight: 700;
+          cursor: pointer;
+          font-family: 'Inter', sans-serif;
+        " data-key="settings_upgrade">Upgrade Plan</button>
+      </div>
+      <button class="nav-item" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Home</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="mainContent">
+
+    <!-- MOBILE HEADER -->
+    <div class="mobile-header" style="
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(0,238,255,0.1);
+    " id="mobileHeader">
+      <div class="nav-logo" style="font-size:1rem;">
+        <svg width="28" height="28" viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#00EEFF"/>
+              <stop offset="100%" style="stop-color:#0088FF"/>
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="48" fill="url(#lg2)" opacity="0.15"/>
+          <circle cx="50" cy="50" r="48" fill="none" stroke="url(#lg2)" stroke-width="2"/>
+          <text x="50" y="58" font-family="Inter" font-weight="800" font-size="28" fill="url(#lg2)" text-anchor="middle">F</text>
+        </svg>
+        FinanceAI <span class="accent">Pro</span>
+      </div>
+      <button onclick="toggleSidebar()" style="
+        background: none;
+        border: 1px solid rgba(0,238,255,0.2);
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+      ">☰</button>
+    </div>
+
+    <!-- ======================== -->
+    <!-- PAGE: DASHBOARD          -->
+    <!-- ======================== -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-header">
+        <div>
+          <div style="font-size:0.85rem; color:#A0B0C0;" data-key="dash_welcome">Welcome back</div>
+          <h1 class="page-title">👋 <span id="userName">User</span></h1>
+        </div>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <button class="btn-lang" onclick="toggleLang()">🌐 ES</button>
+          <button class="btn-primary" onclick="showPage('scanner')">
+            <i class="fas fa-camera"></i>
+            <span data-key="dash_scan">Scan Receipt</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="cards-grid">
+        <div class="stat-card">
+          <div class="stat-card-icon green"><i class="fas fa-arrow-up"></i></div>
+          <div class="stat-card-label" data-key="dash_income">Monthly Income</div>
+          <div class="stat-card-value" id="statIncome">$0.00</div>
+          <div class="stat-card-change up">▲ +0%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon red"><i class="fas fa-arrow-down"></i></div>
+          <div class="stat-card-label" data-key="dash_expenses">Monthly Expenses</div>
+          <div class="stat-card-value" id="statExpenses">$0.00</div>
+          <div class="stat-card-change down" id="expenseChange">▼ 0%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon blue"><i class="fas fa-wallet"></i></div>
+          <div class="stat-card-label" data-key="dash_balance">Total Balance</div>
+          <div class="stat-card-value" id="statBalance">$0.00</div>
+          <div class="stat-card-change up">▲ This month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon yellow"><i class="fas fa-piggy-bank"></i></div>
+          <div class="stat-card-label" data-key="dash_savings">Savings Rate</div>
+          <div class="stat-card-value" id="statSavings">0%</div>
+          <div class="stat-card-change up">Goal: 20%</div>
+        </div>
+      </div>
+
+      <!-- CONTENT GRID -->
+      <div class="content-grid">
+        <!-- RECENT TRANSACTIONS -->
+        <div class="content-card">
+          <h3><i class="fas fa-list" style="color:#00EEFF"></i> <span data-key="dash_recent">Recent Transactions</span></h3>
+          <div id="recentTransactions">
+            <div style="text-align:center; padding:30px; color:#A0B0C0; font-size:0.9rem;">
+              <i class="fas fa-receipt" style="font-size:2rem; margin-bottom:10px; display:block; opacity:0.3;"></i>
+              No transactions yet.<br>
+              <button onclick="showPage('scanner')" style="
+                margin-top:10px;
+                background:none;
+                border:none;
+                color:#00EEFF;
+                cursor:pointer;
+                font-size:0.9rem;
+                text-decoration:underline;
+              ">Scan your first receipt</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="content-card">
+          <h3><i class="fas fa-bolt" style="color:#00EEFF"></i> <span data-key="dash_quick">Quick Actions</span></h3>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <button onclick="showPage('scanner')" style="
+              display:flex; align-items:center; gap:12px;
+              padding:14px 16px;
+              background:rgba(0,238,255,0.05);
+              border:1px solid rgba(0,238,255,0.15);
+              border-radius:12px;
+              color:#fff;
+              cursor:pointer;
+              font-family:'Inter',sans-serif;
+              font-size:0.9rem;
+              transition:all 0.3s;
+              text-align:left;
+            " onmouseover="this.style.borderColor='#00EEFF'" onmouseout="this.style.borderColor='rgba(0,238,255,0.15)'">
+              <span style="font-size:1.3rem;">📷</span>
+              <div>
+                <div style="font-weight:600;" data-key="dash_scan">Scan Receipt</div>
+                <div style="font-size:0.75rem; color:#A0B0C0;">Upload & auto-detect expense</div>
+              </div>
+            </button>
+            <button onclick="showAddTransaction()" style="
+              display:flex; align-items:center; gap:12px;
+              padding:14px 16px;
+              background:rgba(0,238,255,0.05);
+              border:1px solid rgba(0,238,255,0.15);
+              border-radius:12px;
+              color:#fff;
+              cursor:pointer;
+              font-family:'Inter',sans-serif;
+              font-size:0.9rem;
+              transition:all 0.3s;
+              text-align:left;
+            " onmouseover="this.style.borderColor='#00EEFF'" onmouseout="this.style.borderColor='rgba(0,238,255,0.15)'">
+              <span style="font-size:1.3rem;">➕</span>
+              <div>
+                <div style="font-weight:600;" data-key="dash_add">Add Transaction</div>
+                <div style="font-size:0.75rem; color:#A0B0C0;">Manually log income or expense</div>
+              </div>
+            </button>
+            <button onclick="showPage('debt')" style="
+              display:flex; align-items:center; gap:12px;
+              padding:14px 16px;
+              background:rgba(0,238,255,0.05);
+              border:1px solid rgba(0,238,255,0.15);
+              border-radius:12px;
+              color:#fff;
+              cursor:pointer;
+              font-family:'Inter',sans-serif;
+              font-size:0.9rem;
+              transition:all 0.3s;
+              text-align:left;
+            " onmouseover="this.style.borderColor='#00EEFF'" onmouseout="this.style.borderColor='rgba(0,238,255,0.15)'">
+              <span style="font-size:1.3rem;">📊</span>
+              <div>
+                <div style="font-weight:600;" data-key="dash_plan">View Debt Plan</div>
+                <div style="font-size:0.75rem; color:#A0B0C0;">See payoff strategy</div>
+              </div>
+            </button>
+            <button onclick="showPage('cards')" style="
+              display:flex; align-items:center; gap:12px;
+              padding:14px 16px;
+              background:rgba(0,238,255,0.05);
+              border:1px solid rgba(0,238,255,0.15);
+              border-radius:12px;
+              color:#fff;
+              cursor:pointer;
+              font-family:'Inter',sans-serif;
+              font-size:0.9rem;
+              transition:all 0.3s;
+              text-align:left;
+            " onmouseover="this.style.borderColor='#00EEFF'" onmouseout="this.style.borderColor='rgba(0,238,255,0.15)'">
+              <span style="font-size:1.3rem;">💳</span>
+              <div>
+                <div style="font-weight:600;" data-key="dash_recommend">Card Recommendations</div>
+                <div style="font-size:0.75rem; color:#A0B0C0;">Find best card for purchases</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== -->
+    <!-- PAGE: SCANNER            -->
+    <!-- ======================== -->
+    <div id="page-scanner" class="page">
+      <div class="page-header">
+        <h1 class="page-title">📷 <span data-key="scan_title">Receipt Scanner</span></h1>
+      </div>
+
+      <div class="content-grid">
+        <div class="content-card">
+          <div class="upload-area" onclick="document.getElementById('receiptInput').click()" id="uploadArea">
+            <div class="upload-icon">📷</div>
+            <p style="font-size:1rem; font-weight:600; margin-bottom:6px;" data-key="scan_upload">Drop your receipt here or click to upload</p>
+            <p data-key="scan_formats">Supports JPG, PNG, PDF</p>
+          </div>
+          <input type="file" id="receiptInput" accept="image/*,.pdf" style="display:none" onchange="analyzeReceipt(this)"/>
+
+          <div id="scanResult" style="display:none;">
+            <div style="
+              background:rgba(0,238,255,0.05);
+              border:1px solid rgba(0,238,255,0.2);
+              border-radius:12px;
+              padding:20px;
+              margin-bottom:16px;
+            ">
+              <h3 style="margin-bottom:16px; color:#00EEFF;" data-key="scan_result">Detected Expense</h3>
+              <div class="form-group">
+                <label class="form-label" data-key="scan_merchant">Merchant</label>
+                <input class="form-input" id="scanMerchant" type="text"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" data-key="scan_amount">Amount</label>
+                <input class="form-input" id="scanAmount" type="number" step="0.01"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" data-key="scan_date">Date</label>
+                <input class="form-input" id="scanDate" type="date"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label" data-key="scan_category">Category</label>
+                <select class="form-select" id="scanCategory">
+                  <option value="food">🍔 Food & Dining</option>
+                  <option value="transport">🚗 Transport</option>
+                  <option value="shopping">🛍️ Shopping</option>
+                  <option value="health">🏥 Health</option>
+                  <option value="entertainment">🎬 Entertainment</option>
+                  <option value="utilities">💡 Utilities</option>
+                  <option value="travel">✈️ Travel</option>
+                  <option value="other">📦 Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" data-key="scan_type">Type</label>
+                <select class="form-select" id="scanType">
+                  <option value="personal">Personal</option>
+                  <option value="business">Business</option>
+                </select>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <button class="btn-primary" onclick="saveScannedExpense()" style="flex:1;">
+                  <i class="fas fa-save"></i>
+                  <span data-key="scan_save">Save Expense</span>
+                </button>
+                <button onclick="resetScanner()" style="
+                  flex:1;
+                  padding:10px;
+                  background:transparent;
+                  border:1px solid rgba(0,238,255,0.2);
+                  border-radius:50px;
+                  color:#A0B0C0;
+                  cursor:pointer;
+                  font-family:'Inter',sans-serif;
+                " data-key="scan_rescan">Scan Another</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <h3><i class="fas fa-history" style="color:#00EEFF"></i> Recent Scans</h3>
+          <div id="recentScans">
+            <div style="text-align:center; padding:30px; color:#A0B0C0; font-size:0.9rem; opacity:0.6;">
+              No recent scans
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== -->
+    <!-- PAGE: TRANSACTIONS       -->
+    <!-- ======================== -->
+    <div id="page-transactions" class="page">
+      <div class="page-header">
+        <h1 class="page-title">📋 <span data-key="dash_transactions">Transactions</span></h1>
+        <button class="btn-primary" onclick="showAddTransaction()">
+          <i class="fas fa-plus"></i> Add
+        </button>
+      </div>
+
+      <!-- FILTERS -->
+      <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+        <select class="form-select" id="filterType" onchange="filterTransactions()" style="width:auto; min-width:140px;">
+          <option value="all">All Types</option>
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+        <select class="form-select" id="filterCategory" onchange="filterTransactions()" style="width:auto; min-width:160px;">
+          <option value="all">All Categories</option>
+          <option value="food">Food & Dining</option>
+          <option value="transport">Transport</option>
+          <option value="shopping">Shopping</option>
+          <option value="health">Health</option>
+          <option value="entertainment">Entertainment</option>
+          <option value="utilities">Utilities</option>
+          <option value="travel">Travel</option>
+          <option value="other">Other</option>
+        </select>
+        <select class="form-select" id="filterExpenseType" onchange="filterTransactions()" style="width:auto; min-width:140px;">
+          <option value="all">Personal & Business</option>
+          <option value="personal">Personal Only</option>
+          <option value="business">Business Only</option>
+        </select>
+      </div>
+
+      <div class="content-card">
+        <div id="transactionsList">
+          <div style="text-align:center; padding:40px; color:#A0B0C0; font-size:0.9rem;">
+            <i class="fas fa-receipt" style="font-size:2.5rem; margin-bottom:12px; display:block; opacity:0.3;"></i>
+            No transactions yet.<br>Add your first transaction or scan a receipt.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== -->
+    <!-- PAGE: CARDS              -->
+    <!-- ======================== -->
+    <div id="page-cards" class="page">
+      <div class="page-header">
+        <h1 class="page-title">💳 <span data-key="cards_title">My Cards</span></h1>
+        <button class="btn-primary" onclick="showAddCard()">
+          <i class="fas fa-plus"></i>
+          <span data-key="cards_add">Add Card</span>
+        </button>
+      </div>
+
+      <div id="cardsList" style="margin-bottom:24px;">
+        <div style="text-align:center; padding:40px; color:#A0B0C0; font-size:0.9rem;">
+          <i class="fas fa-credit-card" style="font-size:2.5rem; margin-bottom:12px; display:block; opacity:0.3;"></i>
+          No cards added yet.<br>Add your first card to get recommendations.
+        </div>
+      </div>
+
+      <!-- CARD RECOMMENDER -->
+      <div class="content-card">
+        <h3><i class="fas fa-star" style="color:#00EEFF"></i> <span data-key="cards_recommend">Best Card For...</span></h3>
+        <div class="form-group" style="margin-top:16px;">
+          <label class="form-label">What are you buying?</label>
+          <select class="form-select" id="recommendCategory" onchange="recommendCard()">
+            <option value="">Select category...</option>
+            <option value="food">🍔 Food & Dining</option>
+            <option value="transport">⛽ Gas & Transport</option>
+            <option value="shopping">🛍️ Shopping</option>
+            <option value="travel">✈️ Travel</option>
+            <option value="health">🏥 Health</option>
+            <option value="entertainment">🎬 Entertainment</option>
+            <option value="utilities">💡 Utilities</option>
+          </select>
+        </div>
+        <div id="cardRecommendation"></div>
+      </div>
+    </div>
+
+    <!-- ======================== -->
+    <!-- PAGE: DEBT PLAN          -->
+    <!-- ======================== -->
+    <div id="page-debt" class="page">
+      <div class="page-header">
+        <h1 class="page-title">📊 <span data-key="debt_title">Debt Payoff Plan</span></h1>
+        <button class="btn-primary" onclick="showAddDebt()">
+          <i class="fas fa-plus"></i>
+          <span data-key="debt_add">Add Debt</span>
+        </button>
+      </div>
+
+      <!-- DEBT SUMMARY -->
+      <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px,1fr));">
+        <div class="stat-card">
+          <div class="stat-card-icon red"><i class="fas fa-dollar-sign"></i></div>
+          <div class="stat-card-label" data-key="debt_total">Total Debt</div>
+          <div class="stat-card-value" id="totalDebt">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon yellow"><i class="fas fa-calendar"></i></div>
+          <div class="stat-card-label" data-key="debt_monthly">Monthly Payment</div>
+          <div class="stat-card-value" id="totalMonthly">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon blue"><i class="fas fa-clock"></i></div>
+          <div class="stat-card-label" data-key="debt_payoff">Est. Payoff</div>
+          <div class="stat-card-value" id="estPayoff">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon green"><i class="fas fa-piggy-bank"></i></div>
+          <div class="stat-card-label" data-key="debt_interest">Interest Saved</div>
+          <div class="stat-card-value" id="interestSaved">$0.00</div>
+        </div>
+      </div>
+
+      <!-- METHOD -->
+      <div class="content-card" style="margin:20px 0;">
+        <h3><i class="fas fa-route" style="color:#00EEFF"></i> <span data-key="debt_method">Payoff Method</span></h3>
+        <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
+          <button onclick="setDebtMethod('avalanche')" id="btnAvalanche" class="btn-primary" style="flex:1; min-width:200px;">
+            🏔️ <span data-key="debt_avalanche">Avalanche (Highest Interest First)</span>
+          </button>
+          <button onclick="setDebtMethod('snowball')" id="btnSnowball" style="
+            flex:1; min-width:200px;
+            padding:10px;
+            background:transparent;
+            border:1px solid rgba(0,238,255,0.2);
+            border-radius:50px;
+            color:#A0B0C0;
+            cursor:pointer;
+            font-family:'Inter',sans-serif;
+            font-size:0.9rem;
+          ">
+            ⛄ <span data-key="debt_snowball">Snowball (Smallest Balance First)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- DEBT LIST -->
+      <div id="debtList">
+        <div style="text-align:center; padding:40px; color:#A0B0C0; font-size:0.9rem;">
+          <i class="fas fa-chart-pie" style="font-size:2.5rem; margin-bottom:12px; display:block; opacity:0.3;"></i>
+          No debts added yet.<br>Add your credit cards or loans to get a payoff plan.
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== -->
+    <!-- PAGE: SUBSCRIPTIONS      -->
+    <!-- ======================== -->
+    <div id="page-subscriptions" class="page">
+      <div class="page-header">
+        <h1 class="page-title">🔄 <span data-key="subs_title">Subscriptions</span></h1>
+        <button class="btn-primary" onclick="showAddSubscription()">
+          <i class="fas fa-plus"></i>
+          <span data-key="subs_add">Add Subscription</span>
+        </button>
+      </div>
+
+      <div class="cards-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin-bottom:20px;">
+        <div class="stat-card">
+          <div class="stat-card-icon red"><i class="fas fa-sync"></i></div>
+          <div class="stat-card-label" data-key="subs_total">Total Monthly</div>
+          <div class="stat-card-value" id="totalSubs">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon blue"><i class="fas fa-list"></i></div>
+          <div class="stat-card-label" data-key="subs_count">Active Subscriptions</div>
+          <div class="stat-card-value" id="subsCount">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon yellow"><i class="fas fa-calendar-alt"></i></div>
+          <div class="stat-card-label" data-key="subs_next">Next Charge</div>
+          <div class="stat-card-value" id="nextCharge">—</div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div id="subscriptionsList">
+          <div style="text-align:center; padding:40px; color:#A0B0C0; font-size:0.9rem;">
+            <i class="fas fa-sync" style="font-size:2.5rem; margin-bottom:12px; display:block; opacity:0.3;"></i>
+            No subscriptions tracked yet.<br>Add your subscriptions to monitor monthly costs.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== -->
+    <!-- PAGE: AI ASSISTANT       -->
+    <!-- ======================== -->
+    <div id="page-ai" class="page">
+      <div class="page-header">
+        <h1 class="page-title">🤖 <span data-key="ai_title">AI Assistant</span></h1>
+      </div>
+
+      <div class="content-card" style="padding:0; overflow:hidden;">
+        <div class="chat-container">
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-message ai">
+              👋 Hi! I'm your FinanceAI assistant. I can help you with budgeting, debt payoff strategies, card recommendations and more. What would you like to know?
+            </div>
+            <div style="padding:0 16px;">
+              <p style="font-size:0.8rem; color:#A0B0C0; margin-bottom:10px;" data-key="ai_suggestions">Try asking:</p>
+              <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                <button onclick="askAI('How can I pay off my credit card faster?')" style="
+                  padding:6px 14px;
+                  background:rgba(0,238,255,0.08);
+                  border:1px solid rgba(0,238,255,0.2);
+                  border-radius:50px;
+                  color:#00EEFF;
+                  font-size:0.8rem;
+                  cursor:pointer;
+                  font-family:'Inter',sans-serif;
+                ">💳 Pay off credit card faster?</button>
+                <button onclick="askAI('Which card should I use for groceries?')" style="
+                  padding:6px 14px;
+                  background:rgba(0,238,255,0.08);
+                  border:1px solid rgba(0,238,255,0.2);
+                  border-radius:50px;
+                  color:#00EEFF;
+                  font-size:0.8rem;
+                  cursor:pointer;
+                  font-family:'Inter',sans-serif;
+                ">🛒 Best card for groceries?</button>
+                <button onclick="askAI('How much am I spending on subscriptions?')" style="
+                  padding:6px 14px;
+                  background:rgba(0,238,255,0.08);
+                  border:1px solid rgba(0,238,255,0.2);
+                  border-radius:50px;
+                  color:#00EEFF;
+                  font-size:0.8rem;
+                  cursor:pointer;
+                  font-family:'Inter',sans-serif;
+                ">📊 Subscription spending?</button>
+                <button onclick="askAI('Give me a budget plan for this month')" style="
+                  padding:6px 14px;
+                  background:rgba(0,238,255,0.08);
+                  border:1px solid rgba(0,238,255,0.2);
+                  border-radius:50px;
+                  color:#00EEFF;
+                  font-size:0.8rem;
+                  cursor:pointer;
+                  font-family:'Inter',sans-serif;
+                ">📅 Budget plan for this month</button>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <input 
+              class="chat-input" 
+              id="chatInput" 
+              type="text" 
+              placeholder="Ask me anything about your finances..."
+              onkeypress="if(event.key==='Enter') sendMessage()"
+            />
+            <button class="btn-primary" onclick="sendMessage()">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== -->
+    <!-- PAGE: SETTINGS           -->
+    <!-- ======================== -->
+    <div id="page-settings" class="page">
+      <div class="page-header">
+        <h1 class="page-title">⚙️ <span data-key="settings_title">Settings</span></h1>
+      </div>
+
+      <div class="content-grid">
+        <div class="content-card">
+          <h3><i class="fas fa-user" style="color:#00EEFF"></i> <span data-key="settings_profile">Profile</span></h3>
+          <div style="margin-top:16px;">
+            <div class="form-group">
+              <label class="form-label">Name</label>
+              <input class="form-input" id="settingName" type="text" placeholder="Your name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-input" id="settingEmail" type="email" placeholder="your@email.com"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-key="settings_currency">Currency</label>
+              <select class="form-select" id="settingCurrency">
+                <option value="USD">🇺🇸 USD — US Dollar</option>
+                <option value="EUR">🇪🇺 EUR — Euro</option>
+                <option value="MXN">🇲🇽 MXN — Mexican Peso</option>
+                <option value="COP">🇨🇴 COP — Colombian Peso</option>
+                <option value="ARS">🇦🇷 ARS — Argentine Peso</option>
+                <option value="BRL">🇧🇷 BRL — Brazilian Real</option>
+                <option value="CLP">🇨🇱 CLP — Chilean Peso</option>
+                <option value="PEN">🇵🇪 PEN — Peruvian Sol</option>
+                <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-key="settings_language">Language</label>
+              <select class="form-select" id="settingLang" onchange="applyLanguage(this.value)">
+                <option value="en">🇺🇸 English</option>
+                <option value="es">🇪🇸 Español</option>
+              </select>
+            </div>
+            <button class="btn-primary" onclick="saveSettings()" style="width:100%; justify-content:center;">
+              <i class="fas fa-save"></i>
+              <span data-key="settings_save">Save Changes</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <h3><i class="fas fa-crown" style="color:#FFB800"></i> <span data-key="settings_plan">Current Plan</span></h3>
+          <div style="margin-top:16px;">
+            <div style="
+              background:rgba(0,238,255,0.05);
+              border:1px solid rgba(0,238,255,0.2);
+              border-radius:12px;
+              padding:20px;
+              margin-bottom:16px;
+              text-align:center;
+            ">
+              <div style="font-size:2rem; margin-bottom:8px;">⭐</div>
+              <div style="font-size:1.2rem; font-weight:800; color:#00EEFF;" id="currentPlanDisplay">Free Plan</div>
+              <div style="font-size:0.85rem; color:#A0B0C0; margin-top:6px;">Upgrade to unlock all features</div>
+            </div>
+            <button onclick="window.location.href='index.html#pricing'" class="btn-primary" style="width:100%; justify-content:center;">
+              <i class="fas fa-rocket"></i>
+              <span data-key="settings_upgrade">Upgrade Plan</span>
+            </button>
+          </div>
+
+          <h3 style="margin-top:24px;"><i class="fas fa-bell" style="color:#00EEFF"></i> <span data-key="settings_notifications">Notifications</span></h3>
+          <div style="margin-top:16px; display:flex; flex-direction:column; gap:14px;">
+            <label style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+              <span style="font-size:0.9rem;">Subscription reminders</span>
+              <input type="checkbox" id="notifSubs" checked style="accent-color:#00EEFF; width:18px; height:18px;"/>
+            </label>
+            <label style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+              <span style="font-size:0.9rem;">Weekly spending summary</span>
+              <input type="checkbox" id="notifWeekly" checked style="accent-color:#00EEFF; width:18px; height:18px;"/>
+            </label>
+            <label style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+              <span style="font-size:0.9rem;">Debt payoff milestones</span>
+              <input type="checkbox" id="notifDebt" checked style="accent-color:#00EEFF; width:18px; height:18px;"/>
+            </label>
+            <label style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+              <span style="font-size:0.9rem;">Card recommendations</span>
+              <input type="checkbox" id="notifCards" style="accent-color:#00EEFF; width:18px; height:18px;"/>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ADD TRANSACTION MODAL -->
+<div class="modal" id="addTransactionModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="document.getElementById('addTransactionModal').classList.remove('active')">✕</button>
+    <h2>➕ Add Transaction</h2>
+    <div class="form-group" style="margin-top:16px;">
+      <label class="form-label">Description</label>
+      <input class="form-input" id="txDesc" type="text" placeholder="e.g. Walmart, Salary..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Amount ($)</label>
+      <input class="form-input" id="txAmount" type="number" step="0.01" placeholder="0.00"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Type</label>
+      <select class="form-select" id="txType">
+        <option value="expense">Expense</option>
+        <option value="income">Income</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <select class="form-select" id="txCategory">
+        <option value="food">🍔 Food & Dining</option>
+        <option value="transport">🚗 Transport</option>
+        <option value="shopping">🛍️ Shopping</option>
+        <option value="health">🏥 Health</option>
+        <option value="entertainment">🎬 Entertainment</option>
+        <option value="utilities">💡 Utilities</option>
+        <option value="travel">✈️ Travel</option>
+        <option value="salary">💼 Salary</option>
+        <option value="other">📦 Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Personal or Business</label>
+      <select class="form-select" id="txExpenseType">
+        <option value="personal">Personal</option>
+        <option value="business">Business</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Date</label>
+      <input class="form-input" id="txDate" type="date"/>
+    </div>
+    <button class="btn-primary" onclick="saveTransaction()" style="width:100%; justify-content:center;">
+      <i class="fas fa-save"></i> Save Transaction
+    </button>
+  </div>
+</div>
+
+<!-- ADD CARD MODAL -->
+<div class="modal" id="addCardModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="document.getElementById('addCardModal').classList.remove('active')">✕</button>
+    <h2>💳 Add Card</h2>
+    <div class="form-group" style="margin-top:16px;">
+      <label class="form-label">Card Name</label>
+      <input class="form-input" id="cardName" type="text" placeholder="e.g. Chase Sapphire, Amex Gold..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Card Type</label>
+      <select class="form-select" id="cardType">
+        <option value="visa">Visa</option>
+        <option value="mastercard">Mastercard</option>
+        <option value="amex">American Express</option>
+        <option value="discover">Discover</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Credit Limit ($)</label>
+      <input class="form-input" id="cardLimit" type="number" placeholder="5000"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Current Balance / Debt ($)</label>
+      <input class="form-input" id="cardBalance" type="number" placeholder="0"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">APR / Interest Rate (%)</label>
+      <input class="form-input" id="cardAPR" type="number" step="0.1" placeholder="24.99"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Best Rewards Category</label>
+      <select class="form-select" id="cardRewards">
+        <option value="food">🍔 Food & Dining</option>
+        <option value="travel">✈️ Travel</option>
+        <option value="shopping">🛍️ Shopping</option>
+        <option value="gas">⛽ Gas</option>
+        <option value="cashback">💵 Cashback (All)</option>
+        <option value="other">📦 Other</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="saveCard()" style="width:100%; justify-content:center;">
+      <i class="fas fa-save"></i> Save Card
+    </button>
+  </div>
+</div>
+
+<!-- ADD DEBT MODAL -->
+<div class="modal" id="addDebtModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="document.getElementById('addDebtModal').classList.remove('active')">✕</button>
+    <h2>📊 Add Debt</h2>
+    <div class="form-group" style="margin-top:16px;">
+      <label class="form-label" data-key="debt_name">Card / Loan Name</label>
+      <input class="form-input" id="debtName" type="text" placeholder="e.g. Chase Visa, Student Loan..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-key="debt_balance">Current Balance ($)</label>
+      <input class="form-input" id="debtBalance" type="number" placeholder="0"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-key="debt_rate">Interest Rate (%)</label>
+      <input class="form-input" id="debtRate" type="number" step="0.1" placeholder="24.99"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-key="debt_min">Minimum Payment ($)</label>
+      <input class="form-input" id="debtMin" type="number" placeholder="25"/>
+    </div>
+    <button class="btn-primary" onclick="saveDebt()" style="width:100%; justify-content:center;">
+      <i class="fas fa-save"></i> <span data-key="debt_save">Save</span>
+    </button>
+  </div>
+</div>
+
+<!-- ADD SUBSCRIPTION MODAL -->
+<div class="modal" id="addSubModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="document.getElementById('addSubModal').classList.remove('active')">✕</button>
+    <h2>🔄 Add Subscription</h2>
+    <div class="form-group" style="margin-top:16px;">
+      <label class="form-label">Service Name</label>
+      <input class="form-input" id="subName" type="text" placeholder="e.g. Netflix, Spotify..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Monthly Amount ($)</label>
+      <input class="form-input" id="subAmount" type="number" step="0.01" placeholder="9.99"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Billing Date (day of month)</label>
+      <input class="form-input" id="subDate" type="number" min="1" max="31" placeholder="15"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <select class="form-select" id="subCategory">
+        <option value="streaming">🎬 Streaming</option>
+        <option value="music">🎵 Music</option>
+        <option value="software">💻 Software</option>
+        <option value="fitness">💪 Fitness</option>
+        <option value="news">📰 News</option>
+        <option value="other">📦 Other</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="saveSubscription()" style="width:100%; justify-content:center;">
+      <i class="fas fa-save"></i> Save Subscription
+    </button>
+  </div>
+</div>
+
+<script src="payment.js"></script>
+<script src="lang.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment Successful — FinanceAI Pro</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+<div style="
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #050D1A;
+">
+  <div style="
+    background: #0A1628;
+    border: 1px solid rgba(0,238,255,0.2);
+    border-radius: 24px;
+    padding: 48px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  ">
+    <!-- ANIMATED CHECK -->
+    <div style="
+      width: 90px;
+      height: 90px;
+      background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(0,238,255,0.1));
+      border: 2px solid rgba(0,255,136,0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 2.5rem;
+      animation: popIn 0.5s ease;
+    ">✅</div>
+
+    <h1 style="
+      font-family: 'Inter', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+    ">Payment Successful!</h1>
+
+    <p style="
+      color: #A0B0C0;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    ">
+      Welcome to <strong style="color:#00EEFF">FinanceAI Pro</strong>!<br>
+      Your subscription is now active.
+    </p>
+
+    <div id="planInfo" style="
+      background: rgba(0,238,255,0.05);
+      border: 1px solid rgba(0,238,255,0.15);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 24px 0;
+      font-family: 'Inter', sans-serif;
+    ">
+      <div style="font-size:0.85rem; color:#A0B0C0; margin-bottom:4px;">Active Plan</div>
+      <div style="font-size:1.2rem; font-weight:700; color:#00EEFF;" id="activePlanName">Loading...</div>
+    </div>
+
+    <!-- WHAT'S NEXT -->
+    <div style="
+      background: rgba(0,255,136,0.05);
+      border: 1px solid rgba(0,255,136,0.15);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 28px;
+      text-align: left;
+      font-family: 'Inter', sans-serif;
+    ">
+      <div style="font-weight:700; color:#00FF88; margin-bottom:12px; font-size:0.95rem;">
+        🎉 What's unlocked:
+      </div>
+      <div id="unlockedFeatures" style="display:flex; flex-direction:column; gap:8px;">
+      </div>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <p style="
+      color: #A0B0C0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    ">
+      Redirecting to dashboard in <span id="countdown" style="color:#00EEFF; font-weight:700;">5</span>s...
+    </p>
+
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <a href="app.html" style="
+        background: linear-gradient(135deg, #00EEFF, #0088FF);
+        color: #000;
+        padding: 12px 28px;
+        border-radius: 50px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      ">
+        <i class="fas fa-rocket"></i> Go to Dashboard
+      </a>
+      <a href="index.html" style="
+        background: transparent;
+        color: #A0B0C0;
+        padding: 12px 28px;
+        border-radius: 50px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        border: 1px solid rgba(0,238,255,0.2);
+      ">
+        Home
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+</style>
+
+<script>
+  // Get plan from URL or localStorage
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id');
+  const plan = localStorage.getItem('financeai_plan') || 'personal';
+
+  const planDetails = {
+    free: {
+      name: 'Free Plan',
+      features: ['5 receipts/month', 'Basic expense tracking', '2 cards']
+    },
+    personal: {
+      name: 'Personal Plan — $9.99/month',
+      features: [
+        '✅ Unlimited receipt scanning',
+        '✅ AI Assistant',
+        '✅ Debt payoff plan',
+        '✅ 10 cards',
+        '✅ Subscription tracker'
+      ]
+    },
+    pro: {
+      name: 'Pro Plan — $19.99/month',
+      features: [
+        '✅ Everything in Personal',
+        '✅ Business expense separation',
+        '✅ Unlimited cards',
+        '✅ Advanced reports',
+        '✅ Priority support'
+      ]
+    },
+    business: {
+      name: 'Business Plan — $49.99/month',
+      features: [
+        '✅ Everything in Pro',
+        '✅ 5 team members',
+        '✅ API access',
+        '✅ Custom reports',
+        '✅ Dedicated support'
+      ]
+    }
+  };
+
+  const details = planDetails[plan] || planDetails.personal;
+
+  document.getElementById('activePlanName').textContent = details.name;
+  document.getElementById('unlockedFeatures').innerHTML = details.features.map(f => `
+    <div style="
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: #fff;
+    ">${f}</div>
+  `).join('');
+
+  // Countdown
+  let count = 5;
+  const countEl = document.getElementById('countdown');
+  const timer = setInterval(() => {
+    count--;
+    countEl.textContent = count;
+    if (count <= 0) {
+      clearInterval(timer);
+      window.location.href = 'app.html';
+    }
+  }, 1000);
+</script>
+</body>
+</html>
