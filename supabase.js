@@ -36,7 +36,10 @@ async function doLogin() {
 
     // Success - redirect to app
     localStorage.setItem('financeai_user', JSON.stringify(data.user));
-    window.location.href = 'app.html';
+    setTimeout(() => {
+    window.location.replace('app.html');
+}, 500);
+
 }
 
 // REGISTER
