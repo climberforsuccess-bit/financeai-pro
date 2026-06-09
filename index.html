@@ -3164,7 +3164,6 @@ document.getElementById('admin-nav-item').style.display = 'none';
   --warning: #FF6B35;
   --success: #00C896;
   --border: rgba(0,238,255,0.15);
-  --shadow: 0 8px 32px rgba(0,238,255,0.1);
 }
 
 body {
@@ -6163,82 +6162,6 @@ function switchDebtMethod(method, btn) {
   showNotif(`Método cambiado a ${method}`);
 }
 
-// ===== AI CHAT =====
-  es: [
-    "Basándome en tus datos, te recomiendo aplicar $400 extra a Capital One este mes para reducir el 82% de utilización que tienes. Esto mejorará tu score crediticio significativamente.",
-    "Analizando tus gastos, veo que puedes ahorrar $150/mes cancelando Xbox Game Pass (bajo uso) y optimizando tus gastos en restaurantes de $420 a $280.",
-    "Para el supermercado, Chase Freedom Flex te da 5% cashback esta categoría. ¡Podrías ahorrar $34/mes solo usando la tarjeta correcta!",
-    "Tu tasa de ahorro del 33% es excelente. La meta ideal es 20-30%, así que estás por encima. Te recomiendo invertir el excedente en ETFs o fondos indexados.",
-    "Con tu balance actual de $1,402, te sugiero: $500 a deuda Capital One, $400 a fondo de emergencia, $502 para gastos variables del mes.",
-    "Detecté 7 suscripciones por $87.97/mes. Analicé tu uso y Xbox Game Pass tiene muy baja actividad. Cancelarla ahorraría $179.88 al año.",
-  ],
-  en: [
-    "Based on your data, I recommend applying $400 extra to Capital One this month to reduce your 82% utilization. This will significantly improve your credit score.",
-    "Analyzing your spending, I see you can save $150/month by canceling Xbox Game Pass (low use) and optimizing restaurant spending from $420 to $280.",
-    "For groceries, Chase Freedom Flex gives you 5% cashback in this category. You could save $34/month just by using the right card!",
-    "Your 33% savings rate is excellent. The ideal target is 20-30%, so you're above it. I recommend investing the surplus in ETFs or index funds.",
-  ]
-};
-
-function sendDashChat() {
-  const input = document.getElementById('dash-chat-input');
-  const msg = input.value.trim();
-  if (!msg) return;
-
-  const chat = document.getElementById('dash-chat');
-  chat.innerHTML += `<div class="chat-msg user">${msg}</div>`;
-  input.value = '';
-
-  const loadingDiv = document.createElement('div');
-  loadingDiv.className = 'chat-msg ai';
-  loadingDiv.innerHTML = '<div class="loading"><div class="spinner"></div> Analizando...</div>';
-  chat.appendChild(loadingDiv);
-  chat.scrollTop = chat.scrollHeight;
-
-  setTimeout(() => {
-    const responses = aiResponses[currentLang] || aiResponses.es;
-    const response = responses[Math.floor(Math.random() * responses.length)];
-    loadingDiv.innerHTML = `🤖 ${response}`;
-    chat.scrollTop = chat.scrollHeight;
-  }, 1200);
-}
-
-function sendMainChat() {
-  const input = document.getElementById('main-chat-input');
-  const msg = input.value.trim();
-  if (!msg) return;
-
-  const chat = document.getElementById('main-chat');
-  chat.innerHTML += `<div class="chat-msg user">${msg}</div>`;
-  input.value = '';
-
-  const loadingDiv = document.createElement('div');
-  loadingDiv.className = 'chat-msg ai';
-  loadingDiv.innerHTML = '<div class="loading"><div class="spinner"></div> Gemini AI analizando...</div>';
-  chat.appendChild(loadingDiv);
-  chat.scrollTop = chat.scrollHeight;
-
-  setTimeout(() => {
-    const responses = aiResponses[currentLang] || aiResponses.es;
-    const response = responses[Math.floor(Math.random() * responses.length)];
-    loadingDiv.innerHTML = `🤖 ${response}`;
-    chat.scrollTop = chat.scrollHeight;
-  }, 1500);
-}
-
-function quickChat(msg) {
-  document.getElementById('main-chat-input').value = msg;
-  sendMainChat();
-}
-
-// ===== MODAL =====
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('show');
-}
-
-document.getElementById('modal-overlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
 
 // ===== NOTIFICATION =====
 function showNotif(msg) {
