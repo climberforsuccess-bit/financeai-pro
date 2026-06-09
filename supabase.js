@@ -34,10 +34,12 @@ async function doLogin() {
         return;
     }
 
-    // Success - redirect to app
-    localStorage.setItem('financeai_user', JSON.stringify(data.user));
-    setTimeout(() => {
-    window.location.replace('app.html');
+  // Success - redirect to app
+localStorage.setItem('financeai_user', JSON.stringify(data.user));
+setTimeout(() => {
+window.location.replace('app.html');
+
+
 }, 500);
 
 }

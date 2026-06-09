@@ -437,6 +437,7 @@ function applyLanguage(lang) {
 // ===========================
 function toggleLang() {
   const newLang = currentLang === 'en' ? 'es' : 'en';
+  
   applyLanguage(newLang);
 }
 

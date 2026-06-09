@@ -5,18 +5,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FinanceAI Pro</title>
-<style>
-
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 
-
+<style>
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
 
 :root {
   --bg-main: #050D1A;
@@ -2639,13 +2638,13 @@ body {
 
 <script>
 // ===== STATE =====
-let currentLang = 'es';
-let currentSection = 'dashboard';
-let lastPage = 'landing';
-let currentUser = null;
+var currentLang = 'es';
+var currentSection = 'dashboard';
+var lastPage = 'landing';
+var currentUser = null;
 
-// ===== TRANSLATIONS =====
-const t = {
+var t = {
+
   es: {
     'nav-features': 'Funciones',
     'nav-pricing': 'Precios',
@@ -3033,7 +3032,7 @@ function switchDebtMethod(method, btn) {
 }
 
 // ===== AI CHAT =====
-const aiResponses = {
+var aiResponses = {
   es: [
     "Basándome en tus datos, te recomiendo aplicar $400 extra a Capital One este mes para reducir el 82% de utilización que tienes. Esto mejorará tu score crediticio significativamente.",
     "Analizando tus gastos, veo que puedes ahorrar $150/mes cancelando Xbox Game Pass (bajo uso) y optimizando tus gastos en restaurantes de $420 a $280.",
@@ -5775,7 +5774,6 @@ body {
 
 <script>
 // ===== STATE =====
-let currentLang = 'es';
 let currentSection = 'dashboard';
 let lastPage = 'landing';
 let currentUser = null;
@@ -5941,8 +5939,8 @@ function doLogin() {
   document.getElementById('user-display-plan').textContent = 'Free Plan';
 
   showNotif('✅ Bienvenido a FinanceAI Pro!');
-  showPage('app');
-  showSection('dashboard');
+window.location.href = 'app.html';
+
 }
 
 function doRegister() {
@@ -6169,7 +6167,7 @@ function switchDebtMethod(method, btn) {
 }
 
 // ===== AI CHAT =====
-const aiResponses = {
+var aiResponses = {
   es: [
     "Basándome en tus datos, te recomiendo aplicar $400 extra a Capital One este mes para reducir el 82% de utilización que tienes. Esto mejorará tu score crediticio significativamente.",
     "Analizando tus gastos, veo que puedes ahorrar $150/mes cancelando Xbox Game Pass (bajo uso) y optimizando tus gastos en restaurantes de $420 a $280.",
