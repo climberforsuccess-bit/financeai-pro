@@ -104,9 +104,26 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initApp() {
-  // Load settings
-  const s = appData.settings;
-  document.getElementById('userName').textContent = s.name;
+
+    // Load settings
+    const s = appData.settings;
+    
+    // Get real user from Supabase
+    const savedUser = localStorage.getItem('financeai_user');
+    if (savedUser) {
+        const user = JSON.parse(savedUser);
+        // Use full_name, display_name, or email
+        const realName = user.user_metadata?.full_name || 
+                        user.user_metadata?.name ||
+                        user.email?.split('@')[0] || 
+                        'User';
+        appData.settings.name = realName;
+        s.name = realName;
+    }
+    
+    document.getElementById('userName').textContent = s.name;
+    document.getElementById('settingName').value = s.name;
+
   document.getElementById('settingName').value = s.name;
   document.getElementById('settingEmail').value = s.email;
   document.getElementById('settingCurrency').value = s.currency;
