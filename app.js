@@ -1281,33 +1281,6 @@ appStyles.textContent = `
 `;
 document.head.appendChild(appStyles);
 
-// ================================
-// LOGIN HANDLER FIX
-// ================================
-document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value.trim();
-            const pass = document.getElementById('login-pass').value.trim();
-            if (!email || !pass) {
-                showToast('Please fill in all fields', 'error');
-                return;
-            }
-            // Save user session
-            const userData = { email: email, user_metadata: { full_name: email.split('@')[0] } };
-            localStorage.setItem('financeai_user', JSON.stringify(userData));
-            appData.settings.name = email.split('@')[0];
-            appData.settings.email = email;
-            saveData();
-            // Go to app dashboard
-            showPage('app');
-            showSection('dashboard');
-            renderDashboard();
-        });
-    }
-});
 function doLogin() {
     var loginTab = document.getElementById('login-form');
     var emailEl = loginTab ? loginTab.querySelector('input[type="email"]') : document.querySelectorAll('input[type="email"]')[0];
