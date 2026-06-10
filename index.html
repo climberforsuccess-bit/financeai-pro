@@ -5836,7 +5836,7 @@ function doLogin() {
   document.getElementById('user-display-plan').textContent = 'Free Plan';
 
   showNotif('✅ Bienvenido a FinanceAI Pro!');
-showPage('app'); showSection('dashboard'); window.scrollTo(0,0);
+var ap=document.getElementById('app'); document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');}); ap.classList.add('active'); document.querySelectorAll('[id^="section-"]').forEach(function(s){s.style.display='none';}); document.getElementById('section-dashboard').style.display='block'; window.scrollTo(0,0);
 
 }
 
