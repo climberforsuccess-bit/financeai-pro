@@ -1388,7 +1388,7 @@ body {
       </svg>
     </div>
     <nav class="sidebar-nav">
-      <div class="nav-item active" onclick="showSection('dashboard')">
+      <div class="nav-item active" onclick="document.getElementById('landing').style.display='none'; document.getElementById('app').style.display='block'; window.scrollTo(0,0); showSection('dashboard')">
         <span class="nav-icon">📊</span>
         <span id="nav-dash">Dashboard</span>
       </div>
