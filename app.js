@@ -1308,3 +1308,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+function doLogin() {
+    var loginTab = document.getElementById('login-form');
+    var emailEl = loginTab ? loginTab.querySelector('input[type="email"]') : document.querySelectorAll('input[type="email"]')[0];
+    var passEl = loginTab ? loginTab.querySelector('input[type="password"]') : document.querySelectorAll('input[type="password"]')[0];
+    var email = emailEl ? emailEl.value : '';
+    var pass = passEl ? passEl.value : '';
+    if (!email || !pass) { showToast('Llena todos los campos', 'error'); return; }
+    var userData = { email: email, user_metadata: { full_name: email.split('@')[0] } };
+    localStorage.setItem('financeai_user', JSON.stringify(userData));
+    appData.settings.name = email.split('@')[0];
+    appData.settings.email = email;
+    saveData();
+    showToast('Bienvenido!', 'success');
+    showPage('app');
+    showSection('dashboard');
+}
