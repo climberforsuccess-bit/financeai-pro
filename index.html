@@ -1388,7 +1388,7 @@ body {
       </svg>
     </div>
     <nav class="sidebar-nav">
-      <div class="nav-item active" onclick="document.getElementById('landing').style.display='none'; document.getElementById('app').style.display='block'; window.scrollTo(0,0); showSection('dashboard')">
+      <div class="nav-item active" onclick="showSection('dashboard')">
         <span class="nav-icon">📊</span>
         <span id="nav-dash">Dashboard</span>
       </div>
@@ -2804,10 +2804,6 @@ function doLogin() {
 
   showNotif('✅ Bienvenido a FinanceAI Pro!');
   
-    document.getElementById('landing').style.display='none';
-    document.getElementById('auth').style.display='none';
-    document.getElementById('app').style.display='block';
-    window.scrollTo(0,0);
   showSection('dashboard');
 }
 
@@ -4236,6 +4232,8 @@ body {
     <div id="modal-body"></div>
   </div>
 </div>
+
+<!-- ============ LANDING PAGE ============ -->
 
 </body>
 </html>
