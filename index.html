@@ -2804,6 +2804,10 @@ function doLogin() {
 
   showNotif('✅ Bienvenido a FinanceAI Pro!');
   
+    document.getElementById('landing').style.display='none';
+    document.getElementById('auth').style.display='none';
+    document.getElementById('app').style.display='block';
+    window.scrollTo(0,0);
   showSection('dashboard');
 }
 
