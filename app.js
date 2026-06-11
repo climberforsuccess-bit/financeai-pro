@@ -139,7 +139,7 @@ function initApp() {
   const cpEl = document.getElementById('currentPlanDisplay'); if(cpEl) cpEl.textContent = planNames[plan] || 'Free Plan';
 
   // Apply language
-  applyLanguage(s.lang);
+  if(typeof applyLanguage === "function") applyLanguage(s.lang);
 
   // Render all
   renderDashboard();
