@@ -267,6 +267,7 @@ function renderDashboard() {
 
 function renderRecentTransactions() {
   const container = document.getElementById('recentTransactions');
+  container.innerHTML = ''; // clear before render
   const recent = [...appData.transactions]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 5);
@@ -351,6 +352,7 @@ function saveTransaction() {
 
 function renderTransactions() {
   const container = document.getElementById('transactionsList');
+  container.innerHTML = ''; // clear before render
   const filterType = document.getElementById('filterType')?.value || 'all';
   const filterCat = document.getElementById('filterCategory')?.value || 'all';
   const filterExpType = document.getElementById('filterExpenseType')?.value || 'all';
@@ -522,6 +524,7 @@ function saveScannedExpense() {
 
 function addRecentScan(tx) {
   const container = document.getElementById('recentScans');
+  container.innerHTML = ''; // clear before render
   const item = document.createElement('div');
   item.className = 'transaction-item';
   item.innerHTML = `
@@ -593,6 +596,7 @@ function saveCard() {
 
 function renderCards() {
   const container = document.getElementById('cardsList');
+  container.innerHTML = ''; // clear before render
   const currency = getCurrencySymbol();
 
   if (appData.cards.length === 0) {
@@ -765,6 +769,7 @@ function setDebtMethod(method) {
 
 function renderDebts() {
   const container = document.getElementById('debtList');
+  container.innerHTML = ''; // clear before render
   const currency = getCurrencySymbol();
 
   if (appData.debts.length === 0) {
@@ -906,6 +911,7 @@ function saveSubscription() {
 
 function renderSubscriptions() {
   const container = document.getElementById('subscriptionsList');
+  container.innerHTML = ''; // clear before render
   const currency = getCurrencySymbol();
   const active = appData.subscriptions.filter(s => s.active);
 
@@ -1259,7 +1265,10 @@ function showToast(message, type = 'success') {
 // ===========================
 // PAGE STYLES
 // ===========================
+// Prevent duplicate styles
+if (!document.getElementById('financeai-styles')) {
 const appStyles = document.createElement('style');
+appStyles.id = 'financeai-styles';
 appStyles.textContent = `
   .page { display: none; }
   .page.active { display: block; }
@@ -1280,6 +1289,7 @@ appStyles.textContent = `
   }
 `;
 document.head.appendChild(appStyles);
+}
 
 function doLogin() {
     var loginTab = document.getElementById('login-form');

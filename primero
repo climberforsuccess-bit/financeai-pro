@@ -1,0 +1,21 @@
+
+// ===========================
+// INIT
+// ===========================
+document.addEventListener('DOMContentLoaded', () => {
+  loadData();
+  initApp();
+  checkMobile();
+  setDefaultDate();
+});
+
+function initApp() {
+
+    // Load settings
+    const s = appData.settings;
+    
+    // Get real user from Supabase
+    const savedUser = localStorage.getItem('financeai_user');
+    if (savedUser) {
+        const user = JSON.parse(savedUser);
+        // Use full_name, display_name, or email
