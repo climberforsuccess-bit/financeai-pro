@@ -121,7 +121,7 @@ function initApp() {
         s.name = realName;
     }
     
-    document.getElementById('userName').textContent = s.name;
+    const unEl = document.getElementById('user-display-name'); if(unEl) unEl.textContent = s.name;
     document.getElementById('settingName').value = s.name;
 
   document.getElementById('settingName').value = s.name;
@@ -1179,7 +1179,7 @@ function saveSettings() {
   saveData();
 
   // Apply changes
-  document.getElementById('userName').textContent = name;
+  document.getElementById('user-display-name').textContent = name;
   applyLanguage(lang);
 
   showToast('Settings saved! ✅');
