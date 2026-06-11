@@ -265,6 +265,7 @@ function renderDashboard() {
 
 function renderRecentTransactions() {
   const container = document.getElementById('recentTransactions');
+  if (!container) return;
   container.innerHTML = ''; // clear before render
   const recent = [...appData.transactions]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
