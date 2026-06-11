@@ -142,7 +142,7 @@ function initApp() {
   if(typeof applyLanguage === "function") applyLanguage(s.lang);
 
   // Render all
-  renderDashboard();
+  if(document.getElementById("dashboard") || document.getElementById("recentTransactionsList")) renderDashboard();
   renderTransactions();
   renderCards();
   renderDebts();
