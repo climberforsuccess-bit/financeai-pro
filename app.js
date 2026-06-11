@@ -65,9 +65,9 @@ function activateVIPCode() {
       business: 'Business Plan'
     };
     showToast(`✅ ${result.name} access activated!`, 'success');
-    document.getElementById('sidebarPlan').textContent =
+    const _null_sidebarPlan_0 = document.getElementById('sidebarPlan'); if(_null_sidebarPlan_0) _null_sidebarPlan_0.textContent =
       planNames[result.plan];
-    document.getElementById('currentPlanDisplay').textContent =
+    const _null_currentPlanDisplay_1 = document.getElementById('currentPlanDisplay'); if(_null_currentPlanDisplay_1) _null_currentPlanDisplay_1.textContent =
       planNames[result.plan];
     input.value = '';
   } else {
@@ -928,7 +928,7 @@ function renderSubscriptions() {
     .sort((a, b) => a.daysUntil - b.daysUntil);
 
   if (upcoming.length > 0) {
-    document.getElementById('nextCharge').textContent =
+    const _null_nextCharge_2 = document.getElementById('nextCharge'); if(_null_nextCharge_2) _null_nextCharge_2.textContent =
       upcoming[0].daysUntil === 0 ? 'Today' :
       upcoming[0].daysUntil === 1 ? 'Tomorrow' :
       `Day ${upcoming[0].date}`;
