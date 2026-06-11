@@ -266,6 +266,7 @@ function renderDashboard() {
 function renderRecentTransactions() {
   const container = document.getElementById('recentTransactions');
   if (!container) return;
+  if (!container) return;
   container.innerHTML = ''; // clear before render
   const recent = [...appData.transactions]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -351,6 +352,7 @@ function saveTransaction() {
 
 function renderTransactions() {
   const container = document.getElementById('transactionsList');
+  if (!container) return;
   container.innerHTML = ''; // clear before render
   const filterType = document.getElementById('filterType')?.value || 'all';
   const filterCat = document.getElementById('filterCategory')?.value || 'all';
@@ -523,6 +525,7 @@ function saveScannedExpense() {
 
 function addRecentScan(tx) {
   const container = document.getElementById('recentScans');
+  if (!container) return;
   container.innerHTML = ''; // clear before render
   const item = document.createElement('div');
   item.className = 'transaction-item';
@@ -595,6 +598,7 @@ function saveCard() {
 
 function renderCards() {
   const container = document.getElementById('cardsList');
+  if (!container) return;
   container.innerHTML = ''; // clear before render
   const currency = getCurrencySymbol();
 
@@ -651,6 +655,7 @@ function recommendCard() {
   const category = document.getElementById('recommendCategory').value;
   const container = document.getElementById('cardRecommendation');
 
+  if (!container) return;
   if (!category) {
     container.innerHTML = '';
     return;
@@ -768,6 +773,7 @@ function setDebtMethod(method) {
 
 function renderDebts() {
   const container = document.getElementById('debtList');
+  if (!container) return;
   container.innerHTML = ''; // clear before render
   const currency = getCurrencySymbol();
 
@@ -910,6 +916,7 @@ function saveSubscription() {
 
 function renderSubscriptions() {
   const container = document.getElementById('subscriptionsList');
+  if (!container) return;
   container.innerHTML = ''; // clear before render
   const currency = getCurrencySymbol();
   const active = appData.subscriptions.filter(s => s.active);
