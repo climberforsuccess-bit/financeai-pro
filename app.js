@@ -122,12 +122,12 @@ function initApp() {
     }
     
     const unEl = document.getElementById('user-display-name'); if(unEl) unEl.textContent = s.name;
-    document.getElementById('settingName').value = s.name;
+    const snEl = document.getElementById('settingName'); if(snEl) snEl.value = s.name;
 
-  document.getElementById('settingName').value = s.name;
-  document.getElementById('settingEmail').value = s.email;
-  document.getElementById('settingCurrency').value = s.currency;
-  document.getElementById('settingLang').value = s.lang;
+  const snEl = document.getElementById('settingName'); if(snEl) snEl.value = s.name;
+  const seEl = document.getElementById('settingEmail'); if(seEl) seEl.value = s.email;
+  const scEl = document.getElementById('settingCurrency'); if(scEl) scEl.value = s.currency;
+  const slEl = document.getElementById('settingLang'); if(slEl) slEl.value = s.lang;
 
   // Load plan
   const plan = localStorage.getItem('financeai_plan') || 'free';
