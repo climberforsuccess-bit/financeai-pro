@@ -65,9 +65,9 @@ function activateVIPCode() {
       business: 'Business Plan'
     };
     showToast(`✅ ${result.name} access activated!`, 'success');
-    document.getElementById('sidebarPlan').textContent = 
+    document.getElementById('sidebarPlan').textContent =
       planNames[result.plan];
-    document.getElementById('currentPlanDisplay').textContent = 
+    document.getElementById('currentPlanDisplay').textContent =
       planNames[result.plan];
     input.value = '';
   } else {
@@ -203,7 +203,7 @@ function showPage(pageId) {
   }
 
   // Scroll to top
-  document.getElementById('mainContent').scrollTop = 0;
+  const _e_mainContent = document.getElementById('mainContent'); if(_e_mainContent) _e_mainContent.scrollTop = 0;
 }
 
 // ===========================
@@ -254,10 +254,10 @@ function renderDashboard() {
   const balance = income - expenses;
   const savingsRate = income > 0 ? Math.round((balance / income) * 100) : 0;
 
-  document.getElementById('statIncome').textContent = currency + formatNumber(income);
-  document.getElementById('statExpenses').textContent = currency + formatNumber(expenses);
-  document.getElementById('statBalance').textContent = currency + formatNumber(balance);
-  document.getElementById('statSavings').textContent = savingsRate + '%';
+  const _e_statIncome = document.getElementById('statIncome'); if(_e_statIncome) _e_statIncome.textContent = currency + formatNumber(income);
+  const _e_statExpenses = document.getElementById('statExpenses'); if(_e_statExpenses) _e_statExpenses.textContent = currency + formatNumber(expenses);
+  const _e_statBalance = document.getElementById('statBalance'); if(_e_statBalance) _e_statBalance.textContent = currency + formatNumber(balance);
+  const _e_statSavings = document.getElementById('statSavings'); if(_e_statSavings) _e_statSavings.textContent = savingsRate + '%';
 
   // Recent transactions
   renderRecentTransactions();
@@ -338,8 +338,8 @@ function saveTransaction() {
 
   // Close modal & reset
   document.getElementById('addTransactionModal').classList.remove('active');
-  document.getElementById('txDesc').value = '';
-  document.getElementById('txAmount').value = '';
+  const _e_txDesc = document.getElementById('txDesc'); if(_e_txDesc) _e_txDesc.value = '';
+  const _e_txAmount = document.getElementById('txAmount'); if(_e_txAmount) _e_txAmount.value = '';
 
   // Re-render
   renderDashboard();
@@ -464,17 +464,17 @@ function simulateOCR(filename) {
 
 function showScanResult(data) {
   // Restore upload area
-  document.getElementById('uploadArea').innerHTML = `
+  const _e_uploadArea = document.getElementById('uploadArea'); if(_e_uploadArea) _e_uploadArea.innerHTML = `
     <div class="upload-icon">📷</div>
     <p style="font-size:1rem; font-weight:600; margin-bottom:6px;">Receipt scanned successfully!</p>
     <p style="color:#00FF88;">✅ AI detected expense details below</p>
   `;
 
   // Fill form
-  document.getElementById('scanMerchant').value = data.merchant;
-  document.getElementById('scanAmount').value = data.amount;
-  document.getElementById('scanDate').value = data.date;
-  document.getElementById('scanCategory').value = data.category;
+  const _e_scanMerchant = document.getElementById('scanMerchant'); if(_e_scanMerchant) _e_scanMerchant.value = data.merchant;
+  const _e_scanAmount = document.getElementById('scanAmount'); if(_e_scanAmount) _e_scanAmount.value = data.amount;
+  const _e_scanDate = document.getElementById('scanDate'); if(_e_scanDate) _e_scanDate.value = data.date;
+  const _e_scanCategory = document.getElementById('scanCategory'); if(_e_scanCategory) _e_scanCategory.value = data.category;
 
   // Show result
   document.getElementById('scanResult').style.display = 'block';
@@ -545,13 +545,13 @@ function addRecentScan(tx) {
 
 function resetScanner() {
   document.getElementById('scanResult').style.display = 'none';
-  document.getElementById('receiptInput').value = '';
-  document.getElementById('uploadArea').innerHTML = `
+  const _e_receiptInput = document.getElementById('receiptInput'); if(_e_receiptInput) _e_receiptInput.value = '';
+  const _e_uploadArea = document.getElementById('uploadArea'); if(_e_uploadArea) _e_uploadArea.innerHTML = `
     <div class="upload-icon">📷</div>
     <p style="font-size:1rem; font-weight:600; margin-bottom:6px;">Drop your receipt here or click to upload</p>
     <p>Supports JPG, PNG, PDF</p>
   `;
-  document.getElementById('uploadArea').onclick = () => document.getElementById('receiptInput').click();
+  const _e_uploadArea = document.getElementById('uploadArea'); if(_e_uploadArea) _e_uploadArea.onclick = () => document.getElementById('receiptInput').click();
 }
 
 // ===========================
@@ -583,10 +583,10 @@ function saveCard() {
   saveData();
 
   document.getElementById('addCardModal').classList.remove('active');
-  document.getElementById('cardName').value = '';
-  document.getElementById('cardLimit').value = '';
-  document.getElementById('cardBalance').value = '';
-  document.getElementById('cardAPR').value = '';
+  const _e_cardName = document.getElementById('cardName'); if(_e_cardName) _e_cardName.value = '';
+  const _e_cardLimit = document.getElementById('cardLimit'); if(_e_cardLimit) _e_cardLimit.value = '';
+  const _e_cardBalance = document.getElementById('cardBalance'); if(_e_cardBalance) _e_cardBalance.value = '';
+  const _e_cardAPR = document.getElementById('cardAPR'); if(_e_cardAPR) _e_cardAPR.value = '';
 
   renderCards();
   showToast('Card saved! ✅');
@@ -722,10 +722,10 @@ function saveDebt() {
   saveData();
 
   document.getElementById('addDebtModal').classList.remove('active');
-  document.getElementById('debtName').value = '';
-  document.getElementById('debtBalance').value = '';
-  document.getElementById('debtRate').value = '';
-  document.getElementById('debtMin').value = '';
+  const _e_debtName = document.getElementById('debtName'); if(_e_debtName) _e_debtName.value = '';
+  const _e_debtBalance = document.getElementById('debtBalance'); if(_e_debtBalance) _e_debtBalance.value = '';
+  const _e_debtRate = document.getElementById('debtRate'); if(_e_debtRate) _e_debtRate.value = '';
+  const _e_debtMin = document.getElementById('debtMin'); if(_e_debtMin) _e_debtMin.value = '';
 
   renderDebts();
   showToast('Debt added! ✅');
@@ -841,10 +841,10 @@ function renderDebts() {
 
 function updateDebtSummary(total, monthly, months, saved) {
   const currency = getCurrencySymbol();
-  document.getElementById('totalDebt').textContent = currency + formatNumber(total);
-  document.getElementById('totalMonthly').textContent = currency + formatNumber(monthly);
-  document.getElementById('estPayoff').textContent = months === '—' ? '—' : months + ' mo';
-  document.getElementById('interestSaved').textContent = currency + formatNumber(saved);
+  const _e_totalDebt = document.getElementById('totalDebt'); if(_e_totalDebt) _e_totalDebt.textContent = currency + formatNumber(total);
+  const _e_totalMonthly = document.getElementById('totalMonthly'); if(_e_totalMonthly) _e_totalMonthly.textContent = currency + formatNumber(monthly);
+  const _e_estPayoff = document.getElementById('estPayoff'); if(_e_estPayoff) _e_estPayoff.textContent = months === '—' ? '—' : months + ' mo';
+  const _e_interestSaved = document.getElementById('interestSaved'); if(_e_interestSaved) _e_interestSaved.textContent = currency + formatNumber(saved);
 }
 
 function estimatePayoff(debts) {
@@ -899,9 +899,9 @@ function saveSubscription() {
   saveData();
 
   document.getElementById('addSubModal').classList.remove('active');
-  document.getElementById('subName').value = '';
-  document.getElementById('subAmount').value = '';
-  document.getElementById('subDate').value = '';
+  const _e_subName = document.getElementById('subName'); if(_e_subName) _e_subName.value = '';
+  const _e_subAmount = document.getElementById('subAmount'); if(_e_subAmount) _e_subAmount.value = '';
+  const _e_subDate = document.getElementById('subDate'); if(_e_subDate) _e_subDate.value = '';
 
   renderSubscriptions();
   showToast('Subscription added! ✅');
@@ -915,8 +915,8 @@ function renderSubscriptions() {
 
   // Update stats
   const total = active.reduce((sum, s) => sum + s.amount, 0);
-  document.getElementById('totalSubs').textContent = currency + formatNumber(total);
-  document.getElementById('subsCount').textContent = active.length;
+  const _e_totalSubs = document.getElementById('totalSubs'); if(_e_totalSubs) _e_totalSubs.textContent = currency + formatNumber(total);
+  const _e_subsCount = document.getElementById('subsCount'); if(_e_subsCount) _e_subsCount.textContent = active.length;
 
   // Next charge
   const today = new Date().getDate();
@@ -1177,7 +1177,7 @@ function saveSettings() {
   saveData();
 
   // Apply changes
-  document.getElementById('user-display-name').textContent = name;
+  const _e_user-display-name = document.getElementById('user-display-name'); if(_e_user-display-name) _e_user-display-name.textContent = name;
   applyLanguage(lang);
 
   showToast('Settings saved! ✅');
