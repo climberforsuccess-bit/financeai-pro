@@ -546,12 +546,12 @@ function addRecentScan(tx) {
 function resetScanner() {
   document.getElementById('scanResult').style.display = 'none';
   const _e_receiptInput = document.getElementById('receiptInput'); if(_e_receiptInput) _e_receiptInput.value = '';
-  const _e_uploadArea = document.getElementById('uploadArea'); if(_e_uploadArea) _e_uploadArea.innerHTML = `
+  if(_e_uploadArea) _e_uploadArea.innerHTML = `
     <div class="upload-icon">📷</div>
     <p style="font-size:1rem; font-weight:600; margin-bottom:6px;">Drop your receipt here or click to upload</p>
     <p>Supports JPG, PNG, PDF</p>
   `;
-  const _e_uploadArea = document.getElementById('uploadArea'); if(_e_uploadArea) _e_uploadArea.onclick = () => document.getElementById('receiptInput').click();
+  if(_e_uploadArea) _e_uploadArea.onclick = () => document.getElementById('receiptInput').click();
 }
 
 // ===========================
