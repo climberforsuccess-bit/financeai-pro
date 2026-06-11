@@ -135,8 +135,8 @@ function initApp() {
     pro: 'Pro Plan',
     business: 'Business Plan'
   };
-  document.getElementById('sidebarPlan').textContent = planNames[plan] || 'Free Plan';
-  document.getElementById('currentPlanDisplay').textContent = planNames[plan] || 'Free Plan';
+  const spEl = document.getElementById('sidebarPlan'); if(spEl) spEl.textContent = planNames[plan] || 'Free Plan';
+  const cpEl = document.getElementById('currentPlanDisplay'); if(cpEl) cpEl.textContent = planNames[plan] || 'Free Plan';
 
   // Apply language
   applyLanguage(s.lang);
