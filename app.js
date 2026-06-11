@@ -1177,7 +1177,7 @@ function saveSettings() {
   saveData();
 
   // Apply changes
-  const _e_user-display-name = document.getElementById('user-display-name'); if(_e_user-display-name) _e_user-display-name.textContent = name;
+  const _e_userDisplayName = document.getElementById('user-display-name'); if(_e_userDisplayName) _e_userDisplayName.textContent = name;
   applyLanguage(lang);
 
   showToast('Settings saved! ✅');
