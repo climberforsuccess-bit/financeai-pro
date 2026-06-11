@@ -123,7 +123,6 @@ function initApp() {
     
     const unEl = document.getElementById('user-display-name'); if(unEl) unEl.textContent = s.name;
     const snEl = document.getElementById('settingName'); if(snEl) snEl.value = s.name;
-
   const snEl = document.getElementById('settingName'); if(snEl) snEl.value = s.name;
   const seEl = document.getElementById('settingEmail'); if(seEl) seEl.value = s.email;
   const scEl = document.getElementById('settingCurrency'); if(scEl) scEl.value = s.currency;
