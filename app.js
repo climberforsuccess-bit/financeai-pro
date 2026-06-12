@@ -702,8 +702,8 @@ function renderCards() {
     const pct = c.limit > 0 ? Math.min(100, Math.round((c.balance / c.limit) * 100)) : 0;
     const barColor = pct > 70 ? 'danger' : pct > 40 ? 'warning' : '';
     const bgStyle = c.color && c.color !== '#00EEFF'
-      ? `background:linear-gradient(135deg,${c.color}22,${c.color}44);border:1px solid ${c.color}44;`
-      : `background:${gradients[c.type] || gradients.other};`;
+      ? 'background:linear-gradient(135deg,' + c.color + '22,' + c.color + '44);border:1px solid ' + c.color + '44;'
+      : 'background:' + (gradients[c.type] || gradients.other) + ';';
     return `
       <div class="credit-card-visual"
         style="${bgStyle}">
