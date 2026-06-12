@@ -37,7 +37,7 @@ async function doLogin() {
   // Success - redirect to app
 localStorage.setItem('financeai_user', JSON.stringify(data.user));
 setTimeout(() => {
-window.location.replace('app.html');
+window.location.replace('index.html?login=true');
 
 
 }, 500);
@@ -96,7 +96,7 @@ async function doForgotPassword() {
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://climberforsuccess.online/app.html'
+        redirectTo: 'https://climberforsuccess.online/index.html'
     });
 
     if (error) {
