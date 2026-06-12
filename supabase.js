@@ -37,9 +37,7 @@ async function doLogin() {
   // Success - redirect to app
 localStorage.setItem('financeai_user', JSON.stringify(data.user));
 setTimeout(() => {
-window.location.replace('index.html?login=true');
-
-
+  window.location.replace('index.html');
 }, 500);
 
 }
