@@ -190,6 +190,74 @@ async function loadTransactions() {
   }));
 }
 
+async function loadCards() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return;
+
+  const { data, error } = await supabase
+    .from('cards')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('created_at', { ascending: false });
+
+  if (error) { console.error('Error cargando tarjetas:', error); return; }
+
+  STATE.cards = data.map(c => ({
+    id: c.id,
+    name: c.name,
+    type: c.card_type,
+    limit: c.limit_amount,
+    balance: c.balance,
+    apr: c.interest_rate,
+    createdAt: c.created_at
+  }));
+}
+
+async function loadDebts() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return;
+
+  const { data, error } = await supabase
+    .from('debts')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('created_at', { ascending: false });
+
+  if (error) { console.error('Error cargando deudas:', error); return; }
+
+  STATE.debts = data.map(d => ({
+    id: d.id,
+    name: d.name,
+    balance: d.current_balance,
+    originalBalance: d.total_amount,
+    apr: d.interest_rate,
+    minPayment: d.minimum_payment,
+    createdAt: d.created_at
+  }));
+}
+
+async function loadSubscriptions() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return;
+
+  const { data, error } = await supabase
+    .from('subscriptions')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('created_at', { ascending: false });
+
+  if (error) { console.error('Error cargando suscripciones:', error); return; }
+
+  STATE.subscriptions = data.map(s => ({
+    id: s.id,
+    name: s.name,
+    amount: s.amount,
+    category: s.category,
+    billingDay: new Date(s.next_billing_date).getDate(),
+    createdAt: s.created_at
+  }));
+}
+
 async function initApp() {
   // Ocultar todas las páginas primero
   document.querySelectorAll('.page').forEach(p => {
@@ -207,6 +275,9 @@ async function initApp() {
         const savedPlan = localStorage.getItem('fai_plan');
         if (savedPlan) STATE.settings.plan = savedPlan;
         await loadTransactions();
+        await loadCards();
+        await loadDebts();
+        await loadSubscriptions();
         showPage('app');
         showSection('dashboard');
         updateUserDisplay();
@@ -726,30 +797,63 @@ function openAddCard() {
   document.body.appendChild(modal);
 }
 
-function saveCard() {
+async function saveCard() {
   const name    = getVal('c-name').trim();
   const type    = getVal('c-type')    || 'visa';
   const limit   = parseFloat(getVal('c-limit'))   || 0;
   const balance = parseFloat(getVal('c-balance')) || 0;
   const apr     = parseFloat(getVal('c-apr'))     || 0;
   if (!name) { showToast('El nombre es requerido', 'error'); return; }
-  STATE.cards.push({
-    id: Date.now(), name, type,
-    limit, balance, apr,
-    createdAt: new Date().toISOString()
-  });
-  saveState();
-  const modal = gel('modal-card');
-  if (modal) modal.remove();
-  renderCards();
-  showToast('✅ Tarjeta agregada!');
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { showToast('Sesión expirada', 'error'); return; }
+
+    const { data, error } = await supabase
+      .from('cards')
+      .insert([{
+        user_id: session.user.id,
+        name, card_type: type,
+        limit_amount: limit,
+        balance, interest_rate: apr
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    STATE.cards.push({
+      id: data.id, name, type,
+      limit, balance, apr,
+      createdAt: data.created_at
+    });
+
+    const modal = gel('modal-card');
+    if (modal) modal.remove();
+    renderCards();
+    showToast('✅ Tarjeta agregada!');
+  } catch(e) {
+    console.error('Error guardando tarjeta:', e);
+    showToast('Error al guardar tarjeta', 'error');
+  }
 }
 
-function deleteCard(id) {
-  STATE.cards = STATE.cards.filter(c => c.id !== id);
-  saveState();
-  renderCards();
-  showToast('Tarjeta eliminada');
+async function deleteCard(id) {
+  try {
+    const { error } = await supabase
+      .from('cards')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    STATE.cards = STATE.cards.filter(c => c.id !== id);
+    renderCards();
+    showToast('Tarjeta eliminada');
+  } catch(e) {
+    console.error('Error eliminando tarjeta:', e);
+    showToast('Error al eliminar tarjeta', 'error');
+  }
 }
 
 // ============================================
@@ -897,30 +1001,65 @@ function openAddDebt() {
   document.body.appendChild(modal);
 }
 
-function saveDebt() {
+async function saveDebt() {
   const name       = getVal('d-name').trim();
   const balance    = parseFloat(getVal('d-balance')) || 0;
   const apr        = parseFloat(getVal('d-apr'))     || 0;
   const minPayment = parseFloat(getVal('d-min'))     || 0;
   if (!name)      { showToast('El nombre es requerido', 'error'); return; }
   if (balance <= 0) { showToast('Ingresa un balance válido', 'error'); return; }
-  STATE.debts.push({
-    id: Date.now(), name, balance, apr,
-    minPayment, originalBalance: balance,
-    createdAt: new Date().toISOString()
-  });
-  saveState();
-  const modal = gel('modal-debt');
-  if (modal) modal.remove();
-  renderDebts();
-  showToast('✅ Deuda agregada!');
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { showToast('Sesión expirada', 'error'); return; }
+
+    const { data, error } = await supabase
+      .from('debts')
+      .insert([{
+        user_id: session.user.id,
+        name,
+        current_balance: balance,
+        total_amount: balance,
+        interest_rate: apr,
+        minimum_payment: minPayment
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    STATE.debts.push({
+      id: data.id, name, balance, apr,
+      minPayment, originalBalance: balance,
+      createdAt: data.created_at
+    });
+
+    const modal = gel('modal-debt');
+    if (modal) modal.remove();
+    renderDebts();
+    showToast('✅ Deuda agregada!');
+  } catch(e) {
+    console.error('Error guardando deuda:', e);
+    showToast('Error al guardar deuda', 'error');
+  }
 }
 
-function deleteDebt(id) {
-  STATE.debts = STATE.debts.filter(d => d.id !== id);
-  saveState();
-  renderDebts();
-  showToast('Deuda eliminada');
+async function deleteDebt(id) {
+  try {
+    const { error } = await supabase
+      .from('debts')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    STATE.debts = STATE.debts.filter(d => d.id !== id);
+    renderDebts();
+    showToast('Deuda eliminada');
+  } catch(e) {
+    console.error('Error eliminando deuda:', e);
+    showToast('Error al eliminar deuda', 'error');
+  }
 }
 
 // ============================================
@@ -1051,30 +1190,68 @@ function openAddSubscription() {
   document.body.appendChild(modal);
 }
 
-function saveSubscription() {
+async function saveSubscription() {
   const name       = getVal('s-name').trim();
   const amount     = parseFloat(getVal('s-amount'))  || 0;
   const billingDay = parseInt(getVal('s-day'))        || 1;
   const category   = getVal('s-category') || 'other';
   if (!name)      { showToast('El nombre es requerido', 'error'); return; }
   if (amount <= 0) { showToast('Ingresa un monto válido', 'error'); return; }
-  STATE.subscriptions.push({
-    id: Date.now(), name, amount,
-    billingDay, category,
-    createdAt: new Date().toISOString()
-  });
-  saveState();
-  const modal = gel('modal-sub');
-  if (modal) modal.remove();
-  renderSubscriptions();
-  showToast('✅ Suscripción agregada!');
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { showToast('Sesión expirada', 'error'); return; }
+
+    const nextDate = new Date();
+    nextDate.setDate(billingDay);
+    if (nextDate < new Date()) nextDate.setMonth(nextDate.getMonth() + 1);
+
+    const { data, error } = await supabase
+      .from('subscriptions')
+      .insert([{
+        user_id: session.user.id,
+        name, amount, category,
+        billing_cycle: 'monthly',
+        next_billing_date: nextDate.toISOString().split('T')[0],
+        status: 'active'
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    STATE.subscriptions.push({
+      id: data.id, name, amount,
+      billingDay, category,
+      createdAt: data.created_at
+    });
+
+    const modal = gel('modal-sub');
+    if (modal) modal.remove();
+    renderSubscriptions();
+    showToast('✅ Suscripción agregada!');
+  } catch(e) {
+    console.error('Error guardando suscripción:', e);
+    showToast('Error al guardar suscripción', 'error');
+  }
 }
 
-function deleteSubscription(id) {
-  STATE.subscriptions = STATE.subscriptions.filter(s => s.id !== id);
-  saveState();
-  renderSubscriptions();
-  showToast('Suscripción eliminada');
+async function deleteSubscription(id) {
+  try {
+    const { error } = await supabase
+      .from('subscriptions')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    STATE.subscriptions = STATE.subscriptions.filter(s => s.id !== id);
+    renderSubscriptions();
+    showToast('Suscripción eliminada');
+  } catch(e) {
+    console.error('Error eliminando suscripción:', e);
+    showToast('Error al eliminar suscripción', 'error');
+  }
 }
 
 function detectSubscriptionsFromTransactions() {
