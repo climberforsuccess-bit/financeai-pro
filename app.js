@@ -734,7 +734,7 @@ function renderCards() {
           <div style="display:flex;justify-content:space-between;
             font-size:11px;color:#8892A4;margin-top:6px;">
             <span>${pct}% utilizado</span>
-            <button onclick="deleteCard(${c.id})" style="
+            <button onclick="deleteCard('${c.id}')" style="
               background:none;border:none;color:#FF4757;
               cursor:pointer;font-size:11px;">Eliminar</button>
           </div>
