@@ -1409,3 +1409,11 @@ async function quickChat(msg) {
   if (input) input.value = msg;
   await sendMainChat();
 }
+
+function checkAdminAccess() {
+  const adminEmails = ['orledisoliveros@gmail.com', 'orledisyuma@gmail.com'];
+  const userEmail = STATE.user?.email || '';
+  STATE.isAdmin = adminEmails.includes(userEmail);
+  const adminNav = document.getElementById('admin-nav');
+  if (adminNav) adminNav.style.display = STATE.isAdmin ? 'block' : 'none';
+}
