@@ -211,7 +211,7 @@ async function loadCards() {
     lastFour: c.last_four,
     dueDate: c.due_date,
     color: c.color,
-    apr: 0,
+    apr: c.apr || 0,
     createdAt: c.created_at
   }));
 }
