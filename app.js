@@ -1318,4 +1318,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     p.style.display = 'none';
   });
   await initApp();
+
+  // Detectar si viene de login
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("login") === "true") {
+    const { data } = await supabase.auth.getSession();
+    if (data.session) {
+      showPage("app");
+      showSection("dashboard");
+    }
+  }
 });
