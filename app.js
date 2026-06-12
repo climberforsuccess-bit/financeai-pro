@@ -1,1333 +1,1324 @@
-// ===========================
-// FINANCEAI PRO — APP.JS
-// Dashboard Logic
+// FINANCEAI PRO — app.js v3.1 LIMPIO
 // Climberforsuccess LLC
-// ===========================
 // ============================================
-// CÓDIGOS VIP - ACCESO GRATUITO
+
+'use strict';
+
 // ============================================
-const VIP_CODES = {
-  'FAMILIA2026': { 
-    plan: 'pro', 
-    name: 'Familia VIP',
-    unlimited: true 
-  },
-  'BUSINESS2026': { 
-    plan: 'business', 
-    name: 'Business VIP',
-    unlimited: true 
-  }
-};
-
-function validateVIPCode(code) {
-  const upperCode = code.toUpperCase().trim();
-  if (VIP_CODES[upperCode]) {
-    return {
-      valid: true,
-      plan: VIP_CODES[upperCode].plan,
-      name: VIP_CODES[upperCode].name
-    };
-  }
-  return { valid: false };
-}
-
-function applyVIPAccess(code) {
-  const result = validateVIPCode(code);
-  if (result.valid) {
-    localStorage.setItem('financeai_plan', result.plan);
-    localStorage.setItem('vipAccess', 'true');
-    localStorage.setItem('vipCode', code.toUpperCase());
-    localStorage.setItem('planName', result.name);
-    return true;
-  }
-  return false;
-}
-
-function activateVIPCode() {
-  const input = document.getElementById('vipCodeInput');
-  if (!input) return;
-  
-  const code = input.value.trim().toUpperCase();
-  
-  if (!code) {
-    showToast('Please enter a code', 'error');
-    return;
-  }
-
-  const success = applyVIPAccess(code);
-  
-  if (success) {
-    const result = validateVIPCode(code);
-    const planNames = {
-      free: 'Free Plan',
-      personal: 'Personal Plan', 
-      pro: 'Pro Plan',
-      business: 'Business Plan'
-    };
-    showToast(`✅ ${result.name} access activated!`, 'success');
-    const _null_sidebarPlan_0 = document.getElementById('sidebarPlan'); if(_null_sidebarPlan_0) _null_sidebarPlan_0.textContent =
-      planNames[result.plan];
-    const _null_currentPlanDisplay_1 = document.getElementById('currentPlanDisplay'); if(_null_currentPlanDisplay_1) _null_currentPlanDisplay_1.textContent =
-      planNames[result.plan];
-    input.value = '';
-  } else {
-    showToast('❌ Invalid code. Try again.', 'error');
-  }
-}
-
-
-// ===========================
-// STATE
-// ===========================
-let appData = {
+// SECCIÓN 1: STATE
+// ============================================
+const STATE = {
+  user: null,
+  currentSection: 'dashboard',
+  currentPage: 'landing',
   transactions: [],
   cards: [],
   debts: [],
   subscriptions: [],
-  settings: {
-    name: 'User',
-    email: '',
-    currency: 'USD',
-    lang: 'en'
-  },
-  debtMethod: 'avalanche'
+  settings: { currency: 'USD', lang: 'es', plan: 'free' }
 };
 
-// ===========================
-// INIT
-// ===========================
-document.addEventListener('DOMContentLoaded', () => {
-  loadData();
-  initApp();
-  checkMobile();
-  setDefaultDate();
-});
+function loadState() {
+  try {
+    STATE.transactions  = JSON.parse(localStorage.getItem('fai_transactions')  || '[]');
+    STATE.cards         = JSON.parse(localStorage.getItem('fai_cards')         || '[]');
+    STATE.debts         = JSON.parse(localStorage.getItem('fai_debts')         || '[]');
+    STATE.subscriptions = JSON.parse(localStorage.getItem('fai_subscriptions') || '[]');
+    const s = localStorage.getItem('fai_settings');
+    if (s) STATE.settings = { ...STATE.settings, ...JSON.parse(s) };
+  } catch(e) { console.warn('loadState error:', e); }
+}
 
-function initApp() {
+function saveState() {
+  try {
+    localStorage.setItem('fai_transactions',  JSON.stringify(STATE.transactions));
+    localStorage.setItem('fai_cards',         JSON.stringify(STATE.cards));
+    localStorage.setItem('fai_debts',         JSON.stringify(STATE.debts));
+    localStorage.setItem('fai_subscriptions', JSON.stringify(STATE.subscriptions));
+    localStorage.setItem('fai_settings',      JSON.stringify(STATE.settings));
+  } catch(e) { console.warn('saveState error:', e); }
+}
 
-    // Load settings
-    const s = appData.settings;
-    
-    // Get real user from Supabase
-    const savedUser = localStorage.getItem('financeai_user');
-    if (savedUser) {
-        const user = JSON.parse(savedUser);
-        // Use full_name, display_name, or email
-        const realName = user.user_metadata?.full_name || 
-                        user.user_metadata?.name ||
-                        user.email?.split('@')[0] || 
-                        'User';
-        appData.settings.name = realName;
-        s.name = realName;
-    }
-    
-    const unEl = document.getElementById('user-display-name'); if(unEl) unEl.textContent = s.name;
-    const snEl = document.getElementById('settingName'); if(snEl) snEl.value = s.name;
-  const seEl = document.getElementById('settingEmail'); if(seEl) seEl.value = s.email;
-  const scEl = document.getElementById('settingCurrency'); if(scEl) scEl.value = s.currency;
-  const slEl = document.getElementById('settingLang'); if(slEl) slEl.value = s.lang;
+// ============================================
+// SECCIÓN 2: HELPERS
+// ============================================
+function gel(id) { return document.getElementById(id); }
 
-  // Load plan
-  const plan = localStorage.getItem('financeai_plan') || 'free';
-  const planNames = {
-    free: 'Free Plan',
-    personal: 'Personal Plan',
-    pro: 'Pro Plan',
-    business: 'Business Plan'
+function setTxt(id, text) {
+  const e = gel(id);
+  if (e) e.textContent = text;
+}
+
+function getVal(id) {
+  const e = gel(id);
+  return e ? e.value : '';
+}
+
+function showToast(msg, type = 'success') {
+  const old = document.querySelector('.fai-toast');
+  if (old) old.remove();
+  const colors = {
+    success: { bg: '#00EEFF', color: '#050D1A' },
+    error:   { bg: '#FF4757', color: '#fff' },
+    info:    { bg: '#FF6B35', color: '#fff' }
   };
-  const spEl = document.getElementById('sidebarPlan'); if(spEl) spEl.textContent = planNames[plan] || 'Free Plan';
-  const cpEl = document.getElementById('currentPlanDisplay'); if(cpEl) cpEl.textContent = planNames[plan] || 'Free Plan';
-
-  // Apply language
-  if(typeof applyLanguage === "function") applyLanguage(s.lang);
-
-  // Render all
-  if(document.getElementById("dashboard") || document.getElementById("recentTransactionsList")) renderDashboard();
-  renderTransactions();
-  renderCards();
-  renderDebts();
-  renderSubscriptions();
-}
-
-function setDefaultDate() {
-  const today = new Date().toISOString().split('T')[0];
-  const dateInputs = ['txDate', 'scanDate'];
-  dateInputs.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = today;
-  });
-}
-
-// ===========================
-// DATA PERSISTENCE
-// ===========================
-function saveData() {
-  localStorage.setItem('financeai_data', JSON.stringify(appData));
-}
-
-function loadData() {
-  const saved = localStorage.getItem('financeai_data');
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      appData = { ...appData, ...parsed };
-    } catch (e) {
-      console.error('Error loading data:', e);
-    }
-  }
-}
-
-// ===========================
-// PAGE NAVIGATION
-// ===========================
-function showPage(pageId) {
-  // Hide all pages
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
-  // Show selected
-  const page = document.getElementById('page-' + pageId);
-  if (page) page.classList.add('active');
-
-  // Update nav
-  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-  const navItems = document.querySelectorAll('.nav-item');
-  navItems.forEach(item => {
-    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(pageId)) {
-      item.classList.add('active');
-    }
-  });
-
-  // Close sidebar on mobile
-  if (window.innerWidth <= 900) {
-    document.getElementById('sidebar').classList.remove('open');
-  }
-
-  // Scroll to top
-  const _e_mainContent = document.getElementById('mainContent'); if(_e_mainContent) _e_mainContent.scrollTop = 0;
-}
-
-// ===========================
-// MOBILE
-// ===========================
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-}
-
-function checkMobile() {
-  const mobileHeader = document.getElementById('mobileHeader');
-  if (window.innerWidth <= 900) {
-    mobileHeader.style.display = 'flex';
-  }
-  window.addEventListener('resize', () => {
-    if (window.innerWidth <= 900) {
-      mobileHeader.style.display = 'flex';
-    } else {
-      mobileHeader.style.display = 'none';
-      document.getElementById('sidebar').classList.remove('open');
-    }
-  });
-}
-
-// ===========================
-// DASHBOARD
-// ===========================
-function renderDashboard() {
-  const currency = getCurrencySymbol();
-  const now = new Date();
-  const thisMonth = now.getMonth();
-  const thisYear = now.getFullYear();
-
-  // Filter this month
-  const monthTx = appData.transactions.filter(tx => {
-    const d = new Date(tx.date);
-    return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
-  });
-
-  const income = monthTx
-    .filter(tx => tx.type === 'income')
-    .reduce((sum, tx) => sum + parseFloat(tx.amount), 0);
-
-  const expenses = monthTx
-    .filter(tx => tx.type === 'expense')
-    .reduce((sum, tx) => sum + parseFloat(tx.amount), 0);
-
-  const balance = income - expenses;
-  const savingsRate = income > 0 ? Math.round((balance / income) * 100) : 0;
-
-  const _e_statIncome = document.getElementById('statIncome'); if(_e_statIncome) _e_statIncome.textContent = currency + formatNumber(income);
-  const _e_statExpenses = document.getElementById('statExpenses'); if(_e_statExpenses) _e_statExpenses.textContent = currency + formatNumber(expenses);
-  const _e_statBalance = document.getElementById('statBalance'); if(_e_statBalance) _e_statBalance.textContent = currency + formatNumber(balance);
-  const _e_statSavings = document.getElementById('statSavings'); if(_e_statSavings) _e_statSavings.textContent = savingsRate + '%';
-
-  // Recent transactions
-  renderRecentTransactions();
-}
-
-function renderRecentTransactions() {
-  const container = document.getElementById('recentTransactions');
-  if (!container) return;
-  if (!container) return;
-  container.innerHTML = ''; // clear before render
-  const recent = [...appData.transactions]
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 5);
-
-  if (recent.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center; padding:30px; color:#A0B0C0; font-size:0.9rem;">
-        <i class="fas fa-receipt" style="font-size:2rem; margin-bottom:10px; display:block; opacity:0.3;"></i>
-        No transactions yet.<br>
-        <button onclick="showPage('scanner')" style="
-          margin-top:10px; background:none; border:none;
-          color:#00EEFF; cursor:pointer; font-size:0.9rem;
-          text-decoration:underline;
-        ">Scan your first receipt</button>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = recent.map(tx => `
-    <div class="transaction-item">
-      <div class="transaction-icon">${getCategoryEmoji(tx.category)}</div>
-      <div class="transaction-info">
-        <div class="transaction-name">${tx.description}</div>
-        <div class="transaction-date">${formatDate(tx.date)} · 
-          <span class="badge badge-${tx.expenseType || 'personal'}">${tx.expenseType || 'personal'}</span>
-        </div>
-      </div>
-      <div class="transaction-amount ${tx.type}">
-        ${tx.type === 'income' ? '+' : '-'}${getCurrencySymbol()}${formatNumber(tx.amount)}
-      </div>
-    </div>
-  `).join('');
-}
-
-// ===========================
-// TRANSACTIONS
-// ===========================
-function showAddTransaction() {
-  document.getElementById('addTransactionModal').classList.add('active');
-  setDefaultDate();
-}
-
-function saveTransaction() {
-  const desc = document.getElementById('txDesc').value.trim();
-  const amount = parseFloat(document.getElementById('txAmount').value);
-  const type = document.getElementById('txType').value;
-  const category = document.getElementById('txCategory').value;
-  const expenseType = document.getElementById('txExpenseType').value;
-  const date = document.getElementById('txDate').value;
-
-  if (!desc || !amount || !date) {
-    showToast('Please fill all fields', 'error');
-    return;
-  }
-
-  const tx = {
-    id: Date.now(),
-    description: desc,
-    amount: amount,
-    type: type,
-    category: category,
-    expenseType: expenseType,
-    date: date,
-    source: 'manual'
-  };
-
-  appData.transactions.push(tx);
-  saveData();
-
-  // Close modal & reset
-  document.getElementById('addTransactionModal').classList.remove('active');
-  const _e_txDesc = document.getElementById('txDesc'); if(_e_txDesc) _e_txDesc.value = '';
-  const _e_txAmount = document.getElementById('txAmount'); if(_e_txAmount) _e_txAmount.value = '';
-
-  // Re-render
-  renderDashboard();
-  renderTransactions();
-
-  showToast('Transaction saved! ✅');
-}
-
-function renderTransactions() {
-  const container = document.getElementById('transactionsList');
-  if (!container) return;
-  container.innerHTML = ''; // clear before render
-  const filterType = document.getElementById('filterType')?.value || 'all';
-  const filterCat = document.getElementById('filterCategory')?.value || 'all';
-  const filterExpType = document.getElementById('filterExpenseType')?.value || 'all';
-
-  let filtered = [...appData.transactions];
-
-  if (filterType !== 'all') filtered = filtered.filter(tx => tx.type === filterType);
-  if (filterCat !== 'all') filtered = filtered.filter(tx => tx.category === filterCat);
-  if (filterExpType !== 'all') filtered = filtered.filter(tx => tx.expenseType === filterExpType);
-
-  filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  if (filtered.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center; padding:40px; color:#A0B0C0; font-size:0.9rem;">
-        <i class="fas fa-receipt" style="font-size:2.5rem; margin-bottom:12px; display:block; opacity:0.3;"></i>
-        No transactions found.
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = filtered.map(tx => `
-    <div class="transaction-item">
-      <div class="transaction-icon">${getCategoryEmoji(tx.category)}</div>
-      <div class="transaction-info">
-        <div class="transaction-name">${tx.description}</div>
-        <div class="transaction-date">
-          ${formatDate(tx.date)} ·
-          <span class="badge badge-${tx.category}">${tx.category}</span>
-          <span class="badge badge-${tx.expenseType || 'personal'}">${tx.expenseType || 'personal'}</span>
-        </div>
-      </div>
-      <div style="display:flex; align-items:center; gap:10px;">
-        <div class="transaction-amount ${tx.type}">
-          ${tx.type === 'income' ? '+' : '-'}${getCurrencySymbol()}${formatNumber(tx.amount)}
-        </div>
-        <button onclick="deleteTransaction(${tx.id})" style="
-          background:none; border:none; color:#FF4466;
-          cursor:pointer; font-size:0.85rem; padding:4px;
-        ">✕</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function filterTransactions() {
-  renderTransactions();
-}
-
-function deleteTransaction(id) {
-  appData.transactions = appData.transactions.filter(tx => tx.id !== id);
-  saveData();
-  renderTransactions();
-  renderDashboard();
-  showToast('Transaction deleted');
-}
-
-// ===========================
-// RECEIPT SCANNER
-// ===========================
-function analyzeReceipt(input) {
-  const file = input.files[0];
-  if (!file) return;
-
-  // Show analyzing state
-  const uploadArea = document.getElementById('uploadArea');
-  uploadArea.innerHTML = `
-    <div style="text-align:center; padding:20px;">
-      <div style="
-        width:50px; height:50px;
-        border:3px solid rgba(0,238,255,0.2);
-        border-top-color:#00EEFF;
-        border-radius:50%;
-        animation:spin 0.8s linear infinite;
-        margin:0 auto 16px;
-      "></div>
-      <p style="color:#00EEFF; font-weight:600;">Analyzing receipt...</p>
-      <p style="color:#A0B0C0; font-size:0.85rem; margin-top:4px;">AI is detecting expense details</p>
-    </div>
+  const c = colors[type] || colors.success;
+  const t = document.createElement('div');
+  t.className = 'fai-toast';
+  t.style.cssText = `
+    position:fixed;bottom:24px;left:50%;
+    transform:translateX(-50%);
+    background:${c.bg};color:${c.color};
+    padding:12px 28px;border-radius:12px;
+    font-weight:700;font-size:0.95rem;
+    z-index:99999;box-shadow:0 4px 24px rgba(0,0,0,0.4);
+    font-family:'Segoe UI',Arial,sans-serif;
+    white-space:nowrap;pointer-events:none;
   `;
-
-  // Simulate AI analysis (replace with real OCR API later)
-  setTimeout(() => {
-    const mockData = simulateOCR(file.name);
-    showScanResult(mockData);
-  }, 2000);
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { if (t.parentNode) t.remove(); }, 3500);
 }
 
-function simulateOCR(filename) {
-  // Mock data — replace with real OCR (Google Vision, AWS Textract, etc.)
-  const merchants = [
-    { name: 'Walmart', amount: 47.32, category: 'shopping' },
-    { name: 'McDonald\'s', amount: 12.50, category: 'food' },
-    { name: 'Shell Gas Station', amount: 65.00, category: 'transport' },
-    { name: 'CVS Pharmacy', amount: 23.18, category: 'health' },
-    { name: 'Amazon', amount: 89.99, category: 'shopping' },
-    { name: 'Starbucks', amount: 8.75, category: 'food' },
-    { name: 'Target', amount: 134.50, category: 'shopping' },
-    { name: 'Uber', amount: 18.40, category: 'transport' },
-  ];
-
-  const mock = merchants[Math.floor(Math.random() * merchants.length)];
-  return {
-    merchant: mock.name,
-    amount: mock.amount,
-    category: mock.category,
-    date: new Date().toISOString().split('T')[0]
-  };
-}
-
-function showScanResult(data) {
-  // Restore upload area
-  const _e_uploadArea = document.getElementById('uploadArea'); if(_e_uploadArea) _e_uploadArea.innerHTML = `
-    <div class="upload-icon">📷</div>
-    <p style="font-size:1rem; font-weight:600; margin-bottom:6px;">Receipt scanned successfully!</p>
-    <p style="color:#00FF88;">✅ AI detected expense details below</p>
-  `;
-
-  // Fill form
-  const _e_scanMerchant = document.getElementById('scanMerchant'); if(_e_scanMerchant) _e_scanMerchant.value = data.merchant;
-  const _e_scanAmount = document.getElementById('scanAmount'); if(_e_scanAmount) _e_scanAmount.value = data.amount;
-  const _e_scanDate = document.getElementById('scanDate'); if(_e_scanDate) _e_scanDate.value = data.date;
-  const _e_scanCategory = document.getElementById('scanCategory'); if(_e_scanCategory) _e_scanCategory.value = data.category;
-
-  // Show result
-  document.getElementById('scanResult').style.display = 'block';
-}
-
-function saveScannedExpense() {
-  const merchant = document.getElementById('scanMerchant').value.trim();
-  const amount = parseFloat(document.getElementById('scanAmount').value);
-  const date = document.getElementById('scanDate').value;
-  const category = document.getElementById('scanCategory').value;
-  const expenseType = document.getElementById('scanType').value;
-
-  if (!merchant || !amount || !date) {
-    showToast('Please fill all fields', 'error');
-    return;
-  }
-
-  const tx = {
-    id: Date.now(),
-    description: merchant,
-    amount: amount,
-    type: 'expense',
-    category: category,
-    expenseType: expenseType,
-    date: date,
-    source: 'scanner'
-  };
-
-  appData.transactions.push(tx);
-  saveData();
-
-  // Add to recent scans
-  addRecentScan(tx);
-
-  // Reset
-  resetScanner();
-
-  // Re-render
-  renderDashboard();
-  renderTransactions();
-
-  showToast('Expense saved! ✅');
-  showPage('transactions');
-}
-
-function addRecentScan(tx) {
-  const container = document.getElementById('recentScans');
-  if (!container) return;
-  container.innerHTML = ''; // clear before render
-  const item = document.createElement('div');
-  item.className = 'transaction-item';
-  item.innerHTML = `
-    <div class="transaction-icon">${getCategoryEmoji(tx.category)}</div>
-    <div class="transaction-info">
-      <div class="transaction-name">${tx.description}</div>
-      <div class="transaction-date">${formatDate(tx.date)}</div>
-    </div>
-    <div class="transaction-amount expense">
-      -${getCurrencySymbol()}${formatNumber(tx.amount)}
-    </div>
-  `;
-
-  // Remove empty state
-  const empty = container.querySelector('div[style]');
-  if (empty) empty.remove();
-
-  container.insertBefore(item, container.firstChild);
-}
-
-function resetScanner() {
-  document.getElementById('scanResult').style.display = 'none';
-  const _e_receiptInput = document.getElementById('receiptInput'); if(_e_receiptInput) _e_receiptInput.value = '';
-  if(_e_uploadArea) _e_uploadArea.innerHTML = `
-    <div class="upload-icon">📷</div>
-    <p style="font-size:1rem; font-weight:600; margin-bottom:6px;">Drop your receipt here or click to upload</p>
-    <p>Supports JPG, PNG, PDF</p>
-  `;
-  if(_e_uploadArea) _e_uploadArea.onclick = () => document.getElementById('receiptInput').click();
-}
-
-// ===========================
-// CARDS
-// ===========================
-function showAddCard() {
-  document.getElementById('addCardModal').classList.add('active');
-}
-
-function saveCard() {
-  const name = document.getElementById('cardName').value.trim();
-  const type = document.getElementById('cardType').value;
-  const limit = parseFloat(document.getElementById('cardLimit').value) || 0;
-  const balance = parseFloat(document.getElementById('cardBalance').value) || 0;
-  const apr = parseFloat(document.getElementById('cardAPR').value) || 0;
-  const rewards = document.getElementById('cardRewards').value;
-
-  if (!name) {
-    showToast('Please enter a card name', 'error');
-    return;
-  }
-
-  const card = {
-    id: Date.now(),
-    name, type, limit, balance, apr, rewards
-  };
-
-  appData.cards.push(card);
-  saveData();
-
-  document.getElementById('addCardModal').classList.remove('active');
-  const _e_cardName = document.getElementById('cardName'); if(_e_cardName) _e_cardName.value = '';
-  const _e_cardLimit = document.getElementById('cardLimit'); if(_e_cardLimit) _e_cardLimit.value = '';
-  const _e_cardBalance = document.getElementById('cardBalance'); if(_e_cardBalance) _e_cardBalance.value = '';
-  const _e_cardAPR = document.getElementById('cardAPR'); if(_e_cardAPR) _e_cardAPR.value = '';
-
-  renderCards();
-  showToast('Card saved! ✅');
-}
-
-function renderCards() {
-  const container = document.getElementById('cardsList');
-  if (!container) return;
-  container.innerHTML = ''; // clear before render
-  const currency = getCurrencySymbol();
-
-  if (appData.cards.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center; padding:40px; color:#A0B0C0; font-size:0.9rem;">
-        <i class="fas fa-credit-card" style="font-size:2.5rem; margin-bottom:12px; display:block; opacity:0.3;"></i>
-        No cards added yet.<br>Add your first card to get recommendations.
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = appData.cards.map(card => {
-    const usedPercent = card.limit > 0 ? Math.round((card.balance / card.limit) * 100) : 0;
-    const available = card.limit - card.balance;
-    const cardEmoji = { visa: '💳', mastercard: '💳', amex: '💎', discover: '🔶' };
-
-    return `
-      <div class="debt-card">
-        <div class="debt-header">
-          <div>
-            <div class="debt-name">${cardEmoji[card.type] || '💳'} ${card.name}</div>
-            <div style="font-size:0.8rem; color:#A0B0C0; margin-top:2px;">
-              ${card.type.toUpperCase()} · APR: ${card.apr}% · Rewards: ${card.rewards}
-            </div>
-          </div>
-          <button onclick="deleteCard(${card.id})" style="
-            background:none; border:none; color:#FF4466;
-            cursor:pointer; font-size:0.9rem;
-          ">✕</button>
-        </div>
-        <div class="debt-progress">
-          <div class="debt-progress-fill" style="width:${usedPercent}%"></div>
-        </div>
-        <div class="debt-info">
-          <span>Balance: ${currency}${formatNumber(card.balance)}</span>
-          <span>${usedPercent}% used</span>
-          <span>Available: ${currency}${formatNumber(available)}</span>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function deleteCard(id) {
-  appData.cards = appData.cards.filter(c => c.id !== id);
-  saveData();
-  renderCards();
-  showToast('Card removed');
-}
-
-function recommendCard() {
-  const category = document.getElementById('recommendCategory').value;
-  const container = document.getElementById('cardRecommendation');
-
-  if (!container) return;
-  if (!category) {
-    container.innerHTML = '';
-    return;
-  }
-
-  if (appData.cards.length === 0) {
-    container.innerHTML = `
-      <div style="
-        background:rgba(255,184,0,0.1);
-        border:1px solid rgba(255,184,0,0.3);
-        border-radius:12px;
-        padding:16px;
-        color:#FFB800;
-        font-size:0.9rem;
-        margin-top:12px;
-      ">
-        ⚠️ Add your cards first to get personalized recommendations.
-      </div>
-    `;
-    return;
-  }
-
-  // Find best card for category
-  const best = appData.cards.find(c => c.rewards === category)
-    || appData.cards.find(c => c.rewards === 'cashback')
-    || appData.cards.reduce((prev, curr) => prev.apr < curr.apr ? prev : curr);
-
-  container.innerHTML = `
-    <div style="
-      background:rgba(0,238,255,0.05);
-      border:1px solid rgba(0,238,255,0.2);
-      border-radius:12px;
-      padding:16px;
-      margin-top:12px;
-    ">
-      <div style="font-size:0.85rem; color:#A0B0C0; margin-bottom:6px;">
-        Recommended for ${category}:
-      </div>
-      <div style="font-size:1.1rem; font-weight:700; color:#00EEFF; margin-bottom:6px;">
-        💳 ${best.name}
-      </div>
-      <div style="font-size:0.85rem; color:#A0B0C0;">
-        APR: ${best.apr}% · Rewards: ${best.rewards} · 
-        Available: ${getCurrencySymbol()}${formatNumber(best.limit - best.balance)}
-      </div>
-    </div>
-  `;
-}
-
-// ===========================
-// DEBT PLAN
-// ===========================
-function showAddDebt() {
-  document.getElementById('addDebtModal').classList.add('active');
-}
-
-function saveDebt() {
-  const name = document.getElementById('debtName').value.trim();
-  const balance = parseFloat(document.getElementById('debtBalance').value) || 0;
-  const rate = parseFloat(document.getElementById('debtRate').value) || 0;
-  const min = parseFloat(document.getElementById('debtMin').value) || 0;
-
-  if (!name || !balance) {
-    showToast('Please fill all required fields', 'error');
-    return;
-  }
-
-  const debt = { id: Date.now(), name, balance, rate, min };
-  appData.debts.push(debt);
-  saveData();
-
-  document.getElementById('addDebtModal').classList.remove('active');
-  const _e_debtName = document.getElementById('debtName'); if(_e_debtName) _e_debtName.value = '';
-  const _e_debtBalance = document.getElementById('debtBalance'); if(_e_debtBalance) _e_debtBalance.value = '';
-  const _e_debtRate = document.getElementById('debtRate'); if(_e_debtRate) _e_debtRate.value = '';
-  const _e_debtMin = document.getElementById('debtMin'); if(_e_debtMin) _e_debtMin.value = '';
-
-  renderDebts();
-  showToast('Debt added! ✅');
-}
-
-function setDebtMethod(method) {
-  appData.debtMethod = method;
-  saveData();
-
-  const btnA = document.getElementById('btnAvalanche');
-  const btnS = document.getElementById('btnSnowball');
-
-  if (method === 'avalanche') {
-    btnA.className = 'btn-primary';
-    btnA.style.cssText = '';
-    btnS.style.cssText = `
-      flex:1; min-width:200px; padding:10px;
-      background:transparent;
-      border:1px solid rgba(0,238,255,0.2);
-      border-radius:50px; color:#A0B0C0;
-      cursor:pointer; font-family:'Inter',sans-serif;
-      font-size:0.9rem;
-    `;
-  } else {
-    btnS.className = 'btn-primary';
-    btnS.style.cssText = '';
-    btnA.style.cssText = `
-      flex:1; min-width:200px; padding:10px;
-      background:transparent;
-      border:1px solid rgba(0,238,255,0.2);
-      border-radius:50px; color:#A0B0C0;
-      cursor:pointer; font-family:'Inter',sans-serif;
-      font-size:0.9rem;
-    `;
-  }
-
-  renderDebts();
-}
-
-function renderDebts() {
-  const container = document.getElementById('debtList');
-  if (!container) return;
-  container.innerHTML = ''; // clear before render
-  const currency = getCurrencySymbol();
-
-  if (appData.debts.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center; padding:40px; color:#A0B0C0; font-size:0.9rem;">
-        <i class="fas fa-chart-pie" style="font-size:2.5rem; margin-bottom:12px; display:block; opacity:0.3;"></i>
-        No debts added yet.<br>Add your credit cards or loans to get a payoff plan.
-      </div>
-    `;
-    updateDebtSummary(0, 0, '—', 0);
-    return;
-  }
-
-  // Sort by method
-  let sorted = [...appData.debts];
-  if (appData.debtMethod === 'avalanche') {
-    sorted.sort((a, b) => b.rate - a.rate);
-  } else {
-    sorted.sort((a, b) => a.balance - b.balance);
-  }
-
-  const totalDebt = sorted.reduce((sum, d) => sum + d.balance, 0);
-  const totalMin = sorted.reduce((sum, d) => sum + d.min, 0);
-
-  // Estimate payoff (simplified)
-  const estMonths = estimatePayoff(sorted);
-  const interestSaved = calculateInterestSaved(sorted);
-
-  updateDebtSummary(totalDebt, totalMin, estMonths, interestSaved);
-
-  container.innerHTML = sorted.map((debt, index) => {
-    const monthsToPayoff = debt.min > 0
-      ? Math.ceil(debt.balance / debt.min)
-      : 999;
-    const payoffPercent = Math.min(95, Math.max(5,
-      100 - (debt.balance / (debt.balance + debt.min * 12) * 100)
-    ));
-
-    return `
-      <div class="debt-card">
-        <div class="debt-header">
-          <div>
-            <div class="debt-name">
-              ${index === 0 ? '🎯 ' : ''}${debt.name}
-              ${index === 0 ? '<span style="font-size:0.75rem; color:#00EEFF; margin-left:6px;">Focus here first</span>' : ''}
-            </div>
-            <div style="font-size:0.8rem; color:#A0B0C0; margin-top:2px;">
-              ${debt.rate}% APR · Min payment: ${currency}${formatNumber(debt.min)}/mo
-            </div>
-          </div>
-          <div style="display:flex; align-items:center; gap:10px;">
-            <div class="debt-amount">${currency}${formatNumber(debt.balance)}</div>
-            <button onclick="deleteDebt(${debt.id})" style="
-              background:none; border:none; color:#FF4466;
-              cursor:pointer; font-size:0.9rem;
-            ">✕</button>
-          </div>
-        </div>
-        <div class="debt-progress">
-          <div class="debt-progress-fill" style="width:${payoffPercent}%"></div>
-        </div>
-        <div class="debt-info">
-          <span>Est. payoff: ~${monthsToPayoff} months</span>
-          <span>${debt.rate}% interest</span>
-          <span>Min: ${currency}${formatNumber(debt.min)}/mo</span>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function updateDebtSummary(total, monthly, months, saved) {
-  const currency = getCurrencySymbol();
-  const _e_totalDebt = document.getElementById('totalDebt'); if(_e_totalDebt) _e_totalDebt.textContent = currency + formatNumber(total);
-  const _e_totalMonthly = document.getElementById('totalMonthly'); if(_e_totalMonthly) _e_totalMonthly.textContent = currency + formatNumber(monthly);
-  const _e_estPayoff = document.getElementById('estPayoff'); if(_e_estPayoff) _e_estPayoff.textContent = months === '—' ? '—' : months + ' mo';
-  const _e_interestSaved = document.getElementById('interestSaved'); if(_e_interestSaved) _e_interestSaved.textContent = currency + formatNumber(saved);
-}
-
-function estimatePayoff(debts) {
-  if (debts.length === 0) return '—';
-  const maxMonths = debts.reduce((max, d) => {
-    const m = d.min > 0 ? Math.ceil(d.balance / d.min) : 999;
-    return Math.max(max, m);
-  }, 0);
-  return maxMonths > 500 ? '500+' : maxMonths;
-}
-
-function calculateInterestSaved(debts) {
-  return debts.reduce((sum, d) => {
-    const months = d.min > 0 ? Math.ceil(d.balance / d.min) : 0;
-    const interest = (d.balance * (d.rate / 100 / 12)) * months * 0.3;
-    return sum + interest;
-  }, 0);
-}
-
-function deleteDebt(id) {
-  appData.debts = appData.debts.filter(d => d.id !== id);
-  saveData();
-  renderDebts();
-  showToast('Debt removed');
-}
-
-// ===========================
-// SUBSCRIPTIONS
-// ===========================
-function showAddSubscription() {
-  document.getElementById('addSubModal').classList.add('active');
-}
-
-function saveSubscription() {
-  const name = document.getElementById('subName').value.trim();
-  const amount = parseFloat(document.getElementById('subAmount').value) || 0;
-  const date = parseInt(document.getElementById('subDate').value) || 1;
-  const category = document.getElementById('subCategory').value;
-
-  if (!name || !amount) {
-    showToast('Please fill all required fields', 'error');
-    return;
-  }
-
-  const sub = {
-    id: Date.now(),
-    name, amount, date, category,
-    active: true
-  };
-
-  appData.subscriptions.push(sub);
-  saveData();
-
-  document.getElementById('addSubModal').classList.remove('active');
-  const _e_subName = document.getElementById('subName'); if(_e_subName) _e_subName.value = '';
-  const _e_subAmount = document.getElementById('subAmount'); if(_e_subAmount) _e_subAmount.value = '';
-  const _e_subDate = document.getElementById('subDate'); if(_e_subDate) _e_subDate.value = '';
-
-  renderSubscriptions();
-  showToast('Subscription added! ✅');
-}
-
-function renderSubscriptions() {
-  const container = document.getElementById('subscriptionsList');
-  if (!container) return;
-  container.innerHTML = ''; // clear before render
-  const currency = getCurrencySymbol();
-  const active = appData.subscriptions.filter(s => s.active);
-
-  // Update stats
-  const total = active.reduce((sum, s) => sum + s.amount, 0);
-  const _e_totalSubs = document.getElementById('totalSubs'); if(_e_totalSubs) _e_totalSubs.textContent = currency + formatNumber(total);
-  const _e_subsCount = document.getElementById('subsCount'); if(_e_subsCount) _e_subsCount.textContent = active.length;
-
-  // Next charge
-  const today = new Date().getDate();
-  const upcoming = active
-    .map(s => ({
-      ...s,
-      daysUntil: s.date >= today ? s.date - today : 31 - today + s.date
-    }))
-    .sort((a, b) => a.daysUntil - b.daysUntil);
-
-  if (upcoming.length > 0) {
-    const _null_nextCharge_2 = document.getElementById('nextCharge'); if(_null_nextCharge_2) _null_nextCharge_2.textContent =
-      upcoming[0].daysUntil === 0 ? 'Today' :
-      upcoming[0].daysUntil === 1 ? 'Tomorrow' :
-      `Day ${upcoming[0].date}`;
-  }
-
-  if (active.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center; padding:40px; color:#A0B0C0; font-size:0.9rem;">
-        <i class="fas fa-sync" style="font-size:2.5rem; margin-bottom:12px; display:block; opacity:0.3;"></i>
-        No subscriptions tracked yet.
-      </div>
-    `;
-    return;
-  }
-
-  const catEmoji = {
-    streaming: '🎬',
-    music: '🎵',
-    software: '💻',
-    fitness: '💪',
-    news: '📰',
-    other: '📦'
-  };
-
-  container.innerHTML = active.map(sub => `
-    <div class="subscription-item">
-      <div class="sub-info">
-        <div class="sub-icon">${catEmoji[sub.category] || '📦'}</div>
-        <div>
-          <div class="sub-name">${sub.name}</div>
-          <div class="sub-date">Billed day ${sub.date} of each month</div>
-        </div>
-      </div>
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div class="sub-amount">-${currency}${formatNumber(sub.amount)}/mo</div>
-        <button onclick="cancelSubscription(${sub.id})" style="
-          background:rgba(255,68,102,0.1);
-          border:1px solid rgba(255,68,102,0.3);
-          border-radius:6px;
-          color:#FF4466;
-          padding:4px 10px;
-          font-size:0.75rem;
-          cursor:pointer;
-          font-family:'Inter',sans-serif;
-        " data-key="subs_cancel">Cancel</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function cancelSubscription(id) {
-  const sub = appData.subscriptions.find(s => s.id === id);
-  if (sub) {
-    sub.active = false;
-    saveData();
-    renderSubscriptions();
-    showToast(`${sub.name} marked as cancelled`);
-  }
-}
-
-// ===========================
-// AI ASSISTANT
-// ===========================
-function sendMessage() {
-  const input = document.getElementById('chatInput');
-  const message = input.value.trim();
-  if (!message) return;
-
-  askAI(message);
-  input.value = '';
-}
-
-function askAI(message) {
-  const messages = document.getElementById('chatMessages');
-
-  // Add user message
-  messages.innerHTML += `
-    <div class="chat-message user">${message}</div>
-  `;
-
-  // Show typing
-  const typingId = 'typing-' + Date.now();
-  messages.innerHTML += `
-    <div class="chat-message ai" id="${typingId}">
-      <span style="opacity:0.6;">AI is thinking...</span>
-      <span style="animation:blink 1s infinite;">💭</span>
-    </div>
-  `;
-
-  messages.scrollTop = messages.scrollHeight;
-
-  // Generate response
-  setTimeout(() => {
-    const response = generateAIResponse(message);
-    const typingEl = document.getElementById(typingId);
-    if (typingEl) typingEl.innerHTML = response;
-    messages.scrollTop = messages.scrollHeight;
-  }, 1200);
-}
-
-function generateAIResponse(message) {
-  const msg = message.toLowerCase();
-  const currency = getCurrencySymbol();
-
-  // Debt related
-  if (msg.includes('debt') || msg.includes('credit card') || msg.includes('pay off') || msg.includes('deuda')) {
-    const totalDebt = appData.debts.reduce((sum, d) => sum + d.balance, 0);
-    if (totalDebt > 0) {
-      const sorted = [...appData.debts].sort((a, b) => b.rate - a.rate);
-      const highest = sorted[0];
-      return `📊 <strong>Debt Payoff Strategy:</strong><br><br>
-        Your total debt is <strong style="color:#FF4466">${currency}${formatNumber(totalDebt)}</strong>.<br><br>
-        🎯 <strong>Focus on:</strong> ${highest.name} first (${highest.rate}% APR)<br>
-        💡 <strong>Tip:</strong> Pay the minimum on all other cards and put every extra dollar toward ${highest.name}.<br><br>
-        Using the <strong>Avalanche method</strong>, you could save hundreds in interest charges!`;
-    }
-    return `📊 <strong>Debt Payoff Tips:</strong><br><br>
-      1. 🎯 <strong>Avalanche Method:</strong> Pay highest interest rate first — saves the most money.<br>
-      2. ⛄ <strong>Snowball Method:</strong> Pay smallest balance first — gives psychological wins.<br>
-      3. 💡 Always pay more than the minimum payment.<br>
-      4. 🚫 Stop adding new charges while paying off.<br><br>
-      Add your debts in the <strong>Debt Plan</strong> section for a personalized payoff schedule!`;
-  }
-
-  // Subscriptions
-  if (msg.includes('subscription') || msg.includes('suscripcion') || msg.includes('netflix') || msg.includes('spotify')) {
-    const total = appData.subscriptions
-      .filter(s => s.active)
-      .reduce((sum, s) => sum + s.amount, 0);
-    const count = appData.subscriptions.filter(s => s.active).length;
-    if (count > 0) {
-      return `🔄 <strong>Your Subscriptions:</strong><br><br>
-        You have <strong>${count} active subscriptions</strong> costing 
-        <strong style="color:#FF4466">${currency}${formatNumber(total)}/month</strong> 
-        (${currency}${formatNumber(total * 12)}/year).<br><br>
-        💡 <strong>Tips to save:</strong><br>
-        • Review each subscription — do you actually use it?<br>
-        • Switch to annual plans for 15-20% savings<br>
-        • Share plans with family when possible<br>
-        • Cancel trials before they charge you`;
-    }
-    return `🔄 <strong>Subscription Management:</strong><br><br>
-      Track all your subscriptions in the <strong>Subscriptions</strong> section.<br><br>
-      💡 The average person wastes <strong>$50-100/month</strong> on forgotten subscriptions.<br>
-      Add yours to see your total monthly cost!`;
-  }
-
-  // Card recommendations
-  if (msg.includes('card') || msg.includes('tarjeta') || msg.includes('groceries') || msg.includes('best card')) {
-    if (appData.cards.length > 0) {
-      const bestCard = appData.cards.reduce((prev, curr) =>
-        prev.apr < curr.apr ? prev : curr
-      );
-      return `💳 <strong>Card Recommendation:</strong><br><br>
-        Based on your cards, <strong style="color:#00EEFF">${bestCard.name}</strong> has the lowest APR at ${bestCard.apr}%.<br><br>
-        🎯 <strong>General tips:</strong><br>
-        • Use rewards cards for your biggest spending categories<br>
-        • Always pay full balance to avoid interest<br>
-        • Keep utilization below 30% for good credit score<br><br>
-        Visit <strong>My Cards</strong> for personalized recommendations by category!`;
-    }
-    return `💳 <strong>Card Tips:</strong><br><br>
-      Add your cards in <strong>My Cards</strong> to get personalized recommendations!<br><br>
-      🏆 <strong>Best cards by category (general):</strong><br>
-      • 🍔 Food: Cards with dining rewards (3-4% cashback)<br>
-      • ✈️ Travel: Cards with miles/points<br>
-      • ⛽ Gas: Cards with gas rewards (3-5% cashback)<br>
-      • 🛍️ Shopping: Cards with retail rewards`;
-  }
-
-  // Budget
-  if (msg.includes('budget') || msg.includes('presupuesto') || msg.includes('save') || msg.includes('ahorrar')) {
-    const income = appData.transactions
-      .filter(tx => tx.type === 'income')
-      .reduce((sum, tx) => sum + tx.amount, 0);
-    const expenses = appData.transactions
-      .filter(tx => tx.type === 'expense')
-      .reduce((sum, tx) => sum + tx.amount, 0);
-
-    return `📅 <strong>Budget Plan (50/30/20 Rule):</strong><br><br>
-      ${income > 0 ? `Your income: <strong>${currency}${formatNumber(income)}</strong><br><br>` : ''}
-      📊 <strong>Recommended split:</strong><br>
-      • 🏠 <strong>50% Needs:</strong> ${currency}${formatNumber(income * 0.5)} (rent, food, utilities)<br>
-      • 🎉 <strong>30% Wants:</strong> ${currency}${formatNumber(income * 0.3)} (dining out, entertainment)<br>
-      • 💰 <strong>20% Savings:</strong> ${currency}${formatNumber(income * 0.2)} (emergency fund, investments)<br><br>
-      ${expenses > income * 0.8 ? '⚠️ <strong>Alert:</strong> Your expenses seem high. Look for areas to cut!' :
-      '✅ <strong>Great job!</strong> Keep tracking to stay on budget.'}`;
-  }
-
-  // Spending analysis
-  if (msg.includes('spending') || msg.includes('gastos') || msg.includes('how much')) {
-    const expenses = appData.transactions.filter(tx => tx.type === 'expense');
-    if (expenses.length > 0) {
-      const byCategory = {};
-      expenses.forEach(tx => {
-        byCategory[tx.category] = (byCategory[tx.category] || 0) + tx.amount;
-      });
-      const sorted = Object.entries(byCategory).sort((a, b) => b[1] - a[1]);
-      const top3 = sorted.slice(0, 3);
-      return `📊 <strong>Your Spending Analysis:</strong><br><br>
-        <strong>Top categories:</strong><br>
-        ${top3.map(([cat, amount]) =>
-          `${getCategoryEmoji(cat)} ${cat}: <strong>${currency}${formatNumber(amount)}</strong>`
-        ).join('<br>')}<br><br>
-        💡 <strong>Tip:</strong> Focus on reducing your top spending category first for maximum savings!`;
-    }
-    return `📊 Add some transactions first and I'll analyze your spending patterns!`;
-  }
-
-  // Default response
-  const responses = [
-    `💡 <strong>Financial Tip of the Day:</strong><br><br>
-      The <strong>50/30/20 rule</strong> is a great budgeting framework:<br>
-      • 50% for needs (housing, food, transport)<br>
-      • 30% for wants (entertainment, dining)<br>
-      • 20% for savings and debt payoff<br><br>
-      Try asking me about your debts, subscriptions, or card recommendations!`,
-    `🎯 <strong>Smart Money Moves:</strong><br><br>
-      1. Build a 3-6 month emergency fund first<br>
-      2. Pay off high-interest debt aggressively<br>
-      3. Maximize employer 401k match<br>
-      4. Then invest the rest<br><br>
-      What specific financial question can I help you with?`,
-    `📈 <strong>I can help you with:</strong><br><br>
-      • 💳 Which card to use for purchases<br>
-      • 📊 Debt payoff strategies<br>
-      • 🔄 Subscription optimization<br>
-      • 📅 Budget planning<br>
-      • 💰 Savings tips<br><br>
-      Just ask me anything!`
-  ];
-
-  return responses[Math.floor(Math.random() * responses.length)];
-}
-
-// ===========================
-// SETTINGS
-// ===========================
-function saveSettings() {
-  const name = document.getElementById('settingName').value.trim() || 'User';
-  const email = document.getElementById('settingEmail').value.trim();
-  const currency = document.getElementById('settingCurrency').value;
-  const lang = document.getElementById('settingLang').value;
-
-  appData.settings = { name, email, currency, lang };
-  saveData();
-
-  // Apply changes
-  const _e_userDisplayName = document.getElementById('user-display-name'); if(_e_userDisplayName) _e_userDisplayName.textContent = name;
-  applyLanguage(lang);
-
-  showToast('Settings saved! ✅');
-}
-
-// ===========================
-// UTILITY FUNCTIONS
-// ===========================
-function getCurrencySymbol() {
-  const symbols = {
-    USD: '$', EUR: '€', MXN: '$',
-    COP: '$', ARS: '$', BRL: 'R$',
-    CLP: '$', PEN: 'S/', CAD: 'CA$'
-  };
-  return symbols[appData.settings.currency] || '$';
-}
-
-function formatNumber(num) {
-  return parseFloat(num || 0).toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
+function showNotif(msg) { showToast(msg); }
+
+function formatCurrency(amount) {
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: STATE.settings.currency || 'USD'
+    }).format(amount || 0);
+  } catch(e) { return '$' + (amount || 0).toFixed(2); }
 }
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-US', {
-    month: 'short', day: 'numeric', year: 'numeric'
+  try {
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric'
+    });
+  } catch(e) { return dateStr; }
+}
+
+function getCatIcon(cat) {
+  const icons = {
+    food:'🍔', dining:'🍽️', transport:'🚗', gas:'⛽',
+    shopping:'🛍️', entertainment:'🎬', health:'💊',
+    utilities:'💡', rent:'🏠', travel:'✈️',
+    education:'📚', salary:'💵', freelance:'💼',
+    income:'💰', subscriptions:'🔄', groceries:'🛒',
+    technology:'💻', other:'📌'
+  };
+  return icons[cat] || '📌';
+}
+
+// ============================================
+// SECCIÓN 3: NAVEGACIÓN
+// ============================================
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none';
   });
+  const page = gel(pageId);
+  if (page) {
+    page.classList.add('active');
+    page.style.display = 'block';
+  }
+  STATE.currentPage = pageId;
+  window.scrollTo(0, 0);
 }
 
-function getCategoryEmoji(category) {
-  const emojis = {
-    food: '🍔', transport: '🚗', shopping: '🛍️',
-    health: '🏥', entertainment: '🎬', utilities: '💡',
-    travel: '✈️', salary: '💼', other: '📦',
-    streaming: '🎬', music: '🎵', software: '💻',
-    fitness: '💪', news: '📰'
-  };
-  return emojis[category] || '📦';
+function showSection(sectionId) {
+  document.querySelectorAll('[id^="section-"]').forEach(s => {
+    s.style.display = 'none';
+  });
+  const section = gel('section-' + sectionId);
+  if (section) section.style.display = 'block';
+
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.remove('active');
+  });
+  const navItem = document.querySelector(
+    `.nav-item[onclick*="'${sectionId}'"]`
+  );
+  if (navItem) navItem.classList.add('active');
+
+  STATE.currentSection = sectionId;
+
+  if (sectionId === 'dashboard')     renderDashboard();
+  if (sectionId === 'transactions')  renderTransactions();
+  if (sectionId === 'cards')         renderCards();
+  if (sectionId === 'debts')         renderDebts();
+  if (sectionId === 'subscriptions') renderSubscriptions();
+  if (sectionId === 'reports')       renderReports();
+  if (sectionId === 'settings')      renderSettings();
 }
 
-// ===========================
-// TOAST NOTIFICATIONS
-// ===========================
-function showToast(message, type = 'success') {
-  const toast = document.createElement('div');
-  const colors = {
-    success: { bg: 'rgba(0,255,136,0.15)', border: 'rgba(0,255,136,0.4)', text: '#00FF88' },
-    error: { bg: 'rgba(255,68,102,0.15)', border: 'rgba(255,68,102,0.4)', text: '#FF4466' },
-    info: { bg: 'rgba(0,238,255,0.15)', border: 'rgba(0,238,255,0.4)', text: '#00EEFF' }
-  };
-  const c = colors[type] || colors.success;
-
-  toast.style.cssText = `
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: ${c.bg};
-    border: 1px solid ${c.border};
-    border-radius: 12px;
-    padding: 14px 20px;
-    color: ${c.text};
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    z-index: 99999;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    animation: slideIn 0.3s ease;
-    max-width: 300px;
-  `;
-  toast.textContent = message;
-  document.body.appendChild(toast);
-
+function scrollTo(sectionId) {
+  showPage('landing');
   setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transition = 'opacity 0.3s';
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
-}
-
-// ===========================
-// PAGE STYLES
-// ===========================
-// Prevent duplicate styles
-if (!document.getElementById('financeai-styles')) {
-const appStyles = document.createElement('style');
-appStyles.id = 'financeai-styles';
-appStyles.textContent = `
-  .page { display: none; }
-  .page.active { display: block; }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  @media (max-width: 900px) {
-    .sidebar {
-      transform: translateX(-100%);
-      transition: transform 0.3s;
-    }
-    .sidebar.open {
-      transform: translateX(0);
-    }
-  }
-`;
-document.head.appendChild(appStyles);
-}
-
-function doLogin() {
-    var loginTab = document.getElementById('login-form');
-    var emailEl = loginTab ? loginTab.querySelector('input[type="email"]') : document.querySelectorAll('input[type="email"]')[0];
-    var passEl = loginTab ? loginTab.querySelector('input[type="password"]') : document.querySelectorAll('input[type="password"]')[0];
-    var email = emailEl ? emailEl.value : '';
-    var pass = passEl ? passEl.value : '';
-    if (!email || !pass) { showToast('Llena todos los campos', 'error'); return; }
-    var userData = { email: email, user_metadata: { full_name: email.split('@')[0] } };
-    localStorage.setItem('financeai_user', JSON.stringify(userData));
-    appData.settings.name = email.split('@')[0];
-    appData.settings.email = email;
-    saveData();
-    showToast('Bienvenido!', 'success');
-    showPage('app');
-    showSection('dashboard');
+    const el = gel(sectionId);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }, 100);
 }
 
 // ============================================
-// EMERGENCY INIT FIX
+// SECCIÓN 4: AUTH
 // ============================================
-(function() {
+async function initApp() {
+  // Ocultar todas las páginas primero
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+
+  loadState();
+
+  try {
+    if (typeof supabase !== 'undefined') {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session && session.user) {
+        STATE.user = session.user;
+        const savedPlan = localStorage.getItem('fai_plan');
+        if (savedPlan) STATE.settings.plan = savedPlan;
+        showPage('app');
+        showSection('dashboard');
+        updateUserDisplay();
+        checkAdminAccess();
+        return;
+      }
+    }
+  } catch(e) {
+    console.warn('Session error:', e);
+  }
+
+  showPage('landing');
+}
+
+function updateUserDisplay() {
+  if (!STATE.user) return;
+  const name = STATE.user.user_metadata?.full_name
+    || STATE.user.user_metadata?.name
+    || STATE.user.email?.split('@')[0]
+    || 'Usuario';
+  const plan = STATE.settings.plan || 'free';
+  const planLabel = {
+    free: 'Free', personal: '⭐ Personal',
+    pro: '🚀 Pro', business: '💼 Business'
+  }[plan] || 'Free';
+
+  setTxt('user-display-name', name);
+  setTxt('user-display-plan', planLabel);
+  setTxt('user-avatar', name.charAt(0).toUpperCase());
+}
+
+function switchAuthTab(tab) {
+  const loginForm    = gel('login-form');
+  const registerForm = gel('register-form');
+  const tabLogin     = gel('tab-login');
+  const tabRegister  = gel('tab-register');
+  if (!loginForm || !registerForm) return;
+  if (tab === 'login') {
+    loginForm.style.display    = 'block';
+    registerForm.style.display = 'none';
+    if (tabLogin)    tabLogin.classList.add('active');
+    if (tabRegister) tabRegister.classList.remove('active');
+  } else {
+    loginForm.style.display    = 'none';
+    registerForm.style.display = 'block';
+    if (tabLogin)    tabLogin.classList.remove('active');
+    if (tabRegister) tabRegister.classList.add('active');
+  }
+}
+
+// ============================================
+// SECCIÓN 5: DASHBOARD
+// ============================================
+function renderDashboard() {
+  const now = new Date();
+  const txs = STATE.transactions || [];
+  const month = txs.filter(t => {
+    const d = new Date(t.date);
+    return d.getMonth() === now.getMonth()
+      && d.getFullYear() === now.getFullYear();
+  });
+
+  const income  = month.filter(t => t.type === 'income')
+    .reduce((s, t) => s + (t.amount || 0), 0);
+  const expense = month.filter(t => t.type === 'expense')
+    .reduce((s, t) => s + (t.amount || 0), 0);
+  const balance = income - expense;
+  const debt    = (STATE.debts || [])
+    .reduce((s, d) => s + (d.balance || 0), 0);
+
+  setTxt('val-income',  formatCurrency(income));
+  setTxt('val-expense', formatCurrency(expense));
+  setTxt('val-balance', formatCurrency(balance));
+  setTxt('val-debt',    formatCurrency(debt));
+
+  renderRecentTransactions();
+  initDashChat();
+}
+
+function renderRecentTransactions() {
+  const container = gel('recent-transactions');
+  if (!container) return;
+  const recent = [...(STATE.transactions || [])].reverse().slice(0, 5);
+  if (recent.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:30px;color:#8892A4;font-size:0.9rem;">
+        <div style="font-size:2rem;margin-bottom:10px;opacity:0.4;">🧾</div>
+        No hay transacciones aún.<br>
+        <button onclick="openAddTransaction()" style="
+          margin-top:10px;background:none;border:none;
+          color:#00EEFF;cursor:pointer;font-size:0.9rem;
+          text-decoration:underline;">
+          Agrega tu primera transacción
+        </button>
+      </div>`;
+    return;
+  }
+  container.innerHTML = recent.map(t => `
+    <div class="transaction-item">
+      <div class="transaction-icon" style="background:rgba(${
+        t.type === 'income' ? '0,200,150' : '255,71,87'},0.15);">
+        ${getCatIcon(t.category)}
+      </div>
+      <div class="transaction-info">
+        <div class="transaction-name">${t.description || t.category}</div>
+        <div class="transaction-date">
+          ${formatDate(t.date)} ·
+          ${t.expenseType === 'business' ? '🏢 Empresa' : '👤 Personal'}
+        </div>
+      </div>
+      <div class="transaction-amount ${t.type === 'income' ? 'income' : 'expense'}">
+        ${t.type === 'income' ? '+' : '-'}${formatCurrency(t.amount)}
+      </div>
+    </div>`).join('');
+}
+
+function initDashChat() {
+  const container = gel('dash-chat');
+  if (!container || container.children.length > 0) return;
+  container.innerHTML = `
+    <div class="chat-msg ai" style="
+      padding:12px 16px;border-radius:16px 16px 16px 4px;
+      background:rgba(0,238,255,0.08);color:#fff;
+      margin-bottom:12px;font-size:0.9rem;line-height:1.5;
+      border:1px solid rgba(0,238,255,0.15);">
+      🤖 ¡Hola! Soy tu asistente IA. ¿En qué te puedo ayudar hoy?
+    </div>`;
+}
+
+// ============================================
+// SECCIÓN 6: TRANSACTIONS
+// ============================================
+function renderTransactions(filter = 'all') {
+  const tbody = gel('transactions-body');
+  if (!tbody) return;
+  let list = [...(STATE.transactions || [])].reverse();
+  if (filter === 'income')   list = list.filter(t => t.type === 'income');
+  if (filter === 'expense')  list = list.filter(t => t.type === 'expense');
+  if (filter === 'personal') list = list.filter(t => (t.expenseType || 'personal') === 'personal');
+  if (filter === 'business') list = list.filter(t => t.expenseType === 'business');
+
+  if (list.length === 0) {
+    tbody.innerHTML = `
+      <tr><td colspan="6" style="text-align:center;padding:40px;color:#8892A4;">
+        No hay transacciones.
+        <button onclick="openAddTransaction()" style="
+          background:none;border:none;color:#00EEFF;
+          cursor:pointer;text-decoration:underline;
+          font-size:inherit;margin-left:8px;">+ Agregar</button>
+      </td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(t => `
+    <tr>
+      <td>${getCatIcon(t.category)} ${t.description || '—'}</td>
+      <td>${t.category || '—'}</td>
+      <td><span class="badge ${
+        t.type === 'income' ? 'badge-success' :
+        t.expenseType === 'business' ? 'badge-warning' : 'badge-cyan'}">
+        ${t.type === 'income' ? 'Ingreso' :
+          t.expenseType === 'business' ? 'Empresa' : 'Personal'}
+      </span></td>
+      <td>${formatDate(t.date)}</td>
+      <td class="transaction-amount ${t.type === 'income' ? 'income' : 'expense'}">
+        ${t.type === 'income' ? '+' : '-'}${formatCurrency(t.amount)}
+      </td>
+      <td><button class="btn btn-outline btn-sm"
+        onclick="deleteTransaction(${t.id})">🗑️</button></td>
+    </tr>`).join('');
+}
+
+function filterTransactions(filter, btn) {
+  document.querySelectorAll('#section-transactions .section-tab')
+    .forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderTransactions(filter);
+}
+
+function openAddTransaction() {
+  const existing = gel('modal-tx');
+  if (existing) existing.remove();
+  const today = new Date().toISOString().split('T')[0];
+  const modal = document.createElement('div');
+  modal.id = 'modal-tx';
+  modal.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(10px);z-index:9999;
+    display:flex;align-items:center;
+    justify-content:center;padding:20px;`;
+  modal.innerHTML = `
+    <div style="
+      background:#0D1F35;border:1px solid rgba(0,238,255,0.2);
+      border-radius:20px;padding:32px;max-width:480px;width:100%;
+      max-height:90vh;overflow-y:auto;
+      font-family:'Segoe UI',Arial,sans-serif;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+        <h2 style="color:#fff;font-size:1.3rem;">➕ Nueva Transacción</h2>
+        <button onclick="gel('modal-tx').remove()" style="
+          background:none;border:none;color:#8892A4;
+          font-size:1.5rem;cursor:pointer;">×</button>
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <input type="text" id="tx-desc" placeholder="ej: Walmart, Salario..." style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Monto ($)</label>
+        <input type="number" id="tx-amount" step="0.01" placeholder="0.00" style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="tx-type" style="width:100%;">
+          <option value="expense">Gasto</option>
+          <option value="income">Ingreso</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Categoría</label>
+        <select id="tx-category" style="width:100%;">
+          <option value="groceries">🛒 Supermercado</option>
+          <option value="food">🍔 Comida / Restaurante</option>
+          <option value="transport">🚗 Transporte</option>
+          <option value="gas">⛽ Gasolina</option>
+          <option value="shopping">🛍️ Compras</option>
+          <option value="health">💊 Salud</option>
+          <option value="entertainment">🎬 Entretenimiento</option>
+          <option value="utilities">💡 Servicios</option>
+          <option value="rent">🏠 Renta / Hogar</option>
+          <option value="travel">✈️ Viajes</option>
+          <option value="education">📚 Educación</option>
+          <option value="technology">💻 Tecnología</option>
+          <option value="salary">💵 Salario</option>
+          <option value="freelance">💼 Freelance</option>
+          <option value="subscriptions">🔄 Suscripciones</option>
+          <option value="other">📌 Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Personal / Empresa</label>
+        <select id="tx-etype" style="width:100%;">
+          <option value="personal">👤 Personal</option>
+          <option value="business">🏢 Empresa</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Fecha</label>
+        <input type="date" id="tx-date" value="${today}" style="width:100%;">
+      </div>
+      <button onclick="saveTransaction()" class="btn btn-primary"
+        style="width:100%;margin-top:8px;">
+        💾 Guardar Transacción
+      </button>
+    </div>`;
+  modal.addEventListener('click', e => {
+    if (e.target === modal) modal.remove();
+  });
+  document.body.appendChild(modal);
+}
+
+function saveTransaction() {
+  const desc   = getVal('tx-desc').trim();
+  const amount = parseFloat(getVal('tx-amount'));
+  const type   = getVal('tx-type')     || 'expense';
+  const cat    = getVal('tx-category') || 'other';
+  const etype  = getVal('tx-etype')    || 'personal';
+  const date   = getVal('tx-date')     || new Date().toISOString().split('T')[0];
+
+  if (!desc)          { showToast('Ingresa una descripción', 'error'); return; }
+  if (!amount || amount <= 0) { showToast('Ingresa un monto válido', 'error'); return; }
+
+  STATE.transactions.push({
+    id: Date.now(), description: desc,
+    amount, type, category: cat,
+    expenseType: etype, date,
+    createdAt: new Date().toISOString()
+  });
+  saveState();
+  const modal = gel('modal-tx');
+  if (modal) modal.remove();
+  showToast('✅ Transacción guardada!');
+  renderTransactions();
+  renderDashboard();
+  detectSubscriptionsFromTransactions();
+}
+
+function deleteTransaction(id) {
+  STATE.transactions = STATE.transactions.filter(t => t.id !== id);
+  saveState();
+  renderTransactions();
+  renderDashboard();
+  showToast('Transacción eliminada');
+}
+
+// ============================================
+// SECCIÓN 7: SCANNER
+// ============================================
+function processReceipt(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const uploadArea = document.querySelector('.upload-area');
+  if (uploadArea) {
+    uploadArea.innerHTML = `
+      <div style="text-align:center;padding:20px;">
+        <div style="font-size:2.5rem;margin-bottom:12px;">⏳</div>
+        <div style="color:#00EEFF;font-weight:700;">Analizando recibo con IA...</div>
+        <div style="color:#8892A4;font-size:0.85rem;margin-top:6px;">${file.name}</div>
+      </div>`;
+  }
+  setTimeout(() => {
+    const merchants  = ['Walmart Supercenter','Target','Whole Foods','Costco','CVS Pharmacy','Starbucks','Shell Gas Station'];
+    const categories = ['groceries','food','gas','shopping','health'];
+    const cards      = ['Chase Freedom · 5% cashback','Amex Gold · 4x puntos','Citi Double Cash · 2%'];
+    const merchant   = merchants[Math.floor(Math.random() * merchants.length)];
+    const amount     = (Math.random() * 120 + 10).toFixed(2);
+    const category   = categories[Math.floor(Math.random() * categories.length)];
+    const card       = cards[Math.floor(Math.random() * cards.length)];
+    const today      = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+    setTxt('scan-merchant', merchant);
+    setTxt('scan-amount',   '$' + amount);
+    setTxt('scan-category', getCatIcon(category) + ' ' + category);
+    setTxt('scan-date',     today);
+    setTxt('scan-card',     card);
+
+    const scanResult = gel('scan-result');
+    if (scanResult) scanResult.classList.add('show');
+
+    if (uploadArea) {
+      uploadArea.innerHTML = `
+        <div class="upload-icon">📸</div>
+        <div class="upload-title">Subir Foto del Recibo</div>
+        <div class="upload-subtitle">Click aquí o arrastra · JPG, PNG, HEIC</div>`;
+    }
+    window._scannedData = { merchant, amount: parseFloat(amount), category };
+  }, 1800);
+}
+
+function saveScannedTransaction() {
+  const data = window._scannedData;
+  if (!data) { showToast('No hay recibo escaneado', 'error'); return; }
+  const filterCat = gel('filter-category');
+  const etype = filterCat
+    ? (filterCat.value === 'Empresa' ? 'business' : 'personal')
+    : 'personal';
+  STATE.transactions.push({
+    id: Date.now(), description: data.merchant,
+    amount: data.amount, type: 'expense',
+    category: data.category, expenseType: etype,
+    date: new Date().toISOString().split('T')[0],
+    createdAt: new Date().toISOString(), scanned: true
+  });
+  saveState();
+  const scanResult = gel('scan-result');
+  if (scanResult) scanResult.classList.remove('show');
+  window._scannedData = null;
+  showToast('✅ Recibo guardado!');
+  renderDashboard();
+}
+
+// ============================================
+// SECCIÓN 8: CARDS
+// ============================================
+function renderCards() {
+  const container = gel('cards-list');
+  if (!container) return;
+  if (STATE.cards.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:60px 40px;color:#8892A4;
+        background:#0D1F35;border-radius:16px;
+        border:1px dashed rgba(0,238,255,0.2);">
+        <div style="font-size:3rem;margin-bottom:16px;opacity:0.4;">💳</div>
+        No tienes tarjetas agregadas.<br>
+        <button onclick="openAddCard()" style="
+          margin-top:12px;background:none;border:none;
+          color:#00EEFF;cursor:pointer;
+          text-decoration:underline;font-size:0.95rem;">
+          + Agregar tu primera tarjeta
+        </button>
+      </div>`;
+    return;
+  }
+  const gradients = {
+    visa:       'linear-gradient(135deg,#0d1b35,#1a2f50)',
+    mastercard: 'linear-gradient(135deg,#1a1a35,#2d1a35)',
+    amex:       'linear-gradient(135deg,#1a2a1a,#0d2b1a)',
+    discover:   'linear-gradient(135deg,#2a1a0d,#3a2a0d)',
+    other:      'linear-gradient(135deg,#0d1f35,#1e3a5f)'
+  };
+  container.innerHTML = STATE.cards.map(c => {
+    const pct = c.limit > 0 ? Math.min(100, Math.round((c.balance / c.limit) * 100)) : 0;
+    const barColor = pct > 70 ? 'danger' : pct > 40 ? 'warning' : '';
+    return `
+      <div class="credit-card-visual"
+        style="background:${gradients[c.type] || gradients.other};">
+        <div class="card-chip">💳</div>
+        <div class="card-number">•••• •••• •••• ****</div>
+        <div class="card-meta">
+          <div>
+            <div style="font-size:11px;color:#8892A4;">TARJETA</div>
+            <div class="card-holder">${c.name}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;color:#8892A4;">LÍMITE</div>
+            <div class="card-limit">${formatCurrency(c.limit || 0)}</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding-top:12px;
+          border-top:1px solid rgba(255,255,255,0.1);">
+          <div style="display:flex;justify-content:space-between;
+            font-size:12px;margin-bottom:6px;">
+            <span style="color:#8892A4;">${c.type?.toUpperCase()} · ${c.apr || 0}% APR</span>
+            <span style="color:${pct > 70 ? '#FF4757' : '#FF6B35'};">
+              ${formatCurrency(c.balance || 0)} usado
+            </span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill ${barColor}" style="width:${pct}%;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;
+            font-size:11px;color:#8892A4;margin-top:6px;">
+            <span>${pct}% utilizado</span>
+            <button onclick="deleteCard(${c.id})" style="
+              background:none;border:none;color:#FF4757;
+              cursor:pointer;font-size:11px;">Eliminar</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function openAddCard() {
+  const existing = gel('modal-card');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'modal-card';
+  modal.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(10px);z-index:9999;
+    display:flex;align-items:center;
+    justify-content:center;padding:20px;`;
+  modal.innerHTML = `
+    <div style="
+      background:#0D1F35;border:1px solid rgba(0,238,255,0.2);
+      border-radius:20px;padding:32px;max-width:480px;width:100%;
+      max-height:90vh;overflow-y:auto;
+      font-family:'Segoe UI',Arial,sans-serif;">
+      <div style="display:flex;justify-content:space-between;
+        align-items:center;margin-bottom:24px;">
+        <h2 style="color:#fff;font-size:1.3rem;">💳 Agregar Tarjeta</h2>
+        <button onclick="gel('modal-card').remove()" style="
+          background:none;border:none;color:#8892A4;
+          font-size:1.5rem;cursor:pointer;">×</button>
+      </div>
+      <div class="form-group">
+        <label>Nombre de la Tarjeta</label>
+        <input type="text" id="c-name"
+          placeholder="ej: Chase Sapphire, Amex Gold..."
+          style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="c-type" style="width:100%;">
+          <option value="visa">Visa</option>
+          <option value="mastercard">Mastercard</option>
+          <option value="amex">American Express</option>
+          <option value="discover">Discover</option>
+          <option value="other">Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Límite de Crédito ($)</label>
+        <input type="number" id="c-limit"
+          placeholder="5000" style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Balance Actual / Deuda ($)</label>
+        <input type="number" id="c-balance"
+          placeholder="0" style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>APR (%)</label>
+        <input type="number" id="c-apr"
+          step="0.1" placeholder="24.99" style="width:100%;">
+      </div>
+      <button onclick="saveCard()" class="btn btn-primary"
+        style="width:100%;margin-top:8px;">
+        💾 Guardar Tarjeta
+      </button>
+    </div>`;
+  modal.addEventListener('click', e => {
+    if (e.target === modal) modal.remove();
+  });
+  document.body.appendChild(modal);
+}
+
+function saveCard() {
+  const name    = getVal('c-name').trim();
+  const type    = getVal('c-type')    || 'visa';
+  const limit   = parseFloat(getVal('c-limit'))   || 0;
+  const balance = parseFloat(getVal('c-balance')) || 0;
+  const apr     = parseFloat(getVal('c-apr'))     || 0;
+  if (!name) { showToast('El nombre es requerido', 'error'); return; }
+  STATE.cards.push({
+    id: Date.now(), name, type,
+    limit, balance, apr,
+    createdAt: new Date().toISOString()
+  });
+  saveState();
+  const modal = gel('modal-card');
+  if (modal) modal.remove();
+  renderCards();
+  showToast('✅ Tarjeta agregada!');
+}
+
+function deleteCard(id) {
+  STATE.cards = STATE.cards.filter(c => c.id !== id);
+  saveState();
+  renderCards();
+  showToast('Tarjeta eliminada');
+}
+
+// ============================================
+// SECCIÓN 9: DEBTS
+// ============================================
+function renderDebts() {
+  const debts = STATE.debts || [];
+  const total = debts.reduce((s, d) => s + (d.balance || 0), 0);
+
+  const statVals = document.querySelectorAll(
+    '#section-debts .stat-card-value'
+  );
+  if (statVals[0]) statVals[0].textContent = formatCurrency(total);
+  if (statVals[1]) statVals[1].textContent = calcPayoffTime(debts);
+
+  let container = gel('debt-items-list');
+  if (!container) {
+    const card = document.querySelector('#section-debts .content-grid .card');
+    if (card) {
+      container = document.createElement('div');
+      container.id = 'debt-items-list';
+      card.appendChild(container);
+    } else return;
+  }
+
+  if (debts.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:40px;color:#8892A4;">
+        <div style="font-size:2.5rem;margin-bottom:12px;opacity:0.4;">📉</div>
+        No tienes deudas registradas.<br>
+        <button onclick="openAddDebt()" style="
+          margin-top:12px;background:none;border:none;
+          color:#00EEFF;cursor:pointer;
+          text-decoration:underline;font-size:inherit;">
+          + Agregar deuda
+        </button>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = debts.map((d, i) => {
+    const pct = d.originalBalance
+      ? Math.round(((d.originalBalance - d.balance) / d.originalBalance) * 100)
+      : 0;
+    const priority = d.apr > 22 ? 'danger' : d.apr > 18 ? 'warning' : 'success';
+    const priorityText = d.apr > 22 ? 'Prioridad ALTA'
+      : d.apr > 18 ? 'Prioridad MEDIA' : 'Pago mínimo por ahora';
+    return `
+      <div class="debt-item">
+        <div class="debt-header">
+          <span class="debt-name">${i + 1}. ${d.name}</span>
+          <span class="debt-amount">${formatCurrency(d.balance)}</span>
+        </div>
+        <div style="font-size:12px;color:var(--${priority});margin-bottom:6px;">
+          APR: ${d.apr || 0}% — ${priorityText}
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill ${priority}" style="width:${pct}%;"></div>
+        </div>
+        <div class="debt-meta">
+          <span>Pago mínimo: ${formatCurrency(d.minPayment)}</span>
+          <button onclick="deleteDebt(${d.id})" style="
+            background:none;border:none;color:#FF4757;
+            cursor:pointer;font-size:0.82rem;">Eliminar</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function calcPayoffTime(debts) {
+  const total   = debts.reduce((s, d) => s + (d.balance || 0), 0);
+  const monthly = debts.reduce((s, d) => s + (d.minPayment || 0), 0);
+  if (monthly <= 0) return 'N/A';
+  const months = Math.ceil(total / monthly);
+  return months >= 24 ? Math.ceil(months / 12) + ' años' : months + ' meses';
+}
+
+function switchDebtMethod(method, btn) {
+  document.querySelectorAll('#section-debts .section-tab')
+    .forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (method === 'avalanche') {
+    STATE.debts.sort((a, b) => (b.apr || 0) - (a.apr || 0));
+    setTxt('debt-method-title', '❄️ Método Avalanche');
+    showToast('📊 Avalanche: Pagas menos intereses en total!');
+  } else {
+    STATE.debts.sort((a, b) => (a.balance || 0) - (b.balance || 0));
+    setTxt('debt-method-title', '⛄ Método Snowball');
+    showToast('⛄ Snowball: Más motivación para seguir!');
+  }
+  saveState();
+  renderDebts();
+}
+
+function openAddDebt() {
+  const existing = gel('modal-debt');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'modal-debt';
+  modal.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(10px);z-index:9999;
+    display:flex;align-items:center;
+    justify-content:center;padding:20px;`;
+  modal.innerHTML = `
+    <div style="
+      background:#0D1F35;border:1px solid rgba(0,238,255,0.2);
+      border-radius:20px;padding:32px;max-width:480px;width:100%;
+      font-family:'Segoe UI',Arial,sans-serif;">
+      <div style="display:flex;justify-content:space-between;
+        align-items:center;margin-bottom:24px;">
+        <h2 style="color:#fff;font-size:1.3rem;">📉 Agregar Deuda</h2>
+        <button onclick="gel('modal-debt').remove()" style="
+          background:none;border:none;color:#8892A4;
+          font-size:1.5rem;cursor:pointer;">×</button>
+      </div>
+      <div class="form-group">
+        <label>Nombre (Tarjeta / Préstamo)</label>
+        <input type="text" id="d-name"
+          placeholder="ej: Chase Visa..." style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Balance Actual ($)</label>
+        <input type="number" id="d-balance"
+          placeholder="0" style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>APR (%)</label>
+        <input type="number" id="d-apr"
+          step="0.1" placeholder="24.99" style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Pago Mínimo Mensual ($)</label>
+        <input type="number" id="d-min"
+          placeholder="25" style="width:100%;">
+      </div>
+      <button onclick="saveDebt()" class="btn btn-primary"
+        style="width:100%;margin-top:8px;">
+        💾 Guardar Deuda
+      </button>
+    </div>`;
+  modal.addEventListener('click', e => {
+    if (e.target === modal) modal.remove();
+  });
+  document.body.appendChild(modal);
+}
+
+function saveDebt() {
+  const name       = getVal('d-name').trim();
+  const balance    = parseFloat(getVal('d-balance')) || 0;
+  const apr        = parseFloat(getVal('d-apr'))     || 0;
+  const minPayment = parseFloat(getVal('d-min'))     || 0;
+  if (!name)      { showToast('El nombre es requerido', 'error'); return; }
+  if (balance <= 0) { showToast('Ingresa un balance válido', 'error'); return; }
+  STATE.debts.push({
+    id: Date.now(), name, balance, apr,
+    minPayment, originalBalance: balance,
+    createdAt: new Date().toISOString()
+  });
+  saveState();
+  const modal = gel('modal-debt');
+  if (modal) modal.remove();
+  renderDebts();
+  showToast('✅ Deuda agregada!');
+}
+
+function deleteDebt(id) {
+  STATE.debts = STATE.debts.filter(d => d.id !== id);
+  saveState();
+  renderDebts();
+  showToast('Deuda eliminada');
+}
+
+// ============================================
+// SECCIÓN 10: SUBSCRIPTIONS
+// ============================================
+function renderSubscriptions() {
+  const subs   = STATE.subscriptions || [];
+  const total  = subs.reduce((s, sub) => s + (sub.amount || 0), 0);
+  const annual = total * 12;
+
+  const statVals = document.querySelectorAll(
+    '#section-subscriptions .stat-card-value'
+  );
+  if (statVals[0]) statVals[0].textContent = subs.length;
+  if (statVals[1]) statVals[1].textContent = formatCurrency(total);
+  if (statVals[2]) statVals[2].textContent = formatCurrency(annual);
+
+  // Asignar ID al tbody si no lo tiene
+  const section = gel('section-subscriptions');
+  if (section) {
+    const tbody = section.querySelector('table tbody');
+    if (tbody && !tbody.id) tbody.id = 'subs-tbody';
+  }
+
+  const tbody = gel('subs-tbody')
+    || (section && section.querySelector('table tbody'));
+  if (!tbody) return;
+
+  if (subs.length === 0) {
+    tbody.innerHTML = `
+      <tr><td colspan="6" style="text-align:center;padding:40px;color:#8892A4;">
+        No tienes suscripciones.<br>
+        <button onclick="openAddSubscription()" style="
+          background:none;border:none;color:#00EEFF;
+          cursor:pointer;text-decoration:underline;
+          font-size:inherit;margin-top:8px;">+ Agregar</button>
+      </td></tr>`;
+    return;
+  }
+
+  const catIcons = {
+    streaming:'📺', music:'🎵', software:'💻',
+    fitness:'💪', news:'📰', productivity:'🤖',
+    storage:'☁️', shopping:'📦', gaming:'🎮',
+    design:'🎨', other:'📌'
+  };
+
+  tbody.innerHTML = subs.map(s => {
+    const today = new Date().getDate();
+    const daysUntil = s.billingDay >= today
+      ? s.billingDay - today
+      : (30 - today) + s.billingDay;
+    const statusClass = daysUntil <= 3 ? 'badge-warning' : 'badge-success';
+    const statusText  = daysUntil <= 3 ? 'Vence pronto' : 'Activa';
+    return `
+      <tr>
+        <td>${catIcons[s.category] || '📌'} ${s.name}</td>
+        <td>${s.category || 'Otro'}</td>
+        <td>${formatCurrency(s.amount)}/mes</td>
+        <td>Día ${s.billingDay || '—'}</td>
+        <td><span class="badge ${statusClass}">${statusText}</span></td>
+        <td><button class="btn btn-outline btn-sm"
+          onclick="deleteSubscription(${s.id})">Cancelar</button></td>
+      </tr>`;
+  }).join('');
+}
+
+function openAddSubscription() {
+  const existing = gel('modal-sub');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'modal-sub';
+  modal.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(10px);z-index:9999;
+    display:flex;align-items:center;
+    justify-content:center;padding:20px;`;
+  modal.innerHTML = `
+    <div style="
+      background:#0D1F35;border:1px solid rgba(0,238,255,0.2);
+      border-radius:20px;padding:32px;max-width:480px;width:100%;
+      font-family:'Segoe UI',Arial,sans-serif;">
+      <div style="display:flex;justify-content:space-between;
+        align-items:center;margin-bottom:24px;">
+        <h2 style="color:#fff;font-size:1.3rem;">🔄 Agregar Suscripción</h2>
+        <button onclick="gel('modal-sub').remove()" style="
+          background:none;border:none;color:#8892A4;
+          font-size:1.5rem;cursor:pointer;">×</button>
+      </div>
+      <div class="form-group">
+        <label>Nombre del Servicio</label>
+        <input type="text" id="s-name"
+          placeholder="ej: Netflix, Spotify..." style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Monto Mensual ($)</label>
+        <input type="number" id="s-amount"
+          step="0.01" placeholder="9.99" style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Día de Cobro (1-31)</label>
+        <input type="number" id="s-day"
+          min="1" max="31" placeholder="15" style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Categoría</label>
+        <select id="s-category" style="width:100%;">
+          <option value="streaming">📺 Streaming</option>
+          <option value="music">🎵 Música</option>
+          <option value="software">💻 Software</option>
+          <option value="productivity">🤖 Productividad</option>
+          <option value="storage">☁️ Almacenamiento</option>
+          <option value="shopping">📦 Compras</option>
+          <option value="gaming">🎮 Juegos</option>
+          <option value="fitness">💪 Fitness</option>
+          <option value="design">🎨 Diseño</option>
+          <option value="other">📌 Otro</option>
+        </select>
+      </div>
+      <button onclick="saveSubscription()" class="btn btn-primary"
+        style="width:100%;margin-top:8px;">
+        💾 Guardar Suscripción
+      </button>
+    </div>`;
+  modal.addEventListener('click', e => {
+    if (e.target === modal) modal.remove();
+  });
+  document.body.appendChild(modal);
+}
+
+function saveSubscription() {
+  const name       = getVal('s-name').trim();
+  const amount     = parseFloat(getVal('s-amount'))  || 0;
+  const billingDay = parseInt(getVal('s-day'))        || 1;
+  const category   = getVal('s-category') || 'other';
+  if (!name)      { showToast('El nombre es requerido', 'error'); return; }
+  if (amount <= 0) { showToast('Ingresa un monto válido', 'error'); return; }
+  STATE.subscriptions.push({
+    id: Date.now(), name, amount,
+    billingDay, category,
+    createdAt: new Date().toISOString()
+  });
+  saveState();
+  const modal = gel('modal-sub');
+  if (modal) modal.remove();
+  renderSubscriptions();
+  showToast('✅ Suscripción agregada!');
+}
+
+function deleteSubscription(id) {
+  STATE.subscriptions = STATE.subscriptions.filter(s => s.id !== id);
+  saveState();
+  renderSubscriptions();
+  showToast('Suscripción eliminada');
+}
+
+function detectSubscriptionsFromTransactions() {
+  const keywords = [
+    'netflix','spotify','hulu','disney','amazon prime',
+    'youtube','apple','chatgpt','openai','adobe',
+    'gym','xbox','playstation','icloud'
+  ];
+  const found = STATE.transactions.filter(t =>
+    keywords.some(k =>
+      (t.description || '').toLowerCase().includes(k)
+    )
+  );
+  if (found.length > 0) {
+    const names = [...new Set(found.map(t => t.description))].slice(0, 2);
+    showToast('💡 Suscripción detectada: ' + names.join(', '), 'info');
+  }
+}
+
+// ============================================
+// SECCIÓN 11: AI ASSISTANT
+// ============================================
+function sendMainChat() {
+  const input = gel('main-chat-input');
+  if (!input) return;
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  addChatMessage(msg, 'user', 'main-chat');
+  setTimeout(() => {
+    addChatMessage(generateAIResponse(msg), 'ai', 'main-chat');
+  }, 800);
+}
+
+function quickChat(question) {
+  const input = gel('main-chat-input');
+  if (input) { input.value = question; sendMainChat(); }
+}
+
+function sendDashChat() {
+  const input = gel('dash-chat-input');
+  if (!input) return;
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  addChatMessage(msg, 'user', 'dash-chat');
+  setTimeout(() => {
+    addChatMessage(generateAIResponse(msg), 'ai', 'dash-chat');
+  }, 800);
+}
+
+function addChatMessage(text, sender, containerId) {
+  const container = gel(containerId);
+  if (!container) return;
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + sender;
+  div.style.cssText = `
+    padding:12px 16px;margin-bottom:12px;
+    border-radius:${sender === 'user'
+      ? '16px 16px 4px 16px' : '16px 16px 16px 4px'};
+    background:${sender === 'user'
+      ? '#00EEFF' : 'rgba(0,238,255,0.08)'};
+    color:${sender === 'user' ? '#050D1A' : '#fff'};
+    max-width:85%;
+    margin-left:${sender === 'user' ? 'auto' : '0'};
+    font-size:0.9rem;line-height:1.5;
+    border:${sender === 'user'
+      ? 'none' : '1px solid rgba(0,238,255,0.15)'};
+    font-family:'Segoe UI',Arial,sans-serif;`;
+  div.innerHTML = text;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function generateAIResponse(msg) {
+  const m       = msg.toLowerCase();
+  const income  = (STATE.transactions || [])
+    .filter(t => t.type === 'income')
+    .reduce((s, t) => s + t.amount, 0);
+  const expense = (STATE.transactions || [])
+    .filter(t => t.type === 'expense')
+    .reduce((s, t) => s + t.amount, 0);
+  const debt    = (STATE.debts || [])
+    .reduce((s, d) => s + d.balance, 0);
+  const subCost = (STATE.subscriptions || [])
+    .reduce((s, sub) => s + sub.amount, 0);
+
+  if (m.includes('deuda') || m.includes('debt')) {
+    if (debt > 0)
+      return `💳 Tu deuda total es <strong>${formatCurrency(debt)}</strong>. 
+        Usa el método <strong>Avalanche</strong>: paga primero la tarjeta 
+        con mayor APR para ahorrar más en intereses.`;
+    return '🎉 ¡No tienes deudas registradas! Agrega tus tarjetas en la sección Deudas.';
+  }
+  if (m.includes('suscripcion') || m.includes('subscription')) {
+    return `📱 Tienes <strong>${STATE.subscriptions.length}</strong> suscripciones 
+      costando <strong>${formatCurrency(subCost)}/mes</strong> 
+      (${formatCurrency(subCost * 12)}/año).`;
+  }
+  if (m.includes('gasto') || m.includes('expense') || m.includes('spend')) {
+    return `📊 Gastos totales: <strong>${formatCurrency(expense)}</strong>. 
+      ${expense > income * 0.8
+        ? '⚠️ Estás gastando más del 80% de tus ingresos!'
+        : '✅ Tu nivel de gasto se ve saludable!'}`;
+  }
+  if (m.includes('ahorro') || m.includes('save') || m.includes('saving')) {
+    const savings = income - expense;
+    return `💰 Balance disponible: <strong>${formatCurrency(savings)}</strong><br>
+      Regla 50/30/20:<br>
+      • 50% necesidades: ${formatCurrency(income * 0.5)}<br>
+      • 30% deseos: ${formatCurrency(income * 0.3)}<br>
+      • 20% ahorro: ${formatCurrency(income * 0.2)}`;
+  }
+  if (m.includes('presupuesto') || m.includes('budget')) {
+    return `📋 Presupuesto para ${formatCurrency(income)}/mes:<br>
+      • 🏠 Vivienda: ${formatCurrency(income * 0.35)}<br>
+      • 🍔 Comida: ${formatCurrency(income * 0.15)}<br>
+      • 🚗 Transporte: ${formatCurrency(income * 0.10)}<br>
+      • 🎬 Entretenimiento: ${formatCurrency(income * 0.10)}<br>
+      • 💳 Deudas: ${formatCurrency(income * 0.15)}<br>
+      • 💰 Ahorro: ${formatCurrency(income * 0.15)}`;
+  }
+  if (m.includes('supermercado') || m.includes('grocery')) {
+    return '🛒 Mejores tarjetas:<br>• <strong>Blue Cash Preferred Amex</strong> — 6%<br>• <strong>Chase Freedom Flex</strong> — 5%<br>• <strong>Capital One SavorOne</strong> — 3%';
+  }
+  if (m.includes('gasolina') || m.includes('gas')) {
+    return '⛽ Mejores tarjetas:<br>• <strong>PenFed Platinum</strong> — 5x<br>• <strong>Costco Visa</strong> — 4%<br>• <strong>BofA Cash Rewards</strong> — 3%';
+  }
+  if (m.includes('reducir') || m.includes('ahorrar') || m.includes('cut')) {
+    return `💡 Tips para reducir gastos:<br>
+      1. 🔄 Cancela suscripciones sin uso (tienes ${STATE.subscriptions.length})<br>
+      2. 🍔 Cocina en casa 3-4 días<br>
+      3. ⛽ Usa GasBuddy para gasolina<br>
+      4. 🛒 Compra en Costco/Aldi<br>
+      5. 💳 Usa cashback en cada compra`;
+  }
+  if (m.includes('hola') || m.includes('hello') || m.includes('hi')) {
+    return '👋 ¡Hola! Soy tu asistente financiero IA. Pregúntame sobre presupuestos, deudas, tarjetas o suscripciones.';
+  }
+  return `🤖 Puedo ayudarte con:<br>
+    • 📊 Análisis de gastos<br>
+    • 💳 Recomendaciones de tarjetas<br>
+    • 📉 Plan de deudas<br>
+    • 📋 Presupuesto mensual<br>
+    • 🔄 Revisión de suscripciones<br><br>
+    Intenta: <em>"¿Cómo reduzco mis gastos?"</em>`;
+}
+
+// ============================================
+// SECCIÓN 12: REPORTS
+// ============================================
+function renderReports() {
+  const txs = STATE.transactions || [];
+  const now = new Date();
+  const ytd = txs.filter(t =>
+    new Date(t.date).getFullYear() === now.getFullYear()
+  );
+  const ytdIncome  = ytd.filter(t => t.type === 'income')
+    .reduce((s, t) => s + t.amount, 0);
+  const ytdExpense = ytd.filter(t => t.type === 'expense')
+    .reduce((s, t) => s + t.amount, 0);
+  const ytdSavings = ytdIncome - ytdExpense;
+  const rate = ytdIncome > 0
+    ? Math.round((ytdSavings / ytdIncome) * 100) : 0;
+
+  const vals = document.querySelectorAll(
+    '#section-reports .stat-card-value'
+  );
+  if (vals[0]) vals[0].textContent = formatCurrency(ytdIncome);
+  if (vals[1]) vals[1].textContent = formatCurrency(ytdExpense);
+  if (vals[2]) vals[2].textContent = formatCurrency(ytdSavings);
+  if (vals[3]) vals[3].textContent = rate + '%';
+}
+
+// ============================================
+// SECCIÓN 13: SETTINGS
+// ============================================
+function renderSettings() {
+  if (!STATE.user) return;
+  const name  = STATE.user.user_metadata?.full_name || '';
+  const email = STATE.user.email || '';
+  const nameEl  = gel('set-name');
+  const emailEl = gel('set-email');
+  if (nameEl)  nameEl.value  = name;
+  if (emailEl) emailEl.value = email;
+}
+
+function saveSettings() {
+  const currency = getVal('set-currency') || 'USD';
+  STATE.settings.currency = currency;
+  saveState();
+  showToast('✅ Configuración guardada!');
+}
+
+function setLang(lang) {
+  STATE.settings.lang = lang;
+  saveState();
+  const btnEs = gel('app-lang-es');
+  const btnEn = gel('app-lang-en');
+  if (lang === 'es') {
+    if (btnEs) btnEs.classList.add('active');
+    if (btnEn) btnEn.classList.remove('active');
+  } else {
+    if (btnEn) btnEn.classList.add('active');
+    if (btnEs) btnEs.classList.remove('active');
+  }
+  if (window.FinanceAILang) window.FinanceAILang.apply(lang);
+  showToast(lang === 'es' ? '🇪🇸 Español activado' : '🇺🇸 English activated');
+}
+
+function activateVIPCode() {
+  const input = gel('vip-code-input');
+  if (!input) return;
+  const code = input.value.trim().toUpperCase();
+  const codes = {
+    'VIPFREE2024': 'pro',    'LAUNCH50':   'personal',
+    'FINANCEAI':   'pro',    'CLIMBER2024':'business',
+    'CLIMBER':     'personal','FAMILY2024': 'pro',
+    'FOUNDER':     'business'
+  };
+  if (codes[code]) {
+    STATE.settings.plan = codes[code];
+    saveState();
+    localStorage.setItem('fai_plan', codes[code]);
+    input.value = '';
+    updateUserDisplay();
+    showToast('🎉 Plan ' + codes[code] + ' activado!');
+  } else {
+    showToast('Código VIP inválido', 'error');
+  }
+}
+
+// ============================================
+// SECCIÓN 14: ADMIN
+// ============================================
+function checkAdminAccess() {
+  const admins = [
+    'orledisoliveros@gmail.com',
+    'admin@climberforsuccess.online',
+    'admin@financeaipro.com'
+  ];
+  const adminNav = gel('admin-nav-item');
+  if (!adminNav) return;
+  adminNav.style.display =
+    admins.includes(STATE.user?.email) ? 'flex' : 'none';
+}
+
+// ============================================
+// SECCIÓN 15: LEGAL
+// ============================================
+let lastPage = 'landing';
+
+function showLegal(type) {
+  lastPage = STATE.currentPage;
+  showPage('legal');
+  const content = gel('legal-content');
+  if (!content) return;
+  const legal = {
+    privacy: `<h2 style="color:#00EEFF;margin-bottom:16px;">🔒 Privacy Policy</h2>
+      <p style="color:#8892A4;margin-bottom:16px;">Last updated: June 2025 · Climberforsuccess LLC</p>
+      <p style="line-height:1.7;margin-bottom:16px;">
+        We collect email, name, and financial data you voluntarily input.
+        We do not share your data with third parties without consent.
+      </p>
+      <p style="color:#8892A4;">privacy@climberforsuccess.online</p>`,
+    terms: `<h2 style="color:#00EEFF;margin-bottom:16px;">📋 Terms of Service</h2>
+      <p style="color:#8892A4;margin-bottom:16px;">Last updated: June 2025 · Climberforsuccess LLC</p>
+      <p style="line-height:1.7;margin-bottom:16px;">
+        By using FinanceAI Pro you agree to these terms.
+        You must be 18+ to use this service.
+      </p>
+      <p style="color:#8892A4;">legal@climberforsuccess.online</p>`,
+    cookies: `<h2 style="color:#00EEFF;margin-bottom:16px;">🍪 Cookie Policy</h2>
+      <p style="color:#8892A4;margin-bottom:16px;">Last updated: June 2025 · Climberforsuccess LLC</p>
+      <p style="line-height:1.7;margin-bottom:16px;">
+        We use localStorage for preferences and Supabase for authentication cookies.
+      </p>
+      <p style="color:#8892A4;">privacy@climberforsuccess.online</p>`
+  };
+  content.innerHTML = legal[type] || legal.privacy;
+}
+
+// ============================================
+// SECCIÓN 16: INIT
+// ============================================
+document.addEventListener('DOMContentLoaded', async function() {
   // Ocultar todo inmediatamente
   document.querySelectorAll('.page').forEach(p => {
     p.classList.remove('active');
     p.style.display = 'none';
   });
-  
-  // Mostrar solo landing por defecto
-  const landing = document.getElementById('landing');
-  if (landing) {
-    landing.classList.add('active');
-    landing.style.display = 'block';
-  }
-})();
+  await initApp();
+});
+ENDOFFILE
+wc -l ~/Desktop/FinanceAI/app.js && git add -A && git commit -m "fix: app.js limpio v3.1 sin codigo viejo" && git push origin main
+wc -l ~/Desktop/FinanceAI/app.js
