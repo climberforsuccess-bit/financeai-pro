@@ -1319,6 +1319,3 @@ document.addEventListener('DOMContentLoaded', async function() {
   });
   await initApp();
 });
-ENDOFFILE
-wc -l ~/Desktop/FinanceAI/app.js && git add -A && git commit -m "fix: app.js limpio v3.1 sin codigo viejo" && git push origin main
-wc -l ~/Desktop/FinanceAI/app.js
