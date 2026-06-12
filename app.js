@@ -453,7 +453,7 @@ function renderTransactions(filter = 'all') {
         ${t.type === 'income' ? '+' : '-'}${formatCurrency(t.amount)}
       </td>
       <td><button class="btn btn-outline btn-sm"
-        onclick="deleteTransaction(${t.id})">🗑️</button></td>
+        onclick="deleteTransaction('${t.id}')">🗑️</button></td>
     </tr>`).join('');
 }
 
@@ -956,7 +956,7 @@ function renderDebts() {
         </div>
         <div class="debt-meta">
           <span>Pago mínimo: ${formatCurrency(d.minPayment)}</span>
-          <button onclick="deleteDebt(${d.id})" style="
+          <button onclick="deleteDebt('${d.id}')" style="
             background:none;border:none;color:#FF4757;
             cursor:pointer;font-size:0.82rem;">Eliminar</button>
         </div>
@@ -1168,7 +1168,7 @@ function renderSubscriptions() {
         <td>Día ${s.billingDay || '—'}</td>
         <td><span class="badge ${statusClass}">${statusText}</span></td>
         <td><button class="btn btn-outline btn-sm"
-          onclick="deleteSubscription(${s.id})">Cancelar</button></td>
+          onclick="deleteSubscription('${s.id}')">Cancelar</button></td>
       </tr>`;
   }).join('');
 }
