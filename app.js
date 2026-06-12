@@ -1061,9 +1061,9 @@ async function saveDebt() {
       .insert([{
         user_id: session.user.id,
         name,
-        balance: balance,
+        current_balance: balance,
         total_amount: balance,
-        
+        interest_rate: apr,
         minimum_payment: minPayment,
         due_date: dueDate,
         debt_type: debtType
