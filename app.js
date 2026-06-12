@@ -850,9 +850,9 @@ async function saveCard() {
         user_id: session.user.id,
         name,
         card_type: type,
-        credit_limit: limit,
-        current_balance: balance,
-        interest_rate: apr,
+        limit_amount: limit,
+        balance: balance,
+        
         last_four: lastFour,
         due_date: dueDate,
         color
@@ -1061,9 +1061,9 @@ async function saveDebt() {
       .insert([{
         user_id: session.user.id,
         name,
-        current_balance: balance,
+        balance: balance,
         total_amount: balance,
-        interest_rate: apr,
+        
         minimum_payment: minPayment,
         due_date: dueDate,
         debt_type: debtType
