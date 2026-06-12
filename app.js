@@ -208,7 +208,10 @@ async function loadCards() {
     type: c.card_type,
     limit: c.limit_amount,
     balance: c.balance,
-    apr: c.interest_rate,
+    lastFour: c.last_four,
+    dueDate: c.due_date,
+    color: c.color,
+    apr: 0,
     createdAt: c.created_at
   }));
 }
@@ -798,11 +801,14 @@ function openAddCard() {
 }
 
 async function saveCard() {
-  const name    = getVal('c-name').trim();
-  const type    = getVal('c-type')    || 'visa';
-  const limit   = parseFloat(getVal('c-limit'))   || 0;
-  const balance = parseFloat(getVal('c-balance')) || 0;
-  const apr     = parseFloat(getVal('c-apr'))     || 0;
+  const name     = getVal('c-name').trim();
+  const type     = getVal('c-type')     || 'credit';
+  const limit    = parseFloat(getVal('c-limit'))    || 0;
+  const balance  = parseFloat(getVal('c-balance'))  || 0;
+  const apr      = parseFloat(getVal('c-apr'))      || 0;
+  const lastFour = getVal('c-last-four')?.trim()    || '';
+  const dueDate  = parseInt(getVal('c-due-date'))   || null;
+  const color    = getVal('c-color')                || '#00EEFF';
   if (!name) { showToast('El nombre es requerido', 'error'); return; }
 
   try {
@@ -813,9 +819,13 @@ async function saveCard() {
       .from('cards')
       .insert([{
         user_id: session.user.id,
-        name, card_type: type,
+        name,
+        card_type: type,
         limit_amount: limit,
-        balance, interest_rate: apr
+        balance,
+        last_four: lastFour,
+        due_date: dueDate,
+        color
       }])
       .select()
       .single();
@@ -825,6 +835,7 @@ async function saveCard() {
     STATE.cards.push({
       id: data.id, name, type,
       limit, balance, apr,
+      lastFour, dueDate, color,
       createdAt: data.created_at
     });
 
