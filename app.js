@@ -1323,284 +1323,83 @@ function detectSubscriptionsFromTransactions() {
 // ============================================
 // SECCIÓN 11: AI ASSISTANT
 // ============================================
-function sendMainChat() {
-  const input = gel('main-chat-input');
-  if (!input) return;
-  const msg = input.value.trim();
-  if (!msg) return;
-  input.value = '';
-  addChatMessage(msg, 'user', 'main-chat');
-  setTimeout(() => {
-    addChatMessage(generateAIResponse(msg), 'ai', 'main-chat');
-  }, 800);
+function getFinancialContext() {
+  return {
+    income: STATE.transactions
+      ? STATE.transactions.filter(t => t.type === 'income')
+          .reduce((s, t) => s + Number(t.amount), 0).toFixed(2)
+      : '0.00',
+    expenses: STATE.transactions
+      ? STATE.transactions.filter(t => t.type === 'expense')
+          .reduce((s, t) => s + Number(t.amount), 0).toFixed(2)
+      : '0.00',
+    balance: STATE.user?.balance || '0.00',
+    totalDebt: STATE.debts
+      ? STATE.debts.reduce((s, d) => s + Number(d.amount), 0).toFixed(2)
+      : '0.00',
+    cards: STATE.cards ? STATE.cards.length + ' tarjeta(s)' : '0 tarjetas',
+    subscriptions: STATE.subscriptions
+      ? STATE.subscriptions.length + ' suscripcion(es)'
+      : '0 suscripciones'
+  };
 }
 
-function quickChat(question) {
-  const input = gel('main-chat-input');
-  if (input) { input.value = question; sendMainChat(); }
-}
-
-function sendDashChat() {
-  const input = gel('dash-chat-input');
-  if (!input) return;
-  const msg = input.value.trim();
-  if (!msg) return;
-  input.value = '';
-  addChatMessage(msg, 'user', 'dash-chat');
-  setTimeout(() => {
-    addChatMessage(generateAIResponse(msg), 'ai', 'dash-chat');
-  }, 800);
-}
-
-function addChatMessage(text, sender, containerId) {
-  const container = gel(containerId);
+function appendChatMessage(containerId, role, text) {
+  const container = document.getElementById(containerId);
   if (!container) return;
   const div = document.createElement('div');
-  div.className = 'chat-msg ' + sender;
-  div.style.cssText = `
-    padding:12px 16px;margin-bottom:12px;
-    border-radius:${sender === 'user'
-      ? '16px 16px 4px 16px' : '16px 16px 16px 4px'};
-    background:${sender === 'user'
-      ? '#00EEFF' : 'rgba(0,238,255,0.08)'};
-    color:${sender === 'user' ? '#050D1A' : '#fff'};
-    max-width:85%;
-    margin-left:${sender === 'user' ? 'auto' : '0'};
-    font-size:0.9rem;line-height:1.5;
-    border:${sender === 'user'
-      ? 'none' : '1px solid rgba(0,238,255,0.15)'};
-    font-family:'Segoe UI',Arial,sans-serif;`;
-  div.innerHTML = text;
+  div.className = `chat-msg ${role}`;
+  div.textContent = text;
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
 }
 
-function generateAIResponse(msg) {
-  const m       = msg.toLowerCase();
-  const income  = (STATE.transactions || [])
-    .filter(t => t.type === 'income')
-    .reduce((s, t) => s + t.amount, 0);
-  const expense = (STATE.transactions || [])
-    .filter(t => t.type === 'expense')
-    .reduce((s, t) => s + t.amount, 0);
-  const debt    = (STATE.debts || [])
-    .reduce((s, d) => s + d.balance, 0);
-  const subCost = (STATE.subscriptions || [])
-    .reduce((s, sub) => s + sub.amount, 0);
-
-  if (m.includes('deuda') || m.includes('debt')) {
-    if (debt > 0)
-      return `💳 Tu deuda total es <strong>${formatCurrency(debt)}</strong>. 
-        Usa el método <strong>Avalanche</strong>: paga primero la tarjeta 
-        con mayor APR para ahorrar más en intereses.`;
-    return '🎉 ¡No tienes deudas registradas! Agrega tus tarjetas en la sección Deudas.';
-  }
-  if (m.includes('suscripcion') || m.includes('subscription')) {
-    return `📱 Tienes <strong>${STATE.subscriptions.length}</strong> suscripciones 
-      costando <strong>${formatCurrency(subCost)}/mes</strong> 
-      (${formatCurrency(subCost * 12)}/año).`;
-  }
-  if (m.includes('gasto') || m.includes('expense') || m.includes('spend')) {
-    return `📊 Gastos totales: <strong>${formatCurrency(expense)}</strong>. 
-      ${expense > income * 0.8
-        ? '⚠️ Estás gastando más del 80% de tus ingresos!'
-        : '✅ Tu nivel de gasto se ve saludable!'}`;
-  }
-  if (m.includes('ahorro') || m.includes('save') || m.includes('saving')) {
-    const savings = income - expense;
-    return `💰 Balance disponible: <strong>${formatCurrency(savings)}</strong><br>
-      Regla 50/30/20:<br>
-      • 50% necesidades: ${formatCurrency(income * 0.5)}<br>
-      • 30% deseos: ${formatCurrency(income * 0.3)}<br>
-      • 20% ahorro: ${formatCurrency(income * 0.2)}`;
-  }
-  if (m.includes('presupuesto') || m.includes('budget')) {
-    return `📋 Presupuesto para ${formatCurrency(income)}/mes:<br>
-      • 🏠 Vivienda: ${formatCurrency(income * 0.35)}<br>
-      • 🍔 Comida: ${formatCurrency(income * 0.15)}<br>
-      • 🚗 Transporte: ${formatCurrency(income * 0.10)}<br>
-      • 🎬 Entretenimiento: ${formatCurrency(income * 0.10)}<br>
-      • 💳 Deudas: ${formatCurrency(income * 0.15)}<br>
-      • 💰 Ahorro: ${formatCurrency(income * 0.15)}`;
-  }
-  if (m.includes('supermercado') || m.includes('grocery')) {
-    return '🛒 Mejores tarjetas:<br>• <strong>Blue Cash Preferred Amex</strong> — 6%<br>• <strong>Chase Freedom Flex</strong> — 5%<br>• <strong>Capital One SavorOne</strong> — 3%';
-  }
-  if (m.includes('gasolina') || m.includes('gas')) {
-    return '⛽ Mejores tarjetas:<br>• <strong>PenFed Platinum</strong> — 5x<br>• <strong>Costco Visa</strong> — 4%<br>• <strong>BofA Cash Rewards</strong> — 3%';
-  }
-  if (m.includes('reducir') || m.includes('ahorrar') || m.includes('cut')) {
-    return `💡 Tips para reducir gastos:<br>
-      1. 🔄 Cancela suscripciones sin uso (tienes ${STATE.subscriptions.length})<br>
-      2. 🍔 Cocina en casa 3-4 días<br>
-      3. ⛽ Usa GasBuddy para gasolina<br>
-      4. 🛒 Compra en Costco/Aldi<br>
-      5. 💳 Usa cashback en cada compra`;
-  }
-  if (m.includes('hola') || m.includes('hello') || m.includes('hi')) {
-    return '👋 ¡Hola! Soy tu asistente financiero IA. Pregúntame sobre presupuestos, deudas, tarjetas o suscripciones.';
-  }
-  return `🤖 Puedo ayudarte con:<br>
-    • 📊 Análisis de gastos<br>
-    • 💳 Recomendaciones de tarjetas<br>
-    • 📉 Plan de deudas<br>
-    • 📋 Presupuesto mensual<br>
-    • 🔄 Revisión de suscripciones<br><br>
-    Intenta: <em>"¿Cómo reduzco mis gastos?"</em>`;
-}
-
-// ============================================
-// SECCIÓN 12: REPORTS
-// ============================================
-function renderReports() {
-  const txs = STATE.transactions || [];
-  const now = new Date();
-  const ytd = txs.filter(t =>
-    new Date(t.date).getFullYear() === now.getFullYear()
-  );
-  const ytdIncome  = ytd.filter(t => t.type === 'income')
-    .reduce((s, t) => s + t.amount, 0);
-  const ytdExpense = ytd.filter(t => t.type === 'expense')
-    .reduce((s, t) => s + t.amount, 0);
-  const ytdSavings = ytdIncome - ytdExpense;
-  const rate = ytdIncome > 0
-    ? Math.round((ytdSavings / ytdIncome) * 100) : 0;
-
-  const vals = document.querySelectorAll(
-    '#section-reports .stat-card-value'
-  );
-  if (vals[0]) vals[0].textContent = formatCurrency(ytdIncome);
-  if (vals[1]) vals[1].textContent = formatCurrency(ytdExpense);
-  if (vals[2]) vals[2].textContent = formatCurrency(ytdSavings);
-  if (vals[3]) vals[3].textContent = rate + '%';
-}
-
-// ============================================
-// SECCIÓN 13: SETTINGS
-// ============================================
-function renderSettings() {
-  if (!STATE.user) return;
-  const name  = STATE.user.user_metadata?.full_name || '';
-  const email = STATE.user.email || '';
-  const nameEl  = gel('set-name');
-  const emailEl = gel('set-email');
-  if (nameEl)  nameEl.value  = name;
-  if (emailEl) emailEl.value = email;
-}
-
-function saveSettings() {
-  const currency = getVal('set-currency') || 'USD';
-  STATE.settings.currency = currency;
-  saveState();
-  showToast('✅ Configuración guardada!');
-}
-
-function setLang(lang) {
-  STATE.settings.lang = lang;
-  saveState();
-  const btnEs = gel('app-lang-es');
-  const btnEn = gel('app-lang-en');
-  if (lang === 'es') {
-    if (btnEs) btnEs.classList.add('active');
-    if (btnEn) btnEn.classList.remove('active');
-  } else {
-    if (btnEn) btnEn.classList.add('active');
-    if (btnEs) btnEs.classList.remove('active');
-  }
-  if (window.FinanceAILang) window.FinanceAILang.apply(lang);
-  showToast(lang === 'es' ? '🇪🇸 Español activado' : '🇺🇸 English activated');
-}
-
-function activateVIPCode() {
-  const input = gel('vip-code-input');
+async function sendDashChat() {
+  const input = document.getElementById('dash-chat-input');
   if (!input) return;
-  const code = input.value.trim().toUpperCase();
-  const codes = {
-    'VIPFREE2024': 'pro',    'LAUNCH50':   'personal',
-    'FINANCEAI':   'pro',    'CLIMBER2024':'business',
-    'CLIMBER':     'personal','FAMILY2024': 'pro',
-    'FOUNDER':     'business'
-  };
-  if (codes[code]) {
-    STATE.settings.plan = codes[code];
-    saveState();
-    localStorage.setItem('fai_plan', codes[code]);
-    input.value = '';
-    updateUserDisplay();
-    showToast('🎉 Plan ' + codes[code] + ' activado!');
-  } else {
-    showToast('Código VIP inválido', 'error');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  appendChatMessage('dash-chat', 'user', msg);
+  appendChatMessage('dash-chat', 'ai', '⏳ Analizando...');
+
+  try {
+    OPENAI_CONFIG.apiKey = window.OPENAI_KEY;
+    const reply = await askOpenAI(msg, getFinancialContext());
+    const msgs = document.getElementById('dash-chat');
+    if (msgs) msgs.lastChild.textContent = reply;
+  } catch(e) {
+    const msgs = document.getElementById('dash-chat');
+    if (msgs) msgs.lastChild.textContent = '❌ Error al conectar con IA. Intenta de nuevo.';
+    console.error('OpenAI error:', e);
   }
 }
 
-// ============================================
-// SECCIÓN 14: ADMIN
-// ============================================
-function checkAdminAccess() {
-  const admins = [
-    'orledisoliveros@gmail.com',
-    'admin@climberforsuccess.online',
-    'admin@financeaipro.com'
-  ];
-  const adminNav = gel('admin-nav-item');
-  if (!adminNav) return;
-  adminNav.style.display =
-    admins.includes(STATE.user?.email) ? 'flex' : 'none';
-}
+async function sendMainChat() {
+  const input = document.getElementById('main-chat-input');
+  if (!input) return;
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
 
-// ============================================
-// SECCIÓN 15: LEGAL
-// ============================================
-let lastPage = 'landing';
+  appendChatMessage('main-chat', 'user', msg);
+  appendChatMessage('main-chat', 'ai', '⏳ Analizando...');
 
-function showLegal(type) {
-  lastPage = STATE.currentPage;
-  showPage('legal');
-  const content = gel('legal-content');
-  if (!content) return;
-  const legal = {
-    privacy: `<h2 style="color:#00EEFF;margin-bottom:16px;">🔒 Privacy Policy</h2>
-      <p style="color:#8892A4;margin-bottom:16px;">Last updated: June 2025 · Climberforsuccess LLC</p>
-      <p style="line-height:1.7;margin-bottom:16px;">
-        We collect email, name, and financial data you voluntarily input.
-        We do not share your data with third parties without consent.
-      </p>
-      <p style="color:#8892A4;">privacy@climberforsuccess.online</p>`,
-    terms: `<h2 style="color:#00EEFF;margin-bottom:16px;">📋 Terms of Service</h2>
-      <p style="color:#8892A4;margin-bottom:16px;">Last updated: June 2025 · Climberforsuccess LLC</p>
-      <p style="line-height:1.7;margin-bottom:16px;">
-        By using FinanceAI Pro you agree to these terms.
-        You must be 18+ to use this service.
-      </p>
-      <p style="color:#8892A4;">legal@climberforsuccess.online</p>`,
-    cookies: `<h2 style="color:#00EEFF;margin-bottom:16px;">🍪 Cookie Policy</h2>
-      <p style="color:#8892A4;margin-bottom:16px;">Last updated: June 2025 · Climberforsuccess LLC</p>
-      <p style="line-height:1.7;margin-bottom:16px;">
-        We use localStorage for preferences and Supabase for authentication cookies.
-      </p>
-      <p style="color:#8892A4;">privacy@climberforsuccess.online</p>`
-  };
-  content.innerHTML = legal[type] || legal.privacy;
-}
-
-// ============================================
-// SECCIÓN 16: INIT
-// ============================================
-document.addEventListener('DOMContentLoaded', async function() {
-  // Ocultar todo inmediatamente
-  document.querySelectorAll('.page').forEach(p => {
-    p.classList.remove('active');
-    p.style.display = 'none';
-  });
-  await initApp();
-
-  // Detectar si viene de login
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get("login") === "true") {
-    const { data } = await supabase.auth.getSession();
-    if (data.session) {
-      showPage("app");
-      showSection("dashboard");
-    }
+  try {
+    OPENAI_CONFIG.apiKey = window.OPENAI_KEY;
+    const reply = await askOpenAI(msg, getFinancialContext());
+    const msgs = document.getElementById('main-chat');
+    if (msgs) msgs.lastChild.textContent = reply;
+  } catch(e) {
+    const msgs = document.getElementById('main-chat');
+    if (msgs) msgs.lastChild.textContent = '❌ Error al conectar con IA. Intenta de nuevo.';
+    console.error('OpenAI error:', e);
   }
-});
+}
+
+async function quickChat(msg) {
+  const input = document.getElementById('main-chat-input');
+  if (input) input.value = msg;
+  await sendMainChat();
+}
