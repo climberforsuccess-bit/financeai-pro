@@ -166,6 +166,30 @@ function scrollToSection(sectionId) {
 // ============================================
 // SECCIÓN 4: AUTH
 // ============================================
+async function loadTransactions() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return;
+
+  const { data, error } = await supabase
+    .from('transactions')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('date', { ascending: false });
+
+  if (error) { console.error('Error cargando transacciones:', error); return; }
+
+  STATE.transactions = data.map(t => ({
+    id: t.id,
+    description: t.description,
+    amount: t.amount,
+    type: t.type,
+    category: t.category,
+    expenseType: t.expense_type,
+    date: t.date,
+    createdAt: t.created_at
+  }));
+}
+
 async function initApp() {
   // Ocultar todas las páginas primero
   document.querySelectorAll('.page').forEach(p => {
@@ -182,6 +206,7 @@ async function initApp() {
         STATE.user = session.user;
         const savedPlan = localStorage.getItem('fai_plan');
         if (savedPlan) STATE.settings.plan = savedPlan;
+        await loadTransactions();
         showPage('app');
         showSection('dashboard');
         updateUserDisplay();
@@ -441,7 +466,7 @@ function openAddTransaction() {
   document.body.appendChild(modal);
 }
 
-function saveTransaction() {
+async function saveTransaction() {
   const desc   = getVal('tx-desc').trim();
   const amount = parseFloat(getVal('tx-amount'));
   const type   = getVal('tx-type')     || 'expense';
@@ -449,30 +474,54 @@ function saveTransaction() {
   const etype  = getVal('tx-etype')    || 'personal';
   const date   = getVal('tx-date')     || new Date().toISOString().split('T')[0];
 
-  if (!desc)          { showToast('Ingresa una descripción', 'error'); return; }
+  if (!desc)               { showToast('Ingresa una descripción', 'error'); return; }
   if (!amount || amount <= 0) { showToast('Ingresa un monto válido', 'error'); return; }
 
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) { showToast('No hay sesión activa', 'error'); return; }
+
+  const { data, error } = await supabase
+    .from('transactions')
+    .insert([{
+      user_id:      session.user.id,
+      description:  desc,
+      amount:       amount,
+      type:         type,
+      category:     cat,
+      expense_type: etype,
+      date:         date
+    }])
+    .select()
+    .single();
+
+  if (error) { showToast('Error: ' + error.message, 'error'); return; }
+
   STATE.transactions.push({
-    id: Date.now(), description: desc,
-    amount, type, category: cat,
-    expenseType: etype, date,
-    createdAt: new Date().toISOString()
+    id: data.id, description: data.description,
+    amount: data.amount, type: data.type,
+    category: data.category, expenseType: data.expense_type,
+    date: data.date, createdAt: data.created_at
   });
-  saveState();
-  const modal = gel('modal-tx');
-  if (modal) modal.remove();
+
+  gel('modal-tx')?.remove();
   showToast('✅ Transacción guardada!');
   renderTransactions();
   renderDashboard();
   detectSubscriptionsFromTransactions();
 }
 
-function deleteTransaction(id) {
+async function deleteTransaction(id) {
+  const { error } = await supabase
+    .from('transactions')
+    .delete()
+    .eq('id', id);
+
+  if (error) { showToast('Error eliminando: ' + error.message, 'error'); return; }
+
   STATE.transactions = STATE.transactions.filter(t => t.id !== id);
-  saveState();
   renderTransactions();
   renderDashboard();
-  showToast('Transacción eliminada');
+  showToast('🗑️ Transacción eliminada');
 }
 
 // ============================================
