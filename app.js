@@ -705,7 +705,7 @@ function renderCards() {
       <div class="credit-card-visual"
         style="background:${gradients[c.type] || gradients.other};">
         <div class="card-chip">💳</div>
-        <div class="card-number">•••• •••• •••• ****</div>
+        <div class="card-number">•••• •••• •••• ${c.lastFour || '****'}</div>
         <div class="card-meta">
           <div>
             <div style="font-size:11px;color:#8892A4;">TARJETA</div>
@@ -720,7 +720,7 @@ function renderCards() {
           border-top:1px solid rgba(255,255,255,0.1);">
           <div style="display:flex;justify-content:space-between;
             font-size:12px;margin-bottom:6px;">
-            <span style="color:#8892A4;">${c.type?.toUpperCase()} · ${c.apr || 0}% APR</span>
+            <span style="color:#8892A4;">${c.type?.toUpperCase()} · ${c.apr || 0}% APR${c.dueDate ? ' · Vence día ' + c.dueDate : ''}</span>
             <span style="color:${pct > 70 ? '#FF4757' : '#FF6B35'};">
               ${formatCurrency(c.balance || 0)} usado
             </span>
@@ -794,6 +794,27 @@ function openAddCard() {
         <input type="number" id="c-apr"
           step="0.1" placeholder="24.99" style="width:100%;">
       </div>
+      <div class="form-group">
+        <label>Últimos 4 dígitos</label>
+        <input type="text" id="c-last-four"
+          placeholder="1234" maxlength="4" style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Día de pago (1-31)</label>
+        <input type="number" id="c-due-date"
+          placeholder="15" min="1" max="31" style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Color de tarjeta</label>
+        <select id="c-color" style="width:100%;">
+          <option value="#00EEFF">Cyan (default)</option>
+          <option value="#00FF88">Verde</option>
+          <option value="#FF6B35">Naranja</option>
+          <option value="#A855F7">Morado</option>
+          <option value="#FF4757">Rojo</option>
+          <option value="#FFD700">Dorado</option>
+        </select>
+      </div>
       <button onclick="saveCard()" class="btn btn-primary"
         style="width:100%;margin-top:8px;">
         💾 Guardar Tarjeta
@@ -826,8 +847,9 @@ async function saveCard() {
         user_id: session.user.id,
         name,
         card_type: type,
-        limit_amount: limit,
-        balance,
+        credit_limit: limit,
+        current_balance: balance,
+        interest_rate: apr,
         last_four: lastFour,
         due_date: dueDate,
         color
