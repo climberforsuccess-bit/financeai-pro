@@ -1313,3 +1313,21 @@ function doLogin() {
     showPage('app');
     showSection('dashboard');
 }
+
+// ============================================
+// EMERGENCY INIT FIX
+// ============================================
+(function() {
+  // Ocultar todo inmediatamente
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+  
+  // Mostrar solo landing por defecto
+  const landing = document.getElementById('landing');
+  if (landing) {
+    landing.classList.add('active');
+    landing.style.display = 'block';
+  }
+})();
