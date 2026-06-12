@@ -274,6 +274,12 @@ async function initApp() {
   });
 
   loadState();
+  if (localStorage.getItem('fai_just_logged_in') === 'true') {
+    localStorage.removeItem('fai_just_logged_in');
+  }
+  if (localStorage.getItem('fai_just_logged_in') === 'true') {
+    localStorage.removeItem('fai_just_logged_in');
+  }
 
   try {
     if (typeof supabase !== 'undefined') {

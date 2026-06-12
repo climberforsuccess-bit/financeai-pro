@@ -35,7 +35,9 @@ async function doLogin() {
     }
 
   // Success - redirect to app
+localStorage.setItem('fai_just_logged_in', 'true');
 localStorage.setItem('financeai_user', JSON.stringify(data.user));
+localStorage.setItem('fai_just_logged_in', 'true');
 setTimeout(() => {
   window.location.replace('index.html');
 }, 500);
