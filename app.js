@@ -155,7 +155,7 @@ function showSection(sectionId) {
   if (sectionId === 'settings')      renderSettings();
 }
 
-function scrollTo(sectionId) {
+function scrollToSection(sectionId) {
   showPage('landing');
   setTimeout(() => {
     const el = gel(sectionId);
