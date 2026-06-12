@@ -235,6 +235,8 @@ async function loadDebts() {
     originalBalance: d.total_amount,
     apr: d.interest_rate,
     minPayment: d.minimum_payment,
+    dueDate: d.due_date,
+    debtType: d.debt_type,
     createdAt: d.created_at
   }));
 }
@@ -256,7 +258,10 @@ async function loadSubscriptions() {
     name: s.name,
     amount: s.amount,
     category: s.category,
-    billingDay: new Date(s.next_billing_date).getDate(),
+    billingCycle: s.billing_cycle,
+    nextBillingDate: s.next_billing_date,
+    billingDay: s.next_billing_date ? new Date(s.next_billing_date).getDate() : null,
+    status: s.status,
     createdAt: s.created_at
   }));
 }
@@ -1014,10 +1019,12 @@ function openAddDebt() {
 
 async function saveDebt() {
   const name       = getVal('d-name').trim();
-  const balance    = parseFloat(getVal('d-balance')) || 0;
-  const apr        = parseFloat(getVal('d-apr'))     || 0;
-  const minPayment = parseFloat(getVal('d-min'))     || 0;
-  if (!name)      { showToast('El nombre es requerido', 'error'); return; }
+  const balance    = parseFloat(getVal('d-balance'))  || 0;
+  const apr        = parseFloat(getVal('d-apr'))      || 0;
+  const minPayment = parseFloat(getVal('d-min'))      || 0;
+  const dueDate    = parseInt(getVal('d-due-date'))   || null;
+  const debtType   = getVal('d-type')                 || 'credit_card';
+  if (!name)        { showToast('El nombre es requerido', 'error'); return; }
   if (balance <= 0) { showToast('Ingresa un balance válido', 'error'); return; }
 
   try {
@@ -1032,7 +1039,9 @@ async function saveDebt() {
         current_balance: balance,
         total_amount: balance,
         interest_rate: apr,
-        minimum_payment: minPayment
+        minimum_payment: minPayment,
+        due_date: dueDate,
+        debt_type: debtType
       }])
       .select()
       .single();
@@ -1042,6 +1051,7 @@ async function saveDebt() {
     STATE.debts.push({
       id: data.id, name, balance, apr,
       minPayment, originalBalance: balance,
+      dueDate, debtType,
       createdAt: data.created_at
     });
 
@@ -1234,6 +1244,9 @@ async function saveSubscription() {
     STATE.subscriptions.push({
       id: data.id, name, amount,
       billingDay, category,
+      billingCycle: 'monthly',
+      nextBillingDate: nextDate.toISOString().split('T')[0],
+      status: 'active',
       createdAt: data.created_at
     });
 
