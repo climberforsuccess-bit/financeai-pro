@@ -1462,29 +1462,62 @@ function showUpgradePrompt() {
     display: flex; align-items: center; justify-content: center;
   `;
   modal.innerHTML = `
-    <div style="background: #1e293b; border-radius: 16px; padding: 32px; max-width: 340px; width: 90%; text-align: center; border: 1px solid #f59e0b;">
-      <div style="font-size: 48px; margin-bottom: 12px;">🌟</div>
-      <h2 style="color: #f59e0b; margin-bottom: 8px;">¡Actualiza a VIP!</h2>
-      <p style="color: #94a3b8; margin-bottom: 8px;">Alcanzaste tu límite de <strong style="color:#fff">5 mensajes diarios</strong> del plan gratuito.</p>
-      <div style="background: #0f172a; border-radius: 12px; padding: 16px; margin: 16px 0;">
-        <p style="color: #f59e0b; font-size: 24px; font-weight: bold; margin: 0;">$9.99<span style="font-size:14px; color:#94a3b8">/mes</span></p>
-        <ul style="color: #94a3b8; text-align: left; margin: 12px 0; padding-left: 20px; font-size: 14px;">
-          <li>✅ Mensajes IA ilimitados</li>
-          <li>✅ GPT-4o (más inteligente)</li>
-          <li>✅ Scanner de recibos</li>
-          <li>✅ Reportes avanzados</li>
-          <li>✅ Sin anuncios</li>
-        </ul>
+    <div style="background: #1e293b; border-radius: 20px; padding: 28px 24px; max-width: 360px; width: 92%; text-align: center; border: 1px solid #f59e0b; box-shadow: 0 0 40px rgba(245,158,11,0.2);">
+      
+      <!-- Header -->
+      <div style="font-size: 52px; margin-bottom: 4px;">🚀</div>
+      <h2 style="color: #fff; font-size: 20px; margin-bottom: 4px;">Tu dinero merece más inteligencia</h2>
+      <p style="color: #94a3b8; font-size: 13px; margin-bottom: 16px;">Usaste tus 5 mensajes de hoy. Los usuarios VIP ahorran en promedio <strong style="color:#f59e0b;">$200+ al mes</strong> gracias a la IA avanzada.</p>
+
+      <!-- Benefits -->
+      <div style="background: #0f172a; border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: left;">
+        <p style="color: #f59e0b; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;">✨ Con VIP tendrás acceso a:</p>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:18px;">💬</span>
+            <span style="color:#e2e8f0; font-size:13px;"><strong>Mensajes IA ilimitados</strong> — pregunta todo lo que necesites</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:18px;">🧠</span>
+            <span style="color:#e2e8f0; font-size:13px;"><strong>GPT-4o</strong> — la IA más inteligente para tus finanzas</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:18px;">📸</span>
+            <span style="color:#e2e8f0; font-size:13px;"><strong>Scanner de recibos</strong> — registra gastos con una foto</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:18px;">📊</span>
+            <span style="color:#e2e8f0; font-size:13px;"><strong>Reportes avanzados</strong> — ve a dónde va cada centavo</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:18px;">🎯</span>
+            <span style="color:#e2e8f0; font-size:13px;"><strong>Metas financieras</strong> — alcanza tus objetivos más rápido</span>
+          </div>
+        </div>
       </div>
+
+      <!-- Price -->
+      <div style="margin-bottom: 16px;">
+        <p style="color:#94a3b8; font-size:12px; margin-bottom:4px;">Todo esto por solo</p>
+        <p style="color: #f59e0b; font-size: 32px; font-weight: bold; margin: 0;">$9.99<span style="font-size:14px; color:#94a3b8;">/mes</span></p>
+        <p style="color:#64748b; font-size:11px;">Menos que un café ☕ — cancela cuando quieras</p>
+      </div>
+
+      <!-- CTA -->
       <button onclick="showPage('settings'); document.getElementById('upgradeModal').remove();"
-        style="width:100%; padding: 14px; background: linear-gradient(135deg, #f59e0b, #d97706);
-        border: none; border-radius: 10px; color: #000; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 8px;">
-        🚀 Upgrade a VIP — $9.99/mes
+        style="width:100%; padding: 16px; background: linear-gradient(135deg, #f59e0b, #d97706);
+        border: none; border-radius: 12px; color: #000; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px;
+        box-shadow: 0 4px 20px rgba(245,158,11,0.4); letter-spacing: 0.5px;">
+        🌟 Quiero ser VIP ahora
       </button>
+      
+      <!-- Social proof -->
+      <p style="color:#64748b; font-size:11px; margin-bottom: 10px;">⭐⭐⭐⭐⭐ Más de 500 usuarios ya controlan sus finanzas</p>
+
       <button onclick="document.getElementById('upgradeModal').remove();"
         style="width:100%; padding: 10px; background: transparent;
-        border: 1px solid #334155; border-radius: 10px; color: #94a3b8; cursor: pointer; font-size: 14px;">
-        Continuar gratis (resetea mañana)
+        border: 1px solid #1e293b; border-radius: 10px; color: #475569; cursor: pointer; font-size: 12px;">
+        No, prefiero seguir limitado
       </button>
     </div>
   `;
