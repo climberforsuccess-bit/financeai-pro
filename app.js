@@ -860,7 +860,7 @@ async function saveCard() {
         card_type: type,
         limit_amount: limit,
         balance: balance,
-        
+        apr,
         last_four: lastFour,
         due_date: dueDate,
         color
