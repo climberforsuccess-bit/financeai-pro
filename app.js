@@ -1367,17 +1367,29 @@ async function sendDashChat() {
   if (!msg) return;
   input.value = '';
 
+  // Verificar límite antes de enviar
+  if (!hasAIMessagesLeft()) {
+    appendChatMessage('dash-chat', 'user', msg);
+    appendChatMessage('dash-chat', 'ai', '🔒 Alcanzaste tu límite de 5 mensajes hoy. ¡Actualiza a VIP para mensajes ilimitados! 🌟');
+    showUpgradePrompt();
+    return;
+  }
+
   appendChatMessage('dash-chat', 'user', msg);
   appendChatMessage('dash-chat', 'ai', '⏳ Analizando...');
 
   try {
-    OPENAI_CONFIG.apiKey = window.OPENAI_KEY;
     const reply = await askOpenAI(msg, getFinancialContext());
     const msgs = document.getElementById('dash-chat');
     if (msgs) msgs.lastChild.textContent = reply;
   } catch(e) {
     const msgs = document.getElementById('dash-chat');
-    if (msgs) msgs.lastChild.textContent = '❌ Error al conectar con IA. Intenta de nuevo.';
+    if (e.message === 'LIMIT_REACHED') {
+      msgs.lastChild.textContent = '🔒 Límite diario alcanzado. ¡Actualiza a VIP! 🌟';
+      showUpgradePrompt();
+    } else {
+      msgs.lastChild.textContent = '❌ Error al conectar con IA. Intenta de nuevo.';
+    }
     console.error('OpenAI error:', e);
   }
 }
@@ -1389,17 +1401,29 @@ async function sendMainChat() {
   if (!msg) return;
   input.value = '';
 
+  // Verificar límite antes de enviar
+  if (!hasAIMessagesLeft()) {
+    appendChatMessage('main-chat', 'user', msg);
+    appendChatMessage('main-chat', 'ai', '🔒 Alcanzaste tu límite de 5 mensajes hoy. ¡Actualiza a VIP para mensajes ilimitados! 🌟');
+    showUpgradePrompt();
+    return;
+  }
+
   appendChatMessage('main-chat', 'user', msg);
   appendChatMessage('main-chat', 'ai', '⏳ Analizando...');
 
   try {
-    OPENAI_CONFIG.apiKey = window.OPENAI_KEY;
     const reply = await askOpenAI(msg, getFinancialContext());
     const msgs = document.getElementById('main-chat');
     if (msgs) msgs.lastChild.textContent = reply;
   } catch(e) {
     const msgs = document.getElementById('main-chat');
-    if (msgs) msgs.lastChild.textContent = '❌ Error al conectar con IA. Intenta de nuevo.';
+    if (e.message === 'LIMIT_REACHED') {
+      msgs.lastChild.textContent = '🔒 Límite diario alcanzado. ¡Actualiza a VIP! 🌟';
+      showUpgradePrompt();
+    } else {
+      msgs.lastChild.textContent = '❌ Error al conectar con IA. Intenta de nuevo.';
+    }
     console.error('OpenAI error:', e);
   }
 }
@@ -1424,3 +1448,45 @@ function checkAdminAccess() {
 document.addEventListener('DOMContentLoaded', () => {
   initApp();
 });
+
+// ── Upgrade Prompt ─────────────────────────────────────────
+function showUpgradePrompt() {
+  const existing = document.getElementById('upgradeModal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'upgradeModal';
+  modal.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+  `;
+  modal.innerHTML = `
+    <div style="background: #1e293b; border-radius: 16px; padding: 32px; max-width: 340px; width: 90%; text-align: center; border: 1px solid #f59e0b;">
+      <div style="font-size: 48px; margin-bottom: 12px;">🌟</div>
+      <h2 style="color: #f59e0b; margin-bottom: 8px;">¡Actualiza a VIP!</h2>
+      <p style="color: #94a3b8; margin-bottom: 8px;">Alcanzaste tu límite de <strong style="color:#fff">5 mensajes diarios</strong> del plan gratuito.</p>
+      <div style="background: #0f172a; border-radius: 12px; padding: 16px; margin: 16px 0;">
+        <p style="color: #f59e0b; font-size: 24px; font-weight: bold; margin: 0;">$9.99<span style="font-size:14px; color:#94a3b8">/mes</span></p>
+        <ul style="color: #94a3b8; text-align: left; margin: 12px 0; padding-left: 20px; font-size: 14px;">
+          <li>✅ Mensajes IA ilimitados</li>
+          <li>✅ GPT-4o (más inteligente)</li>
+          <li>✅ Scanner de recibos</li>
+          <li>✅ Reportes avanzados</li>
+          <li>✅ Sin anuncios</li>
+        </ul>
+      </div>
+      <button onclick="showPage('settings'); document.getElementById('upgradeModal').remove();"
+        style="width:100%; padding: 14px; background: linear-gradient(135deg, #f59e0b, #d97706);
+        border: none; border-radius: 10px; color: #000; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 8px;">
+        🚀 Upgrade a VIP — $9.99/mes
+      </button>
+      <button onclick="document.getElementById('upgradeModal').remove();"
+        style="width:100%; padding: 10px; background: transparent;
+        border: 1px solid #334155; border-radius: 10px; color: #94a3b8; cursor: pointer; font-size: 14px;">
+        Continuar gratis (resetea mañana)
+      </button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
