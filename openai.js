@@ -6,7 +6,7 @@ const OPENAI_CONFIG = {
   dailyLimit_vip: 999
 };
 
-const SUPABASE_FUNCTION_URL = 'https://rqrpazkkwoixtpiqtdfu.supabase.co/functions/v1/openai-proxy';
+const SUPABASE_FUNCTION_URL = 'https://rqrpazkkwolxtpiqtdfu.supabase.co/functions/v1/openai-proxy';
 
 async function initOpenAI() {
   console.log('OpenAI proxy ready via Supabase Edge Function');
