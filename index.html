@@ -2510,103 +2510,81 @@ body {
         <span class="badge badge-danger">ADMIN</span>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;margin-bottom:32px;">
+      <!-- Stats reales -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:28px;">
         <div class="admin-stat">
-          <div class="admin-stat-value">247</div>
+          <div class="admin-stat-value" id="admin-total-users">—</div>
           <div class="admin-stat-label">👥 Usuarios Totales</div>
         </div>
         <div class="admin-stat">
-          <div class="admin-stat-value">38</div>
-          <div class="admin-stat-label">💳 Usuarios Pagos</div>
+          <div class="admin-stat-value" id="admin-vip-users">—</div>
+          <div class="admin-stat-label">👑 Usuarios VIP</div>
         </div>
         <div class="admin-stat">
-          <div class="admin-stat-value">$624</div>
-          <div class="admin-stat-label">💰 MRR (Mensual)</div>
+          <div class="admin-stat-value" id="admin-codes-used">—</div>
+          <div class="admin-stat-label">🎁 Códigos Usados</div>
         </div>
         <div class="admin-stat">
-          <div class="admin-stat-value">15.4%</div>
-          <div class="admin-stat-label">📊 Conversión</div>
-        </div>
-        <div class="admin-stat">
-          <div class="admin-stat-value">$7,488</div>
-          <div class="admin-stat-label">📈 ARR (Anual)</div>
+          <div class="admin-stat-value" id="admin-ai-calls">—</div>
+          <div class="admin-stat-label">🤖 Llamadas IA Hoy</div>
         </div>
       </div>
 
       <div class="content-grid">
-        <div class="card">
-          <div class="card-title" style="margin-bottom:20px;">👥 Usuarios Recientes</div>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>USUARIO</th>
-                <th>PLAN</th>
-                <th>PAÍS</th>
-                <th>ESTADO</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>maria@email.com</td>
-                <td><span class="badge badge-cyan">Pro</span></td>
-                <td>🇺🇸 USA</td>
-                <td><span class="badge badge-success">Activo</span></td>
-              </tr>
-              <tr>
-                <td>carlos@email.com</td>
-                <td><span class="badge badge-success">Personal</span></td>
-                <td>🇲🇽 MX</td>
-                <td><span class="badge badge-success">Activo</span></td>
-              </tr>
-              <tr>
-                <td>ana@email.com</td>
-                <td><span class="badge badge-warning">Business</span></td>
-                <td>🇨🇴 CO</td>
-                <td><span class="badge badge-success">Activo</span></td>
-              </tr>
-              <tr>
-                <td>luis@email.com</td>
-                <td>Free</td>
-                <td>🇦🇷 AR</td>
-                <td><span class="badge badge-danger">Inactivo</span></td>
-              </tr>
-              <tr>
-                <td>sofia@email.com</td>
-                <td><span class="badge badge-cyan">Pro</span></td>
-                <td>🇨🇱 CL</td>
-                <td><span class="badge badge-success">Activo</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
 
+        <!-- Gestión de Códigos VIP -->
         <div class="card">
-          <div class="card-title" style="margin-bottom:20px;">💰 Ingresos por Plan</div>
-          <div style="display:flex;flex-direction:column;gap:16px;">
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-                <span>Personal ($9.99)</span>
-                <span style="color:var(--success);">$199.80 · 20 usuarios</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill success" style="width:32%"></div></div>
+          <div class="card-title" style="margin-bottom:20px;">🎁 Gestión de Códigos VIP</div>
+
+          <!-- Generar nuevo código -->
+          <div style="background:#0f172a; border-radius:12px; padding:16px; margin-bottom:16px;">
+            <p style="color:#94a3b8; font-size:13px; margin-bottom:12px;">Generar nuevo código:</p>
+            <div style="display:flex; gap:8px; margin-bottom:10px;">
+              <select id="admin-code-plan" style="flex:1; padding:10px; background:#1e293b; border:1px solid #334155; border-radius:8px; color:#fff; font-size:13px;">
+                <option value="Personal">⚡ VIP Personal</option>
+                <option value="Familia">👨‍👩‍👧 VIP Familia</option>
+              </select>
+              <select id="admin-code-months" style="flex:1; padding:10px; background:#1e293b; border:1px solid #334155; border-radius:8px; color:#fff; font-size:13px;">
+                <option value="1">1 mes</option>
+                <option value="3">3 meses</option>
+                <option value="6">6 meses</option>
+                <option value="12">1 año</option>
+              </select>
             </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-                <span>Pro ($19.99)</span>
-                <span style="color:var(--accent);">$299.85 · 15 usuarios</span>
+            <button onclick="adminGenerateCode()"
+              style="width:100%; padding:10px; background:linear-gradient(135deg,#f59e0b,#d97706);
+              border:none; border-radius:8px; color:#000; font-weight:bold; cursor:pointer; font-size:13px;">
+              ✨ Generar Código
+            </button>
+            <div id="admin-generated-code" style="margin-top:10px; display:none;">
+              <div style="background:#1e293b; border:1px solid #f59e0b; border-radius:8px; padding:12px; text-align:center;">
+                <p style="color:#94a3b8; font-size:11px; margin-bottom:4px;">Código generado:</p>
+                <p id="admin-code-display" style="color:#f59e0b; font-size:18px; font-weight:bold; letter-spacing:3px; margin:0;"></p>
+                <button onclick="adminCopyCode()"
+                  style="margin-top:8px; padding:6px 16px; background:#334155; border:none; border-radius:6px; color:#fff; cursor:pointer; font-size:12px;">
+                  📋 Copiar
+                </button>
               </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:48%"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-                <span>Business ($49.99)</span>
-                <span style="color:var(--warning);">$149.97 · 3 usuarios</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill warning" style="width:24%"></div></div>
             </div>
           </div>
 
-          <div style="margin-top:24px;">
+          <!-- Códigos generados -->
+          <div>
+            <p style="color:#94a3b8; font-size:13px; margin-bottom:10px;">Códigos generados esta sesión:</p>
+            <div id="admin-codes-list" style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;">
+              <p style="color:#475569; font-size:12px; text-align:center;">No hay códigos generados aún</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats y códigos usados -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:20px;">📊 Códigos VIP Usados</div>
+          <div id="admin-used-codes-list" style="display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto;">
+            <p style="color:#475569; font-size:12px; text-align:center;">Cargando...</p>
+          </div>
+
+          <div style="margin-top:20px; padding-top:16px; border-top:1px solid #1e293b;">
             <div class="card-title" style="margin-bottom:16px;">🌟 Activar Plan VIP</div>
 
             <!-- Estado actual -->

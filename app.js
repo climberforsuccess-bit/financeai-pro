@@ -1615,3 +1615,119 @@ function updateVIPStatus() {
     if (sub)   sub.style.color = '#64748b';
   }
 }
+
+// ── Admin Panel Functions ────────────────────────────────────
+const ADMIN_GENERATED_CODES = [];
+
+function adminGenerateCode() {
+  const plan   = document.getElementById('admin-code-plan')?.value || 'Personal';
+  const months = document.getElementById('admin-code-months')?.value || '1';
+
+  // Generar código único
+  const chars  = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const part1  = Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+  const part2  = Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+  const prefix = plan === 'Familia' ? 'FAM' : 'VIP';
+  const code   = `${prefix}-${part1}-${part2}`;
+
+  // Guardar en memoria y localStorage
+  const entry = { code, plan, months: parseInt(months), created: new Date().toISOString(), used: false };
+  ADMIN_GENERATED_CODES.push(entry);
+
+  const stored = JSON.parse(localStorage.getItem('fai_admin_codes') || '[]');
+  stored.push(entry);
+  localStorage.setItem('fai_admin_codes', JSON.stringify(stored));
+
+  // Agregar al sistema VIP_CODES dinámicamente
+  VIP_CODES[code] = { plan, months: parseInt(months) };
+
+  // Mostrar código generado
+  const display = document.getElementById('admin-code-display');
+  const box     = document.getElementById('admin-generated-code');
+  if (display) display.textContent = code;
+  if (box)     box.style.display   = 'block';
+
+  // Actualizar lista
+  adminRefreshCodesList();
+  adminLoadStats();
+  showToast(`✅ Código ${code} generado — ${plan} ${months} mes(es)`, 'success');
+}
+
+function adminCopyCode() {
+  const code = document.getElementById('admin-code-display')?.textContent;
+  if (!code) return;
+  navigator.clipboard.writeText(code).then(() => {
+    showToast('📋 Código copiado al portapapeles', 'success');
+  });
+}
+
+function adminRefreshCodesList() {
+  const list = document.getElementById('admin-codes-list');
+  if (!list) return;
+
+  const stored = JSON.parse(localStorage.getItem('fai_admin_codes') || '[]');
+  if (stored.length === 0) {
+    list.innerHTML = '<p style="color:#475569; font-size:12px; text-align:center;">No hay códigos generados aún</p>';
+    return;
+  }
+
+  list.innerHTML = stored.slice().reverse().map(entry => `
+    <div style="background:#0f172a; border-radius:8px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <span style="color:#f59e0b; font-size:13px; font-weight:bold; letter-spacing:1px;">${entry.code}</span>
+        <span style="color:#64748b; font-size:11px; margin-left:8px;">${entry.plan} · ${entry.months}m</span>
+      </div>
+      <div style="display:flex; gap:6px; align-items:center;">
+        ${entry.used
+          ? '<span style="color:#22c55e; font-size:11px;">✅ Usado</span>'
+          : '<span style="color:#94a3b8; font-size:11px;">⏳ Pendiente</span>'}
+        <button onclick="navigator.clipboard.writeText(\'${entry.code}\').then(()=>showToast(\'📋 Copiado\',\'success\'))"
+          style="padding:3px 8px; background:#334155; border:none; border-radius:4px; color:#fff; cursor:pointer; font-size:11px;">
+          📋
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function adminLoadUsedCodes() {
+  const list = document.getElementById('admin-used-codes-list');
+  if (!list) return;
+
+  const usedCodes = JSON.parse(localStorage.getItem('fai_used_codes') || '[]');
+  if (usedCodes.length === 0) {
+    list.innerHTML = '<p style="color:#475569; font-size:12px; text-align:center;">Ningún código activado aún</p>';
+    return;
+  }
+
+  list.innerHTML = usedCodes.map(code => {
+    const stored = JSON.parse(localStorage.getItem('fai_admin_codes') || '[]');
+    const entry  = stored.find(e => e.code === code);
+    return `
+      <div style="background:#0f172a; border-radius:8px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span style="color:#22c55e; font-size:13px; font-weight:bold;">${code}</span>
+          ${entry ? `<span style="color:#64748b; font-size:11px; margin-left:8px;">${entry.plan} · ${entry.months}m</span>` : ''}
+        </div>
+        <span style="color:#22c55e; font-size:11px;">✅ Activado</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function adminLoadStats() {
+  const stored   = JSON.parse(localStorage.getItem('fai_admin_codes') || '[]');
+  const used     = JSON.parse(localStorage.getItem('fai_used_codes') || '[]');
+  const aiDate   = localStorage.getItem('fai_ai_date');
+  const today    = new Date().toISOString().split('T')[0];
+  const aiCalls  = aiDate === today ? parseInt(localStorage.getItem('fai_ai_count') || '0') : 0;
+
+  const el = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
+  el('admin-total-users', '1+');
+  el('admin-vip-users',   STATE.isVIP ? '1' : '0');
+  el('admin-codes-used',  used.length);
+  el('admin-ai-calls',    aiCalls);
+
+  adminRefreshCodesList();
+  adminLoadUsedCodes();
+}
