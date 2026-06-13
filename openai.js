@@ -7,6 +7,7 @@ const OPENAI_CONFIG = {
 };
 
 const SUPABASE_FUNCTION_URL = 'https://rqrpazkkwolxtpiqtdfu.supabase.co/functions/v1/openai-proxy';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxcnBhemtrd29seHRwaXF0ZGZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM4MDE3NzUsImV4cCI6MjA1OTM3Nzc3NX0.Qm-cOPMUosx1QxwTEd_3FKsEMEJBWAHejj7XQBC0xNQ';
 
 async function initOpenAI() {
   console.log('OpenAI proxy ready via Supabase Edge Function');
@@ -31,7 +32,8 @@ Responde en español, de forma concisa (máximo 3 oraciones), con consejos finan
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxcnBhemtrd29peHRwaXF0ZGZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM4MDE3NzUsImV4cCI6MjA1OTM3Nzc3NX0.Qm-cOPMUosx1QxwTEd_3FKsEMEJBWAHejj7XQBC0xNQ'
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'apikey': SUPABASE_ANON_KEY
     },
     body: JSON.stringify({
       model: model,
