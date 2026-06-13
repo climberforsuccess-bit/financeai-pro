@@ -1523,3 +1523,95 @@ function showUpgradePrompt() {
   `;
   document.body.appendChild(modal);
 }
+
+// ── VIP Code System ─────────────────────────────────────────
+const VIP_CODES = {
+  'VIP-GOLD-2024': { plan: 'Personal', months: 1 },
+  'VIP-GOLD-6MOS': { plan: 'Personal', months: 6 },
+  'VIP-GOLD-YEAR': { plan: 'Personal', months: 12 },
+  'VIP-FAM-2024':  { plan: 'Familia',  months: 1 },
+  'VIP-FAM-6MOS':  { plan: 'Familia',  months: 6 },
+  'VIP-FAM-YEAR':  { plan: 'Familia',  months: 12 },
+  'VIP-BETA-FREE': { plan: 'Personal', months: 3 },
+  'VIP-PROMO-50':  { plan: 'Personal', months: 1 },
+};
+
+function activateVIPCode() {
+  const input = document.getElementById('vip-code-input');
+  const msg   = document.getElementById('vip-code-msg');
+  if (!input || !msg) return;
+
+  const code = input.value.trim().toUpperCase();
+  if (!code) {
+    msg.style.color = '#ef4444';
+    msg.textContent = '❌ Ingresa un código válido.';
+    return;
+  }
+
+  // Verificar si ya fue usado
+  const usedCodes = JSON.parse(localStorage.getItem('fai_used_codes') || '[]');
+  if (usedCodes.includes(code)) {
+    msg.style.color = '#ef4444';
+    msg.textContent = '❌ Este código ya fue usado.';
+    return;
+  }
+
+  const vipData = VIP_CODES[code];
+  if (!vipData) {
+    msg.style.color = '#ef4444';
+    msg.textContent = '❌ Código inválido. Verifica e intenta de nuevo.';
+    return;
+  }
+
+  // Activar VIP
+  const expiry = new Date();
+  expiry.setMonth(expiry.getMonth() + vipData.months);
+
+  STATE.isVIP    = true;
+  STATE.vipPlan  = vipData.plan;
+  STATE.vipExpiry = expiry.toISOString();
+  saveState();
+
+  // Marcar código como usado
+  usedCodes.push(code);
+  localStorage.setItem('fai_used_codes', JSON.stringify(usedCodes));
+
+  // Actualizar UI
+  input.value = '';
+  msg.style.color = '#22c55e';
+  msg.textContent = `✅ ¡Código activado! Plan VIP ${vipData.plan} por ${vipData.months} mes(es).`;
+
+  updateVIPStatus();
+  showToast(`🌟 ¡Bienvenido a VIP ${vipData.plan}! Disfruta tus beneficios.`, 'success');
+
+  // Reset contador IA
+  localStorage.removeItem('fai_ai_count');
+  localStorage.removeItem('fai_ai_date');
+  updateAICounter();
+}
+
+function updateVIPStatus() {
+  const icon  = document.getElementById('vip-status-icon');
+  const label = document.getElementById('vip-status-label');
+  const sub   = document.getElementById('vip-status-sub');
+  const name  = document.getElementById('vip-plan-name');
+
+  if (!icon) return;
+
+  if (STATE.isVIP) {
+    const expiry = new Date(STATE.vipExpiry);
+    const days   = Math.ceil((expiry - new Date()) / (1000*60*60*24));
+
+    icon.textContent  = '👑';
+    if (name) name.textContent = `VIP ${STATE.vipPlan}`;
+    if (label) label.innerHTML = `Plan actual: <strong style="color:#f59e0b;">VIP ${STATE.vipPlan}</strong>`;
+    if (sub)   sub.textContent = `Mensajes ilimitados · Vence en ${days} días`;
+    if (sub)   sub.style.color = days < 7 ? '#ef4444' : '#22c55e';
+  } else {
+    icon.textContent  = '🔓';
+    if (name) name.textContent = 'Gratuito';
+    if (label) label.innerHTML = `Plan actual: <strong style="color:#fff;">Gratuito</strong>`;
+    if (sub)   sub.textContent = '5 mensajes IA por día';
+    if (sub)   sub.style.color = '#64748b';
+  }
+}
