@@ -1417,3 +1417,10 @@ function checkAdminAccess() {
   const adminNav = document.getElementById('admin-nav');
   if (adminNav) adminNav.style.display = STATE.isAdmin ? 'block' : 'none';
 }
+
+// ============================================
+// INICIALIZACIÓN
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+  initApp();
+});
