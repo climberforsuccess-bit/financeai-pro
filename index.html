@@ -1920,10 +1920,13 @@ body {
     <div id="section-debts" style="display:none;">
       <div class="page-header">
         <div>
+                <div>
           <div class="page-title">📉 Plan de Pago de Deudas</div>
           <div class="page-subtitle">Estrategia personalizada para salir de deudas más rápido</div>
         </div>
+        <button onclick="openAddDebt()" class="btn btn-primary">+ Agregar Deuda</button>
       </div>
+
 
       <div class="section-tabs">
         <button class="section-tab active" onclick="switchDebtMethod('avalanche',this)">❄️ Avalanche (Menos interés)</button>
@@ -2646,7 +2649,6 @@ body {
 </div>
 
 <script src="supabase.js"></script>
-<script src="config.js"></script>
 <script src="openai.js"></script>
 <script src="app.js"></script>
 </body>

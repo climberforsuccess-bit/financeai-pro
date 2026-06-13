@@ -1332,24 +1332,24 @@ function detectSubscriptionsFromTransactions() {
 // SECCIÓN 11: AI ASSISTANT
 // ============================================
 function getFinancialContext() {
-  return {
-    income: STATE.transactions
-      ? STATE.transactions.filter(t => t.type === 'income')
-          .reduce((s, t) => s + Number(t.amount), 0).toFixed(2)
-      : '0.00',
-    expenses: STATE.transactions
-      ? STATE.transactions.filter(t => t.type === 'expense')
-          .reduce((s, t) => s + Number(t.amount), 0).toFixed(2)
-      : '0.00',
-    balance: STATE.user?.balance || '0.00',
-    totalDebt: STATE.debts
-      ? STATE.debts.reduce((s, d) => s + Number(d.amount), 0).toFixed(2)
-      : '0.00',
-    cards: STATE.cards ? STATE.cards.length + ' tarjeta(s)' : '0 tarjetas',
-    subscriptions: STATE.subscriptions
-      ? STATE.subscriptions.length + ' suscripcion(es)'
-      : '0 suscripciones'
-  };
+  const txs   = STATE.transactions || [];
+  const cards = STATE.cards || [];
+  const debts = STATE.debts || [];
+  const subs  = STATE.subscriptions || [];
+
+  const totalIncome  = txs.filter(t => t.type === 'income').reduce((s,t) => s + Number(t.amount||0), 0);
+  const totalExpense = txs.filter(t => t.type === 'expense').reduce((s,t) => s + Number(t.amount||0), 0);
+  const totalDebt    = debts.reduce((s,d) => s + Number(d.amount||0), 0);
+
+  return [
+    `- Ingresos totales: $${totalIncome.toFixed(2)}`,
+    `- Gastos totales: $${totalExpense.toFixed(2)}`,
+    `- Balance neto: $${(totalIncome - totalExpense).toFixed(2)}`,
+    `- Deuda total: $${totalDebt.toFixed(2)}`,
+    `- Tarjetas: ${cards.length}`,
+    `- Suscripciones: ${subs.length}`,
+    `- Plan: ${STATE.isVIP ? 'VIP' : 'Gratuito'}`
+  ].join('\n');
 }
 
 function appendChatMessage(containerId, role, text) {
@@ -1801,3 +1801,32 @@ function renderReports() {
     }
   }
 }
+
+// ── OpenAI via Netlify Function ─────────────────────────────
+async function askOpenAI(userMessage, context = '') {
+  const systemPrompt = `Eres un asistente financiero personal inteligente llamado FinanceAI. 
+Ayudas a los usuarios a entender sus finanzas, dar consejos de ahorro, analizar gastos y más.
+Responde siempre en el idioma que use el usuario (español o inglés).
+Sé conciso, amigable y útil. Máximo 3 párrafos.
+${context ? `\nContexto financiero del usuario:\n${context}` : ''}`;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userMessage }
+  ];
+
+  const response = await fetch('/.netlify/functions/openai-proxy', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages, model: 'gpt-4o-mini' })
+  });
+
+  if (!response.ok) throw new Error('Network error');
+
+  const data = await response.json();
+  
+  if (data.error) throw new Error(data.error.message || 'OpenAI error');
+  
+  return data.choices?.[0]?.message?.content || '❌ Sin respuesta';
+}
+
