@@ -2293,23 +2293,23 @@ body {
       <div class="cards-grid">
         <div class="stat-card">
           <div class="stat-card-icon">💵</div>
-          <div class="stat-card-label">Ingresos YTD</div>
-          <div class="stat-card-value green">$25,500</div>
+          <div class="stat-card-label">Ingresos Total</div>
+          <div class="stat-card-value green" id="report-total-income">$0.00</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💸</div>
-          <div class="stat-card-label">Gastos YTD</div>
-          <div class="stat-card-value red">$17,085</div>
+          <div class="stat-card-label">Gastos Total</div>
+          <div class="stat-card-value red" id="report-total-expense">$0.00</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💰</div>
-          <div class="stat-card-label">Ahorro YTD</div>
-          <div class="stat-card-value cyan">$8,415</div>
+          <div class="stat-card-label">Balance</div>
+          <div class="stat-card-value cyan" id="report-balance">$0.00</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">📊</div>
-          <div class="stat-card-label">Tasa de Ahorro</div>
-          <div class="stat-card-value green">33%</div>
+          <div class="stat-card-label">Transacciones</div>
+          <div class="stat-card-value green" id="report-total-txs">0</div>
         </div>
       </div>
 
@@ -2317,42 +2317,8 @@ body {
         <div class="card">
           <div class="card-title" style="margin-bottom:20px;">📊 Gastos por Categoría</div>
           <div style="display:flex;flex-direction:column;gap:12px;">
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-                <span>🛒 Supermercado</span><span style="color:var(--accent);">$680 (24%)</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:24%"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-                <span>🍕 Restaurantes</span><span style="color:var(--accent);">$420 (15%)</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill warning" style="width:15%"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-                <span>⛽ Gasolina</span><span style="color:var(--accent);">$310 (11%)</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill success" style="width:11%"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-                <span>🔄 Suscripciones</span><span style="color:var(--accent);">$88 (3%)</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:3%;background:var(--warning)"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-                <span>💳 Deudas (pagos)</span><span style="color:var(--accent);">$500 (18%)</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill danger" style="width:18%"></div></div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-                <span>🏠 Hogar</span><span style="color:var(--accent);">$850 (29%)</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:29%"></div></div>
-            </div>
+          <div id="report-top-categories">
+            <p style="color:#475569;font-size:13px;text-align:center;">Sin transacciones aún</p>
           </div>
         </div>
 

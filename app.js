@@ -1771,6 +1771,7 @@ function renderReports() {
   el('report-total-income',  `$${totalIncome.toFixed(2)}`);
   el('report-total-expense', `$${totalExpense.toFixed(2)}`);
   el('report-balance',       `$${balance.toFixed(2)}`);
+  el('report-total-txs',     `${txs.length}`);
 
   // Top categorías de gastos
   const cats = {};
