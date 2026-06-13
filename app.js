@@ -130,6 +130,7 @@ function showPage(pageId) {
 }
 
 function showSection(sectionId) {
+  showPage('app');
   document.querySelectorAll('[id^="section-"]').forEach(s => {
     s.style.display = 'none';
   });
