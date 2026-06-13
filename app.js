@@ -153,6 +153,7 @@ function showSection(sectionId) {
   if (sectionId === 'subscriptions') renderSubscriptions();
   if (sectionId === 'reports')       renderReports();
   if (sectionId === 'settings')      renderSettings();
+  if (sectionId === 'admin')         adminLoadStats();
 }
 
 function scrollToSection(sectionId) {
@@ -1730,4 +1731,71 @@ function adminLoadStats() {
 
   adminRefreshCodesList();
   adminLoadUsedCodes();
+}
+
+// ── Render Settings ─────────────────────────────────────────
+function renderSettings() {
+  updateVIPStatus();
+  updateAICounter();
+
+  // Mostrar email del usuario
+  const emailEl = document.getElementById('settings-user-email');
+  if (emailEl && STATE.user) emailEl.textContent = STATE.user.email || '—';
+
+  // Mostrar plan actual
+  const planEl = document.getElementById('settings-plan-name');
+  if (planEl) planEl.textContent = STATE.isVIP ? `VIP ${STATE.vipPlan}` : 'Gratuito';
+
+  // Mostrar vencimiento VIP
+  const expiryEl = document.getElementById('settings-vip-expiry');
+  if (expiryEl && STATE.isVIP && STATE.vipExpiry) {
+    const expiry = new Date(STATE.vipExpiry);
+    const days   = Math.ceil((expiry - new Date()) / (1000*60*60*24));
+    expiryEl.textContent = `Vence en ${days} días (${expiry.toLocaleDateString()})`;
+    expiryEl.style.color = days < 7 ? '#ef4444' : '#22c55e';
+  } else if (expiryEl) {
+    expiryEl.textContent = '';
+  }
+}
+
+// ── Render Reports ───────────────────────────────────────────
+function renderReports() {
+  const txs = STATE.transactions || [];
+
+  // Totales
+  const totalIncome  = txs.filter(t => t.type === 'income').reduce((s,t) => s + (t.amount||0), 0);
+  const totalExpense = txs.filter(t => t.type === 'expense').reduce((s,t) => s + (t.amount||0), 0);
+  const balance      = totalIncome - totalExpense;
+
+  const el = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
+  el('report-total-income',  `$${totalIncome.toFixed(2)}`);
+  el('report-total-expense', `$${totalExpense.toFixed(2)}`);
+  el('report-balance',       `$${balance.toFixed(2)}`);
+
+  // Top categorías de gastos
+  const cats = {};
+  txs.filter(t => t.type === 'expense').forEach(t => {
+    cats[t.category || 'Otros'] = (cats[t.category || 'Otros'] || 0) + (t.amount || 0);
+  });
+
+  const topList = document.getElementById('report-top-categories');
+  if (topList) {
+    const sorted = Object.entries(cats).sort((a,b) => b[1]-a[1]).slice(0,5);
+    if (sorted.length === 0) {
+      topList.innerHTML = '<p style="color:#475569;font-size:13px;text-align:center;">Sin transacciones aún</p>';
+    } else {
+      const max = sorted[0][1];
+      topList.innerHTML = sorted.map(([cat, amt]) => `
+        <div style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+            <span>${cat}</span>
+            <span style="color:var(--danger);">$${amt.toFixed(2)}</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill warning" style="width:${Math.round((amt/max)*100)}%"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
 }
