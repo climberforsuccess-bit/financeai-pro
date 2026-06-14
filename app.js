@@ -1121,6 +1121,7 @@ async function deleteDebt(id) {
 // ============================================
 function renderSubscriptions() {
   const subs   = STATE.subscriptions || [];
+  if (subs.length === 0) return; // mantener HTML demo
   const total  = subs.reduce((s, sub) => s + (sub.amount || 0), 0);
   const annual = total * 12;
 
@@ -1449,6 +1450,7 @@ function checkAdminAccess() {
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
   initApp();
+  initMobileNav();
 });
 
 // ── Upgrade Prompt ─────────────────────────────────────────
@@ -1830,3 +1832,30 @@ ${context ? `\nContexto financiero del usuario:\n${context}` : ''}`;
   return data.choices?.[0]?.message?.content || '❌ Sin respuesta';
 }
 
+
+function toggleSidebar() {
+  const sb = gel('sidebar');
+  const overlay = gel('sidebar-overlay');
+  if (!sb) return;
+  const isOpen = sb.classList.toggle('open');
+  if (overlay) overlay.style.display = isOpen ? 'block' : 'none';
+}
+function closeSidebar() {
+  const sb = gel('sidebar');
+  const overlay = gel('sidebar-overlay');
+  if (sb) sb.classList.remove('open');
+  if (overlay) overlay.style.display = 'none';
+}
+function initMobileNav() {
+  const btn = gel('hamburger-btn');
+  const closeBtn = gel('sidebar-close');
+  if (window.innerWidth <= 900) {
+    if (btn) btn.style.display = 'block';
+    if (closeBtn) closeBtn.style.display = 'block';
+  } else {
+    if (btn) btn.style.display = 'none';
+    if (closeBtn) closeBtn.style.display = 'none';
+    closeSidebar();
+  }
+}
+window.addEventListener('resize', initMobileNav);
