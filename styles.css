@@ -807,6 +807,16 @@ input:checked + .slider:before {
   padding-top: 0;
 }
 
+
+/* App layout */
+.page { display: none; }
+.page.active { display: block; }
+
+#app.page.active {
+  display: flex;
+  min-height: 100vh;
+}
+
 .sidebar {
   width: 260px;
   background: var(--bg2);
@@ -1268,7 +1278,17 @@ input:checked + .slider:before {
   .content-grid {
     grid-template-columns: 1fr;
   }
-  .sidebar {
+  
+/* App layout */
+.page { display: none; }
+.page.active { display: block; }
+
+#app.page.active {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
     transform: translateX(-100%);
   }
   .sidebar.open {
