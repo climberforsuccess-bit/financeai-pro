@@ -1,12 +1,12 @@
 const Stripe = require('stripe');
 
-module.exports = async (req, res) => {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
+exports.handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   try {
-    const { plan, billing, userId, email } = req.body;
+    const { plan, billing, userId, email } = JSON.parse(event.body);
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -27,7 +27,7 @@ module.exports = async (req, res) => {
 
     const priceId = prices[plan]?.[billing || 'monthly'];
     if (!priceId) {
-      return res.status(400).json({ error: 'Plan inválido' });
+      return { statusCode: 400, body: JSON.stringify({ error: 'Plan inválido' }) };
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -40,10 +40,17 @@ module.exports = async (req, res) => {
       cancel_url:  'https://www.climberforsuccess.online/?canceled=true',
     });
 
-    return res.status(200).json({ url: session.url });
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: session.url })
+    };
 
   } catch (err) {
     console.error('Checkout error:', err);
-    return res.status(500).json({ error: err.message });
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: err.message })
+    };
   }
 };
