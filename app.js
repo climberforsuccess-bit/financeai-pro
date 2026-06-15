@@ -1883,42 +1883,22 @@ function initMobileNav() {
 window.addEventListener('resize', initMobileNav);
 
 // ── Stripe Checkout ─────────────────────────────────────────
-async function startCheckout(plan, billing = 'monthly') {
-  const user = STATE.user;
-  if (!user) { showToast('Inicia sesión primero', 'error'); return; }
-
-  showToast('Redirigiendo a pago seguro...', 'info');
-
-  try {
-    const res = await fetch('/api/create-checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        plan,
-        billing,
-        userId: user.id,
-        email: user.email
-      })
-    });
-
-    const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      showToast('Error al crear sesión de pago', 'error');
-    }
-  } catch (err) {
-    console.error(err);
-    showToast('Error de conexión', 'error');
-  }
-}
-
 // ── Stripe Checkout ─────────────────────────────────────────
 async function startCheckout(plan, billing = 'monthly') {
   const user = STATE.user;
-  if (!user) { showToast('Inicia sesión primero', 'error'); return; }
+  if (!user) {
+    showToast('⚠️ Inicia sesión para continuar', 'error');
+    showPage('auth');
+    return;
+  }
 
-  showToast('Redirigiendo a pago seguro...', 'info');
+  const planLabels = { personal: 'Personal ⭐', pro: 'Pro 💎', business: 'Business 🏢' };
+  const prices     = PRICES[billing] || PRICES['monthly'];
+  const price      = prices[plan] || 0;
+  const label      = planLabels[plan] || plan;
+  const suffix     = billing === 'yearly' ? '/mes (anual)' : '/mes';
+
+  showToast(`🔒 Procesando ${label} — $${price.toFixed(2)}${suffix}...`, 'info');
 
   try {
     const res = await fetch('/api/create-checkout', {
@@ -1928,19 +1908,23 @@ async function startCheckout(plan, billing = 'monthly') {
         plan,
         billing,
         userId: user.id,
-        email: user.email
+        email:  user.email,
+        price
       })
     });
 
     const data = await res.json();
+
     if (data.url) {
-      window.location.href = data.url;
+      // Toast final persuasivo antes de redirigir
+      showToast(`🚀 ¡Redirigiendo al pago seguro con Stripe!`, 'success');
+      setTimeout(() => { window.location.href = data.url; }, 800);
     } else {
-      showToast('Error al crear sesión de pago', 'error');
+      showToast('❌ Error al crear sesión de pago — intenta de nuevo', 'error');
     }
   } catch (err) {
-    console.error(err);
-    showToast('Error de conexión', 'error');
+    console.error('Checkout error:', err);
+    showToast('❌ Error de conexión — verifica tu internet', 'error');
   }
 }
 
