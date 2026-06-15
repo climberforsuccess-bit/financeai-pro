@@ -1778,6 +1778,9 @@ function renderSettings() {
   } else if (expiryEl) {
     expiryEl.textContent = '';
   }
+
+  // Actualizar badge de plan en pricing
+  updateCurrentPlanBadge();
 }
 
 // ── Render Reports ───────────────────────────────────────────
@@ -1939,4 +1942,51 @@ async function startCheckout(plan, billing = 'monthly') {
     console.error(err);
     showToast('Error de conexión', 'error');
   }
+}
+
+// ── Pricing / Billing Toggle ─────────────────────────────────
+let currentBilling = 'monthly';
+
+const PRICES = {
+  monthly: { personal: 4.99, pro: 9.99, business: 19.99 },
+  yearly:  { personal: 2.99, pro: 5.99, business: 11.99 }
+};
+
+function toggleBilling() {
+  currentBilling = currentBilling === 'monthly' ? 'yearly' : 'monthly';
+  const dot  = document.getElementById('billing-toggle-dot');
+  const lbM  = document.getElementById('toggle-label-monthly');
+  const lbY  = document.getElementById('toggle-label-yearly');
+
+  if (currentBilling === 'yearly') {
+    dot.style.left = '24px';
+    lbM.style.color = 'var(--gray)';
+    lbY.style.color = '#f59e0b';
+  } else {
+    dot.style.left = '2px';
+    lbM.style.color = '#f59e0b';
+    lbY.style.color = 'var(--gray)';
+  }
+
+  const p = PRICES[currentBilling];
+  const suffix = currentBilling === 'yearly' ? '/mes (anual)' : '/mes';
+
+  // Actualizar precios visibles
+  const plans = ['personal', 'pro', 'business'];
+  plans.forEach(plan => {
+    const priceEl  = document.getElementById(`price-${plan}`);
+    const periodEl = document.getElementById(`period-${plan}`);
+    const ctaEl    = document.getElementById(`cta-${plan}`);
+    if (priceEl)  priceEl.textContent  = `$${p[plan].toFixed(2)}`;
+    if (periodEl) periodEl.textContent = suffix;
+    if (ctaEl)    ctaEl.textContent    = `$${p[plan].toFixed(2)}${suffix}`;
+  });
+}
+
+function updateCurrentPlanBadge() {
+  const badge = document.getElementById('current-plan-badge');
+  if (!badge) return;
+  const plan = STATE.userPlan || 'free';
+  const labels = { free: 'FREE', personal: 'PERSONAL ⭐', pro: 'PRO 💎', business: 'BUSINESS 🏢' };
+  badge.textContent = `✨ Tu plan actual: ${labels[plan] || 'FREE'}`;
 }

@@ -2431,14 +2431,147 @@ body {
           </div>
         </div>
 
-        <div class="card">
-          <div class="card-title" style="margin-bottom:20px;">💳 Plan Actual</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <div style="font-size:18px;font-weight:700;color:var(--accent);">Plan Free</div>
-              <div style="color:var(--gray);font-size:13px;margin-top:4px;">$0/mes</div>
+        <!-- PRICING SECTION -->
+        <div class="card" style="border: 1px solid rgba(245,158,11,0.3);">
+          <div style="text-align:center; margin-bottom:24px;">
+            <div id="current-plan-badge" style="display:inline-block; background:rgba(245,158,11,0.15); border:1px solid #f59e0b; color:#f59e0b; font-size:12px; font-weight:700; padding:4px 14px; border-radius:20px; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">
+              ✨ Tu plan actual: FREE
             </div>
-            <button class="btn btn-primary" onclick="showNotif('🚀 Redirigiendo a planes...')">Mejorar Plan</button>
+            <div class="card-title" style="font-size:22px; margin-bottom:6px;">💳 Elige tu plan</div>
+            <p style="color:var(--gray); font-size:13px; margin:0;">Invierte menos que un café al día y recupera cientos al mes</p>
+
+            <!-- Billing toggle -->
+            <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-top:16px;">
+              <span id="toggle-label-monthly" style="font-size:13px; color:#f59e0b; font-weight:700;">Mensual</span>
+              <div onclick="toggleBilling()" id="billing-toggle" style="width:48px; height:26px; background:#1e293b; border:2px solid #f59e0b; border-radius:20px; cursor:pointer; position:relative; transition:all 0.3s;">
+                <div id="billing-toggle-dot" style="width:18px; height:18px; background:#f59e0b; border-radius:50%; position:absolute; top:2px; left:2px; transition:all 0.3s;"></div>
+              </div>
+              <span id="toggle-label-yearly" style="font-size:13px; color:var(--gray);">Anual <span style="background:#10b981; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:700;">-40%</span></span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:16px;">
+
+            <!-- FREE -->
+            <div id="plan-card-free" style="border:2px solid #334155; border-radius:16px; padding:20px; position:relative;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                <div>
+                  <div style="font-size:16px; font-weight:800; color:#fff;">🆓 Free</div>
+                  <div style="font-size:28px; font-weight:900; color:#fff; line-height:1.1;">$0<span style="font-size:13px; color:var(--gray); font-weight:400;">/mes</span></div>
+                </div>
+                <span style="background:#334155; color:#94a3b8; font-size:11px; padding:4px 10px; border-radius:10px; font-weight:600;">Tu plan actual</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
+                <div style="font-size:12px; color:#64748b;">✅ 5 mensajes IA por día</div>
+                <div style="font-size:12px; color:#64748b;">✅ Hasta 50 transacciones</div>
+                <div style="font-size:12px; color:#64748b;">✅ 1 tarjeta</div>
+                <div style="font-size:12px; color:#ef4444;">❌ Sin scanner de recibos</div>
+                <div style="font-size:12px; color:#ef4444;">❌ Sin reportes avanzados</div>
+                <div style="font-size:12px; color:#ef4444;">❌ Sin GPT-4o</div>
+              </div>
+              <button disabled style="width:100%; padding:12px; background:#1e293b; border:1px solid #334155; border-radius:10px; color:#475569; font-size:13px; font-weight:600; cursor:not-allowed;">
+                Plan actual
+              </button>
+            </div>
+
+            <!-- PERSONAL -->
+            <div id="plan-card-personal" style="border:2px solid #334155; border-radius:16px; padding:20px; position:relative;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                <div>
+                  <div style="font-size:16px; font-weight:800; color:#fff;">⭐ Personal</div>
+                  <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
+                    <span id="price-personal">$4.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-personal">/mes</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
+                <div style="font-size:12px; color:#e2e8f0;">✅ 50 mensajes IA por día</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Transacciones ilimitadas</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Hasta 3 tarjetas</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Scanner de recibos</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Reportes básicos</div>
+                <div style="font-size:12px; color:#ef4444;">❌ Sin GPT-4o</div>
+              </div>
+              <button onclick="startCheckout('personal', currentBilling)"
+                style="width:100%; padding:14px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:10px; color:#000; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(245,158,11,0.3);">
+                🚀 Empezar ahora — Solo <span id="cta-personal">$4.99/mes</span>
+              </button>
+            </div>
+
+            <!-- PRO — DESTACADO -->
+            <div id="plan-card-pro" style="border:2px solid #f59e0b; border-radius:16px; padding:20px; position:relative; background:linear-gradient(145deg, rgba(245,158,11,0.05), rgba(15,23,42,0.8));">
+              <!-- Popular badge -->
+              <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; font-size:11px; font-weight:900; padding:4px 16px; border-radius:20px; white-space:nowrap; letter-spacing:0.5px;">
+                🔥 MÁS POPULAR
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; margin-top:8px;">
+                <div>
+                  <div style="font-size:16px; font-weight:800; color:#fff;">💎 Pro</div>
+                  <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
+                    <span id="price-pro">$9.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-pro">/mes</span>
+                  </div>
+                  <div style="font-size:11px; color:#64748b; text-decoration:line-through;">Valor real $29.99/mes</div>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
+                <div style="font-size:12px; color:#e2e8f0;">✅ <strong>IA ilimitada 24/7</strong></div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ <strong>GPT-4o</strong> — la IA más avanzada</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Transacciones y tarjetas ilimitadas</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Scanner inteligente de recibos</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Reportes avanzados con insights</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Metas financieras con IA</div>
+                <div style="font-size:12px; color:#10b981;">✅ <strong>Ahorra $340/mes en promedio</strong></div>
+              </div>
+              <button onclick="startCheckout('pro', currentBilling)"
+                style="width:100%; padding:16px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:12px; color:#000; font-size:15px; font-weight:900; cursor:pointer; box-shadow:0 6px 25px rgba(245,158,11,0.4); letter-spacing:0.3px;">
+                ⚡ Quiero ahorrar $340/mes — <span id="cta-pro">$9.99/mes</span>
+              </button>
+              <p style="color:#64748b; font-size:11px; text-align:center; margin-top:8px; margin-bottom:0;">✅ Cancela cuando quieras · Pago 100% seguro</p>
+            </div>
+
+            <!-- BUSINESS -->
+            <div id="plan-card-business" style="border:2px solid #334155; border-radius:16px; padding:20px; position:relative;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                <div>
+                  <div style="font-size:16px; font-weight:800; color:#fff;">🏢 Business</div>
+                  <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
+                    <span id="price-business">$19.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-business">/mes</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
+                <div style="font-size:12px; color:#e2e8f0;">✅ Todo lo de Pro</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Hasta 5 usuarios</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Gestión de equipo</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Reportes empresariales</div>
+                <div style="font-size:12px; color:#e2e8f0;">✅ Soporte prioritario 24/7</div>
+                <div style="font-size:12px; color:#10b981;">✅ <strong>ROI garantizado o devolvemos tu dinero</strong></div>
+              </div>
+              <button onclick="startCheckout('business', currentBilling)"
+                style="width:100%; padding:14px; background:linear-gradient(135deg,#6366f1,#4f46e5); border:none; border-radius:10px; color:#fff; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(99,102,241,0.3);">
+                🏢 Potencia tu negocio — <span id="cta-business">$19.99/mes</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Testimonial -->
+          <div style="margin-top:20px; padding:16px; background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.2); border-radius:12px; text-align:center;">
+            <p style="color:#94a3b8; font-size:12px; margin:0; line-height:1.6;">
+              💬 <em>"Recuperé $180 el primer mes detectando suscripciones olvidadas y gastos innecesarios"</em><br>
+              <strong style="color:#10b981;">— María G., usuaria Pro desde 2024</strong>
+            </p>
+          </div>
+
+          <!-- VIP Code -->
+          <div style="margin-top:16px; text-align:center;">
+            <p style="color:#64748b; font-size:12px; margin-bottom:8px;">¿Tienes un código VIP?</p>
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="vip-code-input" placeholder="Ingresa tu código" style="flex:1; padding:10px 14px; background:#0f172a; border:1px solid #334155; border-radius:10px; color:#fff; font-size:13px;">
+              <button onclick="redeemVipCode()" style="padding:10px 16px; background:#f59e0b; border:none; border-radius:10px; color:#000; font-weight:700; font-size:13px; cursor:pointer;">
+                ✅ Aplicar
+              </button>
+            </div>
           </div>
         </div>
 
