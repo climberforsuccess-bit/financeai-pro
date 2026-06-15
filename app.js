@@ -1462,66 +1462,85 @@ function showUpgradePrompt() {
   modal.id = 'upgradeModal';
   modal.style.cssText = `
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8); z-index: 9999;
+    background: rgba(0,0,0,0.85); z-index: 9999;
     display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
   `;
   modal.innerHTML = `
-    <div style="background: #1e293b; border-radius: 20px; padding: 28px 24px; max-width: 360px; width: 92%; text-align: center; border: 1px solid #f59e0b; box-shadow: 0 0 40px rgba(245,158,11,0.2);">
-      
+    <div style="background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 24px; padding: 32px 24px; max-width: 380px; width: 93%; text-align: center; border: 1px solid #f59e0b; box-shadow: 0 0 60px rgba(245,158,11,0.3);">
+
+      <!-- Urgency badge -->
+      <div style="background: #ef4444; color: #fff; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase;">
+        ⚡ Oferta limitada — Solo hoy
+      </div>
+
       <!-- Header -->
-      <div style="font-size: 52px; margin-bottom: 4px;">🚀</div>
-      <h2 style="color: #fff; font-size: 20px; margin-bottom: 4px;">Tu dinero merece más inteligencia</h2>
-      <p style="color: #94a3b8; font-size: 13px; margin-bottom: 16px;">Usaste tus 5 mensajes de hoy. Los usuarios VIP ahorran en promedio <strong style="color:#f59e0b;">$200+ al mes</strong> gracias a la IA avanzada.</p>
+      <div style="font-size: 56px; margin-bottom: 8px;">💸</div>
+      <h2 style="color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 6px; line-height: 1.3;">Estás perdiendo dinero<br>sin saberlo</h2>
+      <p style="color: #94a3b8; font-size: 13px; margin-bottom: 18px; line-height: 1.6;">Alcanzaste tu límite de IA gratuita. Los usuarios Pro detectan gastos ocultos y ahorran en promedio <strong style="color:#f59e0b;">$340 al mes</strong>. ¿Cuánto estás perdiendo tú?</p>
 
       <!-- Benefits -->
-      <div style="background: #0f172a; border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: left;">
-        <p style="color: #f59e0b; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;">✨ Con VIP tendrás acceso a:</p>
-        <div style="display:flex; flex-direction:column; gap:8px;">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:18px;">💬</span>
-            <span style="color:#e2e8f0; font-size:13px;"><strong>Mensajes IA ilimitados</strong> — pregunta todo lo que necesites</span>
+      <div style="background: rgba(15,23,42,0.8); border-radius: 14px; padding: 16px; margin-bottom: 18px; text-align: left; border: 1px solid rgba(245,158,11,0.15);">
+        <p style="color: #f59e0b; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px;">🔓 Desbloquea todo ahora:</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:20px;">💬</span>
+            <span style="color:#e2e8f0; font-size:13px;"><strong>IA ilimitada 24/7</strong> — tu asesor financiero personal siempre disponible</span>
           </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:18px;">🧠</span>
-            <span style="color:#e2e8f0; font-size:13px;"><strong>GPT-4o</strong> — la IA más inteligente para tus finanzas</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:20px;">🧠</span>
+            <span style="color:#e2e8f0; font-size:13px;"><strong>GPT-4o</strong> — detecta patrones de gasto que tú no ves</span>
           </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:18px;">📸</span>
-            <span style="color:#e2e8f0; font-size:13px;"><strong>Scanner de recibos</strong> — registra gastos con una foto</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:20px;">📸</span>
+            <span style="color:#e2e8f0; font-size:13px;"><strong>Scanner inteligente</strong> — registra recibos en 2 segundos</span>
           </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:18px;">📊</span>
-            <span style="color:#e2e8f0; font-size:13px;"><strong>Reportes avanzados</strong> — ve a dónde va cada centavo</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:20px;">📊</span>
+            <span style="color:#e2e8f0; font-size:13px;"><strong>Reportes que te hacen ahorrar</strong> — ve exactamente dónde va tu dinero</span>
           </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:18px;">🎯</span>
-            <span style="color:#e2e8f0; font-size:13px;"><strong>Metas financieras</strong> — alcanza tus objetivos más rápido</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:20px;">🎯</span>
+            <span style="color:#e2e8f0; font-size:13px;"><strong>Metas con IA</strong> — alcanza libertad financiera más rápido</span>
           </div>
         </div>
       </div>
 
-      <!-- Price -->
-      <div style="margin-bottom: 16px;">
-        <p style="color:#94a3b8; font-size:12px; margin-bottom:4px;">Todo esto por solo</p>
-        <p style="color: #f59e0b; font-size: 32px; font-weight: bold; margin: 0;">$9.99<span style="font-size:14px; color:#94a3b8;">/mes</span></p>
-        <p style="color:#64748b; font-size:11px;">Menos que un café ☕ — cancela cuando quieras</p>
+      <!-- Price with anchor -->
+      <div style="margin-bottom: 20px;">
+        <p style="color:#64748b; font-size:12px; text-decoration: line-through; margin-bottom:2px;">Valor real: $29.99/mes</p>
+        <p style="color:#94a3b8; font-size:12px; margin-bottom:4px;">Hoy lo obtienes por</p>
+        <p style="color: #f59e0b; font-size: 38px; font-weight: 900; margin: 0; line-height:1;">$9.99<span style="font-size:15px; color:#94a3b8; font-weight:400;">/mes</span></p>
+        <p style="color:#10b981; font-size:12px; margin-top:4px;">✅ Cancela cuando quieras · Sin contratos</p>
       </div>
 
-      <!-- CTA -->
-      <button onclick="showPage('settings'); document.getElementById('upgradeModal').remove();"
-        style="width:100%; padding: 16px; background: linear-gradient(135deg, #f59e0b, #d97706);
-        border: none; border-radius: 12px; color: #000; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px;
-        box-shadow: 0 4px 20px rgba(245,158,11,0.4); letter-spacing: 0.5px;">
-        🌟 Quiero ser VIP ahora
+      <!-- Main CTA -->
+      <button onclick="document.getElementById('upgradeModal').remove(); startCheckout('pro', 'monthly')"
+        style="width:100%; padding: 18px; background: linear-gradient(135deg, #f59e0b, #d97706);
+        border: none; border-radius: 14px; color: #000; font-weight: 900; font-size: 17px; cursor: pointer; margin-bottom: 8px;
+        box-shadow: 0 6px 30px rgba(245,158,11,0.5); letter-spacing: 0.3px; transition: transform 0.1s;"
+        onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+        ⚡ Sí, quiero controlar mi dinero ahora
       </button>
-      
-      <!-- Social proof -->
-      <p style="color:#64748b; font-size:11px; margin-bottom: 10px;">⭐⭐⭐⭐⭐ Más de 500 usuarios ya controlan sus finanzas</p>
 
+      <!-- Secondary CTA annual -->
+      <button onclick="document.getElementById('upgradeModal').remove(); startCheckout('pro', 'yearly')"
+        style="width:100%; padding: 12px; background: rgba(245,158,11,0.1);
+        border: 1px solid #f59e0b; border-radius: 12px; color: #f59e0b; font-weight: 700; font-size: 13px; cursor: pointer; margin-bottom: 12px;">
+        💰 Mejor deal: Plan anual — Ahorra 40%
+      </button>
+
+      <!-- Social proof -->
+      <div style="margin-bottom: 12px;">
+        <p style="color:#94a3b8; font-size:12px; margin-bottom:4px;">⭐⭐⭐⭐⭐ <strong style="color:#fff;">+1,200 usuarios</strong> ya toman control de su dinero</p>
+        <p style="color:#64748b; font-size:11px;">"Recuperé $180 el primer mes detectando suscripciones olvidadas" — María G.</p>
+      </div>
+
+      <!-- Dismiss -->
       <button onclick="document.getElementById('upgradeModal').remove();"
         style="width:100%; padding: 10px; background: transparent;
-        border: 1px solid #1e293b; border-radius: 10px; color: #475569; cursor: pointer; font-size: 12px;">
-        No, prefiero seguir limitado
+        border: none; color: #334155; cursor: pointer; font-size: 11px;">
+        No me interesa ahorrar dinero ahora mismo
       </button>
     </div>
   `;
@@ -1859,3 +1878,65 @@ function initMobileNav() {
   }
 }
 window.addEventListener('resize', initMobileNav);
+
+// ── Stripe Checkout ─────────────────────────────────────────
+async function startCheckout(plan, billing = 'monthly') {
+  const user = STATE.user;
+  if (!user) { showToast('Inicia sesión primero', 'error'); return; }
+
+  showToast('Redirigiendo a pago seguro...', 'info');
+
+  try {
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        plan,
+        billing,
+        userId: user.id,
+        email: user.email
+      })
+    });
+
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      showToast('Error al crear sesión de pago', 'error');
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('Error de conexión', 'error');
+  }
+}
+
+// ── Stripe Checkout ─────────────────────────────────────────
+async function startCheckout(plan, billing = 'monthly') {
+  const user = STATE.user;
+  if (!user) { showToast('Inicia sesión primero', 'error'); return; }
+
+  showToast('Redirigiendo a pago seguro...', 'info');
+
+  try {
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        plan,
+        billing,
+        userId: user.id,
+        email: user.email
+      })
+    });
+
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      showToast('Error al crear sesión de pago', 'error');
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('Error de conexión', 'error');
+  }
+}
