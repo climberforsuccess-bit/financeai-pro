@@ -206,30 +206,39 @@ function loadStripeButton(priceId, planName, price) {
 // ===========================
 async function redirectToStripeCheckout(priceId) {
   try {
-    // Show loading
     showLoadingState('stripe-button-container');
 
-    // Load Stripe.js if not loaded
-    if (!stripeInstance) {
-      await loadStripeScript();
-      stripeInstance = Stripe(STRIPE_KEY);
-    }
+    // Get user info
+    const user = window.STATE ? window.STATE.user : null;
+    const planName = currentPlan || 'personal';
 
-    // Redirect to Stripe Checkout
-    const { error } = await stripeInstance.redirectToCheckout({
-      lineItems: [{ price: priceId, quantity: 1 }],
-      mode: 'subscription',
-      successUrl: window.location.origin + '/success.html?session_id={CHECKOUT_SESSION_ID}',
-      cancelUrl: window.location.origin + '/cancel.html',
+    // Call Netlify Function to create checkout session
+    const response = await fetch('/.netlify/functions/stripe-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        priceId,
+        planName,
+        userId: user ? user.id : '',
+        userEmail: user ? user.email : ''
+      })
     });
 
-    if (error) {
-      showPaymentError('stripe-button-container', error.message);
+    const data = await response.json();
+
+    if (!response.ok || data.error) {
+      throw new Error(data.error || 'Could not create checkout session');
     }
+
+    // Save intended plan before redirect
+    localStorage.setItem('financeai_intended_plan', planName);
+
+    // Redirect to Stripe Checkout
+    window.location.href = data.url;
 
   } catch (err) {
     console.error('Stripe error:', err);
-    showPaymentError('stripe-button-container', 'Payment failed. Please try again.');
+    showPaymentError('stripe-button-container', err.message || 'Payment failed. Please try again.');
   }
 }
 
@@ -573,6 +582,71 @@ function requirePlan(requiredPlan, featureName) {
     return false;
   }
   return true;
+}
+
+
+
+// ===========================
+// HANDLE PLAN CLICK
+// ===========================
+function handlePlanClick(planKey) {
+  // Check if user is logged in
+  const session = window.supabase ? window.supabase.auth.getSession() : null;
+  const user = window.STATE ? window.STATE.user : null;
+
+  if (!user) {
+    // Not logged in — save intended plan and go to auth
+    localStorage.setItem('financeai_intended_plan', planKey);
+    if (typeof showPage === 'function') showPage('auth');
+    return;
+  }
+
+  // Logged in — open payment modal
+  openPaymentModal(planKey, 'monthly');
+}
+
+// ===========================
+// SWITCH BILLING CYCLE
+// ===========================
+function switchBilling(cycle) {
+  currentBilling = cycle;
+
+  // Update buttons
+  const monthly = document.getElementById('btn-monthly');
+  const annual = document.getElementById('btn-annual');
+
+  if (cycle === 'monthly') {
+    if (monthly) {
+      monthly.style.background = 'linear-gradient(135deg,#00EEFF,#0088FF)';
+      monthly.style.color = '#000';
+    }
+    if (annual) {
+      annual.style.background = 'transparent';
+      annual.style.color = '#A0B0C0';
+    }
+  } else {
+    if (annual) {
+      annual.style.background = 'linear-gradient(135deg,#00EEFF,#0088FF)';
+      annual.style.color = '#000';
+    }
+    if (monthly) {
+      monthly.style.background = 'transparent';
+      monthly.style.color = '#A0B0C0';
+    }
+  }
+
+  // Reload payment buttons with new billing
+  if (currentPlan) {
+    const plan = PLANS[currentPlan];
+    const details = plan[cycle];
+    const modalPlanName = document.getElementById('modalPlanName');
+    if (modalPlanName) modalPlanName.textContent = `${plan.name} — ${details.price}`;
+    loadStripeButton(details.stripe, plan.name, details.price);
+    const paypalContainer = document.getElementById('paypal-button-container');
+    if (paypalContainer) paypalContainer.innerHTML = '';
+    paypalLoaded = false;
+    loadPayPalButton(details.paypal);
+  }
 }
 
 // Export for use in other files

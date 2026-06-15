@@ -1219,7 +1219,7 @@ body {
           <li>Plan de pago de deudas</li>
           <li>Gestión de suscripciones</li>
         </ul>
-        <button class="btn btn-outline btn-full" onclick="showPage('auth')">Elegir Personal</button>
+        <button class="btn btn-outline btn-full" onclick="handlePlanClick('personal')">Elegir Personal</button>
       </div>
       <div class="price-card popular">
         <div class="popular-badge">⭐ MÁS POPULAR</div>
@@ -1233,7 +1233,7 @@ body {
           <li>Separación Personal/Empresa</li>
           <li>Exportar a PDF/Excel</li>
         </ul>
-        <button class="btn btn-primary btn-full" onclick="showPage('auth')">Elegir Pro</button>
+        <button class="btn btn-primary btn-full" onclick="handlePlanClick('pro')">Elegir Pro</button>
       </div>
       <div class="price-card">
         <div class="price-name">BUSINESS</div>
@@ -1246,7 +1246,7 @@ body {
           <li>Soporte prioritario</li>
           <li>White label disponible</li>
         </ul>
-        <button class="btn btn-outline btn-full" onclick="showPage('auth')">Elegir Business</button>
+        <button class="btn btn-outline btn-full" onclick="handlePlanClick('business')">Elegir Business</button>
       </div>
     </div>
   </div>
@@ -2654,6 +2654,84 @@ body {
 
 <script src="supabase.js"></script>
 <script src="openai.js"></script>
+<script src="payment.js"></script>
 <script src="app.js"></script>
+
+<!-- ============ PAYMENT MODAL ============ -->
+<div id="paymentModal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(10px);
+  z-index:99999;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+">
+  <div style="
+    background:#0A1628;
+    border:1px solid rgba(0,238,255,0.2);
+    border-radius:24px;
+    padding:40px;
+    max-width:480px;
+    width:100%;
+    position:relative;
+    max-height:90vh;
+    overflow-y:auto;
+    font-family:'Inter',sans-serif;
+  ">
+    <button onclick="closeModal()" style="
+      position:absolute;top:16px;right:16px;
+      background:transparent;border:none;
+      color:#A0B0C0;font-size:1.5rem;cursor:pointer;
+    ">×</button>
+
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:2rem;margin-bottom:8px;">💎</div>
+      <h2 style="font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:4px;">Upgrade Your Plan</h2>
+      <p id="modalPlanName" style="color:#00EEFF;font-weight:600;"></p>
+    </div>
+
+    <!-- Billing Toggle -->
+    <div style="display:flex;gap:8px;margin-bottom:24px;background:rgba(255,255,255,0.05);border-radius:50px;padding:4px;">
+      <button id="btn-monthly" onclick="switchBilling('monthly')" style="
+        flex:1;padding:8px;border:none;border-radius:50px;
+        background:linear-gradient(135deg,#00EEFF,#0088FF);
+        color:#000;font-weight:700;cursor:pointer;font-size:0.85rem;
+      ">Monthly</button>
+      <button id="btn-annual" onclick="switchBilling('annual')" style="
+        flex:1;padding:8px;border:none;border-radius:50px;
+        background:transparent;color:#A0B0C0;cursor:pointer;font-size:0.85rem;
+      ">Annual <span style="color:#00FF88;font-size:0.75rem;">Save 17%</span></button>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button class="tab-btn active" onclick="showTab('stripe')" style="
+        flex:1;padding:10px;border-radius:12px;
+        background:rgba(0,238,255,0.1);border:1px solid rgba(0,238,255,0.3);
+        color:#00EEFF;font-weight:600;cursor:pointer;font-size:0.85rem;
+      ">💳 Card (Stripe)</button>
+      <button class="tab-btn" onclick="showTab('paypal')" style="
+        flex:1;padding:10px;border-radius:12px;
+        background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+        color:#A0B0C0;font-weight:600;cursor:pointer;font-size:0.85rem;
+      ">🅿️ PayPal</button>
+    </div>
+
+    <div id="stripeTab" class="tab-content" style="display:block;">
+      <div id="stripe-button-container"></div>
+    </div>
+    <div id="paypalTab" class="tab-content" style="display:none;">
+      <div id="paypal-button-container"></div>
+    </div>
+
+    <p style="text-align:center;font-size:0.75rem;color:#A0B0C0;margin-top:16px;">
+      🔒 Secure • Cancel anytime • No hidden fees
+    </p>
+  </div>
+</div>
+
 </body>
 </html>
