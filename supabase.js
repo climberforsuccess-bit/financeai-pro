@@ -49,20 +49,16 @@ async function doRegister() {
     const name = document.getElementById('reg-name').value.trim();
     const email = document.getElementById('reg-email').value.trim();
     const password = document.getElementById('reg-pass').value.trim();
-    const confirm = document.getElementById('reg-confirm').value.trim();
+    const country = document.getElementById('reg-country')?.value || '';
+    const plan = document.getElementById('reg-plan')?.value || 'free';
 
     if (!name || !email || !password) {
-        showAuthError('Please fill all fields');
-        return;
-    }
-
-    if (password !== confirm) {
-        showAuthError('Passwords do not match');
+        showAuthError('Por favor completa todos los campos');
         return;
     }
 
     if (password.length < 6) {
-        showAuthError('Password must be at least 6 characters');
+        showAuthError('La contraseña debe tener al menos 6 caracteres');
         return;
     }
 
@@ -72,7 +68,11 @@ async function doRegister() {
         email: email,
         password: password,
         options: {
-            data: { full_name: name }
+            data: {
+                full_name: name,
+                country: country,
+                plan: plan
+            }
         }
     });
 
@@ -83,7 +83,7 @@ async function doRegister() {
         return;
     }
 
-    showAuthSuccess('Account created! Please check your email to verify.');
+    showAuthSuccess('¡Cuenta creada! Revisa tu email para verificar tu cuenta.');
 }
 
 // FORGOT PASSWORD
