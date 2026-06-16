@@ -1324,27 +1324,41 @@ body {
           <label>País</label>
           <select id="reg-country">
             <option value="">Selecciona tu país</option>
-            <option value="us">🇺🇸 United States</option>
-            <option value="mx">🇲🇽 México</option>
-            <option value="co">🇨🇴 Colombia</option>
-            <option value="ar">🇦🇷 Argentina</option>
-            <option value="cl">🇨🇱 Chile</option>
-            <option value="pe">🇵🇪 Perú</option>
-            <option value="ve">🇻🇪 Venezuela</option>
-            <option value="ec">🇪🇨 Ecuador</option>
-            <option value="gt">🇬🇹 Guatemala</option>
-            <option value="cu">🇨🇺 Cuba</option>
-            <option value="bo">🇧🇴 Bolivia</option>
-            <option value="do">🇩🇴 Rep. Dominicana</option>
-            <option value="hn">🇭🇳 Honduras</option>
-            <option value="py">🇵🇾 Paraguay</option>
-            <option value="sv">🇸🇻 El Salvador</option>
-            <option value="ni">🇳🇮 Nicaragua</option>
-            <option value="cr">🇨🇷 Costa Rica</option>
-            <option value="pa">🇵🇦 Panamá</option>
-            <option value="uy">🇺🇾 Uruguay</option>
-            <option value="br">🇧🇷 Brasil</option>
-            <option value="ca">🇨🇦 Canada</option>
+            <optgroup label="🌎 América del Norte">
+              <option value="us">🇺🇸 United States</option>
+              <option value="ca">🇨🇦 Canada</option>
+              <option value="mx">🇲🇽 México</option>
+            </optgroup>
+            <optgroup label="🌎 América Central y Caribe">
+              <option value="gt">🇬🇹 Guatemala</option>
+              <option value="hn">🇭🇳 Honduras</option>
+              <option value="sv">🇸🇻 El Salvador</option>
+              <option value="ni">🇳🇮 Nicaragua</option>
+              <option value="cr">🇨🇷 Costa Rica</option>
+              <option value="pa">🇵🇦 Panamá</option>
+              <option value="cu">🇨🇺 Cuba</option>
+              <option value="do">🇩🇴 Rep. Dominicana</option>
+            </optgroup>
+            <optgroup label="🌎 América del Sur">
+              <option value="co">🇨🇴 Colombia</option>
+              <option value="ve">🇻🇪 Venezuela</option>
+              <option value="ec">🇪🇨 Ecuador</option>
+              <option value="pe">🇵🇪 Perú</option>
+              <option value="bo">🇧🇴 Bolivia</option>
+              <option value="cl">🇨🇱 Chile</option>
+              <option value="ar">🇦🇷 Argentina</option>
+              <option value="uy">🇺🇾 Uruguay</option>
+              <option value="py">🇵🇾 Paraguay</option>
+              <option value="br">🇧🇷 Brasil</option>
+            </optgroup>
+            <optgroup label="🌍 Europa">
+              <option value="es">🇪🇸 España</option>
+              <option value="de">🇩🇪 Alemania</option>
+              <option value="fr">🇫🇷 Francia</option>
+              <option value="it">🇮🇹 Italia</option>
+              <option value="pt">🇵🇹 Portugal</option>
+              <option value="gb">🇬🇧 Reino Unido</option>
+            </optgroup>
           </select>
         </div>
         <div class="form-group">
@@ -2407,17 +2421,75 @@ body {
           <div class="form-group">
             <label>País</label>
             <select id="set-country">
-              <option value="us" selected>🇺🇸 United States</option>
-              <option value="mx">🇲🇽 México</option>
-              <option value="co">🇨🇴 Colombia</option>
+              <optgroup label="🌎 América del Norte">
+                <option value="us" selected>🇺🇸 United States</option>
+                <option value="ca">🇨🇦 Canada</option>
+                <option value="mx">🇲🇽 México</option>
+              </optgroup>
+              <optgroup label="🌎 América Central y Caribe">
+                <option value="gt">🇬🇹 Guatemala</option>
+                <option value="hn">🇭🇳 Honduras</option>
+                <option value="sv">🇸🇻 El Salvador</option>
+                <option value="ni">🇳🇮 Nicaragua</option>
+                <option value="cr">🇨🇷 Costa Rica</option>
+                <option value="pa">🇵🇦 Panamá</option>
+                <option value="cu">🇨🇺 Cuba</option>
+                <option value="do">🇩🇴 Rep. Dominicana</option>
+              </optgroup>
+              <optgroup label="🌎 América del Sur">
+                <option value="co">🇨🇴 Colombia</option>
+                <option value="ve">🇻🇪 Venezuela</option>
+                <option value="ec">🇪🇨 Ecuador</option>
+                <option value="pe">🇵🇪 Perú</option>
+                <option value="bo">🇧🇴 Bolivia</option>
+                <option value="cl">🇨🇱 Chile</option>
+                <option value="ar">🇦🇷 Argentina</option>
+                <option value="uy">🇺🇾 Uruguay</option>
+                <option value="py">🇵🇾 Paraguay</option>
+                <option value="br">🇧🇷 Brasil</option>
+              </optgroup>
+              <optgroup label="🌍 Europa">
+                <option value="es">🇪🇸 España</option>
+                <option value="de">🇩🇪 Alemania</option>
+                <option value="fr">🇫🇷 Francia</option>
+                <option value="it">🇮🇹 Italia</option>
+                <option value="pt">🇵🇹 Portugal</option>
+                <option value="gb">🇬🇧 Reino Unido</option>
+              </optgroup>
             </select>
           </div>
           <div class="form-group">
             <label>Moneda</label>
             <select id="set-currency" name="set-currency">
-              <option>USD — Dólar Americano</option>
-              <option>MXN — Peso Mexicano</option>
-              <option>COP — Peso Colombiano</option>
+              <optgroup label="🌎 América">
+                <option value="USD">USD — Dólar Americano</option>
+                <option value="CAD">CAD — Dólar Canadiense</option>
+                <option value="MXN">MXN — Peso Mexicano</option>
+                <option value="COP">COP — Peso Colombiano</option>
+                <option value="ARS">ARS — Peso Argentino</option>
+                <option value="CLP">CLP — Peso Chileno</option>
+                <option value="PEN">PEN — Sol Peruano</option>
+                <option value="BRL">BRL — Real Brasileño</option>
+                <option value="UYU">UYU — Peso Uruguayo</option>
+                <option value="PYG">PYG — Guaraní Paraguayo</option>
+                <option value="BOB">BOB — Boliviano</option>
+                <option value="VES">VES — Bolívar Venezolano</option>
+                <option value="GTQ">GTQ — Quetzal Guatemalteco</option>
+                <option value="HNL">HNL — Lempira Hondureño</option>
+                <option value="DOP">DOP — Peso Dominicano</option>
+                <option value="CRC">CRC — Colón Costarricense</option>
+                <option value="PAB">PAB — Balboa Panameño</option>
+              </optgroup>
+              <optgroup label="🌍 Europa">
+                <option value="EUR">EUR — Euro €</option>
+                <option value="GBP">GBP — Libra Esterlina £</option>
+              </optgroup>
+              <optgroup label="₿ Crypto">
+                <option value="BTC">BTC — Bitcoin ₿</option>
+                <option value="ETH">ETH — Ethereum Ξ</option>
+                <option value="USDC">USDC — USD Coin</option>
+                <option value="USDT">USDT — Tether</option>
+              </optgroup>
             </select>
           </div>
           <button class="btn btn-primary" onclick="showNotif('✅ Perfil actualizado')">Guardar Cambios</button>
