@@ -1,6 +1,21 @@
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
 
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+async function getRawBody(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    req.on('data', (chunk) => chunks.push(chunk));
+    req.on('end', () => resolve(Buffer.concat(chunks)));
+    req.on('error', reject);
+  });
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -13,11 +28,12 @@ module.exports = async (req, res) => {
   );
 
   const sig = req.headers['stripe-signature'];
+  const rawBody = await getRawBody(req);
   let stripeEvent;
 
   try {
     stripeEvent = stripe.webhooks.constructEvent(
-      req.body,
+      rawBody,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
