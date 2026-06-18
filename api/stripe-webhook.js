@@ -1,7 +1,8 @@
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
+const { buffer } = require('micro');
 
-const handler = async (req, res) => {
+module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
@@ -13,14 +14,7 @@ const handler = async (req, res) => {
   );
 
   const sig = req.headers['stripe-signature'];
-
-  const chunks = [];
-  await new Promise((resolve, reject) => {
-    req.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
-    req.on('end', resolve);
-    req.on('error', reject);
-  });
-  const rawBody = Buffer.concat(chunks);
+  const rawBody = await buffer(req);
 
   let stripeEvent;
   try {
@@ -61,11 +55,3 @@ const handler = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-
-handler.config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-module.exports = handler;
