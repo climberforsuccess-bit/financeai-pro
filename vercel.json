@@ -4,14 +4,5 @@
       "memory": 1024,
       "maxDuration": 10
     }
-  },
-  "routes": [
-    {
-      "src": "/api/stripe-webhook",
-      "dest": "/api/stripe-webhook.js",
-      "headers": {
-        "x-vercel-skip-body-parsing": "true"
-      }
-    }
-  ]
+  }
 }

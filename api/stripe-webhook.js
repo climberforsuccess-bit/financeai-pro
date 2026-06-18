@@ -1,6 +1,12 @@
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
 
+module.exports.config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -13,12 +19,22 @@ module.exports = async (req, res) => {
   );
 
   const sig = req.headers['stripe-signature'];
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  const chunks = [];
+  await new Promise((resolve, reject) => {
+    req.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    req.on('end', resolve);
+    req.on('error', reject);
+  });
+  const rawBody = Buffer.concat(chunks);
 
   let stripeEvent;
   try {
-    const rawBody = req.body;
-    stripeEvent = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
+    stripeEvent = stripe.webhooks.constructEvent(
+      rawBody,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
   } catch (err) {
     console.error('Webhook signature error:', err.message);
     return res.status(400).send('Webhook Error: ' + err.message);
@@ -44,7 +60,6 @@ module.exports = async (req, res) => {
         plan: 'free',
         subscription_status: 'canceled'
       }).eq('stripe_customer_id', sub.customer);
-      console.log('Suscripcion cancelada para customer', sub.customer);
     }
     return res.status(200).json({ received: true });
   } catch (err) {
