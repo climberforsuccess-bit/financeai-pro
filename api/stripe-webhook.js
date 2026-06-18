@@ -1,13 +1,7 @@
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
 
-module.exports.config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-module.exports = async (req, res) => {
+const handler = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
@@ -67,3 +61,11 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+handler.config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+module.exports = handler;
