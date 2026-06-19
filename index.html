@@ -1197,6 +1197,23 @@ body {
   <div class="pricing" id="pricing-section">
     <h2 class="section-title" id="price-title">Planes y Precios</h2>
     <p class="section-subtitle" id="price-sub">Comienza gratis, escala cuando estés listo</p>
+    <!-- Toggle Mensual/Anual Landing -->
+    <div style="display:flex; justify-content:center; margin-bottom:24px;">
+      <div style="background:#1e293b; border-radius:50px; padding:4px; display:flex; gap:4px; border:1px solid #334155;">
+        <button id="landing-btn-monthly" onclick="setLandingBilling('monthly')"
+          style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:#334155; color:#94a3b8; transition:all 0.3s;">
+          Mensual
+        </button>
+        <button id="landing-btn-annual" onclick="setLandingBilling('annual')"
+          style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; transition:all 0.3s;">
+          Anual &nbsp;<span style="background:#ef4444; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:900;">-20%</span>
+        </button>
+      </div>
+    </div>
+    <div id="landing-savings-banner" style="text-align:center; margin-bottom:20px; padding:10px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:10px;">
+      <span style="color:#10b981; font-size:13px; font-weight:700;">🎉 Pago anual = 2 meses GRATIS — Ahorras hasta <strong>$120/año</strong></span>
+    </div>
+
     <div class="pricing-grid">
       <div class="price-card">
         <div class="price-name">FREE</div>
@@ -1210,43 +1227,47 @@ body {
         <button class="btn btn-outline btn-full" onclick="showPage('auth')">Empezar Gratis</button>
       </div>
       <div class="price-card">
-        <div class="price-name">PERSONAL</div>
-        <div class="price-amount">$9.99<span>/mes</span></div>
+        <div class="price-name">⭐ PERSONAL</div>
+        <div class="price-amount"><span id="landing-price-personal">$7.99</span><span>/mes</span></div>
+        <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-personal">Precio normal $9.99/mes</div>
         <ul class="price-features">
+          <li>50 mensajes IA por día</li>
           <li>Transacciones ilimitadas</li>
-          <li>5 tarjetas de crédito</li>
-          <li>Escáner de recibos IA</li>
-          <li>Plan de pago de deudas</li>
-          <li>Gestión de suscripciones</li>
+          <li>Hasta 3 tarjetas</li>
+          <li>Scanner de recibos</li>
+          <li>Reportes básicos</li>
         </ul>
-        <button class="btn btn-outline btn-full" onclick="handlePlanClick('personal')">Elegir Personal</button>
+        <button class="btn btn-outline btn-full" onclick="handlePlanClick('personal')">🚀 Empezar ahora</button>
       </div>
       <div class="price-card popular">
-        <div class="popular-badge">⭐ MÁS POPULAR</div>
-        <div class="price-name">PRO</div>
-        <div class="price-amount">$19.99<span>/mes</span></div>
+        <div class="popular-badge">🔥 MÁS POPULAR</div>
+        <div class="price-name">💎 PRO</div>
+        <div class="price-amount"><span id="landing-price-pro">$15.99</span><span>/mes</span></div>
+        <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-pro">Valor real $39.99/mes</div>
         <ul class="price-features">
-          <li>Todo lo de Personal</li>
-          <li>Tarjetas ilimitadas</li>
-          <li>Recomendaciones IA avanzadas</li>
-          <li>Reportes detallados</li>
-          <li>Separación Personal/Empresa</li>
-          <li>Exportar a PDF/Excel</li>
+          <li>✅ IA ilimitada 24/7</li>
+          <li>✅ GPT-4o — la más avanzada</li>
+          <li>✅ Tarjetas ilimitadas</li>
+          <li>✅ Scanner inteligente</li>
+          <li>✅ Reportes avanzados</li>
+          <li>✅ Metas financieras con IA</li>
+          <li style="color:#10b981;">✅ Ahorra $340/mes en promedio</li>
         </ul>
-        <button class="btn btn-primary btn-full" onclick="handlePlanClick('pro')">Elegir Pro</button>
+        <button class="btn btn-primary btn-full" onclick="handlePlanClick('pro')">⚡ Quiero Pro</button>
       </div>
       <div class="price-card">
-        <div class="price-name">BUSINESS</div>
-        <div class="price-amount">$49.99<span>/mes</span></div>
+        <div class="price-name">🏢 BUSINESS</div>
+        <div class="price-amount"><span id="landing-price-business">$39.99</span><span>/mes</span></div>
+        <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-business">Precio normal $49.99/mes</div>
         <ul class="price-features">
           <li>Todo lo de Pro</li>
           <li>Hasta 5 usuarios</li>
           <li>Panel de administración</li>
-          <li>API Access</li>
-          <li>Soporte prioritario</li>
-          <li>White label disponible</li>
+          <li>Reportes empresariales</li>
+          <li>Soporte prioritario 24/7</li>
+          <li style="color:#10b981;">ROI garantizado o reembolso</li>
         </ul>
-        <button class="btn btn-outline btn-full" onclick="handlePlanClick('business')">Elegir Business</button>
+        <button class="btn btn-outline btn-full" onclick="handlePlanClick('business')">🏢 Elegir Business</button>
       </div>
     </div>
   </div>
@@ -2546,13 +2567,30 @@ body {
               </button>
             </div>
 
+            <!-- BILLING TOGGLE -->
+            <div style="display:flex; justify-content:center; margin-bottom:24px;">
+              <div style="background:#1e293b; border-radius:50px; padding:4px; display:flex; gap:4px; border:1px solid #334155;">
+                <button id="pricing-btn-monthly" onclick="setBilling('monthly')"
+                  style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:#334155; color:#94a3b8; transition:all 0.3s;">
+                  Mensual
+                </button>
+                <button id="pricing-btn-annual" onclick="setBilling('annual')"
+                  style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; transition:all 0.3s;">
+                  Anual &nbsp;<span style="background:#ef4444; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:900;">-20%</span>
+                </button>
+              </div>
+            </div>
+            <div id="annual-savings-banner" style="text-align:center; margin-bottom:16px; padding:10px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:10px;">
+              <span style="color:#10b981; font-size:13px; font-weight:700;">🎉 Pagas anual y ahorras hasta <strong>$120/año</strong> — 2 meses GRATIS</span>
+            </div>
+
             <!-- PERSONAL -->
             <div id="plan-card-personal" style="border:2px solid #334155; border-radius:16px; padding:20px; position:relative;">
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
                 <div>
                   <div style="font-size:16px; font-weight:800; color:#fff;">⭐ Personal</div>
                   <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
-                    <span id="price-personal">$4.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-personal">/mes</span>
+                    <span id="price-personal">$9.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-personal">/mes</span>
                   </div>
                 </div>
               </div>
@@ -2566,7 +2604,7 @@ body {
               </div>
               <button onclick="startCheckout('personal', currentBilling)"
                 style="width:100%; padding:14px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:10px; color:#000; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(245,158,11,0.3);">
-                🚀 Empezar ahora — Solo <span id="cta-personal">$4.99/mes</span>
+                🚀 Empezar ahora — Solo <span id="cta-personal">$9.99/mes</span>
               </button>
             </div>
 
@@ -2580,9 +2618,9 @@ body {
                 <div>
                   <div style="font-size:16px; font-weight:800; color:#fff;">💎 Pro</div>
                   <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
-                    <span id="price-pro">$9.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-pro">/mes</span>
+                    <span id="price-pro">$19.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-pro">/mes</span>
                   </div>
-                  <div style="font-size:11px; color:#64748b; text-decoration:line-through;">Valor real $29.99/mes</div>
+                  <div style="font-size:11px; color:#64748b; text-decoration:line-through;">Valor real $39.99/mes</div>
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
@@ -2596,7 +2634,7 @@ body {
               </div>
               <button onclick="startCheckout('pro', currentBilling)"
                 style="width:100%; padding:16px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:12px; color:#000; font-size:15px; font-weight:900; cursor:pointer; box-shadow:0 6px 25px rgba(245,158,11,0.4); letter-spacing:0.3px;">
-                ⚡ Quiero ahorrar $340/mes — <span id="cta-pro">$9.99/mes</span>
+                ⚡ Quiero ahorrar $340/mes — <span id="cta-pro">$19.99/mes</span>
               </button>
               <p style="color:#64748b; font-size:11px; text-align:center; margin-top:8px; margin-bottom:0;">✅ Cancela cuando quieras · Pago 100% seguro</p>
             </div>
@@ -2607,7 +2645,7 @@ body {
                 <div>
                   <div style="font-size:16px; font-weight:800; color:#fff;">🏢 Business</div>
                   <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
-                    <span id="price-business">$19.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-business">/mes</span>
+                    <span id="price-business">$49.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-business">/mes</span>
                   </div>
                 </div>
               </div>
@@ -2621,7 +2659,7 @@ body {
               </div>
               <button onclick="startCheckout('business', currentBilling)"
                 style="width:100%; padding:14px; background:linear-gradient(135deg,#6366f1,#4f46e5); border:none; border-radius:10px; color:#fff; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(99,102,241,0.3);">
-                🏢 Potencia tu negocio — <span id="cta-business">$19.99/mes</span>
+                🏢 Potencia tu negocio — <span id="cta-business">$49.99/mes</span>
               </button>
             </div>
 
@@ -2938,5 +2976,91 @@ body {
   </div>
 </div>
 
+<script>
+var currentLandingBilling = 'annual';
+
+var landingPrices = {
+  monthly: { personal: '$9.99',  pro: '$19.99', business: '$49.99' },
+  annual:  { personal: '$7.99',  pro: '$15.99', business: '$39.99' }
+};
+
+function setLandingBilling(type) {
+  currentLandingBilling = type;
+  var p = landingPrices[type];
+
+  var lp = document.getElementById('landing-price-personal');
+  var lpr = document.getElementById('landing-price-pro');
+  var lpb = document.getElementById('landing-price-business');
+  var op = document.getElementById('landing-original-personal');
+  var opr = document.getElementById('landing-original-pro');
+  var opb = document.getElementById('landing-original-business');
+  var banner = document.getElementById('landing-savings-banner');
+  var btnM = document.getElementById('landing-btn-monthly');
+  var btnA = document.getElementById('landing-btn-annual');
+
+  if (lp) lp.textContent = p.personal;
+  if (lpr) lpr.textContent = p.pro;
+  if (lpb) lpb.textContent = p.business;
+
+  if (type === 'annual') {
+    if (op) op.style.display = 'block';
+    if (opr) opr.style.display = 'block';
+    if (opb) opb.style.display = 'block';
+    if (banner) banner.style.display = 'block';
+    if (btnA) { btnA.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)'; btnA.style.color = '#000'; }
+    if (btnM) { btnM.style.background = '#334155'; btnM.style.color = '#94a3b8'; }
+  } else {
+    if (op) op.style.display = 'none';
+    if (opr) opr.style.display = 'none';
+    if (opb) opb.style.display = 'none';
+    if (banner) banner.style.display = 'none';
+    if (btnM) { btnM.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)'; btnM.style.color = '#000'; }
+    if (btnA) { btnA.style.background = '#334155'; btnA.style.color = '#94a3b8'; }
+  }
+}
+
+var currentBilling = 'annual';
+
+var prices = {
+  monthly:  { personal: '$9.99',  pro: '$19.99', business: '$49.99', periodPersonal: '/mes', periodPro: '/mes', periodBusiness: '/mes' },
+  annual:   { personal: '$7.99',  pro: '$15.99', business: '$39.99', periodPersonal: '/mes', periodPro: '/mes', periodBusiness: '/mes' }
+};
+
+function setBilling(type) {
+  currentBilling = type;
+  var p = prices[type];
+
+  document.getElementById('price-personal').textContent = p.personal;
+  document.getElementById('price-pro').textContent = p.pro;
+  document.getElementById('price-business').textContent = p.business;
+  document.getElementById('cta-personal').textContent = p.personal + '/mes';
+  document.getElementById('cta-pro').textContent = p.pro + '/mes';
+  document.getElementById('cta-business').textContent = p.business + '/mes';
+
+  var banner = document.getElementById('annual-savings-banner');
+  var btnMonthly = document.getElementById('pricing-btn-monthly');
+  var btnAnnual = document.getElementById('pricing-btn-annual');
+
+  if (type === 'annual') {
+    banner.style.display = 'block';
+    btnAnnual.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)';
+    btnAnnual.style.color = '#000';
+    btnMonthly.style.background = '#334155';
+    btnMonthly.style.color = '#94a3b8';
+  } else {
+    banner.style.display = 'none';
+    btnMonthly.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)';
+    btnMonthly.style.color = '#000';
+    btnAnnual.style.background = '#334155';
+    btnAnnual.style.color = '#94a3b8';
+  }
+}
+
+// Iniciar en anual por defecto
+document.addEventListener('DOMContentLoaded', function() {
+  setBilling('annual');
+  setLandingBilling('annual');
+});
+</script>
 </body>
 </html>
