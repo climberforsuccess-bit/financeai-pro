@@ -436,7 +436,7 @@ body {
   content: '';
   position: absolute;
   top: 50%;
-  width: 40%;
+  width: 20%;
   height: 1px;
   background: var(--border);
 }
@@ -2539,7 +2539,7 @@ body {
               <div onclick="toggleBilling()" id="billing-toggle" style="width:48px; height:26px; background:#1e293b; border:2px solid #f59e0b; border-radius:20px; cursor:pointer; position:relative; transition:all 0.3s;">
                 <div id="billing-toggle-dot" style="width:18px; height:18px; background:#f59e0b; border-radius:50%; position:absolute; top:2px; left:2px; transition:all 0.3s;"></div>
               </div>
-              <span id="toggle-label-yearly" style="font-size:13px; color:var(--gray);">Anual <span style="background:#10b981; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:700;">-40%</span></span>
+              <span id="toggle-label-yearly" style="font-size:13px; color:var(--gray);">Anual <span style="background:#10b981; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:700;">-20%</span></span>
             </div>
           </div>
 
@@ -2976,48 +2976,6 @@ body {
   </div>
 </div>
 
-<!-- landing billing handled in app.js -->
-
-var prices = {
-  monthly:  { personal: '$9.99',  pro: '$19.99', business: '$49.99', periodPersonal: '/mes', periodPro: '/mes', periodBusiness: '/mes' },
-  annual:   { personal: '$7.99',  pro: '$15.99', business: '$39.99', periodPersonal: '/mes', periodPro: '/mes', periodBusiness: '/mes' }
-};
-
-function setBilling(type) {
-  currentBilling = type;
-  var p = prices[type];
-
-  document.getElementById('price-personal').textContent = p.personal;
-  document.getElementById('price-pro').textContent = p.pro;
-  document.getElementById('price-business').textContent = p.business;
-  document.getElementById('cta-personal').textContent = p.personal + '/mes';
-  document.getElementById('cta-pro').textContent = p.pro + '/mes';
-  document.getElementById('cta-business').textContent = p.business + '/mes';
-
-  var banner = document.getElementById('annual-savings-banner');
-  var btnMonthly = document.getElementById('pricing-btn-monthly');
-  var btnAnnual = document.getElementById('pricing-btn-annual');
-
-  if (type === 'annual') {
-    banner.style.display = 'block';
-    btnAnnual.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)';
-    btnAnnual.style.color = '#000';
-    btnMonthly.style.background = '#334155';
-    btnMonthly.style.color = '#94a3b8';
-  } else {
-    banner.style.display = 'none';
-    btnMonthly.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)';
-    btnMonthly.style.color = '#000';
-    btnAnnual.style.background = '#334155';
-    btnAnnual.style.color = '#94a3b8';
-  }
-}
-
-// Iniciar en anual por defecto
-document.addEventListener('DOMContentLoaded', function() {
-  setBilling('annual');
-  setLandingBilling('annual');
-});
-</script>
+<!-- billing handled in app.js -->
 </body>
 </html>
