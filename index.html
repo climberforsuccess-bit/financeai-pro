@@ -2976,53 +2976,7 @@ body {
   </div>
 </div>
 
-<script>
-var currentLandingBilling = 'annual';
-var currentBilling = 'annual';
-
-if (typeof landingPrices === 'undefined') {
-  var landingPrices = {
-    monthly: { personal: '$9.99',  pro: '$19.99', business: '$49.99' },
-    annual:  { personal: '$7.99',  pro: '$15.99', business: '$39.99' }
-  };
-}
-
-function setLandingBilling(type) {
-  currentLandingBilling = type;
-  var p = landingPrices[type];
-
-  var lp = document.getElementById('landing-price-personal');
-  var lpr = document.getElementById('landing-price-pro');
-  var lpb = document.getElementById('landing-price-business');
-  var op = document.getElementById('landing-original-personal');
-  var opr = document.getElementById('landing-original-pro');
-  var opb = document.getElementById('landing-original-business');
-  var banner = document.getElementById('landing-savings-banner');
-  var btnM = document.getElementById('landing-btn-monthly');
-  var btnA = document.getElementById('landing-btn-annual');
-
-  if (lp) lp.textContent = p.personal;
-  if (lpr) lpr.textContent = p.pro;
-  if (lpb) lpb.textContent = p.business;
-
-  if (type === 'annual') {
-    if (op) op.style.display = 'block';
-    if (opr) opr.style.display = 'block';
-    if (opb) opb.style.display = 'block';
-    if (banner) banner.style.display = 'block';
-    if (btnA) { btnA.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)'; btnA.style.color = '#000'; }
-    if (btnM) { btnM.style.background = '#334155'; btnM.style.color = '#94a3b8'; }
-  } else {
-    if (op) op.style.display = 'none';
-    if (opr) opr.style.display = 'none';
-    if (opb) opb.style.display = 'none';
-    if (banner) banner.style.display = 'none';
-    if (btnM) { btnM.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)'; btnM.style.color = '#000'; }
-    if (btnA) { btnA.style.background = '#334155'; btnA.style.color = '#94a3b8'; }
-  }
-}
-
-// currentBilling declarado arriba
+<!-- landing billing handled in app.js -->
 
 var prices = {
   monthly:  { personal: '$9.99',  pro: '$19.99', business: '$49.99', periodPersonal: '/mes', periodPro: '/mes', periodBusiness: '/mes' },
