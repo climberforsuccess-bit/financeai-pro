@@ -2978,11 +2978,14 @@ body {
 
 <script>
 var currentLandingBilling = 'annual';
+var currentBilling = 'annual';
 
-var landingPrices = {
-  monthly: { personal: '$9.99',  pro: '$19.99', business: '$49.99' },
-  annual:  { personal: '$7.99',  pro: '$15.99', business: '$39.99' }
-};
+if (typeof landingPrices === 'undefined') {
+  var landingPrices = {
+    monthly: { personal: '$9.99',  pro: '$19.99', business: '$49.99' },
+    annual:  { personal: '$7.99',  pro: '$15.99', business: '$39.99' }
+  };
+}
 
 function setLandingBilling(type) {
   currentLandingBilling = type;
@@ -3019,7 +3022,7 @@ function setLandingBilling(type) {
   }
 }
 
-var currentBilling = 'annual';
+// currentBilling declarado arriba
 
 var prices = {
   monthly:  { personal: '$9.99',  pro: '$19.99', business: '$49.99', periodPersonal: '/mes', periodPro: '/mes', periodBusiness: '/mes' },
