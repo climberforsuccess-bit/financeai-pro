@@ -2000,6 +2000,8 @@ function updateCurrentPlanBadge() {
 }
 
 // ── BILLING TOGGLE (landing + app) ───────────────────────────────────
+let currentBilling = 'annual'; // billing toggle state
+
 function setBilling(type) {
   currentBilling = type;
 
