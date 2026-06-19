@@ -17,37 +17,46 @@ module.exports = async function handler(req, res) {
       req.body, sig, process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (err) {
-    console.error('Webhook signature error:', err.message);
+    console.error('Webhook error:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  const session = event.data.object;
+  const obj = event.data.object;
 
   if (event.type === 'checkout.session.completed') {
-    const userId = session.metadata?.userId;
-    const plan   = session.metadata?.plan;
-    const billing = session.metadata?.billing;
+    const userId  = obj.metadata?.userId;
+    const plan    = obj.metadata?.plan;
+    const billing = obj.metadata?.billing;
+
+    console.log('checkout.session.completed:', { userId, plan, billing });
 
     if (userId) {
-      await supabase.from('profiles').upsert({
+      const { error } = await supabase.from('profiles').upsert({
         id: userId,
         plan: plan,
         subscription_status: 'active',
         billing_period: billing,
-        stripe_customer_id: session.customer,
-        stripe_subscription_id: session.subscription,
+        stripe_customer_id: obj.customer,
+        stripe_subscription_id: obj.subscription,
         updated_at: new Date().toISOString()
       });
-      console.log('Plan actualizado:', userId, '->', plan);
+      if (error) console.error('Supabase error:', error);
+      else console.log('Plan actualizado:', userId, '->', plan);
     }
   }
 
   if (event.type === 'customer.subscription.deleted') {
-    const customerId = session.customer;
+    const customerId = obj.customer;
     await supabase.from('profiles')
-      .update({ plan: 'free', subscription_status: 'inactive', updated_at: new Date().toISOString() })
+      .update({ 
+        plan: 'free', 
+        subscription_status: 'inactive', 
+        updated_at: new Date().toISOString() 
+      })
       .eq('stripe_customer_id', customerId);
   }
 
   return res.status(200).json({ received: true });
 };
+
+module.exports.config = { api: { bodyParser: false } };
