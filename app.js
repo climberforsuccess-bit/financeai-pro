@@ -1983,3 +1983,69 @@ function updateCurrentPlanBadge() {
   const labels = { free: 'FREE', personal: 'PERSONAL ⭐', pro: 'PRO 💎', business: 'BUSINESS 🏢' };
   badge.textContent = `✨ Tu plan actual: ${labels[plan] || 'FREE'}`;
 }
+
+// ── BILLING TOGGLE (landing + app) ───────────────────────────────────
+var currentBilling = 'annual';
+
+function setBilling(type) {
+  currentBilling = type;
+
+  var prices = {
+    monthly: { personal: '$9.99',  pro: '$19.99', business: '$49.99',
+                lp: '$9.99', lpr: '$19.99', lpb: '$49.99' },
+    annual:  { personal: '$7.99',  pro: '$15.99', business: '$39.99',
+                lp: '$7.99', lpr: '$15.99', lpb: '$39.99' }
+  };
+  var p = prices[type];
+
+  // App IDs
+  var els = {
+    'price-personal':  p.personal,
+    'price-pro':       p.pro,
+    'price-business':  p.business,
+    'cta-personal':    p.personal + '/mes',
+    'cta-pro':         p.pro + '/mes',
+    'cta-business':    p.business + '/mes',
+    // Landing IDs
+    'landing-price-personal': p.lp,
+    'landing-price-pro':      p.lpr,
+    'landing-price-business': p.lpb
+  };
+
+  Object.keys(els).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = els[id];
+  });
+
+  // Banner anual
+  var banner = document.getElementById('annual-savings-banner');
+  if (banner) banner.style.display = type === 'annual' ? 'block' : 'none';
+
+  // Botones toggle app
+  var btnM = document.getElementById('pricing-btn-monthly');
+  var btnA = document.getElementById('pricing-btn-annual');
+  if (type === 'annual') {
+    if (btnA) { btnA.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)'; btnA.style.color = '#000'; }
+    if (btnM) { btnM.style.background = '#334155'; btnM.style.color = '#94a3b8'; }
+  } else {
+    if (btnM) { btnM.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)'; btnM.style.color = '#000'; }
+    if (btnA) { btnA.style.background = '#334155'; btnA.style.color = '#94a3b8'; }
+  }
+
+  // Botones toggle landing
+  var lbtnM = document.getElementById('billing-monthly');
+  var lbtnA = document.getElementById('billing-annual');
+  if (type === 'annual') {
+    if (lbtnA) { lbtnA.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)'; lbtnA.style.color = '#000'; }
+    if (lbtnM) { lbtnM.style.background = '#334155'; lbtnM.style.color = '#94a3b8'; }
+  } else {
+    if (lbtnM) { lbtnM.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)'; lbtnM.style.color = '#000'; }
+    if (lbtnA) { lbtnA.style.background = '#334155'; lbtnA.style.color = '#94a3b8'; }
+  }
+}
+
+// Inicializar en annual al cargar
+document.addEventListener('DOMContentLoaded', function() {
+  setBilling('annual');
+});
+// ─────────────────────────────────────────────────────────────────────
