@@ -7,7 +7,7 @@
 // ===========================
 // CONFIGURATION
 // ===========================
-const STRIPE_KEY = 'pk_live_51TexEgHXX8AdE0MTtugamR8bQzamJ2vTtvcOwJbTd1i6fcKSNKByNlckNpSuZ45Um9AxRbtj2VIqkoar9SBcQTvP00lW0ThQU2';
+const STRIPE_KEY = 'pk_test_51TexEgHXX8AdE0MTHSDu0XQxlvXS2CIW0ZypXufvF1r1RLTaBFbQy2FLE7f0Zsj6WQ9IzCZBF85BLnwdvUSErCMt00XFz6T2J8';
 
 const PAYPAL_CLIENT_ID = 'AUjS9cRqaCpHKaR8J-B_rpJprevENStW_F-ngANjg7kvDmkvSiNbdgAUOu8Xed8A7JvWO9fzJos4_i13';
 
