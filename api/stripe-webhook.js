@@ -1,77 +1,53 @@
-const Stripe = require('stripe');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
 
-export const config = {
-  api: {
-    bodyParser: false
-  }
-};
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
-async function getRawBody(req) {
-  return new Promise((resolve, reject) => {
-    let buf = '';
-    req.on('data', chunk => buf += chunk);
-    req.on('end', () => resolve(buf));
-    req.on('error', reject);
-  });
-}
+module.exports = async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).end();
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-  );
-
-  const rawBody = await getRawBody(req);
   const sig = req.headers['stripe-signature'];
-  let stripeEvent;
+  let event;
 
   try {
-    stripeEvent = stripe.webhooks.constructEvent(
-      rawBody,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET
+    event = stripe.webhooks.constructEvent(
+      req.body, sig, process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (err) {
     console.error('Webhook signature error:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  try {
-    if (stripeEvent.type === 'checkout.session.completed') {
-      const session = stripeEvent.data.object;
-      const userId  = session.metadata.userId;
-      const plan    = session.metadata.plan;
+  const session = event.data.object;
 
-      await supabase.from('profiles').update({
-        plan:                plan,
-        stripe_customer_id:  session.customer,
-        subscription_status: 'active'
-      }).eq('id', userId);
+  if (event.type === 'checkout.session.completed') {
+    const userId = session.metadata?.userId;
+    const plan   = session.metadata?.plan;
+    const billing = session.metadata?.billing;
 
-      console.log(`✅ Plan activado: ${plan} para usuario ${userId}`);
+    if (userId) {
+      await supabase.from('profiles').upsert({
+        id: userId,
+        plan: plan,
+        subscription_status: 'active',
+        billing_period: billing,
+        stripe_customer_id: session.customer,
+        stripe_subscription_id: session.subscription,
+        updated_at: new Date().toISOString()
+      });
+      console.log(`✅ Plan actualizado: ${userId} → ${plan}`);
     }
-
-    if (stripeEvent.type === 'customer.subscription.deleted') {
-      const sub = stripeEvent.data.object;
-
-      await supabase.from('profiles').update({
-        plan:                'free',
-        subscription_status: 'canceled'
-      }).eq('stripe_customer_id', sub.customer);
-
-      console.log(`⚠️ Suscripción cancelada para customer ${sub.customer}`);
-    }
-
-    return res.status(200).json({ received: true });
-
-  } catch (err) {
-    console.error('Webhook handler error:', err);
-    return res.status(500).json({ error: err.message });
   }
-}
+
+  if (event.type === 'customer.subscription.deleted') {
+    const customerId = session.customer;
+    await supabase.from('profiles')
+      .update({ plan: 'free', subscription_status: 'inactive', updated_at: new Date().toISOString() })
+      .eq('stripe_customer_id', customerId);
+  }
+
+  return res.status(200).json({ received: true });
+};
