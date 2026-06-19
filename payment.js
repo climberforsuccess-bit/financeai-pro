@@ -213,7 +213,7 @@ async function redirectToStripeCheckout(priceId) {
     const planName = currentPlan || 'personal';
 
     // Call Netlify Function to create checkout session
-    const response = await fetch('/.netlify/functions/stripe-checkout', {
+    const response = await fetch('/api/stripe-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
