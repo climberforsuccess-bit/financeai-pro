@@ -57,7 +57,7 @@ const PLANS = {
 // STATE
 // ===========================
 let currentPlan = null;
-let currentBilling = 'monthly';
+let currentBilling = 'annual';
 let stripeInstance = null;
 let paypalLoaded = false;
 

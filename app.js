@@ -4,45 +4,7 @@
 
 'use strict';
 
-// ── APP BILLING TOGGLE (settings/pricing inside app) ────────────────
-var currentBilling = 'annual';
-var prices = {
-  monthly: { personal: '$9.99',  pro: '$19.99', business: '$49.99' },
-  annual:  { personal: '$7.99',  pro: '$15.99', business: '$39.99' }
-};
-
-function setBilling(type) {
-  currentBilling = type;
-  var p = prices[type];
-
-  var pp = document.getElementById('price-personal');
-  var ppr = document.getElementById('price-pro');
-  var pb = document.getElementById('price-business');
-  var cp = document.getElementById('cta-personal');
-  var cpr = document.getElementById('cta-pro');
-  var cb = document.getElementById('cta-business');
-  var banner = document.getElementById('annual-savings-banner');
-  var btnMonthly = document.getElementById('pricing-btn-monthly');
-  var btnAnnual = document.getElementById('pricing-btn-annual');
-
-  if (pp)  pp.textContent  = p.personal;
-  if (ppr) ppr.textContent = p.pro;
-  if (pb)  pb.textContent  = p.business;
-  if (cp)  cp.textContent  = p.personal + '/mes';
-  if (cpr) cpr.textContent = p.pro + '/mes';
-  if (cb)  cb.textContent  = p.business + '/mes';
-
-  if (type === 'annual') {
-    if (banner) banner.style.display = 'block';
-    if (btnAnnual)  { btnAnnual.style.background  = 'linear-gradient(135deg,#f59e0b,#d97706)'; btnAnnual.style.color  = '#000'; }
-    if (btnMonthly) { btnMonthly.style.background = '#334155'; btnMonthly.style.color = '#94a3b8'; }
-  } else {
-    if (banner) banner.style.display = 'none';
-    if (btnMonthly) { btnMonthly.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)'; btnMonthly.style.color = '#000'; }
-    if (btnAnnual)  { btnAnnual.style.background  = '#334155'; btnAnnual.style.color  = '#94a3b8'; }
-  }
-}
-// ────────────────────────────────────────────────────────────────────
+// billing handled in payment.js
 
 
 // ── LANDING BILLING TOGGLE ──────────────────────────────────────────
