@@ -1985,8 +1985,6 @@ function updateCurrentPlanBadge() {
 }
 
 // ── BILLING TOGGLE (landing + app) ───────────────────────────────────
-var currentBilling = 'annual';
-
 function setBilling(type) {
   currentBilling = type;
 
