@@ -1930,6 +1930,21 @@ function initMobileNav() {
 window.addEventListener('resize', initMobileNav);
 
 // ── Stripe Checkout ─────────────────────────────────────────
+
+// ── PRICES MAP (sincronizado con payment.js) ─────────────────
+const PRICES = {
+  monthly: {
+    personal: 9.99,
+    pro:      19.99,
+    business: 49.99
+  },
+  yearly: {
+    personal: 8.33,
+    pro:      16.66,
+    business: 41.66
+  }
+};
+
 // ── Stripe Checkout ─────────────────────────────────────────
 async function startCheckout(plan, billing = 'monthly') {
   const user = STATE.user;
@@ -1948,7 +1963,7 @@ async function startCheckout(plan, billing = 'monthly') {
   showToast(`🔒 Procesando ${label} — $${price.toFixed(2)}${suffix}...`, 'info');
 
   try {
-    const res = await fetch('/api/create-checkout', {
+    const res = await fetch('/api/stripe-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
