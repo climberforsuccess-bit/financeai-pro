@@ -38,7 +38,7 @@ module.exports = async function handler(req, res) {
         stripe_subscription_id: session.subscription,
         updated_at: new Date().toISOString()
       });
-      console.log(`✅ Plan actualizado: ${userId} → ${plan}`);
+      console.log('Plan actualizado:', userId, '->', plan);
     }
   }
 
