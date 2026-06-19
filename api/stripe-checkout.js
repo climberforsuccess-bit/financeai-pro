@@ -2,19 +2,19 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const PRICE_IDS = {
   monthly: {
-    personal: 'price_1Tf0b8HXX8AdE0MTRi1RMAsq',
-    pro:      'price_1Tf0eJHXX8AdE0MTP87khCpZ',
-    business: 'price_1TfM6MHXX8AdE0MTX7PsMhBB'
+    personal: 'price_1Tk7TDHXX8AdE0MTbQMaTXVj',
+    pro:      'price_1Tk7TDHXX8AdE0MTDzFZhpVy',
+    business: 'price_1Tk7TDHXX8AdE0MTCRlxfaDS'
   },
   annual: {
-    personal: 'price_1TfM9ZHXX8AdE0MTluR7y3i5',
-    pro:      'price_1TfMBCHXX8AdE0MTSLvsF8PC',
-    business: 'price_1TfMBfHXX8AdE0MTF9Wghval'
+    personal: 'price_1Tk7WqHXX8AdE0MTYIRJTppV',
+    pro:      'price_1Tk7WqHXX8AdE0MTnyH3Q8fG',
+    business: 'price_1Tk7WrHXX8AdE0MTdLQalYJt'
   },
   yearly: {
-    personal: 'price_1TfM9ZHXX8AdE0MTluR7y3i5',
-    pro:      'price_1TfMBCHXX8AdE0MTSLvsF8PC',
-    business: 'price_1TfMBfHXX8AdE0MTF9Wghval'
+    personal: 'price_1Tk7WqHXX8AdE0MTYIRJTppV',
+    pro:      'price_1Tk7WqHXX8AdE0MTnyH3Q8fG',
+    business: 'price_1Tk7WrHXX8AdE0MTdLQalYJt'
   }
 };
 
@@ -28,11 +28,10 @@ module.exports = async function handler(req, res) {
 
     console.log('Checkout request:', { plan, billing, userId, email });
 
-    // Acepta priceId directo O plan+billing
     const priceId = directPriceId || PRICE_IDS[billing]?.[plan];
 
     if (!priceId) {
-      console.error('Plan no válido:', { plan, billing, available: Object.keys(PRICE_IDS) });
+      console.error('Plan no válido:', { plan, billing });
       return res.status(400).json({ error: `Plan no válido: ${plan}/${billing}` });
     }
 
@@ -41,8 +40,8 @@ module.exports = async function handler(req, res) {
       payment_method_types: ['card'],
       customer_email: email,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: 'https://climberforsuccess.online/?success=true',
-      cancel_url:  'https://climberforsuccess.online/?canceled=true',
+      success_url: 'https://www.climberforsuccess.online/?success=true',
+      cancel_url:  'https://www.climberforsuccess.online/?canceled=true',
       metadata: { userId, plan, billing }
     });
 
