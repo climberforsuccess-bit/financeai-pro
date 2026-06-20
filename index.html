@@ -1314,11 +1314,11 @@ body {
       <!-- Login Form -->
       <div id="login-form">
         <div class="form-group">
-          <label>Email</label>
+          <label for="login-email">Email</label>
           <input type="email" placeholder="tu@email.com" id="login-email">
         </div>
         <div class="form-group">
-          <label>Contraseña</label>
+          <label for="login-pass">Contraseña</label>
           <input type="password" placeholder="••••••••" id="login-pass">
         </div>
         <button class="btn btn-primary btn-full" onclick="doLogin()">Iniciar Sesión</button>
@@ -1330,19 +1330,19 @@ body {
       <!-- Register Form -->
       <div id="register-form" style="display:none;">
         <div class="form-group">
-          <label>Nombre Completo</label>
+          <label for="reg-name">Nombre Completo</label>
           <input type="text" placeholder="Tu nombre" id="reg-name">
         </div>
         <div class="form-group">
-          <label>Email</label>
+          <label for="login-email">Email</label>
           <input type="email" placeholder="tu@email.com" id="reg-email">
         </div>
         <div class="form-group">
-          <label>Contraseña</label>
+          <label for="login-pass">Contraseña</label>
           <input type="password" placeholder="Mínimo 8 caracteres" id="reg-pass">
         </div>
         <div class="form-group">
-          <label>País</label>
+          <label for="reg-country">País</label>
           <select id="reg-country">
             <option value="">Selecciona tu país</option>
             <optgroup label="🌎 América del Norte">
@@ -1383,7 +1383,7 @@ body {
           </select>
         </div>
         <div class="form-group">
-          <label>Plan</label>
+          <label for="reg-plan">Plan</label>
           <select id="reg-plan">
             <option value="free">Free — $0/mes</option>
             <option value="personal">Personal — $9.99/mes</option>
@@ -2432,15 +2432,15 @@ body {
         <div class="card">
           <div class="card-title" style="margin-bottom:20px;">👤 Perfil</div>
           <div class="form-group">
-            <label>Nombre</label>
+            <label for="set-name">Nombre</label>
             <input type="text" value="Usuario Demo" id="set-name">
           </div>
           <div class="form-group">
-            <label>Email</label>
+            <label for="login-email">Email</label>
             <input type="email" value="demo@financeaipro.com" id="set-email">
           </div>
           <div class="form-group">
-            <label>País</label>
+            <label for="reg-country">País</label>
             <select id="set-country">
               <optgroup label="🌎 América del Norte">
                 <option value="us" selected>🇺🇸 United States</option>
@@ -2480,7 +2480,7 @@ body {
             </select>
           </div>
           <div class="form-group">
-            <label>Moneda</label>
+            <label for="set-currency">Moneda</label>
             <select id="set-currency" name="set-currency">
               <optgroup label="🌎 América">
                 <option value="USD">USD — Dólar Americano</option>
@@ -2808,7 +2808,7 @@ body {
             <div id="vip-code-section">
               <p style="color:#94a3b8; font-size:13px; margin-bottom:10px;">¿Tienes un código VIP? Ingrésalo aquí:</p>
               <div style="display:flex; gap:8px;">
-                <input id="vip-code-input" type="text" placeholder="Ej: VIP-XXXX-XXXX"
+                <input id="admin-vip-code-input" type="text" placeholder="Ej: VIP-XXXX-XXXX"
                   style="flex:1; padding:12px; background:#0f172a; border:1px solid #334155;
                   border-radius:10px; color:#fff; font-size:14px; text-transform:uppercase; letter-spacing:2px;"
                   oninput="this.value=this.value.toUpperCase()"

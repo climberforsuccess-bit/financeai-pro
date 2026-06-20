@@ -1640,7 +1640,7 @@ const VIP_CODES = {
 };
 
 function activateVIPCode() {
-  const input = document.getElementById('vip-code-input');
+  const input = document.getElementById('vip-code-input') || document.getElementById('admin-vip-code-input');
   const msg   = document.getElementById('vip-code-msg');
   if (!input || !msg) return;
 
