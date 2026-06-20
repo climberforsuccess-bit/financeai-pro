@@ -85,7 +85,7 @@ function checkTransactionLimit() {
   // Advertencia al 80%
   if (count >= limits.transactions * 0.8) {
     const remaining = limits.transactions - count;
-    showToast(\`⚠️ Te quedan \${remaining} transacciones este mes — considera actualizar tu plan\`, 'warning');
+    showToast(`⚠️ Te quedan \${remaining} transacciones este mes — considera actualizar tu plan`, 'warning');
   }
   return true;
 }
@@ -547,13 +547,13 @@ function renderDashboard() {
       banner.style.background = 'linear-gradient(135deg,#ef444433,#ef444411)';
       banner.style.border = '1px solid #ef4444';
       banner.style.color = '#ef4444';
-      banner.innerHTML = \`🚫 Límite alcanzado: \${count}/\${limits.transactions} transacciones — <u>Actualiza tu plan</u>\`;
+      banner.innerHTML = `🚫 Límite alcanzado: \${count}/\${limits.transactions} transacciones — <u>Actualiza tu plan</u>`;
     } else if (pct >= 0.8) {
       banner.style.display = 'block';
       banner.style.background = 'linear-gradient(135deg,#f59e0b33,#f59e0b11)';
       banner.style.border = '1px solid #f59e0b';
       banner.style.color = '#f59e0b';
-      banner.innerHTML = \`⚠️ \${count}/\${limits.transactions} transacciones usadas — <u>Considera actualizar tu plan</u>\`;
+      banner.innerHTML = `⚠️ \${count}/\${limits.transactions} transacciones usadas — <u>Considera actualizar tu plan</u>`;
     } else {
       banner.style.display = 'none';
     }
@@ -577,13 +577,13 @@ function renderDashboard() {
       banner.style.background = 'linear-gradient(135deg,#ef444433,#ef444411)';
       banner.style.border = '1px solid #ef4444';
       banner.style.color = '#ef4444';
-      banner.innerHTML = \`🚫 Límite alcanzado: \${count}/\${limits.transactions} transacciones — <u>Actualiza tu plan</u>\`;
+      banner.innerHTML = `🚫 Límite alcanzado: \${count}/\${limits.transactions} transacciones — <u>Actualiza tu plan</u>`;
     } else if (pct >= 0.8) {
       banner.style.display = 'block';
       banner.style.background = 'linear-gradient(135deg,#f59e0b33,#f59e0b11)';
       banner.style.border = '1px solid #f59e0b';
       banner.style.color = '#f59e0b';
-      banner.innerHTML = \`⚠️ \${count}/\${limits.transactions} transacciones usadas — <u>Considera actualizar tu plan</u>\`;
+      banner.innerHTML = `⚠️ \${count}/\${limits.transactions} transacciones usadas — <u>Considera actualizar tu plan</u>`;
     } else {
       banner.style.display = 'none';
     }
@@ -2100,7 +2100,7 @@ async function askOpenAI(userMessage, context = '') {
   if (limits.aiMessages !== -1) {
     const remaining = limits.aiMessages - (used + 1);
     if (remaining === Math.floor(limits.aiMessages * 0.2)) {
-      showToast(\`⚠️ Te quedan \${remaining} mensajes IA hoy — considera actualizar tu plan\`, 'warning');
+      showToast(`⚠️ Te quedan \${remaining} mensajes IA hoy — considera actualizar tu plan`, 'warning');
     }
   }
   const systemPrompt = `Eres un asistente financiero personal inteligente llamado FinanceAI. 
