@@ -323,20 +323,23 @@ async function initApp() {
   });
 
   loadState();
-  if (localStorage.getItem('fai_just_logged_in') === 'true') {
-    localStorage.removeItem('fai_just_logged_in');
-  }
-  if (localStorage.getItem('fai_just_logged_in') === 'true') {
-    localStorage.removeItem('fai_just_logged_in');
-  }
+  localStorage.removeItem('fai_just_logged_in');
 
   try {
     if (typeof supabase !== 'undefined') {
       const { data: { session } } = await supabase.auth.getSession();
       if (session && session.user) {
         STATE.user = session.user;
-        const savedPlan = localStorage.getItem('fai_plan');
-        if (savedPlan) STATE.settings.plan = savedPlan;
+
+        // Cargar perfil desde Supabase (plan real)
+        await loadUserProfile();
+
+        // Si viene de Stripe con ?success=true forzar recarga
+        if (window.location.search.includes('success=true')) {
+          await loadUserProfile();
+          window.history.replaceState({}, '', '/');
+        }
+
         await loadTransactions();
         await loadCards();
         await loadDebts();
@@ -355,17 +358,47 @@ async function initApp() {
   showPage('landing');
 }
 
+async function loadUserProfile() {
+  if (!STATE.user) return;
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('plan, subscription_status, billing_period')
+      .eq('id', STATE.user.id)
+      .single();
+
+    if (data && !error) {
+      STATE.settings.plan           = data.plan || 'free';
+      STATE.settings.subscriptionStatus = data.subscription_status || 'inactive';
+      STATE.settings.billingPeriod  = data.billing_period || 'monthly';
+      localStorage.setItem('fai_plan', STATE.settings.plan);
+    }
+  } catch(e) {
+    console.warn('loadUserProfile error:', e);
+  }
+}
+
 function updateUserDisplay() {
   if (!STATE.user) return;
   const name = STATE.user.user_metadata?.full_name
     || STATE.user.user_metadata?.name
     || STATE.user.email?.split('@')[0]
     || 'Usuario';
-  const plan = STATE.settings.plan || 'free';
-  const planLabel = {
-    free: 'Free', personal: '⭐ Personal',
-    pro: '🚀 Pro', business: '💼 Business'
-  }[plan] || 'Free';
+  const plan    = STATE.settings.plan || 'free';
+  const billing = STATE.settings.billingPeriod || 'monthly';
+  const billingLabel = billing === 'annual' ? 'Anual' : 'Mensual';
+
+  const planNames = {
+    free:     'Free',
+    personal: '⭐ Personal',
+    pro:      '🚀 Pro',
+    business: '💼 Business'
+  };
+
+  const planName  = planNames[plan] || 'Free';
+  const planLabel = plan === 'free'
+    ? 'Free'
+    : `${planName} · ${billingLabel}`;
 
   setTxt('user-display-name', name);
   setTxt('user-display-plan', planLabel);
