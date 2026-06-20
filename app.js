@@ -4,6 +4,104 @@
 
 'use strict';
 
+// ============================================================
+// PLAN LIMITS — restricciones por plan
+// ============================================================
+const PLAN_LIMITS = {
+  free:     { transactions: 30,  cards: 1,  aiMessages: 5,   reports: false, scanner: false, gpt4: false, export: false, multiUser: false, api: false },
+  personal: { transactions: -1,  cards: 3,  aiMessages: 50,  reports: false, scanner: true,  gpt4: false, export: false, multiUser: false, api: false },
+  pro:      { transactions: -1,  cards: 10, aiMessages: 200, reports: true,  scanner: true,  gpt4: true,  export: true,  multiUser: false, api: false },
+  business: { transactions: -1,  cards: -1, aiMessages: -1,  reports: true,  scanner: true,  gpt4: true,  export: true,  multiUser: true,  api: true  }
+};
+
+// -1 = ilimitado
+function getPlanLimits() {
+  const plan = STATE.settings.plan || localStorage.getItem('fai_plan') || 'free';
+  return PLAN_LIMITS[plan] || PLAN_LIMITS.free;
+}
+
+function canUseFeature(feature) {
+  const limits = getPlanLimits();
+  return limits[feature] === true || limits[feature] === -1 || (typeof limits[feature] === 'number' && limits[feature] > 0);
+}
+
+function showUpgradeModal(feature) {
+  const featureMessages = {
+    scanner:   { title: '📸 Scanner de Recibos', desc: 'Escanea y digitaliza tus recibos automáticamente con IA.', minPlan: 'Personal' },
+    reports:   { title: '📊 Reportes Avanzados', desc: 'Análisis profundo de tus finanzas con gráficas y tendencias.', minPlan: 'Pro' },
+    gpt4:      { title: '🤖 GPT-4o IA Avanzada', desc: 'La IA más poderosa para analizar tus finanzas en detalle.', minPlan: 'Pro' },
+    export:    { title: '📤 Exportar PDF/Excel', desc: 'Exporta tus reportes y transacciones en cualquier formato.', minPlan: 'Pro' },
+    cards:     { title: '💳 Más Tarjetas', desc: 'Agrega más tarjetas y gestiona todas tus cuentas.', minPlan: 'Personal' },
+    multiUser: { title: '👥 Multi-Usuario', desc: 'Comparte el acceso con tu familia o equipo de trabajo.', minPlan: 'Business' },
+    api:       { title: '🔌 API Access', desc: 'Integra FinanceAI Pro con tus propias aplicaciones.', minPlan: 'Business' },
+    transactions: { title: '📝 Más Transacciones', desc: 'Registra transacciones ilimitadas sin restricciones.', minPlan: 'Personal' }
+  };
+
+  const info = featureMessages[feature] || { title: 'Función Premium', desc: 'Actualiza tu plan para acceder.', minPlan: 'Personal' };
+
+  // Crear modal si no existe
+  let modal = document.getElementById('upgrade-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'upgrade-modal';
+    modal.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;';
+    modal.innerHTML = `
+      <div style="background:#1e293b; border:1px solid #334155; border-radius:20px; padding:40px; max-width:420px; width:90%; text-align:center; position:relative;">
+        <button onclick="document.getElementById('upgrade-modal').style.display='none'" 
+          style="position:absolute; top:16px; right:16px; background:none; border:none; color:#64748b; font-size:20px; cursor:pointer;">✕</button>
+        <div id="upgrade-modal-icon" style="font-size:48px; margin-bottom:16px;"></div>
+        <h2 id="upgrade-modal-title" style="color:#fff; font-size:22px; margin-bottom:12px;"></h2>
+        <p id="upgrade-modal-desc" style="color:#94a3b8; font-size:15px; margin-bottom:8px;"></p>
+        <p id="upgrade-modal-plan" style="color:#f59e0b; font-size:13px; font-weight:600; margin-bottom:28px;"></p>
+        <button onclick="showSection('plans'); document.getElementById('upgrade-modal').style.display='none'"
+          style="width:100%; padding:14px; background:linear-gradient(135deg,#f59e0b,#ef4444); border:none; border-radius:12px; color:#fff; font-size:16px; font-weight:700; cursor:pointer;">
+          🚀 Ver Planes — Actualizar Ahora
+        </button>
+        <button onclick="document.getElementById('upgrade-modal').style.display='none'"
+          style="width:100%; padding:12px; background:none; border:none; color:#64748b; font-size:14px; cursor:pointer; margin-top:8px;">
+          No gracias, seguir con plan actual
+        </button>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+
+  // Llenar datos
+  const icons = { scanner:'📸', reports:'📊', gpt4:'🤖', export:'📤', cards:'💳', multiUser:'👥', api:'🔌', transactions:'📝' };
+  document.getElementById('upgrade-modal-icon').textContent = icons[feature] || '⭐';
+  document.getElementById('upgrade-modal-title').textContent = info.title;
+  document.getElementById('upgrade-modal-desc').textContent  = info.desc;
+  document.getElementById('upgrade-modal-plan').textContent  = '✨ Disponible desde el plan ' + info.minPlan;
+  modal.style.display = 'flex';
+}
+
+function checkTransactionLimit() {
+  const limits = getPlanLimits();
+  if (limits.transactions === -1) return true; // ilimitado
+  const count = STATE.transactions ? STATE.transactions.length : 0;
+  if (count >= limits.transactions) {
+    showUpgradeModal('transactions');
+    return false;
+  }
+  // Advertencia al 80%
+  if (count >= limits.transactions * 0.8) {
+    const remaining = limits.transactions - count;
+    showToast(\`⚠️ Te quedan \${remaining} transacciones este mes — considera actualizar tu plan\`, 'warning');
+  }
+  return true;
+}
+
+function checkCardLimit() {
+  const limits = getPlanLimits();
+  if (limits.cards === -1) return true;
+  const count = STATE.cards ? STATE.cards.length : 0;
+  if (count >= limits.cards) {
+    showUpgradeModal('cards');
+    return false;
+  }
+  return true;
+}
+
+
 // billing handled in payment.js
 
 
@@ -347,6 +445,7 @@ async function initApp() {
         showPage('app');
         showSection('dashboard');
         updateUserDisplay();
+        updateCurrentPlanBadge();
         checkAdminAccess();
         return;
       }
@@ -372,6 +471,7 @@ async function loadUserProfile() {
       STATE.settings.subscriptionStatus = data.subscription_status || 'inactive';
       STATE.settings.billingPeriod  = data.billing_period || 'monthly';
       localStorage.setItem('fai_plan', STATE.settings.plan);
+      localStorage.setItem('fai_billing', STATE.settings.billingPeriod);
     }
   } catch(e) {
     console.warn('loadUserProfile error:', e);
@@ -428,6 +528,66 @@ function switchAuthTab(tab) {
 // SECCIÓN 5: DASHBOARD
 // ============================================
 function renderDashboard() {
+  // Banner de límite de transacciones
+  const limits = getPlanLimits();
+  if (limits.transactions !== -1) {
+    const count = STATE.transactions ? STATE.transactions.length : 0;
+    const pct   = count / limits.transactions;
+    let banner  = document.getElementById('transaction-limit-banner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'transaction-limit-banner';
+      banner.style.cssText = 'display:none; margin:0 0 16px 0; padding:12px 16px; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer;';
+      banner.onclick = () => showSection('plans');
+      const dashContent = document.querySelector('#page-dashboard .dashboard-content') || document.getElementById('page-dashboard');
+      if (dashContent) dashContent.prepend(banner);
+    }
+    if (pct >= 1) {
+      banner.style.display = 'block';
+      banner.style.background = 'linear-gradient(135deg,#ef444433,#ef444411)';
+      banner.style.border = '1px solid #ef4444';
+      banner.style.color = '#ef4444';
+      banner.innerHTML = \`🚫 Límite alcanzado: \${count}/\${limits.transactions} transacciones — <u>Actualiza tu plan</u>\`;
+    } else if (pct >= 0.8) {
+      banner.style.display = 'block';
+      banner.style.background = 'linear-gradient(135deg,#f59e0b33,#f59e0b11)';
+      banner.style.border = '1px solid #f59e0b';
+      banner.style.color = '#f59e0b';
+      banner.innerHTML = \`⚠️ \${count}/\${limits.transactions} transacciones usadas — <u>Considera actualizar tu plan</u>\`;
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+  // Banner de límite de transacciones
+  const limits = getPlanLimits();
+  if (limits.transactions !== -1) {
+    const count = STATE.transactions ? STATE.transactions.length : 0;
+    const pct   = count / limits.transactions;
+    let banner  = document.getElementById('transaction-limit-banner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'transaction-limit-banner';
+      banner.style.cssText = 'display:none; margin:0 0 16px 0; padding:12px 16px; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer;';
+      banner.onclick = () => showSection('plans');
+      const dashContent = document.querySelector('#page-dashboard .dashboard-content') || document.getElementById('page-dashboard');
+      if (dashContent) dashContent.prepend(banner);
+    }
+    if (pct >= 1) {
+      banner.style.display = 'block';
+      banner.style.background = 'linear-gradient(135deg,#ef444433,#ef444411)';
+      banner.style.border = '1px solid #ef4444';
+      banner.style.color = '#ef4444';
+      banner.innerHTML = \`🚫 Límite alcanzado: \${count}/\${limits.transactions} transacciones — <u>Actualiza tu plan</u>\`;
+    } else if (pct >= 0.8) {
+      banner.style.display = 'block';
+      banner.style.background = 'linear-gradient(135deg,#f59e0b33,#f59e0b11)';
+      banner.style.border = '1px solid #f59e0b';
+      banner.style.color = '#f59e0b';
+      banner.innerHTML = \`⚠️ \${count}/\${limits.transactions} transacciones usadas — <u>Considera actualizar tu plan</u>\`;
+    } else {
+      banner.style.display = 'none';
+    }
+  }
   const now = new Date();
   const txs = STATE.transactions || [];
   const month = txs.filter(t => {
@@ -634,6 +794,7 @@ function openAddTransaction() {
 }
 
 async function saveTransaction() {
+  if (!checkTransactionLimit()) return;
   const desc   = getVal('tx-desc').trim();
   const amount = parseFloat(getVal('tx-amount'));
   const type   = getVal('tx-type')     || 'expense';
@@ -695,6 +856,7 @@ async function deleteTransaction(id) {
 // SECCIÓN 7: SCANNER
 // ============================================
 function processReceipt(event) {
+  if (!canUseFeature('scanner')) { showUpgradeModal('scanner'); return; }
   const file = event.target.files[0];
   if (!file) return;
   const uploadArea = document.querySelector('.upload-area');
@@ -918,6 +1080,7 @@ function openAddCard() {
 }
 
 async function saveCard() {
+  if (!checkCardLimit()) return;
   const name     = getVal('c-name').trim();
   const type     = getVal('c-type')     || 'credit';
   const limit    = parseFloat(getVal('c-limit'))    || 0;
@@ -1444,6 +1607,12 @@ function appendChatMessage(containerId, role, text) {
 }
 
 async function sendDashChat() {
+  const limits = getPlanLimits();
+  const used = parseInt(localStorage.getItem('fai_ai_messages_today') || '0');
+  if (limits.aiMessages !== -1 && used >= limits.aiMessages) {
+    showUpgradeModal('gpt4');
+    return;
+  }
   const input = document.getElementById('dash-chat-input');
   if (!input) return;
   const msg = input.value.trim();
@@ -1478,6 +1647,12 @@ async function sendDashChat() {
 }
 
 async function sendMainChat() {
+  const limits = getPlanLimits();
+  const used = parseInt(localStorage.getItem('fai_ai_messages_today') || '0');
+  if (limits.aiMessages !== -1 && used >= limits.aiMessages) {
+    showUpgradeModal('gpt4');
+    return;
+  }
   const input = document.getElementById('main-chat-input');
   if (!input) return;
   const msg = input.value.trim();
@@ -1604,7 +1779,7 @@ function showUpgradePrompt() {
       </button>
 
       <!-- Secondary CTA annual -->
-      <button onclick="document.getElementById('upgradeModal').remove(); startCheckout('pro', 'yearly')"
+      <button onclick="document.getElementById('upgradeModal').remove(); startCheckout('pro', 'annual')"
         style="width:100%; padding: 12px; background: rgba(245,158,11,0.1);
         border: 1px solid #f59e0b; border-radius: 12px; color: #f59e0b; font-weight: 700; font-size: 13px; cursor: pointer; margin-bottom: 12px;">
         💰 Mejor deal: Plan anual — Ahorra 40%
@@ -1865,6 +2040,7 @@ function renderSettings() {
 
 // ── Render Reports ───────────────────────────────────────────
 function renderReports() {
+  if (!canUseFeature('reports')) { showUpgradeModal('reports'); return; }
   const txs = STATE.transactions || [];
 
   // Totales
@@ -1908,6 +2084,25 @@ function renderReports() {
 
 // ── OpenAI via Netlify Function ─────────────────────────────
 async function askOpenAI(userMessage, context = '') {
+  // Incrementar contador diario de mensajes IA
+  const todayKey = 'fai_ai_messages_today';
+  const dateKey  = 'fai_ai_messages_date';
+  const today    = new Date().toDateString();
+  if (localStorage.getItem(dateKey) !== today) {
+    localStorage.setItem(dateKey, today);
+    localStorage.setItem(todayKey, '0');
+  }
+  const used = parseInt(localStorage.getItem(todayKey) || '0');
+  localStorage.setItem(todayKey, used + 1);
+
+  // Warning al 80% del límite
+  const limits = getPlanLimits();
+  if (limits.aiMessages !== -1) {
+    const remaining = limits.aiMessages - (used + 1);
+    if (remaining === Math.floor(limits.aiMessages * 0.2)) {
+      showToast(\`⚠️ Te quedan \${remaining} mensajes IA hoy — considera actualizar tu plan\`, 'warning');
+    }
+  }
   const systemPrompt = `Eres un asistente financiero personal inteligente llamado FinanceAI. 
 Ayudas a los usuarios a entender sus finanzas, dar consejos de ahorro, analizar gastos y más.
 Responde siempre en el idioma que use el usuario (español o inglés).
@@ -1971,10 +2166,10 @@ const PRICES = {
     pro:      19.99,
     business: 49.99
   },
-  yearly: {
-    personal: 8.33,
-    pro:      16.66,
-    business: 41.66
+  annual: {
+    personal: 7.99,
+    pro:      15.99,
+    business: 39.99
   }
 };
 
@@ -1988,10 +2183,10 @@ async function startCheckout(plan, billing = 'monthly') {
   }
 
   const planLabels = { personal: 'Personal ⭐', pro: 'Pro 💎', business: 'Business 🏢' };
-  const prices     = PRICES[billing] || PRICES['monthly'];
+  const prices     = PRICES[billing] || PRICES['annual'];
   const price      = prices[plan] || 0;
   const label      = planLabels[plan] || plan;
-  const suffix     = billing === 'yearly' ? '/mes (anual)' : '/mes';
+  const suffix     = billing === 'annual' ? '/mes (anual)' : '/mes';
 
   showToast(`🔒 Procesando ${label} — $${price.toFixed(2)}${suffix}...`, 'info');
 
@@ -2025,11 +2220,83 @@ async function startCheckout(plan, billing = 'monthly') {
 
 
 function updateCurrentPlanBadge() {
+  const plan    = STATE.settings.plan || STATE.userPlan || localStorage.getItem('fai_plan') || 'free';
+  const billing = STATE.settings.billingPeriod || localStorage.getItem('fai_billing') || 'monthly';
+  const planLabels    = { free: 'FREE', personal: 'PERSONAL ⭐', pro: 'PRO 💎', business: 'BUSINESS 🏢' };
+  const billingLabels = { monthly: 'Mensual', annual: 'Anual' };
+
+  // Badge superior
   const badge = document.getElementById('current-plan-badge');
-  if (!badge) return;
-  const plan = STATE.userPlan || 'free';
-  const labels = { free: 'FREE', personal: 'PERSONAL ⭐', pro: 'PRO 💎', business: 'BUSINESS 🏢' };
-  badge.textContent = `✨ Tu plan actual: ${labels[plan] || 'FREE'}`;
+  if (badge) {
+    if (plan === 'free') {
+      badge.textContent = '✨ Tu plan actual: FREE';
+    } else {
+      badge.textContent = '✨ Tu plan actual: ' + (planLabels[plan] || plan.toUpperCase()) + ' · ' + (billingLabels[billing] || billing);
+    }
+  }
+
+  // Badge inferior sidebar
+  const sidebarPlan = document.getElementById('sidebar-plan-label');
+  if (sidebarPlan) {
+    if (plan === 'free') {
+      sidebarPlan.textContent = 'Free';
+    } else {
+      sidebarPlan.textContent = (planLabels[plan] || plan) + ' · ' + (billingLabels[billing] || billing);
+    }
+  }
+
+  const plans = ['free', 'personal', 'pro', 'business'];
+  plans.forEach(function(p) {
+    const card = document.getElementById('plan-card-' + p);
+    if (!card) return;
+
+    // Elimina badge anterior
+    const oldBadge = card.querySelector('.plan-current-badge');
+    if (oldBadge) oldBadge.remove();
+
+    // Restaura botón
+    const btn = card.querySelector('button');
+    if (btn && btn.dataset.originalHtml) {
+      btn.disabled = false;
+      btn.style.cssText = btn.dataset.originalStyle || '';
+      btn.innerHTML = btn.dataset.originalHtml;
+    }
+
+    // Restaura botón free si no es el plan actual
+    if (p === 'free' && plan !== 'free') {
+      const freeBtn = document.getElementById('btn-plan-free');
+      if (freeBtn) {
+        freeBtn.disabled = false;
+        freeBtn.style.cssText = 'width:100%; padding:12px; background:#1e293b; border:1px solid #475569; border-radius:10px; color:#94a3b8; font-size:13px; font-weight:600; cursor:pointer;';
+        freeBtn.textContent = 'Gratis para siempre';
+      }
+    }
+
+    if (p === plan) {
+      // Agrega badge en la card correcta
+      const header = card.querySelector('div');
+      if (header) {
+        const newBadge = document.createElement('span');
+        newBadge.className = 'plan-current-badge';
+        newBadge.style.cssText = 'background:#334155; color:#94a3b8; font-size:11px; padding:4px 10px; border-radius:10px; font-weight:600; margin-left:8px;';
+        newBadge.textContent = 'Tu plan actual';
+        header.appendChild(newBadge);
+      }
+
+      // Deshabilita botón del plan activo
+      if (btn) {
+        btn.dataset.originalHtml = btn.innerHTML;
+        btn.dataset.originalStyle = btn.style.cssText;
+        btn.disabled = true;
+        btn.style.cssText = 'width:100%; padding:14px; background:#1e293b; border:1px solid #334155; border-radius:10px; color:#475569; font-size:13px; font-weight:600; cursor:not-allowed;';
+        if (p === 'free') {
+          btn.textContent = 'Tu plan actual — Gratis';
+        } else {
+          btn.textContent = '✓ ' + (planLabels[p] || p) + ' · ' + (billingLabels[billing] || billing);
+        }
+      }
+    }
+  });
 }
 
 // ── BILLING TOGGLE (landing + app) ───────────────────────────────────

@@ -13,15 +13,15 @@ module.exports = async (req, res) => {
     const prices = {
       personal: {
         monthly: 'price_1Tf0b8HXX8AdE0MTRi1RMAsq',
-        yearly:  'price_1TfM9ZHXX8AdE0MTluR7y3i5'
+        annual:  'price_1TfM9ZHXX8AdE0MTluR7y3i5'
       },
       pro: {
         monthly: 'price_1Tf0eJHXX8AdE0MTP87khCpZ',
-        yearly:  'price_1TfMBCHXX8AdE0MTSLvsF8PC'
+        annual:  'price_1TfMBCHXX8AdE0MTSLvsF8PC'
       },
       business: {
         monthly: 'price_1TfM6MHXX8AdE0MTX7PsMhBB',
-        yearly:  'price_1TfMBfHXX8AdE0MTF9Wghval'
+        annual:  'price_1TfMBfHXX8AdE0MTF9Wghval'
       }
     };
 

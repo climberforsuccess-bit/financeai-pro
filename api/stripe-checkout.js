@@ -2,19 +2,19 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const PRICE_IDS = {
   monthly: {
-    personal: 'price_1Tk7TDHXX8AdE0MTbQMaTXVj',
-    pro:      'price_1Tk7TDHXX8AdE0MTDzFZhpVy',
-    business: 'price_1Tk7TDHXX8AdE0MTCRlxfaDS'
+    personal: 'price_1Tf0b8HXX8AdE0MTRi1RMAsq',
+    pro:      'price_1Tf0eJHXX8AdE0MTP87khCpZ',
+    business: 'price_1TfM6MHXX8AdE0MTX7PsMhBB'
   },
   annual: {
-    personal: 'price_1Tk7WqHXX8AdE0MTYIRJTppV',
-    pro:      'price_1Tk7WqHXX8AdE0MTnyH3Q8fG',
-    business: 'price_1Tk7WrHXX8AdE0MTdLQalYJt'
+    personal: 'price_1TfM9ZHXX8AdE0MTluR7y3i5',
+    pro:      'price_1TfMBCHXX8AdE0MTSLvsF8PC',
+    business: 'price_1TfMBfHXX8AdE0MTF9Wghval'
   },
-  yearly: {
-    personal: 'price_1Tk7WqHXX8AdE0MTYIRJTppV',
-    pro:      'price_1Tk7WqHXX8AdE0MTnyH3Q8fG',
-    business: 'price_1Tk7WrHXX8AdE0MTdLQalYJt'
+  annual: {
+    personal: 'price_1TfM9ZHXX8AdE0MTluR7y3i5',
+    pro:      'price_1TfMBCHXX8AdE0MTSLvsF8PC',
+    business: 'price_1TfMBfHXX8AdE0MTF9Wghval'
   }
 };
 
