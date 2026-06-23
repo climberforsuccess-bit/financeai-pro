@@ -795,7 +795,21 @@ async function deleteCard(id) {
 // SECCIÓN 9: DEBTS
 // ============================================
 function renderDebts() {
-  const debts = STATE.debts || [];
+const cardDebts = (STATE.cards || [])
+  .filter(c => c.type === 'credit' && c.balance > 0)
+  .map(c => ({
+    id:              c.id,
+    name:            c.name,
+    balance:         c.balance,
+    originalBalance: c.limit,
+    apr:             c.apr || 0,
+    minPayment:      Math.max(25, c.balance * 0.02),
+    dueDate:         c.dueDate,
+    debtType:        'credit_card'
+  }));
+const manualDebts = STATE.debts || [];
+const debts = [...cardDebts, ...manualDebts];
+
   const total = debts.reduce((s, d) => s + (d.balance || 0), 0);
 
   const statVals = document.querySelectorAll(
