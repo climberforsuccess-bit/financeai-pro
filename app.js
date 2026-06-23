@@ -53,7 +53,7 @@ function showUpgradeModal(feature) {
         <h2 id="upgrade-modal-title" style="color:#fff; font-size:22px; margin-bottom:12px;"></h2>
         <p id="upgrade-modal-desc" style="color:#94a3b8; font-size:15px; margin-bottom:8px;"></p>
         <p id="upgrade-modal-plan" style="color:#f59e0b; font-size:13px; font-weight:600; margin-bottom:28px;"></p>
-        <button onclick="showSection('plans'); document.getElementById('upgrade-modal').style.display='none'"
+        <button onclick="showSection('subscriptions'); document.getElementById('upgrade-modal').style.display='none'"
           style="width:100%; padding:14px; background:linear-gradient(135deg,#f59e0b,#ef4444); border:none; border-radius:12px; color:#fff; font-size:16px; font-weight:700; cursor:pointer;">
           🚀 Ver Planes — Actualizar Ahora
         </button>
@@ -588,7 +588,7 @@ function renderDashboard() {
       banner = document.createElement('div');
       banner.id = 'transaction-limit-banner';
       banner.style.cssText = 'display:none; margin:0 0 16px 0; padding:12px 16px; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer;';
-      banner.onclick = () => showSection('plans');
+      banner.onclick = () => showSection('subscriptions');
       const dashContent = document.querySelector('#page-dashboard .dashboard-content') || document.getElementById('page-dashboard');
       if (dashContent) dashContent.prepend(banner);
     }
@@ -2086,7 +2086,7 @@ async function processReceipt(event) {
   const limits = getPlanLimits();
   if (!limits.scanner) {
     showToast('El Scanner requiere plan Personal o superior', 'error');
-    showSection('plans');
+    showSection('subscriptions');
     return;
   }
 
@@ -2247,7 +2247,7 @@ async function processReceipt(event) {
   const limits = getPlanLimits();
   if (!limits.scanner) {
     showToast('✨ Desbloquea el Scanner IA — ahorra horas cada semana', 'info');
-    setTimeout(() => showSection('plans'), 1200);
+    setTimeout(() => showSection('subscriptions'), 1200);
     return;
   }
 
@@ -2395,7 +2395,7 @@ async function saveScannedTransaction() {
 function exportData(format) {
   if (!canUseFeature('export')) {
     showToast('📤 Exportar requiere plan Pro — ¡lleva tus finanzas al siguiente nivel!', 'info');
-    setTimeout(() => showSection('plans'), 1200);
+    setTimeout(() => showSection('subscriptions'), 1200);
     return;
   }
 
