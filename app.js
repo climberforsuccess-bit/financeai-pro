@@ -2771,7 +2771,7 @@ function saveNewCard() {
   if (!name) { showToast('Ingresa el nombre del titular', 'error'); return; }
 
   const card = {
-    id: 'card_' + Date.now(),
+    id: crypto.randomUUID(),
     name, type, lastFour, limit, balance, apr, dueDate
   };
 
