@@ -811,7 +811,8 @@ async function saveEditCard(id) {
 
     const idx = STATE.cards.findIndex(c => c.id === id);
     if (idx !== -1) {
-      STATE.cards[idx] = { ...STATE.cards[idx], name, type, limit, balance, lastFour, apr, dueDate };
+      const existingColor = STATE.cards[idx].color;
+      STATE.cards[idx] = { ...STATE.cards[idx], name, type, limit, balance, lastFour, apr, dueDate, color: existingColor };
     }
 
     document.getElementById('edit-card-modal')?.remove();
@@ -846,7 +847,7 @@ async function deleteCard(id) {
 // ============================================
 function renderDebts() {
 const cardDebts = (STATE.cards || [])
-  .filter(c => c.type === 'credit' && c.balance > 0)
+  .filter(c => (c.type === 'Crédito' || c.type === 'credit') && c.balance > 0)
   .map(c => ({
     id:              c.id,
     name:            c.name,
@@ -2820,6 +2821,8 @@ function openAddCard() {
         <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#0d1b2a,#1b4332)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#0d1b2a,#1b4332);"></div>
         <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#1a1a3e,#f59e0b44)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#1a1a3e,#f59e0b44);"></div>
         <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#1a1a3e,#a855f744)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#1a1a3e,#a855f744);"></div>
+        <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#1a1a1a,#2d2d2d)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);"></div>
+        <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#e8e8e8,#ffffff)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#e8e8e8,#ffffff);"></div>
       </div>
       <div style="display:flex;gap:12px;">
         <button onclick="document.getElementById('add-card-modal').remove()" style="flex:1;padding:12px;background:transparent;border:1px solid #444;border-radius:8px;color:#94a3b8;cursor:pointer;">Cancelar</button>
