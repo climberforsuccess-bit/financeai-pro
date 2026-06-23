@@ -2719,7 +2719,7 @@ function openAddCard() {
   modal = document.createElement('div');
   modal.id = 'add-card-modal';
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center;';
-  modal.innerHTML = \`
+  modal.innerHTML = `
     <div style="background:#1a1a3e;border-radius:16px;padding:32px;width:90%;max-width:440px;border:1px solid #00EEFF33;">
       <h2 style="color:#fff;margin-bottom:24px;font-size:20px;">💳 Nueva Tarjeta</h2>
 
@@ -2753,7 +2753,7 @@ function openAddCard() {
         <button onclick="saveNewCard()" style="flex:1;padding:12px;background:linear-gradient(135deg,#00EEFF,#0066FF);border:none;border-radius:8px;color:#000;font-weight:700;cursor:pointer;">Guardar</button>
       </div>
     </div>
-  \`;
+  `;
 
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
   document.body.appendChild(modal);
