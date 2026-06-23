@@ -560,6 +560,8 @@ function renderDashboard() {
   }
 
 
+}
+
 async function deleteCard(id) {
   try {
     const { error } = await supabase
@@ -1794,4 +1796,3 @@ document.addEventListener('DOMContentLoaded', function() {
   setBilling('annual');
 });
 // ─────────────────────────────────────────────────────────────────────
-}
