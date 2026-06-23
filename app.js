@@ -562,6 +562,217 @@ function renderDashboard() {
 
 }
 
+
+function renderCards() {
+  const cards = STATE.cards || [];
+  const container = document.getElementById('cards-list');
+  if (!container) return;
+
+  if (cards.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:60px;color:#8892A4;grid-column:1/-1;">
+        <div style="font-size:3rem;margin-bottom:12px;opacity:0.4;">💳</div>
+        No tienes tarjetas registradas.<br>
+        <button onclick="openAddCard()" style="
+          margin-top:12px;background:none;border:none;
+          color:#00EEFF;cursor:pointer;
+          text-decoration:underline;font-size:inherit;">
+          + Agregar tarjeta
+        </button>
+      </div>`;
+    return;
+  }
+
+  const gradients = [
+    'linear-gradient(135deg,#1a1a3e,#00EEFF22)',
+    'linear-gradient(135deg,#1a1a3e,#0d0d2b)',
+    'linear-gradient(135deg,#0d1b2a,#1b4332)',
+    'linear-gradient(135deg,#2d1b69,#11998e)',
+    'linear-gradient(135deg,#1a1a2e,#e94560)'
+  ];
+
+  container.innerHTML = cards.map((c, i) => {
+    const used = c.balance || 0;
+    const limit = c.limit || 1;
+    const pct = Math.min(Math.round((used / limit) * 100), 100);
+    const usageClass = pct >= 80 ? 'danger' : pct >= 50 ? 'warning' : 'success';
+    const gradient = c.color || gradients[i % gradients.length];
+    const lastFour = c.lastFour ? `•••• •••• •••• ${c.lastFour}` : '•••• •••• •••• ••••';
+
+    return `
+      <div class="credit-card-visual" style="background:${gradient};position:relative;">
+        <div style="position:absolute;top:12px;right:12px;display:flex;gap:8px;">
+          <button onclick="editCard('${c.id}')" style="
+            background:rgba(255,255,255,0.15);border:none;border-radius:8px;
+            padding:4px 10px;color:#fff;cursor:pointer;font-size:12px;">
+            ✏️ Editar
+          </button>
+          <button onclick="deleteCard('${c.id}')" style="
+            background:rgba(255,71,87,0.3);border:none;border-radius:8px;
+            padding:4px 10px;color:#FF4757;cursor:pointer;font-size:12px;">
+            🗑️
+          </button>
+        </div>
+        <div class="card-chip">💳</div>
+        <div class="card-number">${lastFour}</div>
+        <div class="card-meta">
+          <div>
+            <div style="font-size:11px;color:var(--gray);">TITULAR</div>
+            <div class="card-holder">${c.name || 'Sin nombre'}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;color:var(--gray);">LÍMITE</div>
+            <div class="card-limit">${formatCurrency(limit)}</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+            <span style="color:var(--gray);">${c.type || 'Crédito'}</span>
+            <span style="color:var(--${usageClass});">${formatCurrency(used)} usado</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill ${usageClass}" style="width:${pct}%;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-top:4px;">
+            <span>APR: ${c.apr || 0}%</span>
+            <span>Vence día ${c.dueDate || '—'}</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function editCard(id) {
+  const card = (STATE.cards || []).find(c => c.id === id);
+  if (!card) return;
+
+  const modal = document.createElement('div');
+  modal.id = 'edit-card-modal';
+  modal.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,0.7);
+    display:flex;align-items:center;justify-content:center;
+    z-index:9999;padding:20px;`;
+
+  modal.innerHTML = `
+    <div style="background:#1A2035;border-radius:20px;padding:32px;
+      width:100%;max-width:460px;border:1px solid rgba(255,255,255,0.08);">
+      <h3 style="margin:0 0 24px;color:#fff;font-size:1.2rem;">✏️ Editar Tarjeta</h3>
+
+      <div style="display:grid;gap:16px;">
+        <div>
+          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Nombre / Banco</label>
+          <input id="ec-name" value="${card.name || ''}" style="
+            width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
+            border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Tipo</label>
+          <select id="ec-type" style="
+            width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
+            border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
+            <option value="Crédito" ${card.type==='Crédito'?'selected':''}>Crédito</option>
+            <option value="Débito" ${card.type==='Débito'?'selected':''}>Débito</option>
+            <option value="Prepago" ${card.type==='Prepago'?'selected':''}>Prepago</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Límite ($)</label>
+            <input id="ec-limit" type="number" value="${card.limit || 0}" style="
+              width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
+              border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Balance usado ($)</label>
+            <input id="ec-balance" type="number" value="${card.balance || 0}" style="
+              width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
+              border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Últimos 4 dígitos</label>
+            <input id="ec-last4" type="number" maxlength="4" value="${card.lastFour || ''}" style="
+              width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
+              border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">APR (%)</label>
+            <input id="ec-apr" type="number" step="0.01" value="${card.apr || 0}" style="
+              width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
+              border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
+          </div>
+        </div>
+        <div>
+          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Día de vencimiento</label>
+          <input id="ec-due" type="number" min="1" max="31" value="${card.dueDate || ''}" style="
+            width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
+            border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:24px;">
+        <button onclick="document.getElementById('edit-card-modal').remove()" style="
+          flex:1;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+          border-radius:12px;color:#8892A4;cursor:pointer;font-size:14px;">
+          Cancelar
+        </button>
+        <button onclick="saveEditCard('${id}')" style="
+          flex:2;padding:12px;background:linear-gradient(135deg,#00EEFF,#0066FF);
+          border:none;border-radius:12px;color:#000;cursor:pointer;
+          font-size:14px;font-weight:700;">
+          💾 Guardar Cambios
+        </button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => {
+    if (e.target === modal) modal.remove();
+  });
+}
+
+async function saveEditCard(id) {
+  const name     = document.getElementById('ec-name')?.value?.trim();
+  const type     = document.getElementById('ec-type')?.value;
+  const limit    = parseFloat(document.getElementById('ec-limit')?.value) || 0;
+  const balance  = parseFloat(document.getElementById('ec-balance')?.value) || 0;
+  const lastFour = document.getElementById('ec-last4')?.value?.slice(-4);
+  const apr      = parseFloat(document.getElementById('ec-apr')?.value) || 0;
+  const dueDate  = parseInt(document.getElementById('ec-due')?.value) || null;
+
+  if (!name) { showToast('El nombre es requerido', 'error'); return; }
+
+  try {
+    const { error } = await supabase
+      .from('cards')
+      .update({
+        name,
+        card_type:    type,
+        limit_amount: limit,
+        balance,
+        last_four:    lastFour,
+        apr,
+        due_date:     dueDate
+      })
+      .eq('id', id);
+
+    if (error) throw error;
+
+    const idx = STATE.cards.findIndex(c => c.id === id);
+    if (idx !== -1) {
+      STATE.cards[idx] = { ...STATE.cards[idx], name, type, limit, balance, lastFour, apr, dueDate };
+    }
+
+    document.getElementById('edit-card-modal')?.remove();
+    renderCards();
+    showToast('✅ Tarjeta actualizada');
+  } catch(e) {
+    console.error('Error actualizando tarjeta:', e);
+    showToast('Error al guardar cambios', 'error');
+  }
+}
+
 async function deleteCard(id) {
   try {
     const { error } = await supabase
@@ -1515,7 +1726,6 @@ function renderReports() {
 }
 
 renderMonthlyReport();
-}
 
 // ── OpenAI via Vercel Function ──────────────────────────────
 async function askOpenAI(userMessage, context = '') {
@@ -2306,4 +2516,189 @@ function renderMonthlyReport() {
         </td>
       </tr>`;
   }).join('');
+}
+
+// ============================================
+// TÉRMINOS Y POLÍTICA DE PRIVACIDAD
+// ============================================
+function showLegal(type) {
+  const isTerms = type === 'terms';
+
+  const termsContent = `
+    <h2 style="color:#00EEFF;margin:0 0 8px;">📋 Términos de Servicio</h2>
+    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">Última actualización: ${new Date().toLocaleDateString('es-ES', {year:'numeric',month:'long',day:'numeric'})}</p>
+
+    <div style="color:#CBD5E1;font-size:14px;line-height:1.8;">
+
+      <h3 style="color:#fff;margin:20px 0 8px;">1. Aceptación de los Términos</h3>
+      <p>Al acceder y utilizar FinanceAI Pro ("la Aplicación"), usted acepta estar sujeto a estos Términos de Servicio. Si no está de acuerdo con alguna parte de estos términos, no podrá acceder al servicio.</p>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">2. Descripción del Servicio</h3>
+      <p>FinanceAI Pro es una plataforma de gestión financiera personal que permite:</p>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>Registrar y categorizar ingresos y gastos</li>
+        <li>Gestionar tarjetas de crédito y débito</li>
+        <li>Escanear y procesar recibos</li>
+        <li>Analizar deudas y suscripciones</li>
+        <li>Generar reportes financieros con inteligencia artificial</li>
+      </ul>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">3. Planes y Pagos</h3>
+      <p>FinanceAI Pro ofrece planes de suscripción (Free, Personal, Pro y Business). Los cargos son procesados de forma segura mediante Stripe. Al suscribirse:</p>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>Los cargos son recurrentes (mensual o anual según el plan elegido)</li>
+        <li>Puede cancelar en cualquier momento desde su portal de cliente</li>
+        <li>No se emiten reembolsos por períodos parciales</li>
+        <li>Los precios pueden cambiar con previo aviso de 30 días</li>
+      </ul>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">4. Uso Aceptable</h3>
+      <p>Usted se compromete a:</p>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>Proporcionar información verídica en su cuenta</li>
+        <li>Mantener la confidencialidad de sus credenciales</li>
+        <li>No usar la aplicación para actividades ilegales o fraudulentas</li>
+        <li>No intentar acceder a datos de otros usuarios</li>
+        <li>No realizar ingeniería inversa o copiar el software</li>
+      </ul>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">5. Limitación de Responsabilidad</h3>
+      <p>FinanceAI Pro es una herramienta de organización financiera personal. <strong style="color:#FF4757;">No somos asesores financieros.</strong> La información generada por la IA es orientativa y no constituye asesoramiento financiero, legal o fiscal profesional. Siempre consulte a un profesional calificado para decisiones financieras importantes.</p>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">6. Disponibilidad del Servicio</h3>
+      <p>Nos esforzamos por mantener el servicio disponible 24/7, pero no garantizamos disponibilidad ininterrumpida. Podemos realizar mantenimientos programados con previo aviso.</p>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">7. Terminación</h3>
+      <p>Nos reservamos el derecho de suspender o terminar cuentas que violen estos términos. Usted puede eliminar su cuenta en cualquier momento desde la configuración.</p>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">8. Cambios a los Términos</h3>
+      <p>Podemos actualizar estos términos ocasionalmente. Le notificaremos cambios significativos por email. El uso continuado del servicio constituye aceptación de los nuevos términos.</p>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">9. Ley Aplicable</h3>
+      <p>Estos términos se rigen por las leyes aplicables en la jurisdicción del usuario. Cualquier disputa se resolverá mediante arbitraje o en los tribunales competentes.</p>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">10. Contacto</h3>
+      <p>Para preguntas sobre estos términos: <a href="mailto:climberforsuccess@gmail.com" style="color:#00EEFF;">climberforsuccess@gmail.com</a></p>
+    </div>
+  `;
+
+  const privacyContent = `
+    <h2 style="color:#00EEFF;margin:0 0 8px;">🔒 Política de Privacidad</h2>
+    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">Última actualización: ${new Date().toLocaleDateString('es-ES', {year:'numeric',month:'long',day:'numeric'})}</p>
+
+    <div style="color:#CBD5E1;font-size:14px;line-height:1.8;">
+
+      <h3 style="color:#fff;margin:20px 0 8px;">1. Información que Recopilamos</h3>
+      <p>Recopilamos la siguiente información para operar el servicio:</p>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li><strong style="color:#CBD5E1;">Información de cuenta:</strong> nombre, email, contraseña (cifrada)</li>
+        <li><strong style="color:#CBD5E1;">Datos financieros:</strong> transacciones, tarjetas, deudas y suscripciones que usted registra</li>
+        <li><strong style="color:#CBD5E1;">Datos de uso:</strong> páginas visitadas, funciones utilizadas</li>
+        <li><strong style="color:#CBD5E1;">Información técnica:</strong> tipo de dispositivo, navegador, dirección IP</li>
+      </ul>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">2. Cómo Usamos su Información</h3>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>Proveer y mejorar el servicio</li>
+        <li>Procesar pagos de forma segura</li>
+        <li>Enviar notificaciones importantes sobre su cuenta</li>
+        <li>Generar análisis financieros personalizados con IA</li>
+        <li>Cumplir obligaciones legales</li>
+      </ul>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">3. Compartición de Datos</h3>
+      <p><strong style="color:#00EEFF;">No vendemos sus datos personales.</strong> Compartimos información únicamente con:</p>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li><strong style="color:#CBD5E1;">Supabase:</strong> almacenamiento seguro de datos</li>
+        <li><strong style="color:#CBD5E1;">Stripe:</strong> procesamiento de pagos (no almacenamos datos de tarjetas)</li>
+        <li><strong style="color:#CBD5E1;">OpenAI:</strong> análisis de IA (datos anonimizados)</li>
+        <li>Autoridades legales cuando sea requerido por ley</li>
+      </ul>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">4. Seguridad de los Datos</h3>
+      <p>Protegemos sus datos mediante:</p>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>Cifrado SSL/TLS en todas las comunicaciones</li>
+        <li>Contraseñas cifradas con bcrypt</li>
+        <li>Acceso restringido a datos por Row Level Security (RLS)</li>
+        <li>Infraestructura segura en Supabase y Vercel</li>
+      </ul>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">5. Sus Derechos</h3>
+      <p>Usted tiene derecho a:</p>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>Acceder a sus datos personales</li>
+        <li>Corregir datos inexactos</li>
+        <li>Eliminar su cuenta y todos sus datos</li>
+        <li>Exportar sus datos en formato CSV</li>
+        <li>Oponerse al procesamiento de sus datos</li>
+      </ul>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">6. Cookies</h3>
+      <p>Usamos cookies esenciales para mantener su sesión activa y preferencias de la app. No usamos cookies de rastreo de terceros con fines publicitarios.</p>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">7. Retención de Datos</h3>
+      <p>Mantenemos sus datos mientras su cuenta esté activa. Al eliminar su cuenta, sus datos son eliminados permanentemente en un plazo máximo de 30 días.</p>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">8. Menores de Edad</h3>
+      <p>FinanceAI Pro no está dirigido a menores de 18 años. No recopilamos intencionalmente datos de menores.</p>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">9. Cambios a esta Política</h3>
+      <p>Notificaremos cambios significativos por email con al menos 15 días de anticipación.</p>
+
+      <h3 style="color:#fff;margin:20px 0 8px;">10. Contacto</h3>
+      <p>Para ejercer sus derechos o consultas de privacidad: <a href="mailto:climberforsuccess@gmail.com" style="color:#00EEFF;">climberforsuccess@gmail.com</a></p>
+    </div>
+  `;
+
+  const existing = document.getElementById('legal-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'legal-modal';
+  modal.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,0.85);
+    display:flex;align-items:center;justify-content:center;
+    z-index:99999;padding:20px;`;
+
+  modal.innerHTML = `
+    <div style="
+      background:#1A2035;border-radius:20px;padding:32px;
+      width:100%;max-width:680px;max-height:85vh;
+      border:1px solid rgba(255,255,255,0.08);
+      display:flex;flex-direction:column;">
+
+      <div style="display:flex;gap:12px;margin-bottom:24px;">
+        <button onclick="showLegal('terms')" style="
+          flex:1;padding:10px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;
+          background:${isTerms ? 'linear-gradient(135deg,#00EEFF,#0066FF)' : 'rgba(255,255,255,0.05)'};
+          border:${isTerms ? 'none' : '1px solid rgba(255,255,255,0.1)'};
+          color:${isTerms ? '#000' : '#8892A4'};">
+          📋 Términos de Servicio
+        </button>
+        <button onclick="showLegal('privacy')" style="
+          flex:1;padding:10px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;
+          background:${!isTerms ? 'linear-gradient(135deg,#00EEFF,#0066FF)' : 'rgba(255,255,255,0.05)'};
+          border:${!isTerms ? 'none' : '1px solid rgba(255,255,255,0.1)'};
+          color:${!isTerms ? '#000' : '#8892A4'};">
+          🔒 Política de Privacidad
+        </button>
+      </div>
+
+      <div style="overflow-y:auto;flex:1;padding-right:8px;">
+        ${isTerms ? termsContent : privacyContent}
+      </div>
+
+      <button onclick="document.getElementById('legal-modal').remove()" style="
+        margin-top:24px;padding:12px;width:100%;
+        background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+        border-radius:12px;color:#8892A4;cursor:pointer;font-size:14px;">
+        ✖ Cerrar
+      </button>
+    </div>`;
+
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => {
+    if (e.target === modal) modal.remove();
+  });
 }
