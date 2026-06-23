@@ -2759,27 +2759,51 @@ function openAddCard() {
   document.body.appendChild(modal);
 }
 
-function saveNewCard() {
-  const name    = document.getElementById('nc-name').value.trim();
-  const type    = document.getElementById('nc-type').value;
-  const lastFour= document.getElementById('nc-last4').value.trim();
-  const limit   = parseFloat(document.getElementById('nc-limit').value) || 0;
-  const balance = parseFloat(document.getElementById('nc-balance').value) || 0;
-  const apr     = parseFloat(document.getElementById('nc-apr').value) || 0;
-  const dueDate = document.getElementById('nc-due').value.trim();
+async function saveNewCard() {
+  const name     = document.getElementById('nc-name').value.trim();
+  const type     = document.getElementById('nc-type').value;
+  const lastFour = document.getElementById('nc-last4').value.trim();
+  const limit    = parseFloat(document.getElementById('nc-limit').value) || 0;
+  const balance  = parseFloat(document.getElementById('nc-balance').value) || 0;
+  const apr      = parseFloat(document.getElementById('nc-apr').value) || 0;
+  const dueDate  = document.getElementById('nc-due').value.trim();
 
   if (!name) { showToast('Ingresa el nombre del titular', 'error'); return; }
 
-  const card = {
-    id: crypto.randomUUID(),
-    name, type, lastFour, limit, balance, apr, dueDate
-  };
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) { showToast('Sesión expirada', 'error'); return; }
 
-  if (!STATE.cards) STATE.cards = [];
-  STATE.cards.push(card);
-  saveState();
+  const { data, error } = await supabase.from('cards').insert([{
+    user_id:      session.user.id,
+    name:         name,
+    card_type:    type,
+    last_four:    lastFour,
+    limit_amount: limit,
+    balance:      balance,
+    apr:          apr,
+    due_date:     dueDate
+  }]).select().single();
+
+  if (error) {
+    console.error('Error guardando tarjeta:', error);
+    showToast('Error al guardar tarjeta', 'error');
+    return;
+  }
+
+  STATE.cards.push({
+    id:        data.id,
+    name:      data.name,
+    type:      data.card_type,
+    limit:     data.limit_amount,
+    balance:   data.balance,
+    lastFour:  data.last_four,
+    dueDate:   data.due_date,
+    apr:       data.apr || 0,
+    createdAt: data.created_at
+  });
 
   document.getElementById('add-card-modal').remove();
   renderCards();
   showToast('✅ Tarjeta guardada');
 }
+
