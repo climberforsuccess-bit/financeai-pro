@@ -1794,3 +1794,4 @@ document.addEventListener('DOMContentLoaded', function() {
   setBilling('annual');
 });
 // ─────────────────────────────────────────────────────────────────────
+}
