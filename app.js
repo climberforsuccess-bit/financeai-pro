@@ -295,7 +295,7 @@ function showSection(sectionId) {
   if (sectionId === 'dashboard')     renderDashboard();
   if (sectionId === 'transactions')  renderTransactions();
   if (sectionId === 'cards')         renderCards();
-  if (sectionId === 'debts')         renderDebts();
+  if (sectionId === 'debts')         loadCards().then(() => renderDebts());
   if (sectionId === 'subscriptions') renderSubscriptions();
   if (sectionId === 'reports')       renderReports();
   if (sectionId === 'settings')      renderSettings();
