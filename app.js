@@ -1514,7 +1514,10 @@ function renderReports() {
   }
 }
 
-// ── OpenAI via Netlify Function ─────────────────────────────
+renderMonthlyReport();
+}
+
+// ── OpenAI via Vercel Function ──────────────────────────────
 async function askOpenAI(userMessage, context = '') {
   // Incrementar contador diario de mensajes IA
   const todayKey = 'fai_ai_messages_today';
@@ -1546,7 +1549,7 @@ ${context ? `\nContexto financiero del usuario:\n${context}` : ''}`;
     { role: 'user', content: userMessage }
   ];
 
-  const response = await fetch('/.netlify/functions/openai-proxy', {
+  const response = await fetch('/api/openai-proxy', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ messages, model: 'gpt-4o-mini' })
@@ -2238,4 +2241,69 @@ function exportPDF(txs) {
     win.print();
     showToast('✅ PDF listo — usa "Guardar como PDF" en el diálogo de impresión 🎉');
   }, 500);
+}
+
+// ============================================
+// SECCIÓN: RENDER MONTHLY REPORT (datos reales)
+// ============================================
+function renderMonthlyReport() {
+  const txs = STATE.transactions || [];
+  const tbody = document.getElementById('report-monthly-tbody');
+  if (!tbody) return;
+
+  const monthNames = [
+    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+  ];
+
+  const byMonth = {};
+  txs.forEach(t => {
+    if (!t.date) return;
+    const d = new Date(t.date);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    if (!byMonth[key]) byMonth[key] = { income: 0, expense: 0 };
+    if (t.amount > 0) byMonth[key].income  += t.amount;
+    else              byMonth[key].expense += Math.abs(t.amount);
+  });
+
+  const sorted = Object.keys(byMonth).sort().reverse().slice(0, 12);
+
+  if (sorted.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" style="text-align:center;padding:24px;color:#475569;font-size:13px;">
+          📊 Tu resumen mensual aparecerá aquí —
+          <span style="color:var(--accent);cursor:pointer;font-weight:600;"
+                onclick="showSection('transactions')">
+            Agrega tu primera transacción y empieza a ver resultados →
+          </span>
+        </td>
+      </tr>`;
+    return;
+  }
+
+  // Detectar mes con más gastos para motivar upgrade
+  const worstMonth = sorted.reduce((a, b) =>
+    byMonth[a].expense > byMonth[b].expense ? a : b
+  );
+
+  tbody.innerHTML = sorted.map(key => {
+    const [year, month] = key.split('-');
+    const data    = byMonth[key];
+    const balance = data.income - data.expense;
+    const isWorst = key === worstMonth && data.expense > 0;
+    return `
+      <tr style="${isWorst ? 'background:rgba(239,68,68,0.04);' : ''}">
+        <td>
+          <strong>${monthNames[parseInt(month)-1]} ${year}</strong>
+          ${isWorst ? '<span style="font-size:10px;color:#ef4444;margin-left:6px;">📛 más gastos</span>' : ''}
+        </td>
+        <td style="color:var(--success)">+$${data.income.toFixed(2)}</td>
+        <td style="color:var(--danger)">-$${data.expense.toFixed(2)}</td>
+        <td style="color:${balance >= 0 ? 'var(--accent)' : 'var(--danger)'};font-weight:600;">
+          ${balance >= 0 ? '+' : ''}$${balance.toFixed(2)}
+          ${balance < 0 ? '<span style="font-size:10px;margin-left:4px;cursor:pointer;" onclick="showSection(\'plans\')">⚡ Optimiza →</span>' : ''}
+        </td>
+      </tr>`;
+  }).join('');
 }

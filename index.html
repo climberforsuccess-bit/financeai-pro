@@ -2329,7 +2329,7 @@ body {
           <div class="page-title">📈 Reportes</div>
           <div class="page-subtitle">Análisis detallado de tus finanzas</div>
         </div>
-        <button class="btn btn-outline btn-sm" onclick="showNotif('📄 Exportando PDF...')">⬇ Exportar PDF</button>
+        <button class="btn btn-outline btn-sm" onclick="exportData('csv')">⬇ CSV</button> <button class="btn btn-primary btn-sm" onclick="exportData('pdf')">⬇ PDF</button>
       </div>
 
       <div class="cards-grid">
@@ -2376,7 +2376,7 @@ body {
                 <th>BALANCE</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="report-monthly-tbody">
               <tr>
                 <td>Enero</td>
                 <td style="color:var(--success)">$4,250</td>
