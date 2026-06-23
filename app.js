@@ -2777,7 +2777,7 @@ function saveNewCard() {
 
   if (!STATE.cards) STATE.cards = [];
   STATE.cards.push(card);
-  saveData();
+  saveState();
 
   document.getElementById('add-card-modal').remove();
   renderCards();
