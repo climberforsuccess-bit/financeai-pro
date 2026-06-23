@@ -2110,3 +2110,132 @@ async function saveScannedTransaction() {
     showToast('Error al guardar — intenta de nuevo en un momento', 'error');
   }
 }
+
+// ============================================
+// SECCIÓN: EXPORT CSV / PDF
+// ============================================
+function exportData(format) {
+  if (!canUseFeature('export')) {
+    showToast('📤 Exportar requiere plan Pro — ¡lleva tus finanzas al siguiente nivel!', 'info');
+    setTimeout(() => showSection('plans'), 1200);
+    return;
+  }
+
+  const txs = STATE.transactions || [];
+  if (txs.length === 0) {
+    showToast('No hay transacciones para exportar aún — ¡agrega algunas!', 'error');
+    return;
+  }
+
+  if (format === 'csv') exportCSV(txs);
+  if (format === 'pdf') exportPDF(txs);
+}
+
+function exportCSV(txs) {
+  const headers = ['Fecha', 'Descripción', 'Categoría', 'Monto', 'Tipo'];
+  const rows = txs.map(t => [
+    t.date || '',
+    `"${(t.description || '').replace(/"/g, '""')}"`,
+    t.category || '',
+    t.amount || 0,
+    t.type || ''
+  ]);
+
+  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `financeai_transacciones_${new Date().toISOString().split('T')[0]}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ CSV descargado — ábrelo en Excel o Google Sheets 🎉');
+}
+
+function exportPDF(txs) {
+  const totalIncome  = txs.filter(t => t.amount > 0).reduce((s,t) => s + t.amount, 0);
+  const totalExpense = txs.filter(t => t.amount < 0).reduce((s,t) => s + Math.abs(t.amount), 0);
+  const balance      = totalIncome - totalExpense;
+
+  const rows = txs.slice(0, 50).map(t => `
+    <tr>
+      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${t.date || '—'}</td>
+      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${t.description || '—'}</td>
+      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${t.category || '—'}</td>
+      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;color:${t.amount >= 0 ? '#10b981' : '#ef4444'};font-weight:600;">
+        ${t.amount >= 0 ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}
+      </td>
+    </tr>
+  `).join('');
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>FinanceAI Pro — Reporte Financiero</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 40px; color: #1e293b; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 3px solid #f59e0b; padding-bottom: 16px; }
+        .logo { font-size: 24px; font-weight: 800; color: #f59e0b; }
+        .date { font-size: 13px; color: #64748b; }
+        .summary { display: flex; gap: 24px; margin-bottom: 32px; }
+        .summary-card { flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; }
+        .summary-label { font-size: 12px; color: #64748b; margin-bottom: 4px; }
+        .summary-value { font-size: 22px; font-weight: 700; }
+        .green { color: #10b981; }
+        .red { color: #ef4444; }
+        .blue { color: #3b82f6; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f59e0b; color: white; padding: 10px 8px; text-align: left; font-size: 13px; }
+        .footer { margin-top: 32px; text-align: center; font-size: 11px; color: #94a3b8; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="logo">💰 FinanceAI Pro</div>
+        <div class="date">Reporte generado: ${new Date().toLocaleDateString('es-ES', { year:'numeric', month:'long', day:'numeric' })}</div>
+      </div>
+      <div class="summary">
+        <div class="summary-card">
+          <div class="summary-label">Total Ingresos</div>
+          <div class="summary-value green">+$${totalIncome.toFixed(2)}</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Total Gastos</div>
+          <div class="summary-value red">-$${totalExpense.toFixed(2)}</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Balance</div>
+          <div class="summary-value blue">$${balance.toFixed(2)}</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Transacciones</div>
+          <div class="summary-value">${txs.length}</div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th><th>Descripción</th><th>Categoría</th><th>Monto</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="footer">
+        Generado por FinanceAI Pro · climberforsuccess.online · ${new Date().getFullYear()}
+      </div>
+    </body>
+    </html>
+  `;
+
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  setTimeout(() => {
+    win.print();
+    showToast('✅ PDF listo — usa "Guardar como PDF" en el diálogo de impresión 🎉');
+  }, 500);
+}
