@@ -2702,3 +2702,84 @@ function showLegal(type) {
     if (e.target === modal) modal.remove();
   });
 }
+
+function openAddCard() {
+  // Verificar límite del plan
+  const cards = STATE.cards || [];
+  const limits = getPlanLimits();
+  if (limits.cards !== Infinity && cards.length >= limits.cards) {
+    showUpgradeModal('cards');
+    return;
+  }
+
+  // Crear modal
+  let modal = document.getElementById('add-card-modal');
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'add-card-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  modal.innerHTML = \`
+    <div style="background:#1a1a3e;border-radius:16px;padding:32px;width:90%;max-width:440px;border:1px solid #00EEFF33;">
+      <h2 style="color:#fff;margin-bottom:24px;font-size:20px;">💳 Nueva Tarjeta</h2>
+
+      <label style="color:#94a3b8;font-size:13px;">Nombre del titular</label>
+      <input id="nc-name" placeholder="Ej: Juan Pérez" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
+
+      <label style="color:#94a3b8;font-size:13px;">Tipo de tarjeta</label>
+      <select id="nc-type" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
+        <option value="Crédito">Crédito</option>
+        <option value="Débito">Débito</option>
+        <option value="Prepago">Prepago</option>
+      </select>
+
+      <label style="color:#94a3b8;font-size:13px;">Últimos 4 dígitos</label>
+      <input id="nc-last4" placeholder="1234" maxlength="4" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
+
+      <label style="color:#94a3b8;font-size:13px;">Límite de crédito</label>
+      <input id="nc-limit" type="number" placeholder="0.00" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
+
+      <label style="color:#94a3b8;font-size:13px;">Balance actual usado</label>
+      <input id="nc-balance" type="number" placeholder="0.00" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
+
+      <label style="color:#94a3b8;font-size:13px;">APR (%)</label>
+      <input id="nc-apr" type="number" placeholder="0" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
+
+      <label style="color:#94a3b8;font-size:13px;">Día de vencimiento</label>
+      <input id="nc-due" type="number" placeholder="15" min="1" max="31" style="width:100%;padding:10px;margin:6px 0 24px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
+
+      <div style="display:flex;gap:12px;">
+        <button onclick="document.getElementById('add-card-modal').remove()" style="flex:1;padding:12px;background:transparent;border:1px solid #444;border-radius:8px;color:#94a3b8;cursor:pointer;">Cancelar</button>
+        <button onclick="saveNewCard()" style="flex:1;padding:12px;background:linear-gradient(135deg,#00EEFF,#0066FF);border:none;border-radius:8px;color:#000;font-weight:700;cursor:pointer;">Guardar</button>
+      </div>
+    </div>
+  \`;
+
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+function saveNewCard() {
+  const name    = document.getElementById('nc-name').value.trim();
+  const type    = document.getElementById('nc-type').value;
+  const lastFour= document.getElementById('nc-last4').value.trim();
+  const limit   = parseFloat(document.getElementById('nc-limit').value) || 0;
+  const balance = parseFloat(document.getElementById('nc-balance').value) || 0;
+  const apr     = parseFloat(document.getElementById('nc-apr').value) || 0;
+  const dueDate = document.getElementById('nc-due').value.trim();
+
+  if (!name) { showToast('Ingresa el nombre del titular', 'error'); return; }
+
+  const card = {
+    id: 'card_' + Date.now(),
+    name, type, lastFour, limit, balance, apr, dueDate
+  };
+
+  if (!STATE.cards) STATE.cards = [];
+  STATE.cards.push(card);
+  saveData();
+
+  document.getElementById('add-card-modal').remove();
+  renderCards();
+  showToast('✅ Tarjeta guardada');
+}
