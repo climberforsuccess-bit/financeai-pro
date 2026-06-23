@@ -527,6 +527,56 @@ function switchAuthTab(tab) {
 // ============================================
 // SECCIÓN 5: DASHBOARD
 // ============================================
+
+function selectCardColor(el) {
+  el.closest('#nc-colors').querySelectorAll('div').forEach(d => d.style.outline = 'none');
+  el.style.outline = '2px solid #fff';
+}
+
+function renderTransactions() {
+  const txs = STATE.transactions || [];
+  const section = document.getElementById('section-transactions');
+  if (!section) return;
+
+  let container = document.getElementById('transactions-list');
+  if (!container) {
+    const card = section.querySelector('.content-grid .card') || section.querySelector('.card');
+    if (!card) return;
+    container = document.createElement('div');
+    container.id = 'transactions-list';
+    card.appendChild(container);
+  }
+
+  if (txs.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:60px;color:#8892A4;">
+        <div style="font-size:3rem;margin-bottom:12px;opacity:0.4;">💸</div>
+        No tienes transacciones registradas.
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = txs.map(t => {
+    const isIncome = t.type === 'income';
+    const sign = isIncome ? '+' : '-';
+    const color = isIncome ? '#22c55e' : '#ef4444';
+    const icon = isIncome ? '📈' : '📉';
+    return `
+      <div style="display:flex;align-items:center;justify-content:space-between;
+                  padding:14px 16px;border-bottom:1px solid #ffffff0d;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:1.4rem;">${icon}</span>
+          <div>
+            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || 'Sin descripción'}</div>
+            <div style="color:#8892A4;font-size:12px;">${t.category || ''} · ${t.date || ''}</div>
+          </div>
+        </div>
+        <div style="color:${color};font-weight:700;font-size:15px;">
+          ${sign}${formatCurrency(Math.abs(t.amount))}
+        </div>
+      </div>`;
+  }).join('');
+}
 function renderDashboard() {
   // Banner de límite de transacciones
   const limits = getPlanLimits();
@@ -2762,6 +2812,15 @@ function openAddCard() {
       <label style="color:#94a3b8;font-size:13px;">Día de vencimiento</label>
       <input id="nc-due" type="number" placeholder="15" min="1" max="31" style="width:100%;padding:10px;margin:6px 0 24px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
 
+      <label style="color:#94a3b8;font-size:13px;">Color de tarjeta</label>
+      <div id="nc-colors" style="display:flex;gap:10px;margin:6px 0 24px;flex-wrap:wrap;">
+        <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#1a1a3e,#00EEFF44)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#1a1a3e,#00EEFF44);outline:2px solid #fff;"></div>
+        <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#2d1b69,#11998e)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#2d1b69,#11998e);"></div>
+        <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#1a1a2e,#e94560)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#1a1a2e,#e94560);"></div>
+        <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#0d1b2a,#1b4332)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#0d1b2a,#1b4332);"></div>
+        <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#1a1a3e,#f59e0b44)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#1a1a3e,#f59e0b44);"></div>
+        <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#1a1a3e,#a855f744)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#1a1a3e,#a855f744);"></div>
+      </div>
       <div style="display:flex;gap:12px;">
         <button onclick="document.getElementById('add-card-modal').remove()" style="flex:1;padding:12px;background:transparent;border:1px solid #444;border-radius:8px;color:#94a3b8;cursor:pointer;">Cancelar</button>
         <button onclick="saveNewCard()" style="flex:1;padding:12px;background:linear-gradient(135deg,#00EEFF,#0066FF);border:none;border-radius:8px;color:#000;font-weight:700;cursor:pointer;">Guardar</button>
@@ -2781,6 +2840,8 @@ async function saveNewCard() {
   const balance  = parseFloat(document.getElementById('nc-balance').value) || 0;
   const apr      = parseFloat(document.getElementById('nc-apr').value) || 0;
   const dueDate  = document.getElementById('nc-due').value.trim();
+  const colorEl  = document.querySelector('#nc-colors [data-gradient][style*="2px solid #fff"]');
+  const color    = colorEl ? colorEl.dataset.gradient : 'linear-gradient(135deg,#1a1a3e,#00EEFF44)';
 
   if (!name) { showToast('Ingresa el nombre del titular', 'error'); return; }
 
@@ -2795,7 +2856,8 @@ async function saveNewCard() {
     limit_amount: limit,
     balance:      balance,
     apr:          apr,
-    due_date:     dueDate
+    due_date:     dueDate,
+    color:        color
   }]).select().single();
 
   if (error) {
@@ -2813,6 +2875,7 @@ async function saveNewCard() {
     lastFour:  data.last_four,
     dueDate:   data.due_date,
     apr:       data.apr || 0,
+    color:     data.color || null,
     createdAt: data.created_at
   });
 
