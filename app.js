@@ -850,28 +850,35 @@ async function deleteCard(id) {
 // SECCIÓN 9: DEBTS
 // ============================================
 function renderDebts() {
-const cardDebts = (STATE.cards || [])
-  .filter(c => (c.type === 'Crédito' || c.type === 'credit') && c.balance > 0)
-  .map(c => ({
-    id:              c.id,
-    name:            c.name,
-    balance:         c.balance,
-    originalBalance: c.limit,
-    apr:             c.apr || 0,
-    minPayment:      Math.max(25, c.balance * 0.02),
-    dueDate:         c.dueDate,
-    debtType:        'credit_card'
+  const allCardDebts = (STATE.cards || [])
+    .filter(c => (c.type === 'Crédito' || c.type === 'credit') && c.balance > 0)
+    .map(c => ({
+      id:              c.id,
+      name:            c.name,
+      balance:         c.balance,
+      originalBalance: c.limit,
+      apr:             c.apr || 0,
+      minPayment:      Math.max(25, c.balance * 0.02),
+      dueDate:         c.dueDate,
+      ownerType:       c.ownerType || 'personal',
+      debtType:        'credit_card'
+    }));
+
+  const manualDebts = (STATE.debts || []).map(d => ({
+    ...d,
+    ownerType: d.ownerType || 'personal'
   }));
-const manualDebts = STATE.debts || [];
-const debts = [...cardDebts, ...manualDebts];
 
-  const total = debts.reduce((s, d) => s + (d.balance || 0), 0);
+  const allDebts = [...allCardDebts, ...manualDebts];
 
-  const statVals = document.querySelectorAll(
-    '#section-debts .stat-card-value'
-  );
+  const personalDebts = allDebts.filter(d => d.ownerType === 'personal');
+  const businessDebts = allDebts.filter(d => d.ownerType === 'business');
+
+  const total = allDebts.reduce((s, d) => s + (d.balance || 0), 0);
+
+  const statVals = document.querySelectorAll('#section-debts .stat-card-value');
   if (statVals[0]) statVals[0].textContent = formatCurrency(total);
-  if (statVals[1]) statVals[1].textContent = calcPayoffTime(debts);
+  if (statVals[1]) statVals[1].textContent = calcPayoffTime(allDebts);
 
   let container = gel('debt-items-list');
   if (!container) {
@@ -883,7 +890,7 @@ const debts = [...cardDebts, ...manualDebts];
     } else return;
   }
 
-  if (debts.length === 0) {
+  if (allDebts.length === 0) {
     container.innerHTML = `
       <div style="text-align:center;padding:40px;color:#8892A4;">
         <div style="font-size:2.5rem;margin-bottom:12px;opacity:0.4;">📉</div>
@@ -898,7 +905,8 @@ const debts = [...cardDebts, ...manualDebts];
     return;
   }
 
-  container.innerHTML = debts.map((d, i) => {
+  function renderDebtGroup(debts, startIndex) {
+    return debts.map((d, i) => {
     const pct = d.originalBalance
       ? Math.round(((d.originalBalance - d.balance) / d.originalBalance) * 100)
       : 0;
@@ -924,7 +932,34 @@ const debts = [...cardDebts, ...manualDebts];
             cursor:pointer;font-size:0.82rem;">Eliminar</button>
         </div>
       </div>`;
-  }).join('');
+    });
+  }
+
+  let html = '';
+
+  if (personalDebts.length > 0) {
+    html += `<div style="margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span style="font-size:1.1rem;">👤</span>
+        <span style="color:#fff;font-weight:600;font-size:15px;">Deudas Personales</span>
+        <span style="margin-left:auto;color:#00EEFF;font-weight:700;">${formatCurrency(personalDebts.reduce((s,d)=>s+d.balance,0))}</span>
+      </div>
+      ${renderDebtGroup(personalDebts, 0).join('')}
+    </div>`;
+  }
+
+  if (businessDebts.length > 0) {
+    html += `<div style="margin-top:${personalDebts.length>0?'24px':'0'};">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span style="font-size:1.1rem;">🏢</span>
+        <span style="color:#fff;font-weight:600;font-size:15px;">Deudas Empresa</span>
+        <span style="margin-left:auto;color:#a855f7;font-weight:700;">${formatCurrency(businessDebts.reduce((s,d)=>s+d.balance,0))}</span>
+      </div>
+      ${renderDebtGroup(businessDebts, 0).join('')}
+    </div>`;
+  }
+
+  container.innerHTML = html;
 }
 
 function calcPayoffTime(debts) {
@@ -2799,7 +2834,12 @@ function openAddCard() {
       <select id="nc-type" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
         <option value="Crédito">Crédito</option>
         <option value="Débito">Débito</option>
-        <option value="Prepago">Prepago</option>
+      </select>
+
+      <label style="color:#94a3b8;font-size:13px;">Uso de la tarjeta</label>
+      <select id="nc-owner-type" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
+        <option value="personal">👤 Personal</option>
+        <option value="business">🏢 Empresa</option>
       </select>
 
       <label style="color:#94a3b8;font-size:13px;">Últimos 4 dígitos</label>
@@ -2840,9 +2880,10 @@ function openAddCard() {
 }
 
 async function saveNewCard() {
-  const name     = document.getElementById('nc-name').value.trim();
-  const type     = document.getElementById('nc-type').value;
-  const lastFour = document.getElementById('nc-last4').value.trim();
+  const name      = document.getElementById('nc-name').value.trim();
+  const type      = document.getElementById('nc-type').value;
+  const ownerType = document.getElementById('nc-owner-type').value;
+  const lastFour  = document.getElementById('nc-last4').value.trim();
   const limit    = parseFloat(document.getElementById('nc-limit').value) || 0;
   const balance  = parseFloat(document.getElementById('nc-balance').value) || 0;
   const apr      = parseFloat(document.getElementById('nc-apr').value) || 0;
@@ -2859,6 +2900,7 @@ async function saveNewCard() {
     user_id:      session.user.id,
     name:         name,
     card_type:    type,
+    owner_type:   ownerType,
     last_four:    lastFour,
     limit_amount: limit,
     balance:      balance,
@@ -2877,6 +2919,7 @@ async function saveNewCard() {
     id:        data.id,
     name:      data.name,
     type:      data.card_type,
+    ownerType: data.owner_type || 'personal',
     limit:     data.limit_amount,
     balance:   data.balance,
     lastFour:  data.last_four,
@@ -3047,7 +3090,7 @@ function openAddTransaction() {
         </div>
 
         <div>
-          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Categoría</label>
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">¿Es personal o de empresa?</label>
           <select id="tx-category-type"
             style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
                    border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
