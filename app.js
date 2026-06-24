@@ -995,7 +995,9 @@ function renderDebts() {
       : Math.min(Math.round((usedBalance / (d.originalBalance || usedBalance || 1)) * 100), 100);
 
     // Color basado en % usado (igual que en Mis Tarjetas)
-    const usageClass = pct >= 80 ? 'danger' : pct >= 50 ? 'warning' : 'success';
+    // Color barra: <30 verde, 30-60 amarillo, >60 rojo (igual que Mis Tarjetas)
+    const barColor = pct < 30 ? '#00C851' : pct < 60 ? '#f59e0b' : '#FF4757';
+    const usageClass = pct < 30 ? 'success' : pct < 60 ? 'warning' : 'danger';
 
     // Texto de prioridad sigue usando APR (info útil)
     const priorityText = d.apr > 22 ? 'Prioridad ALTA'
