@@ -50,16 +50,20 @@ function showUpgradeModal(feature) {
         <button onclick="document.getElementById('upgrade-modal').style.display='none'" 
           style="position:absolute; top:16px; right:16px; background:none; border:none; color:#64748b; font-size:20px; cursor:pointer;">✕</button>
         <div id="upgrade-modal-icon" style="font-size:48px; margin-bottom:16px;"></div>
+        <div style="background:linear-gradient(135deg,#f59e0b22,#ef444422); border:1px solid #f59e0b44; border-radius:10px; padding:8px 14px; display:inline-block; margin-bottom:14px;">
+          <span style="color:#f59e0b; font-size:12px; font-weight:700;">⚡ Miles de usuarios ya controlan sus finanzas con esto</span>
+        </div>
         <h2 id="upgrade-modal-title" style="color:#fff; font-size:22px; margin-bottom:12px;"></h2>
         <p id="upgrade-modal-desc" style="color:#94a3b8; font-size:15px; margin-bottom:8px;"></p>
-        <p id="upgrade-modal-plan" style="color:#f59e0b; font-size:13px; font-weight:600; margin-bottom:28px;"></p>
+        <p id="upgrade-modal-plan" style="color:#f59e0b; font-size:13px; font-weight:600; margin-bottom:16px;"></p>
+        <p style="color:#64748b; font-size:12px; margin-bottom:20px;">Estás a 1 paso de tener control total de tu dinero 💡</p>
         <button onclick="showSection('subscriptions'); document.getElementById('upgrade-modal').style.display='none'"
-          style="width:100%; padding:14px; background:linear-gradient(135deg,#f59e0b,#ef4444); border:none; border-radius:12px; color:#fff; font-size:16px; font-weight:700; cursor:pointer;">
-          🚀 Ver Planes — Actualizar Ahora
+          style="width:100%; padding:16px; background:linear-gradient(135deg,#f59e0b,#ef4444); border:none; border-radius:12px; color:#fff; font-size:16px; font-weight:700; cursor:pointer; box-shadow:0 4px 20px rgba(245,158,11,0.4);">
+          🔓 Desbloquear Ahora — Ver Planes
         </button>
         <button onclick="document.getElementById('upgrade-modal').style.display='none'"
-          style="width:100%; padding:12px; background:none; border:none; color:#64748b; font-size:14px; cursor:pointer; margin-top:8px;">
-          No gracias, seguir con plan actual
+          style="width:100%; padding:12px; background:none; border:none; color:#475569; font-size:13px; cursor:pointer; margin-top:10px;">
+          No, prefiero seguir sin control total
         </button>
       </div>`;
     document.body.appendChild(modal);
