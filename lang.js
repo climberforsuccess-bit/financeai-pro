@@ -483,3 +483,69 @@ function setLang(lang) {
   });
 }
 window.setLang = setLang;
+
+// ===========================
+// ID MAP — DOM TRANSLATIONS
+// ===========================
+const ID_MAP = {
+  // NAVBAR
+  'nav-features':  { en: 'Features',      es: 'Funciones' },
+  'nav-pricing':   { en: 'Pricing',       es: 'Precios' },
+  'nav-login':     { en: 'Login',         es: 'Entrar' },
+  'nav-start':     { en: 'Start Free',    es: 'Empezar Gratis' },
+
+  // HERO
+  'hero-badge':    { en: '✨ POWERED BY AI — FREE TO START', es: '✨ POWERED BY AI — GRATIS PARA EMPEZAR' },
+  'hero-title':    { en: 'Take Control of your <span style="color:#00EEFF">Finances</span> with Artificial Intelligence', es: 'Toma el Control de tus <span style="color:#00EEFF">Finanzas</span> con Inteligencia Artificial' },
+  'hero-desc':     { en: 'Scan receipts, manage debts, discover the best cards and get personalized AI recommendations. All in one place.', es: 'Escanea recibos, gestiona deudas, descubre las mejores tarjetas y recibe recomendaciones personalizadas con IA. Todo en un solo lugar.' },
+  'hero-cta':      { en: '🚀 Start Free Now',  es: '🚀 Empezar Gratis Ahora' },
+  'hero-demo':     { en: 'Watch Demo',          es: 'Ver Demo' },
+
+  // STATS
+  'stat1':         { en: 'Active Users',         es: 'Usuarios Activos' },
+  'stat2':         { en: 'In Managed Debts',     es: 'En Deudas Gestionadas' },
+  'stat3':         { en: 'Compatible Cards',     es: 'Tarjetas Compatibles' },
+  'stat4':         { en: 'Average Rating',       es: 'Calificación Promedio' },
+
+  // SIDEBAR NAV
+  'nav-dash':      { en: 'Dashboard',        es: 'Dashboard' },
+  'nav-scan':      { en: 'AI Scanner',       es: 'Escáner IA' },
+  'nav-trans':     { en: 'Transactions',     es: 'Transacciones' },
+  'nav-cards':     { en: 'My Cards',         es: 'Mis Tarjetas' },
+  'nav-debts':     { en: 'Debts',            es: 'Deudas' },
+  'nav-subs':      { en: 'Subscriptions',    es: 'Suscripciones' },
+  'nav-recs':      { en: 'Recommendations',  es: 'Recomendaciones' },
+  'nav-ai':        { en: 'AI Assistant',     es: 'Asistente IA' },
+  'nav-rep':       { en: 'Reports',          es: 'Reportes' },
+  'nav-set':       { en: 'Settings',         es: 'Configuración' },
+};
+
+// ===========================
+// SET LANG — FULL DOM UPDATE
+// ===========================
+function setLang(lang) {
+  // Apply via applyLanguage (data-key etc)
+  applyLanguage(lang);
+
+  // Apply via ID map
+  Object.entries(ID_MAP).forEach(([id, texts]) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = texts[lang] || texts['en'];
+  });
+
+  // Update lang buttons active state
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    const onclick = btn.getAttribute('onclick') || '';
+    btn.classList.toggle('active', onclick.includes(`'${lang}'`));
+  });
+
+  // Update logout button
+  document.querySelectorAll('button[onclick="doLogout()"]').forEach(btn => {
+    btn.textContent = lang === 'en' ? 'Log Out' : 'Cerrar Sesión';
+  });
+
+  // Save
+  currentLang = lang;
+  localStorage.setItem('financeai_lang', lang);
+}
+window.setLang = setLang;
