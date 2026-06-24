@@ -643,12 +643,12 @@ function renderCards() {
     container.innerHTML = `
       <div style="text-align:center;padding:60px;color:#8892A4;grid-column:1/-1;">
         <div style="font-size:3rem;margin-bottom:12px;opacity:0.4;">💳</div>
-        No tienes tarjetas registradas.<br>
+        ${t('cards_empty')}<br>
         <button onclick="openAddCard()" style="
           margin-top:12px;background:none;border:none;
           color:#00EEFF;cursor:pointer;
           text-decoration:underline;font-size:inherit;">
-          + Agregar tarjeta
+          ${t('cards_add')}
         </button>
       </div>`;
     return;
@@ -697,10 +697,10 @@ function renderCards() {
     const usageClass = pct >= 60 ? 'danger' : pct >= 30 ? 'warning' : 'success';
     // Badge de estado
     const badge = pct < 30
-      ? { icon: '🟢', label: 'Saludable',  bg: 'rgba(0,200,81,0.2)',   color: '#00C851' }
+      ? { icon: '🟢', label: t('card_healthy'),  bg: 'rgba(0,200,81,0.2)',   color: '#00C851' }
       : pct < 60
-      ? { icon: '🟡', label: 'Precaución', bg: 'rgba(245,158,11,0.2)', color: '#f59e0b' }
-      : { icon: '🔴', label: 'Alto uso',   bg: 'rgba(255,71,87,0.2)',  color: '#FF4757' };
+      ? { icon: '🟡', label: t('card_warning'), bg: 'rgba(245,158,11,0.2)', color: '#f59e0b' }
+      : { icon: '🔴', label: t('card_danger'),   bg: 'rgba(255,71,87,0.2)',  color: '#FF4757' };
     const bg = getCardBg(c.color, i);
     const txtColor = getTextColor(c.color);
     const lastFour = c.lastFour ? `•••• •••• •••• ${c.lastFour}` : '•••• •••• •••• ••••';
@@ -733,11 +733,11 @@ function renderCards() {
         <div class="card-number" style="color:${txtColor};">${lastFour}</div>
         <div class="card-meta">
           <div>
-            <div style="font-size:11px;color:${txtColor};opacity:0.7;">TITULAR</div>
-            <div class="card-holder" style="color:${txtColor};">${c.name || 'Sin nombre'}</div>
+            <div style="font-size:11px;color:${txtColor};opacity:0.7;">${t('card_holder')}</div>
+            <div class="card-holder" style="color:${txtColor};">${c.name || t('card_no_name')}</div>
           </div>
           <div style="text-align:right;">
-            <div style="font-size:11px;color:${txtColor};opacity:0.7;">LÍMITE</div>
+            <div style="font-size:11px;color:${txtColor};opacity:0.7;">${t('card_limit_label')}</div>
             <div class="card-limit" style="color:${txtColor};">${formatCurrency(limit)}</div>
           </div>
         </div>
@@ -751,7 +751,7 @@ function renderCards() {
           </div>
           <div style="display:flex;justify-content:space-between;font-size:11px;color:${txtColor};opacity:0.7;margin-top:4px;">
             <span>APR: ${c.apr || 0}%</span>
-            <span>Vence día ${c.dueDate || '—'}</span>
+            <span>${t('card_due')} ${c.dueDate || '—'}</span>
           </div>
         </div>
       </div>`;
@@ -762,7 +762,7 @@ function renderCards() {
   if (personalCards.length > 0) {
     html += `<div style="grid-column:1/-1;margin-bottom:8px;margin-top:4px;">
       <h3 style="color:#94a3b8;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">
-        👤 Tarjetas Personales
+        ${t('cards_personal')}
       </h3>
     </div>`;
     html += personalCards.map((c, i) => cardHTML(c, i)).join('');
@@ -771,7 +771,7 @@ function renderCards() {
   if (businessCards.length > 0) {
     html += `<div style="grid-column:1/-1;margin-bottom:8px;margin-top:20px;">
       <h3 style="color:#94a3b8;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">
-        🏢 Tarjetas de Empresa
+        ${t('cards_business')}
       </h3>
     </div>`;
     html += businessCards.map((c, i) => cardHTML(c, i)).join('');
@@ -794,34 +794,34 @@ function editCard(id) {
   modal.innerHTML = `
     <div style="background:#1A2035;border-radius:20px;padding:32px;
       width:100%;max-width:460px;border:1px solid rgba(255,255,255,0.08);overflow-y:auto;max-height:90vh;">
-      <h3 style="margin:0 0 24px;color:#fff;font-size:1.2rem;">✏️ Editar Tarjeta</h3>
+      <h3 style="margin:0 0 24px;color:#fff;font-size:1.2rem;">${t('card_edit_title')}</h3>
 
       <div style="display:grid;gap:16px;">
         <div>
-          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Nombre / Banco</label>
+          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">${t('card_name_bank')}</label>
           <input id="ec-name" value="${card.name || ''}" style="
             width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
             border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
         </div>
         <div>
-          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Tipo</label>
+          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">${t('card_type_label')}</label>
           <select id="ec-type" style="
             width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
             border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
-            <option value="Crédito" ${card.type==='Crédito'?'selected':''}>Crédito</option>
+            <option value="Crédito" data-i18n-val="Crédito" ${card.type==='Crédito'?'selected':''}>Crédito</option>
             <option value="Débito" ${card.type==='Débito'?'selected':''}>Débito</option>
             <option value="Prepago" ${card.type==='Prepago'?'selected':''}>Prepago</option>
           </select>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div>
-            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Límite ($)</label>
+            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">${t('card_limit_lbl')}</label>
             <input id="ec-limit" type="number" value="${card.limit || 0}" style="
               width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
               border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
           </div>
           <div>
-            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Balance usado ($)</label>
+            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">${t('card_balance_lbl')}</label>
             <input id="ec-balance" type="number" value="${card.balance || 0}" style="
               width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
               border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
@@ -829,20 +829,20 @@ function editCard(id) {
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div>
-            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Últimos 4 dígitos</label>
+            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">${t('card_last4')}</label>
             <input id="ec-last4" type="number" maxlength="4" value="${card.lastFour || ''}" style="
               width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
               border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
           </div>
           <div>
-            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">APR (%)</label>
+            <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">${t('card_apr')}</label>
             <input id="ec-apr" type="number" step="0.01" value="${card.apr || 0}" style="
               width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
               border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
           </div>
         </div>
         <div>
-          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Color de tarjeta</label>
+          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">${t('card_color')}</label>
           <div id="ec-colors" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;">
             ${[
               'linear-gradient(135deg,#1a1a3e,#00EEFF44)',
@@ -857,7 +857,7 @@ function editCard(id) {
           </div>
         </div>
         <div>
-          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Día de vencimiento</label>
+          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">${t('card_due_day')}</label>
           <input id="ec-due" type="number" min="1" max="31" value="${card.dueDate || ''}" style="
             width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
             border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
@@ -869,13 +869,13 @@ function editCard(id) {
         <button onclick="document.getElementById('edit-card-modal').remove()" style="
           flex:1;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
           border-radius:12px;color:#8892A4;cursor:pointer;font-size:14px;">
-          Cancelar
+          ${t('btn_cancel')}
         </button>
         <button onclick="saveEditCard('${id}')" style="
           flex:2;padding:12px;background:linear-gradient(135deg,#00EEFF,#0066FF);
           border:none;border-radius:12px;color:#000;cursor:pointer;
           font-size:14px;font-weight:700;">
-          💾 Guardar Cambios
+          ${t('btn_save')}
         </button>
       </div>
     </div>`;
@@ -897,7 +897,7 @@ async function saveEditCard(id) {
   const color = window._selectedEditCardColor || 
     (document.querySelector("#ec-colors div[style*='outline']")?.dataset?.gradient) || null;
 
-  if (!name) { showToast('El nombre es requerido', 'error'); return; }
+  if (!name) { showToast(t('card_name_required'), 'error'); return; }
 
   try {
     const { error } = await supabase
@@ -924,10 +924,10 @@ async function saveEditCard(id) {
 
     document.getElementById('edit-card-modal')?.remove();
     renderCards();
-    showToast('✅ Tarjeta actualizada');
+    showToast(t('card_updated'));
   } catch(e) {
     console.error('Error actualizando tarjeta:', e);
-    showToast('Error al guardar cambios', 'error');
+    showToast(t('card_save_error'), 'error');
   }
 }
 
@@ -942,10 +942,10 @@ async function deleteCard(id) {
 
     STATE.cards = STATE.cards.filter(c => c.id !== id);
     renderCards();
-    showToast('Tarjeta eliminada');
+    showToast(t('card_deleted'));
   } catch(e) {
     console.error('Error eliminando tarjeta:', e);
-    showToast('Error al eliminar tarjeta', 'error');
+    showToast(t('card_delete_error'), 'error');
   }
 }
 
@@ -997,12 +997,12 @@ function renderDebts() {
     container.innerHTML = `
       <div style="text-align:center;padding:40px;color:#8892A4;">
         <div style="font-size:2.5rem;margin-bottom:12px;opacity:0.4;">📉</div>
-        No tienes deudas registradas.<br>
+        ${t('debts_empty')}<br>
         <button onclick="openAddDebt()" style="
           margin-top:12px;background:none;border:none;
           color:#00EEFF;cursor:pointer;
           text-decoration:underline;font-size:inherit;">
-          + Agregar deuda
+          ${t('debts_add')}
         </button>
       </div>`;
     return;
@@ -1028,8 +1028,8 @@ function renderDebts() {
     const usageClass = pct < 30 ? 'success' : pct < 60 ? 'warning' : 'danger';
 
     // Texto de prioridad sigue usando APR (info útil)
-    const priorityText = d.apr > 22 ? 'Prioridad ALTA'
-      : d.apr > 18 ? 'Prioridad MEDIA' : 'Pago mínimo por ahora';
+    const priorityText = d.apr > 22 ? t('debt_priority_high')
+      : d.apr > 18 ? t('debt_priority_med') : t('debt_priority_low');
     const priorityColor = d.apr > 22 ? 'danger' : d.apr > 18 ? 'warning' : 'success';
 
     return `
@@ -1045,14 +1045,14 @@ function renderDebts() {
           <div class="progress-fill ${usageClass}" style="width:${pct}%;"></div>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b;margin-top:4px;margin-bottom:6px;">
-          <span>${formatCurrency(usedBalance)} usado${cardLimit > 0 ? ' de ' + formatCurrency(cardLimit) : ''}</span>
-          <span>${pct}% utilizado</span>
+          <span>${formatCurrency(usedBalance)} ${t('debt_used')}${cardLimit > 0 ? ' ' + t('debt_of') + ' ' + formatCurrency(cardLimit) : ''}</span>
+          <span>${pct}% ${t('debt_utilized')}</span>
         </div>
         <div class="debt-meta">
-          <span>Pago mínimo: ${formatCurrency(d.minPayment)}</span>
+          <span>${t('debt_min_pay')}: ${formatCurrency(d.minPayment)}</span>
           <button onclick="deleteDebt('${d.id}')" style="
             background:none;border:none;color:#FF4757;
-            cursor:pointer;font-size:0.82rem;">Eliminar</button>
+            cursor:pointer;font-size:0.82rem;">${t('btn_delete')}</button>
         </div>
       </div>`;
     });
@@ -1064,7 +1064,7 @@ function renderDebts() {
     html += `<div style="margin-bottom:8px;">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
         <span style="font-size:1.1rem;">👤</span>
-        <span style="color:#fff;font-weight:600;font-size:15px;">Deudas Personales</span>
+        <span style="color:#fff;font-weight:600;font-size:15px;">${t('debts_personal')}</span>
         <span style="margin-left:auto;color:#00EEFF;font-weight:700;">${formatCurrency(personalDebts.reduce((s,d)=>s+d.balance,0))}</span>
       </div>
       ${renderDebtGroup(personalDebts, 0).join('')}
@@ -1075,7 +1075,7 @@ function renderDebts() {
     html += `<div style="margin-top:${personalDebts.length>0?'24px':'0'};">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
         <span style="font-size:1.1rem;">🏢</span>
-        <span style="color:#fff;font-weight:600;font-size:15px;">Deudas Empresa</span>
+        <span style="color:#fff;font-weight:600;font-size:15px;">${t('debts_business')}</span>
         <span style="margin-left:auto;color:#a855f7;font-weight:700;">${formatCurrency(businessDebts.reduce((s,d)=>s+d.balance,0))}</span>
       </div>
       ${renderDebtGroup(businessDebts, 0).join('')}
@@ -1090,7 +1090,7 @@ function calcPayoffTime(debts) {
   const monthly = debts.reduce((s, d) => s + (d.minPayment || 0), 0);
   if (monthly <= 0) return 'N/A';
   const months = Math.ceil(total / monthly);
-  return months >= 24 ? Math.ceil(months / 12) + ' años' : months + ' meses';
+  return months >= 24 ? Math.ceil(months / 12) + ' ' + t('time_years') : months + ' ' + t('time_months');
 }
 
 function switchDebtMethod(method, btn) {
@@ -1099,12 +1099,12 @@ function switchDebtMethod(method, btn) {
   if (btn) btn.classList.add('active');
   if (method === 'avalanche') {
     STATE.debts.sort((a, b) => (b.apr || 0) - (a.apr || 0));
-    setTxt('debt-method-title', '❄️ Método Avalanche');
-    showToast('📊 Avalanche: Pagas menos intereses en total!');
+    setTxt('debt-method-title', t('method_avalanche'));
+    showToast(t('toast_avalanche'));
   } else {
     STATE.debts.sort((a, b) => (a.balance || 0) - (b.balance || 0));
-    setTxt('debt-method-title', '⛄ Método Snowball');
-    showToast('⛄ Snowball: Más motivación para seguir!');
+    setTxt('debt-method-title', t('method_snowball'));
+    showToast(t('toast_snowball'));
   }
   saveState();
   renderDebts();
@@ -1127,34 +1127,34 @@ function openAddDebt() {
       font-family:'Segoe UI',Arial,sans-serif;">
       <div style="display:flex;justify-content:space-between;
         align-items:center;margin-bottom:24px;">
-        <h2 style="color:#fff;font-size:1.3rem;">📉 Agregar Deuda</h2>
+        <h2 style="color:#fff;font-size:1.3rem;">${t('debt_add_title')}</h2>
         <button onclick="gel('modal-debt').remove()" style="
           background:none;border:none;color:#8892A4;
           font-size:1.5rem;cursor:pointer;">×</button>
       </div>
       <div class="form-group">
-        <label>Nombre (Tarjeta / Préstamo)</label>
+        <label>${t('debt_name_label')}</label>
         <input type="text" id="d-name"
-          placeholder="ej: Chase Visa..." style="width:100%;">
+          placeholder="${t('debt_name_placeholder')}" style="width:100%;">
       </div>
       <div class="form-group">
-        <label>Balance Actual ($)</label>
+        <label>${t('debt_balance_label')}</label>
         <input type="number" id="d-balance"
           placeholder="0" style="width:100%;">
       </div>
       <div class="form-group">
-        <label>APR (%)</label>
+        <label>${t('card_apr')}</label>
         <input type="number" id="d-apr"
           step="0.1" placeholder="24.99" style="width:100%;">
       </div>
       <div class="form-group">
-        <label>Pago Mínimo Mensual ($)</label>
+        <label>${t('debt_min_label')}</label>
         <input type="number" id="d-min"
           placeholder="25" style="width:100%;">
       </div>
       <button onclick="saveDebt()" class="btn btn-primary"
         style="width:100%;margin-top:8px;">
-        💾 Guardar Deuda
+        ${t('debt_save_btn')}
       </button>
     </div>`;
   modal.addEventListener('click', e => {
@@ -1170,12 +1170,12 @@ async function saveDebt() {
   const minPayment = parseFloat(getVal('d-min'))      || 0;
   const dueDate    = parseInt(getVal('d-due-date'))   || null;
   const debtType   = getVal('d-type')                 || 'credit_card';
-  if (!name)        { showToast('El nombre es requerido', 'error'); return; }
-  if (balance <= 0) { showToast('Ingresa un balance válido', 'error'); return; }
+  if (!name)        { showToast(t('card_name_required'), 'error'); return; }
+  if (balance <= 0) { showToast(t('debt_invalid_balance'), 'error'); return; }
 
   try {
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { showToast('Sesión expirada', 'error'); return; }
+    if (!session) { showToast(t('session_expired'), 'error'); return; }
 
     const { data, error } = await supabase
       .from('debts')
@@ -1204,10 +1204,10 @@ async function saveDebt() {
     const modal = gel('modal-debt');
     if (modal) modal.remove();
     renderDebts();
-    showToast('✅ Deuda agregada!');
+    showToast(t('debt_added'));
   } catch(e) {
     console.error('Error guardando deuda:', e);
-    showToast('Error al guardar deuda', 'error');
+    showToast(t('debt_save_error'), 'error');
   }
 }
 
@@ -1222,10 +1222,10 @@ async function deleteDebt(id) {
 
     STATE.debts = STATE.debts.filter(d => d.id !== id);
     renderDebts();
-    showToast('Deuda eliminada');
+    showToast(t('debt_deleted'));
   } catch(e) {
     console.error('Error eliminando deuda:', e);
-    showToast('Error al eliminar deuda', 'error');
+    showToast(t('debt_delete_error'), 'error');
   }
 }
 
@@ -1363,12 +1363,12 @@ async function saveSubscription() {
   const amount     = parseFloat(getVal('s-amount'))  || 0;
   const billingDay = parseInt(getVal('s-day'))        || 1;
   const category   = getVal('s-category') || 'other';
-  if (!name)      { showToast('El nombre es requerido', 'error'); return; }
+  if (!name)      { showToast(t('card_name_required'), 'error'); return; }
   if (amount <= 0) { showToast('Ingresa un monto válido', 'error'); return; }
 
   try {
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { showToast('Sesión expirada', 'error'); return; }
+    if (!session) { showToast(t('session_expired'), 'error'); return; }
 
     const nextDate = new Date();
     nextDate.setDate(billingDay);
@@ -2981,7 +2981,7 @@ function openAddCard() {
 
       <label style="color:#94a3b8;font-size:13px;">Tipo de tarjeta</label>
       <select id="nc-type" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
-        <option value="Crédito">Crédito</option>
+        <option value="Crédito" data-i18n-val="Crédito">Crédito</option>
         <option value="Débito">Débito</option>
       </select>
 
@@ -2991,7 +2991,7 @@ function openAddCard() {
         <option value="business">🏢 Empresa</option>
       </select>
 
-      <label style="color:#94a3b8;font-size:13px;">Últimos 4 dígitos</label>
+      <label style="color:#94a3b8;font-size:13px;">${t('card_last4')}</label>
       <input id="nc-last4" placeholder="1234" maxlength="4" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
 
       <label style="color:#94a3b8;font-size:13px;">Límite de crédito</label>
@@ -3000,13 +3000,13 @@ function openAddCard() {
       <label style="color:#94a3b8;font-size:13px;">Balance actual usado</label>
       <input id="nc-balance" type="number" placeholder="0.00" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
 
-      <label style="color:#94a3b8;font-size:13px;">APR (%)</label>
+      <label style="color:#94a3b8;font-size:13px;">${t('card_apr')}</label>
       <input id="nc-apr" type="number" placeholder="0" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
 
-      <label style="color:#94a3b8;font-size:13px;">Día de vencimiento</label>
+      <label style="color:#94a3b8;font-size:13px;">${t('card_due_day')}</label>
       <input id="nc-due" type="number" placeholder="15" min="1" max="31" style="width:100%;padding:10px;margin:6px 0 24px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
 
-      <label style="color:#94a3b8;font-size:13px;">Color de tarjeta</label>
+      <label style="color:#94a3b8;font-size:13px;">${t('card_color')}</label>
       <div id="nc-colors" style="display:flex;gap:10px;margin:6px 0 24px;flex-wrap:wrap;">
         <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#1a1a3e,#00EEFF44)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#1a1a3e,#00EEFF44);outline:2px solid #fff;"></div>
         <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#2d1b69,#11998e)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#2d1b69,#11998e);"></div>
@@ -3044,7 +3044,7 @@ async function saveNewCard() {
   if (!checkCardLimit(ownerType)) return;
 
   const { data: { session } } = await supabase.auth.getSession();
-  if (!session) { showToast('Sesión expirada', 'error'); return; }
+  if (!session) { showToast(t('session_expired'), 'error'); return; }
 
   const { data, error } = await supabase.from('cards').insert([{
     user_id:      session.user.id,
@@ -3230,7 +3230,7 @@ function openAddTransaction() {
         </div>
         
         <div>
-          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Tipo</label>
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">${t('card_type_label')}</label>
           <select id="tx-type"
             style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
                    border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
