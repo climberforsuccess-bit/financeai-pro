@@ -57,7 +57,7 @@ function showUpgradeModal(feature) {
         <p id="upgrade-modal-desc" style="color:#94a3b8; font-size:15px; margin-bottom:8px;"></p>
         <p id="upgrade-modal-plan" style="color:#f59e0b; font-size:13px; font-weight:600; margin-bottom:16px;"></p>
         <p style="color:#64748b; font-size:12px; margin-bottom:20px;">Estás a 1 paso de tener control total de tu dinero 💡</p>
-        <button onclick="showSection('subscriptions'); document.getElementById('upgrade-modal').style.display='none'"
+        <button onclick="document.getElementById('upgrade-modal').style.display='none'; scrollToSection('pricing-section')"
           style="width:100%; padding:16px; background:linear-gradient(135deg,#f59e0b,#ef4444); border:none; border-radius:12px; color:#fff; font-size:16px; font-weight:700; cursor:pointer; box-shadow:0 4px 20px rgba(245,158,11,0.4);">
           🔓 Desbloquear Ahora — Ver Planes
         </button>
