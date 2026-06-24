@@ -963,23 +963,41 @@ function renderDebts() {
 
   function renderDebtGroup(debts, startIndex) {
     return debts.map((d, i) => {
-    const pct = d.originalBalance
-      ? Math.round(((d.originalBalance - d.balance) / d.originalBalance) * 100)
-      : 0;
-    const priority = d.apr > 22 ? 'danger' : d.apr > 18 ? 'warning' : 'success';
+    // Buscar la tarjeta correspondiente para obtener el límite real
+    const matchCard = (STATE.cards || []).find(c =>
+      c.name && d.name && c.name.toLowerCase() === d.name.toLowerCase()
+    );
+    const cardLimit = matchCard ? (matchCard.limit || 0) : 0;
+    const usedBalance = d.balance || 0;
+
+    // % usado del límite (igual que en Mis Tarjetas)
+    const pct = cardLimit > 0
+      ? Math.min(Math.round((usedBalance / cardLimit) * 100), 100)
+      : Math.min(Math.round((usedBalance / (d.originalBalance || usedBalance || 1)) * 100), 100);
+
+    // Color basado en % usado (igual que en Mis Tarjetas)
+    const usageClass = pct >= 80 ? 'danger' : pct >= 50 ? 'warning' : 'success';
+
+    // Texto de prioridad sigue usando APR (info útil)
     const priorityText = d.apr > 22 ? 'Prioridad ALTA'
       : d.apr > 18 ? 'Prioridad MEDIA' : 'Pago mínimo por ahora';
+    const priorityColor = d.apr > 22 ? 'danger' : d.apr > 18 ? 'warning' : 'success';
+
     return `
       <div class="debt-item">
         <div class="debt-header">
           <span class="debt-name">${i + 1}. ${d.name}</span>
           <span class="debt-amount">${formatCurrency(d.balance)}</span>
         </div>
-        <div style="font-size:12px;color:var(--${priority});margin-bottom:6px;">
+        <div style="font-size:12px;color:var(--${priorityColor});margin-bottom:6px;">
           APR: ${d.apr || 0}% — ${priorityText}
         </div>
         <div class="progress-bar">
-          <div class="progress-fill ${priority}" style="width:${pct}%;"></div>
+          <div class="progress-fill ${usageClass}" style="width:${pct}%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b;margin-top:4px;margin-bottom:6px;">
+          <span>${formatCurrency(usedBalance)} usado${cardLimit > 0 ? ' de ' + formatCurrency(cardLimit) : ''}</span>
+          <span>${pct}% utilizado</span>
         </div>
         <div class="debt-meta">
           <span>Pago mínimo: ${formatCurrency(d.minPayment)}</span>
