@@ -8,10 +8,10 @@
 // PLAN LIMITS — restricciones por plan
 // ============================================================
 const PLAN_LIMITS = {
-  free:     { transactions: 30,  cards: 1,  aiMessages: 5,   reports: false, scanner: false, gpt4: false, export: false, multiUser: false, api: false },
-  personal: { transactions: -1,  cards: 3,  aiMessages: 50,  reports: false, scanner: true,  gpt4: false, export: false, multiUser: false, api: false },
-  pro:      { transactions: -1,  cards: 10, aiMessages: 200, reports: true,  scanner: true,  gpt4: true,  export: true,  multiUser: false, api: false },
-  business: { transactions: -1,  cards: -1, aiMessages: -1,  reports: true,  scanner: true,  gpt4: true,  export: true,  multiUser: true,  api: true  }
+  free:     { transactions: 30,  cards: 1,  cardsPersonal: 1,  cardsBusiness: 0,  aiMessages: 5,   reports: false, scanner: false, gpt4: false, export: false, multiUser: false, api: false },
+  personal: { transactions: -1,  cards: 4,  cardsPersonal: 3,  cardsBusiness: 1,  aiMessages: 50,  reports: false, scanner: true,  gpt4: false, export: false, multiUser: false, api: false },
+  pro:      { transactions: -1,  cards: 15, cardsPersonal: 10, cardsBusiness: 5,  aiMessages: 200, reports: true,  scanner: true,  gpt4: true,  export: true,  multiUser: false, api: false },
+  business: { transactions: -1,  cards: -1, cardsPersonal: -1, cardsBusiness: -1, aiMessages: -1,  reports: true,  scanner: true,  gpt4: true,  export: true,  multiUser: true,  api: true  }
 };
 
 // -1 = ilimitado
@@ -27,14 +27,14 @@ function canUseFeature(feature) {
 
 function showUpgradeModal(feature) {
   const featureMessages = {
-    scanner:   { title: '📸 Scanner de Recibos', desc: 'Escanea y digitaliza tus recibos automáticamente con IA.', minPlan: 'Personal' },
-    reports:   { title: '📊 Reportes Avanzados', desc: 'Análisis profundo de tus finanzas con gráficas y tendencias.', minPlan: 'Pro' },
-    gpt4:      { title: '🤖 GPT-4o IA Avanzada', desc: 'La IA más poderosa para analizar tus finanzas en detalle.', minPlan: 'Pro' },
-    export:    { title: '📤 Exportar PDF/Excel', desc: 'Exporta tus reportes y transacciones en cualquier formato.', minPlan: 'Pro' },
-    cards:     { title: '💳 Más Tarjetas', desc: 'Agrega más tarjetas y gestiona todas tus cuentas.', minPlan: 'Personal' },
+    scanner:   { title: '📸 ¿Guardas recibos en papel?', desc: 'El 73% de los gastos se olvidan en menos de 48 horas. Con el scanner de IA capturas cada gasto en segundos y nunca más pierdes dinero sin saberlo.', minPlan: 'Personal' },
+    reports:   { title: '📊 Tu dinero tiene patrones ocultos', desc: 'Los reportes avanzados revelan exactamente en qué gastas de más, cuándo y por qué. Usuarios Pro ahorran en promedio $300/mes solo con esta función.', minPlan: 'Pro' },
+    gpt4:      { title: '🤖 Tu asesor financiero personal, 24/7', desc: 'GPT-4o analiza tus finanzas en profundidad, detecta riesgos, sugiere ahorros y responde cualquier pregunta sobre tu dinero — como tener un CFO en tu bolsillo.', minPlan: 'Pro' },
+    export:    { title: '📤 Lleva tus finanzas a cualquier lugar', desc: 'Exporta en PDF o Excel para compartir con tu contador, banco o simplemente para tu archivo personal. Profesionaliza el control de tu dinero.', minPlan: 'Pro' },
+    cards:     { title: '💳 ¡Alcanzaste tu límite de tarjetas!', desc: 'Millones se endeudaron por no tener control. Tú puedes ser diferente — agrega todas tus tarjetas y sabe exactamente cuánto debes, cuándo y a quién.', minPlan: 'Personal' },
     multiUser: { title: '👥 Multi-Usuario', desc: 'Comparte el acceso con tu familia o equipo de trabajo.', minPlan: 'Business' },
     api:       { title: '🔌 API Access', desc: 'Integra FinanceAI Pro con tus propias aplicaciones.', minPlan: 'Business' },
-    transactions: { title: '📝 Más Transacciones', desc: 'Registra transacciones ilimitadas sin restricciones.', minPlan: 'Personal' }
+    transactions: { title: '📝 ¡Casi sin espacio!', desc: 'Cada transacción no registrada es dinero que pierdes sin saberlo. No pares ahora — desbloquea el registro ilimitado y mantén el control total de tu dinero.', minPlan: 'Personal' }
   };
 
   const info = featureMessages[feature] || { title: 'Función Premium', desc: 'Actualiza tu plan para acceder.', minPlan: 'Personal' };
@@ -63,7 +63,7 @@ function showUpgradeModal(feature) {
         </button>
         <button onclick="document.getElementById('upgrade-modal').style.display='none'"
           style="width:100%; padding:12px; background:none; border:none; color:#475569; font-size:13px; cursor:pointer; margin-top:10px;">
-          No, prefiero seguir sin control total
+          No, prefiero seguir perdiendo dinero sin saberlo
         </button>
       </div>`;
     document.body.appendChild(modal);
@@ -89,16 +89,23 @@ function checkTransactionLimit() {
   // Advertencia al 80%
   if (count >= limits.transactions * 0.8) {
     const remaining = limits.transactions - count;
-    showToast(`⚠️ Te quedan \${remaining} transacciones este mes — considera actualizar tu plan`, 'warning');
+    showToast(`🚨 Solo te quedan \${remaining} transacciones — cada una sin registrar es dinero perdido. ¡Actualiza ahora!`, 'warning');
   }
   return true;
 }
 
-function checkCardLimit() {
+function checkCardLimit(ownerType) {
   const limits = getPlanLimits();
-  if (limits.cards === -1) return true;
-  const count = STATE.cards ? STATE.cards.length : 0;
-  if (count >= limits.cards) {
+  const type = ownerType || 'personal';
+  const limitKey = type === 'business' ? 'cardsBusiness' : 'cardsPersonal';
+  const limitVal = limits[limitKey];
+  if (limitVal === -1) return true;
+  if (limitVal === 0) {
+    showUpgradeModal('cards');
+    return false;
+  }
+  const count = (STATE.cards || []).filter(c => (c.ownerType || 'personal') === type).length;
+  if (count >= limitVal) {
     showUpgradeModal('cards');
     return false;
   }
@@ -2809,12 +2816,7 @@ function showLegal(type) {
 
 function openAddCard() {
   // Verificar límite del plan
-  const cards = STATE.cards || [];
-  const limits = getPlanLimits();
-  if (limits.cards !== Infinity && cards.length >= limits.cards) {
-    showUpgradeModal('cards');
-    return;
-  }
+  // El chequeo final se hace en saveNewCard con el tipo elegido
 
   // Crear modal
   let modal = document.getElementById('add-card-modal');
@@ -2892,6 +2894,7 @@ async function saveNewCard() {
   const color    = colorEl ? colorEl.dataset.gradient : 'linear-gradient(135deg,#1a1a3e,#00EEFF44)';
 
   if (!name) { showToast('Ingresa el nombre del titular', 'error'); return; }
+  if (!checkCardLimit(ownerType)) return;
 
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) { showToast('Sesión expirada', 'error'); return; }
