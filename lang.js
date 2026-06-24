@@ -465,3 +465,21 @@ window.FinanceAILang = {
   current: () => currentLang,
   translations: TRANSLATIONS
 };
+
+// ===========================
+// SET LANG (alias for buttons)
+// ===========================
+function setLang(lang) {
+  applyLanguage(lang);
+
+  // Update active state on all lang buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${lang}'`)) {
+      btn.classList.add('active');
+    }
+  });
+}
+window.setLang = setLang;
