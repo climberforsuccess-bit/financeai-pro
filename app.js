@@ -858,21 +858,7 @@ function editCard(id) {
             width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
             border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
         </div>
-        <div>
-          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Color de tarjeta</label>
-          <div id="ec-colors" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;">
-            ${[
-              'linear-gradient(135deg,#1a1a3e,#00EEFF44)',
-              'linear-gradient(135deg,#2d1b69,#11998e)',
-              'linear-gradient(135deg,#1a1a2e,#e94560)',
-              'linear-gradient(135deg,#0d1b2a,#1b4332)',
-              'linear-gradient(135deg,#1a1a3e,#f59e0b44)',
-              'linear-gradient(135deg,#1a1a3e,#a855f744)',
-              'linear-gradient(135deg,#1a1a1a,#2d2d2d)',
-              'linear-gradient(135deg,#e8e8e8,#ffffff)'
-            ].map(g => `<div onclick="selectEditCardColor(this)" data-gradient="${g}" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:${g};${(card.color||'linear-gradient(135deg,#1a1a3e,#00EEFF44)')===g?'outline:2px solid #fff;':''}"></div>`).join('')}
-          </div>
-        </div>
+
       </div>
 
       <div style="display:flex;gap:12px;margin-top:24px;">
