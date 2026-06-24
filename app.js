@@ -683,12 +683,31 @@ function renderCards() {
     const used = c.balance || 0;
     const limit = c.limit || 1;
     const pct = Math.min(Math.round((used / limit) * 100), 100);
-    const usageClass = pct >= 80 ? 'danger' : pct >= 50 ? 'warning' : 'success';
+    // Colores barra: <30 verde, 30-60 amarillo, >60 rojo
+    const barColor = pct < 30 ? '#00C851' : pct < 60 ? '#f59e0b' : '#FF4757';
+    const usageClass = pct >= 60 ? 'danger' : pct >= 30 ? 'warning' : 'success';
+    // Badge de estado
+    const badge = pct < 30
+      ? { icon: '🟢', label: 'Saludable',  bg: 'rgba(0,200,81,0.2)',   color: '#00C851' }
+      : pct < 60
+      ? { icon: '🟡', label: 'Precaución', bg: 'rgba(245,158,11,0.2)', color: '#f59e0b' }
+      : { icon: '🔴', label: 'Alto uso',   bg: 'rgba(255,71,87,0.2)',  color: '#FF4757' };
     const bg = getCardBg(c.color, i);
     const txtColor = getTextColor(c.color);
     const lastFour = c.lastFour ? `•••• •••• •••• ${c.lastFour}` : '•••• •••• •••• ••••';
     return `
       <div class="credit-card-visual" style="background:${bg};position:relative;">
+        <div style="position:absolute;top:12px;left:12px;">
+          <span style="
+            background:${badge.bg};
+            color:${badge.color};
+            font-size:10px;font-weight:700;
+            padding:3px 8px;border-radius:20px;
+            border:1px solid ${badge.color}44;
+            letter-spacing:0.5px;">
+            ${badge.icon} ${badge.label}
+          </span>
+        </div>
         <div style="position:absolute;top:12px;right:12px;display:flex;gap:8px;">
           <button onclick="editCard('${c.id}')" style="
             background:rgba(255,255,255,0.15);border:none;border-radius:8px;
@@ -701,7 +720,7 @@ function renderCards() {
             🗑️
           </button>
         </div>
-        <div class="card-chip">💳</div>
+        <div class="card-chip" style="margin-top:28px;">💳</div>
         <div class="card-number" style="color:${txtColor};">${lastFour}</div>
         <div class="card-meta">
           <div>
@@ -716,10 +735,10 @@ function renderCards() {
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);">
           <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
             <span style="color:${txtColor};opacity:0.7;">${c.type || 'Crédito'}</span>
-            <span style="color:var(--${usageClass});">${formatCurrency(used)} usado</span>
+            <span style="color:${barColor};">${formatCurrency(used)} usado (${pct}%)</span>
           </div>
           <div class="progress-bar">
-            <div class="progress-fill ${usageClass}" style="width:${pct}%;"></div>
+            <div style="height:100%;width:${pct}%;background:${barColor};border-radius:4px;transition:width 0.3s ease;"></div>
           </div>
           <div style="display:flex;justify-content:space-between;font-size:11px;color:${txtColor};opacity:0.7;margin-top:4px;">
             <span>APR: ${c.apr || 0}%</span>
