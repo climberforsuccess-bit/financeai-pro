@@ -138,6 +138,10 @@ const TRANSLATIONS = {
     // SETTINGS
     set_title:       'Settings',
     set_profile:     '👤 Profile',
+    set_subtitle:    'Customize your experience',
+    lbl_name:        'Name',
+    lbl_email:       'Email',
+    lbl_country:     'Country',
     set_currency:    'Currency',
     set_language:    '🌐 Language',
     set_plan:        '💳 Choose your plan',
@@ -315,6 +319,10 @@ const TRANSLATIONS = {
     // SETTINGS
     set_title:       'Configuración',
     set_profile:     '👤 Perfil',
+    set_subtitle:    'Personaliza tu experiencia',
+    lbl_name:        'Nombre',
+    lbl_email:       'Email',
+    lbl_country:     'País',
     set_currency:    'Moneda',
     set_language:    '🌐 Idioma',
     set_plan:        '💳 Elige tu plan',

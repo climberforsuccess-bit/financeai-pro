@@ -1307,7 +1307,7 @@ body {
       <!-- Login Form -->
       <div id="login-form">
         <div class="form-group">
-          <label for="login-email">Email</label>
+          <label for="login-email" data-i18n="lbl_email">Email</label>
           <input type="email" placeholder="tu@email.com" id="login-email">
         </div>
         <div class="form-group">
@@ -1327,7 +1327,7 @@ body {
           <input type="text" placeholder="Tu nombre" id="reg-name">
         </div>
         <div class="form-group">
-          <label for="login-email">Email</label>
+          <label for="login-email" data-i18n="lbl_email">Email</label>
           <input type="email" placeholder="tu@email.com" id="reg-email">
         </div>
         <div class="form-group">
@@ -1335,7 +1335,7 @@ body {
           <input type="password" placeholder="Mínimo 8 caracteres" id="reg-pass">
         </div>
         <div class="form-group">
-          <label for="reg-country">País</label>
+          <label for="reg-country" data-i18n="lbl_country">País</label>
           <select id="reg-country">
             <option value="">Selecciona tu país</option>
             <optgroup label="🌎 América del Norte">
@@ -2286,24 +2286,24 @@ body {
     <div id="section-settings" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title">⚙️ Configuración</div>
-          <div class="page-subtitle">Personaliza tu experiencia</div>
+          <div class="page-title" data-i18n="set_title">⚙️ Configuración</div>
+          <div class="page-subtitle" data-i18n="set_subtitle">Personaliza tu experiencia</div>
         </div>
       </div>
 
       <div style="max-width:600px;display:flex;flex-direction:column;gap:20px;">
         <div class="card">
-          <div class="card-title" style="margin-bottom:20px;">👤 Perfil</div>
+          <div class="card-title" style="margin-bottom:20px;" data-i18n="set_profile">👤 Perfil</div>
           <div class="form-group">
-            <label for="set-name">Nombre</label>
+            <label for="set-name" data-i18n="lbl_name">Nombre</label>
             <input type="text" value="Usuario Demo" id="set-name">
           </div>
           <div class="form-group">
-            <label for="login-email">Email</label>
+            <label for="login-email" data-i18n="lbl_email">Email</label>
             <input type="email" value="demo@financeaipro.com" id="set-email">
           </div>
           <div class="form-group">
-            <label for="reg-country">País</label>
+            <label for="reg-country" data-i18n="lbl_country">País</label>
             <select id="set-country">
               <optgroup label="🌎 América del Norte">
                 <option value="us" selected>🇺🇸 United States</option>
@@ -2343,7 +2343,7 @@ body {
             </select>
           </div>
           <div class="form-group">
-            <label for="set-currency">Moneda</label>
+            <label for="set-currency" data-i18n="set_currency">Moneda</label>
             <select id="set-currency" name="set-currency">
               <optgroup label="🌎 América">
                 <option value="USD">USD — Dólar Americano</option>
@@ -2376,11 +2376,11 @@ body {
               </optgroup>
             </select>
           </div>
-          <button class="btn btn-primary" onclick="showNotif('✅ Perfil actualizado')">Guardar Cambios</button>
+          <button class="btn btn-primary" onclick="showNotif('✅ Perfil actualizado')" data-i18n="set_save">Guardar Cambios</button>
         </div>
 
         <div class="card">
-          <div class="card-title" style="margin-bottom:20px;">🌐 Idioma</div>
+          <div class="card-title" style="margin-bottom:20px;" data-i18n="set_language">🌐 Idioma</div>
           <div class="lang-switch" style="width:fit-content;">
             <button class="lang-btn active" onclick="setLang('es')">🇪🇸 Español</button>
             <button class="lang-btn" onclick="setLang('en')">🇺🇸 English</button>
@@ -2393,7 +2393,7 @@ body {
             <div id="current-plan-badge" style="display:inline-block; background:rgba(245,158,11,0.15); border:1px solid #f59e0b; color:#f59e0b; font-size:12px; font-weight:700; padding:4px 14px; border-radius:20px; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">
               ✨ Tu plan actual: FREE
             </div>
-            <div class="card-title" style="font-size:22px; margin-bottom:6px;">💳 Elige tu plan</div>
+            <div class="card-title" style="font-size:22px; margin-bottom:6px;" data-i18n="set_plan">💳 Elige tu plan</div>
             <p style="color:var(--gray); font-size:13px; margin:0;">Invierte menos que un café al día y recupera cientos al mes</p>
 
 
