@@ -2750,6 +2750,8 @@ function renderMonthlyReport() {
 // ============================================
 function showLegal(type) {
   const isTerms = type === 'terms';
+  const isPrivacy = type === 'privacy';
+  const isCookies = type === 'cookies';
 
   const termsContent = `
     <h2 style="color:#00EEFF;margin:0 0 8px;">📋 Términos de Servicio</h2>
@@ -2878,6 +2880,28 @@ function showLegal(type) {
     </div>
   `;
 
+
+  const cookiesContent = `
+    <h2 style="color:#00EEFF;margin:0 0 8px;">🍪 Política de Cookies</h2>
+    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">Última actualización: ${new Date().toLocaleDateString('es-ES', {year:'numeric',month:'long',day:'numeric'})}</p>
+    <div style="color:#CBD5E1;font-size:14px;line-height:1.8;">
+      <h3 style="color:#fff;margin:20px 0 8px;">1. ¿Qué son las cookies?</h3>
+      <p>Las cookies son pequeños archivos de texto que se almacenan en su dispositivo al visitar nuestra aplicación. Nos ayudan a recordar sus preferencias y mantener su sesión activa.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">2. Cookies que usamos</h3>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li><strong style="color:#CBD5E1;">Sesión:</strong> Mantienen su sesión iniciada de forma segura</li>
+        <li><strong style="color:#CBD5E1;">Preferencias:</strong> Guardan su idioma, moneda y configuración</li>
+        <li><strong style="color:#CBD5E1;">Seguridad:</strong> Protegen contra accesos no autorizados</li>
+      </ul>
+      <h3 style="color:#fff;margin:20px 0 8px;">3. Cookies de terceros</h3>
+      <p>No utilizamos cookies de rastreo publicitario. Stripe puede usar cookies técnicas para el procesamiento seguro de pagos.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">4. Control de cookies</h3>
+      <p>Puede configurar su navegador para rechazar cookies, aunque esto puede afectar el funcionamiento de la aplicación. Las cookies esenciales no pueden desactivarse.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">5. Contacto</h3>
+      <p>Consultas sobre cookies: <a href="mailto:climberforsuccess@gmail.com" style="color:#00EEFF;">climberforsuccess@gmail.com</a></p>
+    </div>
+  `;
+
   const existing = document.getElementById('legal-modal');
   if (existing) existing.remove();
 
@@ -2905,15 +2929,22 @@ function showLegal(type) {
         </button>
         <button onclick="showLegal('privacy')" style="
           flex:1;padding:10px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;
-          background:${!isTerms ? 'linear-gradient(135deg,#00EEFF,#0066FF)' : 'rgba(255,255,255,0.05)'};
-          border:${!isTerms ? 'none' : '1px solid rgba(255,255,255,0.1)'};
-          color:${!isTerms ? '#000' : '#8892A4'};">
+          background:${isPrivacy ? 'linear-gradient(135deg,#00EEFF,#0066FF)' : 'rgba(255,255,255,0.05)'};
+          border:${isPrivacy ? 'none' : '1px solid rgba(255,255,255,0.1)'};
+          color:${isPrivacy ? '#000' : '#8892A4'};">
           🔒 Política de Privacidad
+        </button>
+        <button onclick="showLegal('cookies')" style="
+          flex:1;padding:10px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;
+          background:${isCookies ? 'linear-gradient(135deg,#00EEFF,#0066FF)' : 'rgba(255,255,255,0.05)'};
+          border:${isCookies ? 'none' : '1px solid rgba(255,255,255,0.1)'};
+          color:${isCookies ? '#000' : '#8892A4'};">
+          🍪 Cookies
         </button>
       </div>
 
       <div style="overflow-y:auto;flex:1;padding-right:8px;">
-        ${isTerms ? termsContent : privacyContent}
+        ${isTerms ? termsContent : isCookies ? cookiesContent : privacyContent}
       </div>
 
       <button onclick="document.getElementById('legal-modal').remove()" style="
