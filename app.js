@@ -547,8 +547,12 @@ function selectCardColor(el) {
 
 
 function selectEditCardColor(el) {
-  el.closest("#ec-colors").querySelectorAll("div").forEach(d => d.style.outline = "none");
+  el.closest("#ec-colors").querySelectorAll("div").forEach(d => {
+    d.style.outline = "none";
+    d.style.border = "none";
+  });
   el.style.outline = "2px solid #fff";
+  window._selectedEditCardColor = el.dataset.gradient;
 }
 function renderTransactions() {
   const txs = STATE.transactions || [];
@@ -890,8 +894,8 @@ async function saveEditCard(id) {
   const lastFour = document.getElementById('ec-last4')?.value?.slice(-4);
   const apr      = parseFloat(document.getElementById('ec-apr')?.value) || 0;
   const dueDate  = parseInt(document.getElementById('ec-due')?.value) || null;
-  const colorEl  = document.querySelector("#ec-colors div[style*=\"2px solid\"]");
-  const color    = colorEl ? colorEl.dataset.gradient : null;
+  const color = window._selectedEditCardColor || 
+    (document.querySelector("#ec-colors div[style*='outline']")?.dataset?.gradient) || null;
 
   if (!name) { showToast('El nombre es requerido', 'error'); return; }
 
