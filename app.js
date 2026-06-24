@@ -370,6 +370,7 @@ async function loadCards() {
     dueDate: c.due_date,
     color: c.color,
     apr: c.apr || 0,
+    ownerType: c.owner_type || 'personal',
     createdAt: c.created_at
   }));
 }
@@ -644,7 +645,7 @@ function renderCards() {
     return;
   }
 
-  const gradients = [
+  const defaultGradients = [
     'linear-gradient(135deg,#1a1a3e,#00EEFF22)',
     'linear-gradient(135deg,#1a1a3e,#0d0d2b)',
     'linear-gradient(135deg,#0d1b2a,#1b4332)',
@@ -652,20 +653,46 @@ function renderCards() {
     'linear-gradient(135deg,#1a1a2e,#e94560)'
   ];
 
-  container.innerHTML = cards.map((c, i) => {
+  const colorMap = {
+    '#ffffff': 'linear-gradient(135deg,#ffffff,#e2e8f0)',
+    '#000000': 'linear-gradient(135deg,#111,#333)',
+    '#FF4757': 'linear-gradient(135deg,#FF4757,#c0392b)',
+    '#00EEFF': 'linear-gradient(135deg,#00EEFF,#0066FF)',
+    '#FFD700': 'linear-gradient(135deg,#FFD700,#f39c12)',
+    '#00C851': 'linear-gradient(135deg,#00C851,#007E33)',
+    '#7B68EE': 'linear-gradient(135deg,#7B68EE,#4a3ab5)',
+    '#FF6B35': 'linear-gradient(135deg,#FF6B35,#c0392b)'
+  };
+
+  function getCardBg(color, index) {
+    if (!color) return defaultGradients[index % defaultGradients.length];
+    if (color.startsWith('linear-gradient')) return color;
+    return colorMap[color] || `linear-gradient(135deg,${color},${color}cc)`;
+  }
+
+  function getTextColor(color) {
+    if (!color) return '#fff';
+    const light = ['#ffffff', '#FFD700', '#00EEFF'];
+    return light.includes(color) ? '#0d0d1a' : '#fff';
+  }
+
+  const personalCards = cards.filter(c => (c.ownerType || 'personal') === 'personal');
+  const businessCards = cards.filter(c => c.ownerType === 'business');
+
+  function cardHTML(c, i) {
     const used = c.balance || 0;
     const limit = c.limit || 1;
     const pct = Math.min(Math.round((used / limit) * 100), 100);
     const usageClass = pct >= 80 ? 'danger' : pct >= 50 ? 'warning' : 'success';
-    const gradient = c.color || gradients[i % gradients.length];
+    const bg = getCardBg(c.color, i);
+    const txtColor = getTextColor(c.color);
     const lastFour = c.lastFour ? `•••• •••• •••• ${c.lastFour}` : '•••• •••• •••• ••••';
-
     return `
-      <div class="credit-card-visual" style="background:${gradient};position:relative;">
+      <div class="credit-card-visual" style="background:${bg};position:relative;">
         <div style="position:absolute;top:12px;right:12px;display:flex;gap:8px;">
           <button onclick="editCard('${c.id}')" style="
             background:rgba(255,255,255,0.15);border:none;border-radius:8px;
-            padding:4px 10px;color:#fff;cursor:pointer;font-size:12px;">
+            padding:4px 10px;color:${txtColor};cursor:pointer;font-size:12px;">
             ✏️ Editar
           </button>
           <button onclick="deleteCard('${c.id}')" style="
@@ -675,32 +702,54 @@ function renderCards() {
           </button>
         </div>
         <div class="card-chip">💳</div>
-        <div class="card-number">${lastFour}</div>
+        <div class="card-number" style="color:${txtColor};">${lastFour}</div>
         <div class="card-meta">
           <div>
-            <div style="font-size:11px;color:var(--gray);">TITULAR</div>
-            <div class="card-holder">${c.name || 'Sin nombre'}</div>
+            <div style="font-size:11px;color:${txtColor};opacity:0.7;">TITULAR</div>
+            <div class="card-holder" style="color:${txtColor};">${c.name || 'Sin nombre'}</div>
           </div>
           <div style="text-align:right;">
-            <div style="font-size:11px;color:var(--gray);">LÍMITE</div>
-            <div class="card-limit">${formatCurrency(limit)}</div>
+            <div style="font-size:11px;color:${txtColor};opacity:0.7;">LÍMITE</div>
+            <div class="card-limit" style="color:${txtColor};">${formatCurrency(limit)}</div>
           </div>
         </div>
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);">
           <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
-            <span style="color:var(--gray);">${c.type || 'Crédito'}</span>
+            <span style="color:${txtColor};opacity:0.7;">${c.type || 'Crédito'}</span>
             <span style="color:var(--${usageClass});">${formatCurrency(used)} usado</span>
           </div>
           <div class="progress-bar">
             <div class="progress-fill ${usageClass}" style="width:${pct}%;"></div>
           </div>
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-top:4px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:${txtColor};opacity:0.7;margin-top:4px;">
             <span>APR: ${c.apr || 0}%</span>
             <span>Vence día ${c.dueDate || '—'}</span>
           </div>
         </div>
       </div>`;
-  }).join('');
+  }
+
+  let html = '';
+
+  if (personalCards.length > 0) {
+    html += `<div style="grid-column:1/-1;margin-bottom:8px;margin-top:4px;">
+      <h3 style="color:#94a3b8;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">
+        👤 Tarjetas Personales
+      </h3>
+    </div>`;
+    html += personalCards.map((c, i) => cardHTML(c, i)).join('');
+  }
+
+  if (businessCards.length > 0) {
+    html += `<div style="grid-column:1/-1;margin-bottom:8px;margin-top:20px;">
+      <h3 style="color:#94a3b8;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">
+        🏢 Tarjetas de Empresa
+      </h3>
+    </div>`;
+    html += businessCards.map((c, i) => cardHTML(c, i)).join('');
+  }
+
+  container.innerHTML = html;
 }
 
 function editCard(id) {
