@@ -2891,3 +2891,119 @@ async function saveNewCard() {
   showToast('✅ Tarjeta guardada');
 }
 
+
+function filterTransactions(filter, btn) {
+  document.querySelectorAll('#section-transactions .section-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const txs = STATE.transactions || [];
+  let filtered;
+
+  switch(filter) {
+    case 'income':
+      filtered = txs.filter(t => t.type === 'income');
+      break;
+    case 'expense':
+      filtered = txs.filter(t => t.type === 'expense');
+      break;
+    case 'personal':
+      filtered = txs.filter(t => t.category_type === 'personal');
+      break;
+    case 'business':
+      filtered = txs.filter(t => t.category_type === 'business');
+      break;
+    default:
+      filtered = txs;
+  }
+
+  const container = document.getElementById('transactions-list');
+  if (!container) return;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:60px;color:#8892A4;">
+        <div style="font-size:3rem;margin-bottom:12px;opacity:0.4;">💸</div>
+        No tienes transacciones en esta categoría.
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(t => {
+    const isIncome = t.type === 'income';
+    const sign = isIncome ? '+' : '-';
+    const color = isIncome ? '#22c55e' : '#ef4444';
+    const icon = isIncome ? '📈' : '📉';
+    return `
+      <div style="display:flex;align-items:center;justify-content:space-between;
+                  padding:14px 16px;border-bottom:1px solid #ffffff0d;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:1.4rem;">${icon}</span>
+          <div>
+            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || 'Sin descripción'}</div>
+            <div style="color:#8892A4;font-size:12px;">${t.category || ''} · ${t.date || ''}</div>
+          </div>
+        </div>
+        <div style="color:${color};font-weight:700;font-size:15px;">
+          ${sign}${formatCurrency(Math.abs(t.amount))}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function filterTransactions(filter, btn) {
+  document.querySelectorAll('#section-transactions .section-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const txs = STATE.transactions || [];
+  let filtered;
+
+  switch(filter) {
+    case 'income':
+      filtered = txs.filter(t => t.type === 'income');
+      break;
+    case 'expense':
+      filtered = txs.filter(t => t.type === 'expense');
+      break;
+    case 'personal':
+      filtered = txs.filter(t => t.category_type === 'personal');
+      break;
+    case 'business':
+      filtered = txs.filter(t => t.category_type === 'business');
+      break;
+    default:
+      filtered = txs;
+  }
+
+  const container = document.getElementById('transactions-list');
+  if (!container) return;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:60px;color:#8892A4;">
+        <div style="font-size:3rem;margin-bottom:12px;opacity:0.4;">💸</div>
+        No tienes transacciones en esta categoría.
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(t => {
+    const isIncome = t.type === 'income';
+    const sign = isIncome ? '+' : '-';
+    const color = isIncome ? '#22c55e' : '#ef4444';
+    const icon = isIncome ? '📈' : '📉';
+    return `
+      <div style="display:flex;align-items:center;justify-content:space-between;
+                  padding:14px 16px;border-bottom:1px solid #ffffff0d;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:1.4rem;">${icon}</span>
+          <div>
+            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || 'Sin descripción'}</div>
+            <div style="color:#8892A4;font-size:12px;">${t.category || ''} · ${t.date || ''}</div>
+          </div>
+        </div>
+        <div style="color:${color};font-weight:700;font-size:15px;">
+          ${sign}${formatCurrency(Math.abs(t.amount))}
+        </div>
+      </div>`;
+  }).join('');
+}
