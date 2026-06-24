@@ -3007,3 +3007,123 @@ function filterTransactions(filter, btn) {
       </div>`;
   }).join('');
 }
+
+function openAddTransaction() {
+  const modal = document.createElement('div');
+  modal.id = 'modal-add-transaction';
+  modal.style.cssText = `
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.7);z-index:9999;
+    display:flex;align-items:center;justify-content:center;`;
+  
+  modal.innerHTML = `
+    <div style="background:#1a1f2e;border-radius:16px;padding:32px;width:90%;max-width:480px;
+                border:1px solid #ffffff15;">
+      <h2 style="color:#fff;margin:0 0 24px;font-size:1.3rem;">+ Nueva Transacción</h2>
+      
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Descripción</label>
+          <input id="tx-description" type="text" placeholder="Ej: Salario, Supermercado..."
+            style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
+                   border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
+        </div>
+        
+        <div>
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Monto</label>
+          <input id="tx-amount" type="number" placeholder="0.00" min="0" step="0.01"
+            style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
+                   border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
+        </div>
+        
+        <div>
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Tipo</label>
+          <select id="tx-type"
+            style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
+                   border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
+            <option value="expense">Gasto</option>
+            <option value="income">Ingreso</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Categoría</label>
+          <select id="tx-category-type"
+            style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
+                   border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
+            <option value="personal">Personal</option>
+            <option value="business">Empresa</option>
+          </select>
+        </div>
+        
+        <div>
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Categoría</label>
+          <input id="tx-category" type="text" placeholder="Ej: Alimentación, Transporte..."
+            style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
+                   border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
+        </div>
+        
+        <div>
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Fecha</label>
+          <input id="tx-date" type="date"
+            style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
+                   border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;"
+            value="${new Date().toISOString().split('T')[0]}">
+        </div>
+      </div>
+      
+      <div style="display:flex;gap:12px;margin-top:24px;">
+        <button onclick="closeAddTransaction()"
+          style="flex:1;padding:12px;background:#ffffff10;border:none;border-radius:8px;
+                 color:#fff;font-size:14px;cursor:pointer;">Cancelar</button>
+        <button onclick="saveNewTransaction()"
+          style="flex:1;padding:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);
+                 border:none;border-radius:8px;color:#fff;font-size:14px;
+                 font-weight:600;cursor:pointer;">Guardar</button>
+      </div>
+    </div>`;
+  
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeAddTransaction(); });
+}
+
+function closeAddTransaction() {
+  const modal = document.getElementById('modal-add-transaction');
+  if (modal) modal.remove();
+}
+
+async function saveNewTransaction() {
+  const description = document.getElementById('tx-description').value.trim();
+  const amount = parseFloat(document.getElementById('tx-amount').value);
+  const type = document.getElementById('tx-type').value;
+  const category = document.getElementById('tx-category').value.trim();
+  const category_type = document.getElementById('tx-category-type').value;
+  const date = document.getElementById('tx-date').value;
+
+  if (!description || !amount || !date) {
+    alert('Por favor completa descripción, monto y fecha.');
+    return;
+  }
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { error } = await supabase.from('transactions').insert([{
+    user_id: user.id,
+    description,
+    amount: type === 'expense' ? -Math.abs(amount) : Math.abs(amount),
+    type,
+    category,
+    category_type,
+    date
+  }]);
+
+  if (error) {
+    alert('Error al guardar: ' + error.message);
+    return;
+  }
+
+  closeAddTransaction();
+  await loadTransactions();
+  renderTransactions();
+}
