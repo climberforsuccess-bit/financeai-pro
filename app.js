@@ -545,6 +545,11 @@ function selectCardColor(el) {
   el.style.outline = '2px solid #fff';
 }
 
+
+function selectEditCardColor(el) {
+  el.closest("#ec-colors").querySelectorAll("div").forEach(d => d.style.outline = "none");
+  el.style.outline = "2px solid #fff";
+}
 function renderTransactions() {
   const txs = STATE.transactions || [];
   const section = document.getElementById('section-transactions');
@@ -779,12 +784,12 @@ function editCard(id) {
   modal.id = 'edit-card-modal';
   modal.style.cssText = `
     position:fixed;inset:0;background:rgba(0,0,0,0.7);
-    display:flex;align-items:center;justify-content:center;
-    z-index:9999;padding:20px;`;
+    display:flex;align-items:flex-start;justify-content:center;
+    z-index:9999;padding:20px;overflow-y:auto;`;
 
   modal.innerHTML = `
     <div style="background:#1A2035;border-radius:20px;padding:32px;
-      width:100%;max-width:460px;border:1px solid rgba(255,255,255,0.08);">
+      width:100%;max-width:460px;border:1px solid rgba(255,255,255,0.08);overflow-y:auto;max-height:90vh;">
       <h3 style="margin:0 0 24px;color:#fff;font-size:1.2rem;">✏️ Editar Tarjeta</h3>
 
       <div style="display:grid;gap:16px;">
@@ -833,10 +838,40 @@ function editCard(id) {
           </div>
         </div>
         <div>
+          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Color de tarjeta</label>
+          <div id="ec-colors" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;">
+            ${[
+              'linear-gradient(135deg,#1a1a3e,#00EEFF44)',
+              'linear-gradient(135deg,#2d1b69,#11998e)',
+              'linear-gradient(135deg,#1a1a2e,#e94560)',
+              'linear-gradient(135deg,#0d1b2a,#1b4332)',
+              'linear-gradient(135deg,#1a1a3e,#f59e0b44)',
+              'linear-gradient(135deg,#1a1a3e,#a855f744)',
+              'linear-gradient(135deg,#1a1a1a,#2d2d2d)',
+              'linear-gradient(135deg,#e8e8e8,#ffffff)'
+            ].map(g => `<div onclick="selectEditCardColor(this)" data-gradient="${g}" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:${g};${(card.color||'linear-gradient(135deg,#1a1a3e,#00EEFF44)')===g?'outline:2px solid #fff;':''}"></div>`).join('')}
+          </div>
+        </div>
+        <div>
           <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Día de vencimiento</label>
           <input id="ec-due" type="number" min="1" max="31" value="${card.dueDate || ''}" style="
             width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
             border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">Color de tarjeta</label>
+          <div id="ec-colors" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;">
+            ${[
+              'linear-gradient(135deg,#1a1a3e,#00EEFF44)',
+              'linear-gradient(135deg,#2d1b69,#11998e)',
+              'linear-gradient(135deg,#1a1a2e,#e94560)',
+              'linear-gradient(135deg,#0d1b2a,#1b4332)',
+              'linear-gradient(135deg,#1a1a3e,#f59e0b44)',
+              'linear-gradient(135deg,#1a1a3e,#a855f744)',
+              'linear-gradient(135deg,#1a1a1a,#2d2d2d)',
+              'linear-gradient(135deg,#e8e8e8,#ffffff)'
+            ].map(g => `<div onclick="selectEditCardColor(this)" data-gradient="${g}" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:${g};${(card.color||'linear-gradient(135deg,#1a1a3e,#00EEFF44)')===g?'outline:2px solid #fff;':''}"></div>`).join('')}
+          </div>
         </div>
       </div>
 
@@ -869,6 +904,8 @@ async function saveEditCard(id) {
   const lastFour = document.getElementById('ec-last4')?.value?.slice(-4);
   const apr      = parseFloat(document.getElementById('ec-apr')?.value) || 0;
   const dueDate  = parseInt(document.getElementById('ec-due')?.value) || null;
+  const colorEl  = document.querySelector("#ec-colors div[style*=\"2px solid\"]");
+  const color    = colorEl ? colorEl.dataset.gradient : null;
 
   if (!name) { showToast('El nombre es requerido', 'error'); return; }
 
@@ -882,7 +919,8 @@ async function saveEditCard(id) {
         balance,
         last_four:    lastFour,
         apr,
-        due_date:     dueDate
+        due_date:     dueDate,
+        ...(color && { color })
       })
       .eq('id', id);
 
@@ -891,7 +929,7 @@ async function saveEditCard(id) {
     const idx = STATE.cards.findIndex(c => c.id === id);
     if (idx !== -1) {
       const existingColor = STATE.cards[idx].color;
-      STATE.cards[idx] = { ...STATE.cards[idx], name, type, limit, balance, lastFour, apr, dueDate, color: existingColor };
+      STATE.cards[idx] = { ...STATE.cards[idx], name, type, limit, balance, lastFour, apr, dueDate, color: color || existingColor };
     }
 
     document.getElementById('edit-card-modal')?.remove();
