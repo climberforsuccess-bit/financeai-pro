@@ -1224,16 +1224,16 @@ body {
         <div class="price-amount"><span id="landing-price-personal">$7.99</span><span>/mes</span></div>
         <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-personal">Precio normal $9.99/mes</div>
         <ul class="price-features">
-          <li>50 mensajes IA por día</li>
-          <li>Transacciones ilimitadas</li>
-          <li>Hasta 3 tarjetas</li>
-          <li>Scanner de recibos</li>
-          <li>Reportes básicos</li>
+          <li id="pf3">50 mensajes IA por día</li>
+          <li id="feat-unlimited-tx">Transacciones ilimitadas</li>
+          <li id="pf4">Hasta 3 tarjetas</li>
+          <li id="pf5">Scanner de recibos</li>
+          <li id="feat-basic-reports">Reportes básicos</li>
         </ul>
         <button class="btn btn-outline btn-full" onclick="handlePlanClick('personal')">🚀 Empezar ahora</button>
       </div>
       <div class="price-card popular">
-        <div class="popular-badge">🔥 MÁS POPULAR</div>
+        <div class="popular-badge"><span id="badge-popular">🔥 MÁS POPULAR</span></div>
         <div class="price-name">💎 PRO</div>
         <div class="price-amount"><span id="landing-price-pro">$15.99</span><span>/mes</span></div>
         <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-pro">Valor real $39.99/mes</div>
@@ -1253,11 +1253,11 @@ body {
         <div class="price-amount"><span id="landing-price-business">$39.99</span><span>/mes</span></div>
         <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-business">Precio normal $49.99/mes</div>
         <ul class="price-features">
-          <li>Todo lo de Pro</li>
-          <li>Hasta 5 usuarios</li>
-          <li>Panel de administración</li>
-          <li>Reportes empresariales</li>
-          <li>Soporte prioritario 24/7</li>
+          <li id="feat-all-pro">Todo lo de Pro</li>
+          <li id="feat-5-users">Hasta 5 usuarios</li>
+          <li id="feat-admin-panel">Panel de administración</li>
+          <li id="feat-biz-reports">Reportes empresariales</li>
+          <li id="feat-support-247">Soporte prioritario 24/7</li>
           <li style="color:#10b981;">ROI garantizado o reembolso</li>
         </ul>
         <button class="btn btn-outline btn-full" onclick="handlePlanClick('business')">🏢 Elegir Business</button>
@@ -1311,7 +1311,7 @@ body {
           <input type="email" placeholder="tu@email.com" id="login-email">
         </div>
         <div class="form-group">
-          <label for="login-pass">Contraseña</label>
+          <label for="login-pass" id="lbl-login-pass">Contraseña</label>
           <input type="password" placeholder="••••••••" id="login-pass">
         </div>
         <button class="btn btn-primary btn-full" onclick="doLogin()">Iniciar Sesión</button>
@@ -1323,7 +1323,7 @@ body {
       <!-- Register Form -->
       <div id="register-form" style="display:none;">
         <div class="form-group">
-          <label for="reg-name">Nombre Completo</label>
+          <label for="reg-name" id="lbl-reg-name">Nombre Completo</label>
           <input type="text" placeholder="Tu nombre" id="reg-name">
         </div>
         <div class="form-group">
@@ -1331,7 +1331,7 @@ body {
           <input type="email" placeholder="tu@email.com" id="reg-email">
         </div>
         <div class="form-group">
-          <label for="login-pass">Contraseña</label>
+          <label for="login-pass" id="lbl-login-pass">Contraseña</label>
           <input type="password" placeholder="Mínimo 8 caracteres" id="reg-pass">
         </div>
         <div class="form-group">
@@ -1376,7 +1376,7 @@ body {
           </select>
         </div>
         <div class="form-group">
-          <label for="reg-plan">Plan</label>
+          <label for="reg-plan" id="lbl-reg-plan">Plan</label>
           <select id="reg-plan">
             <option value="free">Free — $0/mes</option>
             <option value="personal">Personal — $9.99/mes</option>
@@ -1461,7 +1461,7 @@ body {
       </div>
       <div class="nav-item" onclick="showSection('admin')" id="admin-nav-item" style="display:none;">
         <span class="nav-icon">🔐</span>
-        <span>Admin Panel</span>
+        <span id="nav-admin-label">Admin Panel</span>
       </div>
     </nav>
     <div class="sidebar-footer">
@@ -1695,7 +1695,7 @@ body {
       <div class="page-header">
         <div>
           <div class="page-title">📸 Escáner de Recibos IA</div>
-          <div class="page-subtitle">Fotografía tu recibo y la IA detecta todo automáticamente</div>
+          <div class="page-subtitle" id="sub-scanner">Fotografía tu recibo y la IA detecta todo automáticamente</div>
         </div>
       </div>
       <div style="max-width:700px;">
@@ -1750,16 +1750,16 @@ body {
           <div class="card-title" style="margin-bottom:16px;">💡 Tips para mejores resultados</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
             <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--gray);">
-              <span>✅</span><span>Asegúrate de que el recibo esté completamente visible</span>
+              <span>✅</span><span id="scan-tip-1">Asegúrate de que el recibo esté completamente visible</span>
             </div>
             <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--gray);">
-              <span>✅</span><span>Buena iluminación para mejor reconocimiento</span>
+              <span>✅</span><span id="scan-tip-2">Buena iluminación para mejor reconocimiento</span>
             </div>
             <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--gray);">
-              <span>✅</span><span>Mantén el teléfono estable al fotografiar</span>
+              <span>✅</span><span id="scan-tip-3">Mantén el teléfono estable al fotografiar</span>
             </div>
             <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--gray);">
-              <span>✅</span><span>Funciona con recibos en inglés y español</span>
+              <span>✅</span><span id="scan-tip-4">Funciona con recibos en inglés y español</span>
             </div>
           </div>
         </div>
@@ -1855,7 +1855,7 @@ body {
       <div class="page-header">
         <div>
           <div class="page-title">💳 Mis Tarjetas</div>
-          <div class="page-subtitle">Gestiona tus tarjetas de crédito y débito</div>
+          <div class="page-subtitle" id="sub-cards">Gestiona tus tarjetas de crédito y débito</div>
         </div>
         <button class="btn btn-primary btn-sm" onclick="openAddCard()">+ Agregar Tarjeta</button>
       </div>
@@ -1904,7 +1904,7 @@ body {
           </div>
           <div style="background:rgba(0,238,255,0.05);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px;">
             <div style="font-size:13px;color:var(--gray);line-height:1.6;" id="debt-method-desc">
-              Paga primero la tarjeta con <strong style="color:var(--accent);">mayor tasa de interés</strong>. 
+              <span id="debt-tip-text" data-i18n="debt_tip_text">Paga primero la tarjeta con <strong style="color:var(--accent);">mayor tasa de interés</strong>.</span> 
               Ahorras más dinero en intereses a largo plazo.
             </div>
           </div>
@@ -1913,7 +1913,7 @@ body {
 
         <div class="card">
           <div class="card-header">
-            <span class="card-title">💡 Recomendaciones IA</span>
+            <span class="card-title" id="title-rec-ia">💡 Recomendaciones IA</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:16px;">
             <div style="background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.2);border-radius:12px;padding:16px;">
@@ -1922,7 +1922,7 @@ body {
             </div>
             <div style="background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.2);border-radius:12px;padding:16px;">
               <div style="font-weight:700;color:var(--warning);margin-bottom:8px;">⚠️ Capital One al 82%:</div>
-              <div style="font-size:13px;color:var(--gray);">Tu score crediticio puede bajar. Prioriza reducir esta tarjeta primero.</div>
+              <div id="credit-score-warn" style="font-size:13px;color:var(--gray);">Tu score crediticio puede bajar. Prioriza reducir esta tarjeta primero.</div>
             </div>
             <div style="background:rgba(0,238,255,0.1);border:1px solid var(--border);border-radius:12px;padding:16px;">
               <div style="font-weight:700;color:var(--accent);margin-bottom:8px;">💡 Consolidación:</div>
@@ -1942,7 +1942,7 @@ body {
       <div class="page-header">
         <div>
           <div class="page-title">🔄 Suscripciones</div>
-          <div class="page-subtitle">Gestiona todas tus suscripciones activas</div>
+          <div class="page-subtitle" id="sub-subs">Gestiona todas tus suscripciones activas</div>
         </div>
         <button class="btn btn-primary btn-sm" onclick="openAddSubscription()">+ Agregar</button>
       </div>
@@ -2001,7 +2001,7 @@ body {
               <td>Productividad</td>
               <td>$20.00/mes</td>
               <td>Jun 10</td>
-              <td><span class="badge badge-warning">Vence pronto</span></td>
+              <td><span class="badge badge-warning" id="badge-vence-pronto">Vence pronto</span></td>
               <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')">Cancelar</button></td>
             </tr>
             <tr>
@@ -2040,7 +2040,7 @@ body {
         </table>
 
         <div style="background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.2);border-radius:12px;padding:16px;margin-top:20px;">
-          <div style="font-weight:700;color:var(--warning);margin-bottom:8px;">💡 Recomendación IA:</div>
+          <div id="debt-rec-ia-label" style="font-weight:700;color:var(--warning);margin-bottom:8px;">💡 Recomendación IA:</div>
           <div style="font-size:13px;color:var(--gray);">
             Xbox Game Pass tiene bajo uso según tus patrones. Cancelarla ahorraría <strong style="color:var(--white);">$179.88/año</strong>.
           </div>
@@ -2052,8 +2052,8 @@ body {
     <div id="section-recommendations" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title">⭐ Recomendaciones de Tarjetas</div>
-          <div class="page-subtitle">Las mejores tarjetas según tus hábitos de gasto</div>
+          <div class="page-title" id="title-card-recs">⭐ Recomendaciones de Tarjetas</div>
+          <div class="page-subtitle" id="sub-card-recs">Las mejores tarjetas según tus hábitos de gasto</div>
         </div>
       </div>
 
@@ -2063,7 +2063,7 @@ body {
           <div>
             <div style="font-weight:700;font-size:15px;">Análisis IA de tus gastos</div>
             <div style="color:var(--gray);font-size:13px;margin-top:4px;">
-              Basado en tus transacciones: gastas más en 
+              <span id="rec-based-on">Basado en tus transacciones: gastas más en </span>
               <strong style="color:var(--accent);">supermercado</strong>, 
               <strong style="color:var(--accent);">restaurantes</strong> y 
               <strong style="color:var(--accent);">gasolina</strong>. 
@@ -2132,7 +2132,7 @@ body {
           </div>
           <div class="rec-score">85% match</div>
         </div>
-        <div class="rec-desc">Disponible en México, Colombia y Brasil. Sin cuotas ocultas, control total desde el app.</div>
+        <div class="rec-desc" id="rec-desc-default">Disponible en México, Colombia y Brasil. Sin cuotas ocultas, control total desde el app.</div>
         <div class="rec-benefits">
           <span class="rec-benefit">Sin cuota anual</span>
           <span class="rec-benefit">Sin comisiones</span>
@@ -2158,7 +2158,7 @@ body {
             <div class="chat-msg ai">
               🤖 ¡Hola! Soy tu asistente financiero personal impulsado por Google Gemini AI.<br><br>
               Puedo ayudarte con:<br>
-              • 📊 Analizar tus gastos e ingresos<br>
+              <span id="ai-cap-1">• 📊 Analizar tus gastos e ingresos</span><br>
               • 💳 Recomendar la mejor tarjeta para cada compra<br>
               • 📉 Crear un plan para pagar tus deudas<br>
               • 💡 Darte consejos personalizados<br>
@@ -2223,7 +2223,7 @@ body {
           <div class="card-title" style="margin-bottom:20px;">📊 Gastos por Categoría</div>
           <div style="display:flex;flex-direction:column;gap:12px;">
           <div id="report-top-categories">
-            <p style="color:#475569;font-size:13px;text-align:center;">Sin transacciones aún</p>
+            <p id="no-trans-yet" style="color:#475569;font-size:13px;text-align:center;">Sin transacciones aún</p>
           </div>
         </div>
         </div>
@@ -2391,10 +2391,10 @@ body {
         <div class="card" style="border: 1px solid rgba(245,158,11,0.3);">
           <div style="text-align:center; margin-bottom:24px;">
             <div id="current-plan-badge" style="display:inline-block; background:rgba(245,158,11,0.15); border:1px solid #f59e0b; color:#f59e0b; font-size:12px; font-weight:700; padding:4px 14px; border-radius:20px; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">
-              ✨ Tu plan actual: FREE
+              <span id="current-plan-label">✨ Tu plan actual: FREE</span>
             </div>
             <div class="card-title" style="font-size:22px; margin-bottom:6px;" data-i18n="set_plan">💳 Elige tu plan</div>
-            <p style="color:var(--gray); font-size:13px; margin:0;">Invierte menos que un café al día y recupera cientos al mes</p>
+            <p id="pricing-tagline" style="color:var(--gray); font-size:13px; margin:0;">Invierte menos que un café al día y recupera cientos al mes</p>
 
 
           </div>
@@ -2405,21 +2405,21 @@ body {
             <div id="plan-card-free" style="border:2px solid #334155; border-radius:16px; padding:20px; position:relative;">
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
                 <div>
-                  <div style="font-size:16px; font-weight:800; color:#fff;">🆓 Free</div>
-                  <div style="font-size:28px; font-weight:900; color:#fff; line-height:1.1;">$0<span style="font-size:13px; color:var(--gray); font-weight:400;">/mes</span></div>
+                  <div id="plan-free-name" style="font-size:16px; font-weight:800; color:#fff;">🆓 Free</div>
+                  <div id="plan-free-price" style="font-size:28px; font-weight:900; color:#fff; line-height:1.1;">$0<span id="plan-free-period" style="font-size:13px; color:var(--gray); font-weight:400;">/mes</span></div>
                 </div>
                 
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div style="font-size:12px; color:#64748b;">✅ 5 mensajes IA por día</div>
-                <div style="font-size:12px; color:#64748b;">✅ Hasta 30 transacciones</div>
-                <div style="font-size:12px; color:#64748b;">✅ 1 tarjeta</div>
-                <div style="font-size:12px; color:#ef4444;">❌ Sin scanner de recibos</div>
-                <div style="font-size:12px; color:#ef4444;">❌ Sin reportes avanzados</div>
-                <div style="font-size:12px; color:#ef4444;">❌ Sin GPT-4o</div>
+                <div id="modal-free-f1" style="font-size:12px; color:#64748b;">✅ 5 mensajes IA por día</div>
+                <div id="modal-free-f2" style="font-size:12px; color:#64748b;">✅ Hasta 30 transacciones</div>
+                <div id="modal-free-f3" style="font-size:12px; color:#64748b;">✅ 1 tarjeta</div>
+                <div id="modal-free-f4" style="font-size:12px; color:#ef4444;">❌ Sin scanner de recibos</div>
+                <div id="modal-free-f5" style="font-size:12px; color:#ef4444;">❌ Sin reportes avanzados</div>
+                <div id="modal-free-f6" style="font-size:12px; color:#ef4444;">❌ Sin GPT-4o</div>
               </div>
               <button id="btn-plan-free" disabled style="width:100%; padding:12px; background:#1e293b; border:1px solid #334155; border-radius:10px; color:#475569; font-size:13px; font-weight:600; cursor:not-allowed;">
-                Gratis para siempre
+                <span id="btn-free-label">Gratis para siempre</span>
               </button>
             </div>
 
@@ -2428,39 +2428,39 @@ body {
               <div style="background:#1e293b; border-radius:50px; padding:4px; display:flex; gap:4px; border:1px solid #334155;">
                 <button id="pricing-btn-monthly" onclick="setBilling('monthly')"
                   style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:#334155; color:#94a3b8; transition:all 0.3s;">
-                  Mensual
+                  <span id="billing-monthly-label">Mensual</span>
                 </button>
                 <button id="pricing-btn-annual" onclick="setBilling('annual')"
                   style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; transition:all 0.3s;">
-                  Anual &nbsp;<span style="background:#ef4444; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:900;">-20%</span>
+                  <span id="billing-annual-label">Anual</span> &nbsp;<span style="background:#ef4444; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:900;">-20%</span>
                 </button>
               </div>
             </div>
             <div id="annual-savings-banner" style="text-align:center; margin-bottom:16px; padding:10px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:10px;">
-              <span style="color:#10b981; font-size:13px; font-weight:700;">🎉 Pagas anual y ahorras hasta <strong>$120/año</strong> — 2 meses GRATIS</span>
+              <span id="annual-savings-text" style="color:#10b981; font-size:13px; font-weight:700;">🎉 Pagas anual y ahorras hasta <strong>$120/año</strong> — 2 meses GRATIS</span>
             </div>
 
             <!-- PERSONAL -->
             <div id="plan-card-personal" style="border:2px solid #334155; border-radius:16px; padding:20px; position:relative;">
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
                 <div>
-                  <div style="font-size:16px; font-weight:800; color:#fff;">⭐ Personal</div>
+                  <div id="plan-personal-name" style="font-size:16px; font-weight:800; color:#fff;">⭐ Personal</div>
                   <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
                     <span id="price-personal">$9.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-personal">/mes</span>
                   </div>
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div style="font-size:12px; color:#e2e8f0;">✅ 50 mensajes IA por día</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Transacciones ilimitadas</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Hasta 3 tarjetas</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Scanner de recibos</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Reportes básicos</div>
-                <div style="font-size:12px; color:#ef4444;">❌ Sin GPT-4o</div>
+                <div id="modal-pro-f1" style="font-size:12px; color:#e2e8f0;">✅ 50 mensajes IA por día</div>
+                <div id="modal-personal-f1" style="font-size:12px; color:#e2e8f0;">✅ Transacciones ilimitadas</div>
+                <div id="modal-pro-f2" style="font-size:12px; color:#e2e8f0;">✅ Hasta 3 tarjetas</div>
+                <div id="modal-pro-f3" style="font-size:12px; color:#e2e8f0;">✅ Scanner de recibos</div>
+                <div id="modal-personal-f2" style="font-size:12px; color:#e2e8f0;">✅ Reportes básicos</div>
+                <div id="modal-personal-f3" style="font-size:12px; color:#ef4444;">❌ Sin GPT-4o</div>
               </div>
               <button onclick="startCheckout('personal', currentBilling)"
                 style="width:100%; padding:14px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:10px; color:#000; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(245,158,11,0.3);">
-                🚀 Empezar ahora — Solo <span id="cta-personal">$9.99/mes</span>
+                <span id="cta-personal-label">🚀 Empezar ahora — Solo </span><span id="cta-personal">$9.99/mes</span>
               </button>
             </div>
 
@@ -2468,56 +2468,56 @@ body {
             <div id="plan-card-pro" style="border:2px solid #f59e0b; border-radius:16px; padding:20px; position:relative; background:linear-gradient(145deg, rgba(245,158,11,0.05), rgba(15,23,42,0.8));">
               <!-- Popular badge -->
               <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; font-size:11px; font-weight:900; padding:4px 16px; border-radius:20px; white-space:nowrap; letter-spacing:0.5px;">
-                🔥 MÁS POPULAR
+                <span id="badge-popular">🔥 MÁS POPULAR</span>
               </div>
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; margin-top:8px;">
                 <div>
-                  <div style="font-size:16px; font-weight:800; color:#fff;">💎 Pro</div>
+                  <div id="plan-pro-name" style="font-size:16px; font-weight:800; color:#fff;">💎 Pro</div>
                   <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
                     <span id="price-pro">$19.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-pro">/mes</span>
                   </div>
-                  <div style="font-size:11px; color:#64748b; text-decoration:line-through;">Valor real $39.99/mes</div>
+                  <div id="plan-pro-real-price" style="font-size:11px; color:#64748b; text-decoration:line-through;">Valor real $39.99/mes</div>
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div style="font-size:12px; color:#e2e8f0;">✅ <strong>IA ilimitada 24/7</strong></div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ <strong>GPT-4o</strong> — la IA más avanzada</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Transacciones ilimitadas · Hasta 10 tarjetas</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Scanner inteligente de recibos</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Reportes avanzados con insights</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Metas financieras con IA</div>
-                <div style="font-size:12px; color:#10b981;">✅ <strong>Ahorra $340/mes en promedio</strong></div>
+                <div id="pro-f1" style="font-size:12px; color:#e2e8f0;">✅ <strong>IA ilimitada 24/7</strong></div>
+                <div id="pro-f2" style="font-size:12px; color:#e2e8f0;">✅ <strong>GPT-4o</strong> — la IA más avanzada</div>
+                <div id="pro-f3" style="font-size:12px; color:#e2e8f0;">✅ Transacciones ilimitadas · Hasta 10 tarjetas</div>
+                <div id="pro-f4" style="font-size:12px; color:#e2e8f0;">✅ Scanner inteligente de recibos</div>
+                <div id="pro-f5" style="font-size:12px; color:#e2e8f0;">✅ Reportes avanzados con insights</div>
+                <div id="pro-f6" style="font-size:12px; color:#e2e8f0;">✅ Metas financieras con IA</div>
+                <div id="pro-f7" style="font-size:12px; color:#10b981;">✅ <strong>Ahorra $340/mes en promedio</strong></div>
               </div>
               <button onclick="startCheckout('pro', currentBilling)"
                 style="width:100%; padding:16px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:12px; color:#000; font-size:15px; font-weight:900; cursor:pointer; box-shadow:0 6px 25px rgba(245,158,11,0.4); letter-spacing:0.3px;">
-                ⚡ Quiero ahorrar $340/mes — <span id="cta-pro">$19.99/mes</span>
+                <span id="cta-pro-label">⚡ Quiero ahorrar $340/mes — </span><span id="cta-pro">$19.99/mes</span>
               </button>
-              <p style="color:#64748b; font-size:11px; text-align:center; margin-top:8px; margin-bottom:0;">✅ Cancela cuando quieras · Pago 100% seguro</p>
+              <p id="pro-cancel-note" style="color:#64748b; font-size:11px; text-align:center; margin-top:8px; margin-bottom:0;">✅ Cancela cuando quieras · Pago 100% seguro</p>
             </div>
 
             <!-- BUSINESS -->
             <div id="plan-card-business" style="border:2px solid #334155; border-radius:16px; padding:20px; position:relative;">
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
                 <div>
-                  <div style="font-size:16px; font-weight:800; color:#fff;">🏢 Business</div>
+                  <div id="plan-business-name" style="font-size:16px; font-weight:800; color:#fff;">🏢 Business</div>
                   <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
                     <span id="price-business">$49.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-business">/mes</span>
                   </div>
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div style="font-size:12px; color:#e2e8f0;">✅ Todo lo de Pro</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Hasta 5 usuarios</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Gestión de equipo</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Reportes empresariales</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Soporte prioritario 24/7</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ API Access para integraciones</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Tarjetas y usuarios ilimitados</div>
-                <div style="font-size:12px; color:#10b981;">✅ <strong>ROI garantizado o devolvemos tu dinero</strong></div>
+                <div id="biz-f1" style="font-size:12px; color:#e2e8f0;">✅ Todo lo de Pro</div>
+                <div id="biz-f2" style="font-size:12px; color:#e2e8f0;">✅ Hasta 5 usuarios</div>
+                <div id="biz-f3" style="font-size:12px; color:#e2e8f0;">✅ Gestión de equipo</div>
+                <div id="biz-f4" style="font-size:12px; color:#e2e8f0;">✅ Reportes empresariales</div>
+                <div id="biz-f5" style="font-size:12px; color:#e2e8f0;">✅ Soporte prioritario 24/7</div>
+                <div id="biz-f6" style="font-size:12px; color:#e2e8f0;">✅ API Access para integraciones</div>
+                <div id="biz-f7" style="font-size:12px; color:#e2e8f0;">✅ Tarjetas y usuarios ilimitados</div>
+                <div id="biz-f8" style="font-size:12px; color:#10b981;">✅ <strong>ROI garantizado o devolvemos tu dinero</strong></div>
               </div>
               <button onclick="startCheckout('business', currentBilling)"
                 style="width:100%; padding:14px; background:linear-gradient(135deg,#6366f1,#4f46e5); border:none; border-radius:10px; color:#fff; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(99,102,241,0.3);">
-                🏢 Potencia tu negocio — <span id="cta-business">$49.99/mes</span>
+                <span id="cta-business-label">🏢 Potencia tu negocio — </span><span id="cta-business">$49.99/mes</span>
               </button>
             </div>
 
@@ -2525,15 +2525,15 @@ body {
 
           <!-- Testimonial -->
           <div style="margin-top:20px; padding:16px; background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.2); border-radius:12px; text-align:center;">
-            <p style="color:#94a3b8; font-size:12px; margin:0; line-height:1.6;">
-              💬 <em>"Recuperé $180 el primer mes detectando suscripciones olvidadas y gastos innecesarios"</em><br>
-              <strong style="color:#10b981;">— María G., usuaria Pro desde 2024</strong>
+            <p id="testimonial-text" style="color:#94a3b8; font-size:12px; margin:0; line-height:1.6;">
+              💬 <em id="testimonial-quote">"Recuperé $180 el primer mes detectando suscripciones olvidadas y gastos innecesarios"</em><br>
+              <strong id="testimonial-author" style="color:#10b981;">— María G., usuaria Pro desde 2024</strong>
             </p>
           </div>
 
           <!-- VIP Code -->
           <div style="margin-top:16px; text-align:center;">
-            <p style="color:#64748b; font-size:12px; margin-bottom:8px;">¿Tienes un código VIP?</p>
+            <p id="vip-code-label" style="color:#64748b; font-size:12px; margin-bottom:8px;">¿Tienes un código VIP?</p>
             <div style="display:flex; gap:8px;">
               <input type="text" id="vip-code-input" placeholder="Ingresa tu código" style="flex:1; padding:10px 14px; background:#0f172a; border:1px solid #334155; border-radius:10px; color:#fff; font-size:13px;">
               <button onclick="redeemVipCode()" style="padding:10px 16px; background:#f59e0b; border:none; border-radius:10px; color:#000; font-weight:700; font-size:13px; cursor:pointer;">
@@ -2547,51 +2547,51 @@ body {
           <div class="card-title" style="margin-bottom:20px;">🔔 Notificaciones</div>
           <div style="display:flex;flex-direction:column;gap:16px;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:14px;">Alertas de suscripciones</span>
+              <span id="notif-label-1" style="font-size:14px;">Alertas de suscripciones</span>
               <input type="checkbox" id="notif-alerts" name="notif-alerts" checked style="accent-color:var(--accent);width:18px;height:18px;">
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:14px;">Gastos inusuales</span>
+              <span id="notif-label-2" style="font-size:14px;">Gastos inusuales</span>
               <input type="checkbox" id="notif-unusual" name="notif-unusual" checked style="accent-color:var(--accent);width:18px;height:18px;">
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:14px;">Resumen semanal</span>
+              <span id="notif-label-3" style="font-size:14px;">Resumen semanal</span>
               <input type="checkbox" id="notif-weekly" name="notif-weekly" style="accent-color:var(--accent);width:18px;height:18px;">
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:14px;">Recordatorio de pagos</span>
+              <span id="notif-label-4" style="font-size:14px;">Recordatorio de pagos</span>
               <input type="checkbox" id="notif-reminders" name="notif-reminders" checked style="accent-color:var(--accent);width:18px;height:18px;">
             </div>
           </div>
         </div>
 
         <div class="card" style="border-color:rgba(255,71,87,0.3);">
-          <div class="card-title" style="margin-bottom:20px;color:var(--danger);">⚠️ Zona de Peligro</div>
+          <div id="danger-zone-title" class="card-title" style="margin-bottom:20px;color:var(--danger);">⚠️ Zona de Peligro</div>
           <button class="btn btn-sm" style="background:rgba(255,71,87,0.2);color:var(--danger);border:1px solid var(--danger);" 
             onclick="showNotif('⚠️ Función disponible próximamente')">
-            Eliminar Cuenta
+            <span id="delete-account-btn-label">Eliminar Cuenta</span>
           </button>
         </div>
       </div>
 
         <div class="card" style="border-color:rgba(0,238,255,0.2);margin-top:4px;">
-          <div class="card-title" style="margin-bottom:16px;">⚖️ Legal</div>
+          <div id="legal-title" class="card-title" style="margin-bottom:16px;">⚖️ Legal</div>
           <div style="display:flex;flex-direction:column;gap:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(0,238,255,0.05);border-radius:10px;border:1px solid rgba(0,238,255,0.1);">
               <div>
-                <div style="font-size:14px;color:#fff;font-weight:600;">📋 Términos de Servicio</div>
-                <div style="font-size:12px;color:#8892A4;margin-top:2px;">Condiciones de uso de FinanceAI Pro</div>
+                <div id="legal-terms-title" style="font-size:14px;color:#fff;font-weight:600;">📋 Términos de Servicio</div>
+                <div id="legal-terms-desc" style="font-size:12px;color:#8892A4;margin-top:2px;">Condiciones de uso de FinanceAI Pro</div>
               </div>
               <button onclick="showLegal('terms')" style="padding:8px 16px;background:rgba(0,238,255,0.1);border:1px solid rgba(0,238,255,0.3);border-radius:8px;color:#00EEFF;font-size:13px;cursor:pointer;font-weight:600;">Ver →</button>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(0,238,255,0.05);border-radius:10px;border:1px solid rgba(0,238,255,0.1);">
               <div>
-                <div style="font-size:14px;color:#fff;font-weight:600;">🔒 Política de Privacidad</div>
-                <div style="font-size:12px;color:#8892A4;margin-top:2px;">Cómo protegemos tus datos</div>
+                <div id="legal-privacy-title" style="font-size:14px;color:#fff;font-weight:600;">🔒 Política de Privacidad</div>
+                <div id="legal-privacy-desc" style="font-size:12px;color:#8892A4;margin-top:2px;">Cómo protegemos tus datos</div>
               </div>
               <button onclick="showLegal('privacy')" style="padding:8px 16px;background:rgba(0,238,255,0.1);border:1px solid rgba(0,238,255,0.3);border-radius:8px;color:#00EEFF;font-size:13px;cursor:pointer;font-weight:600;">Ver →</button>
             </div>
-            <p style="font-size:11px;color:#64748b;text-align:center;margin:4px 0 0;">© 2025 Climberforsuccess LLC · Todos los derechos reservados</p>
+            <p id="copyright-text" style="font-size:11px;color:#64748b;text-align:center;margin:4px 0 0;">© 2025 Climberforsuccess LLC · Todos los derechos reservados</p>
           </div>
         </div>
 
@@ -2601,8 +2601,8 @@ body {
     <div id="section-admin" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title">🔐 Admin Panel</div>
-          <div class="page-subtitle">Climberforsuccess LLC — Panel de Control</div>
+          <div id="admin-page-title" class="page-title">🔐 Admin Panel</div>
+          <div id="admin-page-subtitle" class="page-subtitle">Climberforsuccess LLC — Panel de Control</div>
         </div>
         <span class="badge badge-danger">ADMIN</span>
       </div>
@@ -2611,19 +2611,19 @@ body {
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:28px;">
         <div class="admin-stat">
           <div class="admin-stat-value" id="admin-total-users">—</div>
-          <div class="admin-stat-label">👥 Usuarios Totales</div>
+          <div id="admin-label-total-users" class="admin-stat-label">👥 Usuarios Totales</div>
         </div>
         <div class="admin-stat">
           <div class="admin-stat-value" id="admin-vip-users">—</div>
-          <div class="admin-stat-label">👑 Usuarios VIP</div>
+          <div id="admin-label-vip-users" class="admin-stat-label">👑 Usuarios VIP</div>
         </div>
         <div class="admin-stat">
           <div class="admin-stat-value" id="admin-codes-used">—</div>
-          <div class="admin-stat-label">🎁 Códigos Usados</div>
+          <div id="admin-label-codes" class="admin-stat-label">🎁 Códigos Usados</div>
         </div>
         <div class="admin-stat">
           <div class="admin-stat-value" id="admin-ai-calls">—</div>
-          <div class="admin-stat-label">🤖 Llamadas IA Hoy</div>
+          <div id="admin-label-ai-calls" class="admin-stat-label">🤖 Llamadas IA Hoy</div>
         </div>
       </div>
 
@@ -2631,35 +2631,35 @@ body {
 
         <!-- Gestión de Códigos VIP -->
         <div class="card">
-          <div class="card-title" style="margin-bottom:20px;">🎁 Gestión de Códigos VIP</div>
+          <div id="admin-vip-mgmt-title" class="card-title" style="margin-bottom:20px;">🎁 Gestión de Códigos VIP</div>
 
           <!-- Generar nuevo código -->
           <div style="background:#0f172a; border-radius:12px; padding:16px; margin-bottom:16px;">
-            <p style="color:#94a3b8; font-size:13px; margin-bottom:12px;">Generar nuevo código:</p>
+            <p id="admin-gen-code-label" style="color:#94a3b8; font-size:13px; margin-bottom:12px;">Generar nuevo código:</p>
             <div style="display:flex; gap:8px; margin-bottom:10px;">
               <select id="admin-code-plan" style="flex:1; padding:10px; background:#1e293b; border:1px solid #334155; border-radius:8px; color:#fff; font-size:13px;">
-                <option value="Personal">⚡ VIP Personal</option>
-                <option value="Familia">👨‍👩‍👧 VIP Familia</option>
+                <option id="admin-opt-personal" value="Personal">⚡ VIP Personal</option>
+                <option id="admin-opt-familia" value="Familia">👨‍👩‍👧 VIP Familia</option>
               </select>
               <select id="admin-code-months" style="flex:1; padding:10px; background:#1e293b; border:1px solid #334155; border-radius:8px; color:#fff; font-size:13px;">
-                <option value="1">1 mes</option>
-                <option value="3">3 meses</option>
-                <option value="6">6 meses</option>
-                <option value="12">1 año</option>
+                <option id="admin-opt-1m" value="1">1 mes</option>
+                <option id="admin-opt-3m" value="3">3 meses</option>
+                <option id="admin-opt-6m" value="6">6 meses</option>
+                <option id="admin-opt-12m" value="12">1 año</option>
               </select>
             </div>
             <button onclick="adminGenerateCode()"
               style="width:100%; padding:10px; background:linear-gradient(135deg,#f59e0b,#d97706);
               border:none; border-radius:8px; color:#000; font-weight:bold; cursor:pointer; font-size:13px;">
-              ✨ Generar Código
+              <span id="admin-gen-code-btn-label">✨ Generar Código</span>
             </button>
             <div id="admin-generated-code" style="margin-top:10px; display:none;">
               <div style="background:#1e293b; border:1px solid #f59e0b; border-radius:8px; padding:12px; text-align:center;">
-                <p style="color:#94a3b8; font-size:11px; margin-bottom:4px;">Código generado:</p>
+                <p id="admin-code-generated-label" style="color:#94a3b8; font-size:11px; margin-bottom:4px;">Código generado:</p>
                 <p id="admin-code-display" style="color:#f59e0b; font-size:18px; font-weight:bold; letter-spacing:3px; margin:0;"></p>
                 <button onclick="adminCopyCode()"
                   style="margin-top:8px; padding:6px 16px; background:#334155; border:none; border-radius:6px; color:#fff; cursor:pointer; font-size:12px;">
-                  📋 Copiar
+                  <span id="admin-copy-btn-label">📋 Copiar</span>
                 </button>
               </div>
             </div>
@@ -2667,33 +2667,33 @@ body {
 
           <!-- Códigos generados -->
           <div>
-            <p style="color:#94a3b8; font-size:13px; margin-bottom:10px;">Códigos generados esta sesión:</p>
+            <p id="admin-session-codes-label" style="color:#94a3b8; font-size:13px; margin-bottom:10px;">Códigos generados esta sesión:</p>
             <div id="admin-codes-list" style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;">
-              <p style="color:#475569; font-size:12px; text-align:center;">No hay códigos generados aún</p>
+              <p id="admin-no-codes-msg" style="color:#475569; font-size:12px; text-align:center;">No hay códigos generados aún</p>
             </div>
           </div>
         </div>
 
         <!-- Stats y códigos usados -->
         <div class="card">
-          <div class="card-title" style="margin-bottom:20px;">📊 Códigos VIP Usados</div>
+          <div id="admin-used-codes-title" class="card-title" style="margin-bottom:20px;">📊 Códigos VIP Usados</div>
           <div id="admin-used-codes-list" style="display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto;">
-            <p style="color:#475569; font-size:12px; text-align:center;">Cargando...</p>
+            <p id="admin-loading-msg" style="color:#475569; font-size:12px; text-align:center;">Cargando...</p>
           </div>
 
           <div style="margin-top:20px; padding-top:16px; border-top:1px solid #1e293b;">
-            <div class="card-title" style="margin-bottom:16px;">🌟 Activar Plan VIP</div>
+            <div id="admin-activate-vip-title" class="card-title" style="margin-bottom:16px;">🌟 Activar Plan VIP</div>
 
             <!-- Estado actual -->
             <div id="vip-status-box" style="background:#0f172a; border-radius:12px; padding:16px; margin-bottom:16px; text-align:center;">
               <div id="vip-status-icon" style="font-size:36px; margin-bottom:6px;">🔓</div>
               <div id="vip-status-label" style="color:#94a3b8; font-size:14px;">Plan actual: <strong style="color:#fff;" id="vip-plan-name">Gratuito</strong></div>
-              <div id="vip-status-sub" style="color:#64748b; font-size:12px; margin-top:4px;">5 mensajes IA por día</div>
+              <div id="vip-status-sub" style="color:#64748b; font-size:12px; margin-top:4px;"><span id="vip-status-sub-text">5 mensajes IA por día</span></div>
             </div>
 
             <!-- Ingresar código -->
             <div id="vip-code-section">
-              <p style="color:#94a3b8; font-size:13px; margin-bottom:10px;">¿Tienes un código VIP? Ingrésalo aquí:</p>
+              <p id="admin-vip-enter-label" style="color:#94a3b8; font-size:13px; margin-bottom:10px;">¿Tienes un código VIP? Ingrésalo aquí:</p>
               <div style="display:flex; gap:8px;">
                 <input id="admin-vip-code-input" type="text" placeholder="Ej: VIP-XXXX-XXXX"
                   style="flex:1; padding:12px; background:#0f172a; border:1px solid #334155;
@@ -2703,7 +2703,7 @@ body {
                 <button onclick="activateVIPCode()"
                   style="padding:12px 16px; background:linear-gradient(135deg,#f59e0b,#d97706);
                   border:none; border-radius:10px; color:#000; font-weight:bold; cursor:pointer; font-size:14px;">
-                  Activar
+                  <span id="activate-vip-btn-label">Activar</span>
                 </button>
               </div>
               <div id="vip-code-msg" style="margin-top:8px; font-size:13px; min-height:20px;"></div>
@@ -2712,7 +2712,7 @@ body {
             <!-- Separador -->
             <div style="display:flex; align-items:center; gap:10px; margin:16px 0;">
               <div style="flex:1; height:1px; background:#1e293b;"></div>
-              <span style="color:#475569; font-size:12px;">o compra un plan</span>
+              <span id="or-buy-plan-label" style="color:#475569; font-size:12px;">o compra un plan</span>
               <div style="flex:1; height:1px; background:#1e293b;"></div>
             </div>
 
@@ -2722,40 +2722,40 @@ body {
               <div style="background:#0f172a; border:1px solid #334155; border-radius:12px; padding:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <div>
-                    <span style="color:#fff; font-weight:bold; font-size:15px;">⚡ VIP Personal</span>
-                    <span style="background:#1e3a5f; color:#60a5fa; font-size:10px; padding:2px 8px; border-radius:20px; margin-left:8px;">Popular</span>
+                    <span id="vip-personal-name" style="color:#fff; font-weight:bold; font-size:15px;">⚡ VIP Personal</span>
+                    <span id="vip-personal-badge" style="background:#1e3a5f; color:#60a5fa; font-size:10px; padding:2px 8px; border-radius:20px; margin-left:8px;">Popular</span>
                   </div>
                   <span style="color:#f59e0b; font-weight:bold; font-size:18px;">$9.99<span style="font-size:11px; color:#94a3b8;">/mes</span></span>
                 </div>
                 <ul style="color:#94a3b8; font-size:12px; padding-left:16px; margin:0 0 12px 0; line-height:1.8;">
-                  <li>✅ Mensajes IA ilimitados</li>
-                  <li>✅ GPT-4o acceso completo</li>
-                  <li>✅ Scanner de recibos</li>
-                  <li>✅ Reportes avanzados</li>
+                  <li id="vip-personal-f1">✅ Mensajes IA ilimitados</li>
+                  <li id="vip-personal-f2">✅ GPT-4o acceso completo</li>
+                  <li id="upgrade-li-scanner">✅ Scanner de recibos</li>
+                  <li id="vip-personal-f4">✅ Reportes avanzados</li>
                 </ul>
                 <button onclick="showToast('💳 Pagos disponibles muy pronto. ¡Usa un código VIP por ahora!', 'info')"
                   style="width:100%; padding:10px; background:linear-gradient(135deg,#f59e0b,#d97706);
                   border:none; border-radius:8px; color:#000; font-weight:bold; cursor:pointer; font-size:13px;">
-                  🚀 Obtener VIP Personal
+                  <span id="get-vip-personal-btn">🚀 Obtener VIP Personal</span>
                 </button>
               </div>
 
               <!-- Plan Familia -->
               <div style="background:#0f172a; border:1px solid #334155; border-radius:12px; padding:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                  <span style="color:#fff; font-weight:bold; font-size:15px;">👨‍👩‍👧 VIP Familia</span>
+                  <span id="vip-familia-name" style="color:#fff; font-weight:bold; font-size:15px;">👨‍👩‍👧 VIP Familia</span>
                   <span style="color:#f59e0b; font-weight:bold; font-size:18px;">$19.99<span style="font-size:11px; color:#94a3b8;">/mes</span></span>
                 </div>
                 <ul style="color:#94a3b8; font-size:12px; padding-left:16px; margin:0 0 12px 0; line-height:1.8;">
-                  <li>✅ Todo lo de Personal</li>
-                  <li>✅ Hasta 5 cuentas familiares</li>
-                  <li>✅ Dashboard familiar compartido</li>
-                  <li>✅ Soporte prioritario</li>
+                  <li id="vip-familia-f1">✅ Todo lo de Personal</li>
+                  <li id="vip-familia-f2">✅ Hasta 5 cuentas familiares</li>
+                  <li id="vip-familia-f3">✅ Dashboard familiar compartido</li>
+                  <li id="vip-familia-f4">✅ Soporte prioritario</li>
                 </ul>
                 <button onclick="showToast('💳 Pagos disponibles muy pronto. ¡Usa un código VIP por ahora!', 'info')"
                   style="width:100%; padding:10px; background:#1e293b;
                   border:1px solid #334155; border-radius:8px; color:#fff; font-weight:bold; cursor:pointer; font-size:13px;">
-                  👨‍👩‍👧 Obtener VIP Familia
+                  <span id="get-vip-familia-btn">👨‍👩‍👧 Obtener VIP Familia</span>
                 </button>
               </div>
             </div>
@@ -2770,7 +2770,7 @@ body {
 <!-- ============ LEGAL PAGES ============ -->
 <div class="page" id="legal">
   <div style="max-width:800px;margin:0 auto;padding:40px;">
-    <button class="btn btn-outline btn-sm" onclick="history.back();showPage(lastPage)" style="margin-bottom:24px;">← Volver</button>
+    <button class="btn btn-outline btn-sm" onclick="history.back();showPage(lastPage)" style="margin-bottom:24px;"><span id="legal-back-btn">← Volver</span></button>
     <div id="legal-content"></div>
   </div>
 </div>
@@ -2813,7 +2813,7 @@ body {
 
     <div style="text-align:center;margin-bottom:24px;">
       <div style="font-size:2rem;margin-bottom:8px;">💎</div>
-      <h2 style="font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:4px;">Upgrade Your Plan</h2>
+      <h2 id="modal-upgrade-title" style="font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:4px;">Upgrade Your Plan</h2>
       <p id="modalPlanName" style="color:#00EEFF;font-weight:600;"></p>
     </div>
 
@@ -2823,11 +2823,11 @@ body {
         flex:1;padding:8px;border:none;border-radius:50px;
         background:linear-gradient(135deg,#00EEFF,#0088FF);
         color:#000;font-weight:700;cursor:pointer;font-size:0.85rem;
-      ">Monthly</button>
+      "><span id="btn-monthly-label">Monthly</span></button>
       <button id="btn-annual" onclick="switchBilling('annual')" style="
         flex:1;padding:8px;border:none;border-radius:50px;
         background:transparent;color:#A0B0C0;cursor:pointer;font-size:0.85rem;
-      ">Annual <span style="color:#00FF88;font-size:0.75rem;">Save 17%</span></button>
+      "><span id="btn-annual-label">Annual</span> <span id="btn-annual-save" style="color:#00FF88;font-size:0.75rem;">Save 17%</span></button>
     </div>
 
     <!-- Tabs -->
@@ -2836,12 +2836,12 @@ body {
         flex:1;padding:10px;border-radius:12px;
         background:rgba(0,238,255,0.1);border:1px solid rgba(0,238,255,0.3);
         color:#00EEFF;font-weight:600;cursor:pointer;font-size:0.85rem;
-      ">💳 Card (Stripe)</button>
+      "><span id="tab-stripe-label">💳 Card (Stripe)</span></button>
       <button class="tab-btn" onclick="showTab('paypal')" style="
         flex:1;padding:10px;border-radius:12px;
         background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
         color:#A0B0C0;font-weight:600;cursor:pointer;font-size:0.85rem;
-      ">🅿️ PayPal</button>
+      "><span id="tab-paypal-label">🅿️ PayPal</span></button>
     </div>
 
     <div id="stripeTab" class="tab-content" style="display:block;">
@@ -2851,9 +2851,7 @@ body {
       <div id="paypal-button-container"></div>
     </div>
 
-    <p style="text-align:center;font-size:0.75rem;color:#A0B0C0;margin-top:16px;">
-      🔒 Secure • Cancel anytime • No hidden fees
-    </p>
+    <p id="modal-secure-text" style="text-align:center;font-size:0.75rem;color:#A0B0C0;margin-top:16px;">🔒 Secure • Cancel anytime • No hidden fees</p>
   </div>
 </div>
 
