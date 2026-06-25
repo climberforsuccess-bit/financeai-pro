@@ -3320,3 +3320,16 @@ async function saveNewTransaction() {
   await loadTransactions();
   renderTransactions();
 }
+// ===========================
+// LANGUAGE CHANGE LISTENER
+// ===========================
+window.addEventListener('langChanged', async () => {
+  const activePage = document.querySelector('.page.active')?.id || '';
+  if (activePage === 'dashboard') { renderDashboard(); }
+  else if (activePage === 'transactions') { renderTransactions(); }
+  else if (activePage === 'cards') { renderCards(); }
+  else if (activePage === 'debts') { renderDebts(); }
+  else if (activePage === 'subscriptions') { renderSubscriptions(); }
+  else if (activePage === 'reports') { renderReports(); }
+  else if (activePage === 'settings') { renderSettings(); }
+});
