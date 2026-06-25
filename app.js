@@ -630,7 +630,87 @@ function renderDashboard() {
     }
   }
 
+  // --- Calcular estadísticas del mes actual ---
+  const now = new Date();
+  const thisMonth = now.getMonth();
+  const thisYear  = now.getFullYear();
+  const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
+  const lastYear  = thisMonth === 0 ? thisYear - 1 : thisYear;
 
+  const txs = STATE.transactions || [];
+
+  const thisMonthTxs = txs.filter(t => {
+    const d = new Date(t.date || t.created_at);
+    return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+  });
+
+  const lastMonthTxs = txs.filter(t => {
+    const d = new Date(t.date || t.created_at);
+    return d.getMonth() === lastMonth && d.getFullYear() === lastYear;
+  });
+
+  const income  = thisMonthTxs.filter(t => t.type === 'income').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+  const expense = thisMonthTxs.filter(t => t.type === 'expense').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+  const balance = income - expense;
+  const savings = income > 0 ? ((balance / income) * 100).toFixed(1) : 0;
+
+  const lastIncome  = lastMonthTxs.filter(t => t.type === 'income').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+  const lastExpense = lastMonthTxs.filter(t => t.type === 'expense').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+
+  const incomePct  = lastIncome  > 0 ? (((income  - lastIncome)  / lastIncome)  * 100).toFixed(1) : 0;
+  const expensePct = lastExpense > 0 ? (((expense - lastExpense) / lastExpense) * 100).toFixed(1) : 0;
+
+  const fmt = v => '$' + parseFloat(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  // --- Llenar stat cards ---
+  const el = id => document.getElementById(id);
+  if (el('statIncome'))  el('statIncome').textContent  = fmt(income);
+  if (el('statExpenses'))el('statExpenses').textContent = fmt(expense);
+  if (el('statBalance')) el('statBalance').textContent  = fmt(balance);
+  if (el('statSavings')) el('statSavings').textContent  = savings + '%';
+
+  // --- Cambios vs mes anterior ---
+  const changeIncome  = el('statIncome')  && el('statIncome').closest('.stat-card')  && el('statIncome').closest('.stat-card').querySelector('.stat-card-change');
+  const changeExpense = el('statExpenses')&& el('statExpenses').closest('.stat-card')&& el('statExpenses').closest('.stat-card').querySelector('.stat-card-change');
+
+  if (changeIncome) {
+    const up = parseFloat(incomePct) >= 0;
+    changeIncome.className = 'stat-card-change ' + (up ? 'up' : 'down');
+    changeIncome.textContent = (up ? '▲ +' : '▼ ') + incomePct + '% vs last month';
+  }
+  if (changeExpense) {
+    const up = parseFloat(expensePct) >= 0;
+    changeExpense.className = 'stat-card-change ' + (up ? 'down' : 'up');
+    changeExpense.textContent = (up ? '▲ +' : '▼ ') + expensePct + '% vs last month';
+  }
+
+  // --- Deuda total (tarjetas) ---
+  const cardDebts = (STATE.cards || []).reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
+  const manualDebts = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
+  const totalDebt = cardDebts + manualDebts;
+  if (el('totalDebt')) el('totalDebt').textContent = fmt(totalDebt);
+
+  // --- Transacciones recientes (últimas 5) ---
+  const recentContainer = el('recentTransactions') || el('recent-transactions');
+  if (recentContainer) {
+    const recent = [...txs].sort((a,b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at)).slice(0, 5);
+    if (recent.length === 0) {
+      recentContainer.innerHTML = '<p style="color:#8892A4;text-align:center;padding:20px;">' + t('trans_empty') + '</p>';
+    } else {
+      recentContainer.innerHTML = recent.map(tx => {
+        const isIncome = tx.type === 'income';
+        const d = new Date(tx.date || tx.created_at);
+        const dateStr = d.toLocaleDateString();
+        return \`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #ffffff11;">
+          <div>
+            <div style="font-weight:600;color:#E8EBF0;">\${tx.description || tx.category || '—'}</div>
+            <div style="font-size:12px;color:#8892A4;">\${dateStr}</div>
+          </div>
+          <div style="font-weight:700;color:\${isIncome ? '#00C851' : '#FF4757'};">\${isIncome ? '+' : '-'}\${fmt(tx.amount)}</div>
+        </div>\`;
+      }).join('');
+    }
+  }
 }
 
 

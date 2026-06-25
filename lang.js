@@ -91,6 +91,10 @@ const TRANSLATIONS = {
     dash_ai_title:   '🤖 AI Assistant',
     dash_ai_online:  'Online',
     dash_chat_ph:    'Ask me something about your finances...',
+    dash_vs_last:        '↑ % vs last month',
+    dash_healthy:        '✓ Healthy finances',
+    dash_debt_month:     '↓ this month',
+    dash_messages_left:  'messages today',
 
     // TRANSACTIONS
     trans_title:     'Transactions',
@@ -331,6 +335,10 @@ const TRANSLATIONS = {
     dash_ai_title:   '🤖 Asistente IA',
     dash_ai_online:  'En línea',
     dash_chat_ph:    'Pregúntame algo sobre tus finanzas...',
+    dash_vs_last:        '↑ % vs mes anterior',
+    dash_healthy:        '✓ Finanzas saludables',
+    dash_debt_month:     '↓ este mes',
+    dash_messages_left:  'mensajes hoy',
 
     // TRANSACTIONS
     trans_title:     'Transacciones',
