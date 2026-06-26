@@ -2363,7 +2363,7 @@ async function processReceipt(event) {
   "date": "YYYY-MM-DD",
   "currency": "USD or detected currency"
 }
-Only respond with the JSON, no additional text.\`
+Only respond with the JSON, no additional text.`
               },
               {
                 type: 'image_url',
@@ -2521,7 +2521,7 @@ async function processReceipt(event) {
   "date": "YYYY-MM-DD",
   "currency": "USD or detected currency"
 }
-Only respond with the JSON, no additional text.\`
+Only respond with the JSON, no additional text.`
               },
               {
                 type: 'image_url',

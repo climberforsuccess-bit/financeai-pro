@@ -957,7 +957,8 @@ const TRANSLATIONS = {
     upgrade_ai_limit_desc:   'You reached your free AI limit. Pro users detect hidden expenses and save an average of <strong style="color:#f59e0b;">$340/month</strong>. How much are you losing?',
     upgrade_unlock_all:      '🔓 Unlock everything now:',
     upgrade_feat_ai:         '<strong>Unlimited AI 24/7</strong> — your personal financial advisor always available',
-    upgrade_feat_gpt4:       '<strong>GPT-4o</strong> — detects spending patterns you don't see',
+    upgrade_feat_gpt4:       "<strong>GPT-4o</strong> — detects spending patterns you don't see",
+
     upgrade_feat_scanner:    '<strong>Smart Scanner</strong> — log receipts in 2 seconds',
     upgrade_feat_reports:    '<strong>Reports that save you money</strong> — see exactly where your money goes',
     upgrade_feat_goals:      '<strong>AI Goals</strong> — reach financial freedom faster',
@@ -967,7 +968,7 @@ const TRANSLATIONS = {
     upgrade_annual_deal:     '💰 Best deal: Annual plan — Save 40%',
     upgrade_social_proof2:   '⭐⭐⭐⭐⭐ <strong style="color:#fff;">+1,200 users</strong> already in control of their money',
     upgrade_testimonial:     '"I recovered $180 in the first month detecting forgotten subscriptions" — María G.',
-    upgrade_no_thanks:       'I'm not interested in saving money right now',
+    upgrade_no_thanks:       "I'm not interested in saving money right now",
     ctx_total_income:        '- Total income',
     ctx_total_expense:       '- Total expenses',
     ctx_net_balance:         '- Net balance',
@@ -1484,7 +1485,6 @@ const TRANSLATIONS = {
     pdf_ready:              '✅ PDF listo — usa "Guardar como PDF" en el diálogo de impresión 🎉',
     card_name_required:     'Ingresa el nombre del titular',
     card_save_error:        'Error al guardar tarjeta',
-  }
     // AUTH
     sign_in:                'Iniciar Sesión',
     error_password_length:  'La contraseña debe tener al menos 6 caracteres',
@@ -1632,6 +1632,7 @@ const TRANSLATIONS = {
     cat_gaming:              'Juegos',
     cat_fitness:             'Fitness',
     cat_other:               'Otro',
+  }
 };
 
 // ===========================
@@ -1934,46 +1935,4 @@ function setLang(lang) {
 // ===========================
 function toggleLang() {
   setLang(currentLang === 'en' ? 'es' : 'en');
-    // AUTH TABS & FORM
-    tab_login:              'Iniciar Sesión',
-    tab_register:           'Registrarse',
-    lbl_password:           'Contraseña',
-    forgot_password:        '¿Olvidaste tu contraseña?',
-    recover_password:       'Recuperar',
-    // REGISTER FORM
-    lbl_plan:               'Plan',
-    create_account:         'Crear Cuenta',
-    terms_accept:           'Acepto los',
-    terms_service:          'Términos de Servicio',
-    privacy_policy:         'Política de Privacidad',
-    terms_and:              'y la',
-    ph_name:                'Tu nombre',
-    ph_password_min:        'Mínimo 8 caracteres',
-    ph_select_country:      'Selecciona tu país',
-    plan_free_option:       'Free — $0/mes',
-    plan_personal_option:   'Personal — $9.99/mes',
-    plan_pro_option:        'Pro — $19.99/mes',
-    plan_business_option:   'Business — $49.99/mes',
-    ph_email:               'tu@email.com',
 }
-
-// ===========================
-// INIT
-// ===========================
-document.addEventListener('DOMContentLoaded', () => {
-  applyLanguage(currentLang);
-});
-
-// ===========================
-// EXPORTS
-// ===========================
-window.t = t;
-window.setLang = setLang;
-window.toggleLang = toggleLang;
-window.FinanceAILang = {
-  toggle: toggleLang,
-  apply: applyLanguage,
-  get: t,
-  current: () => currentLang,
-  translations: TRANSLATIONS
-};
