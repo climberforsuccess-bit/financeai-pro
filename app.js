@@ -336,15 +336,15 @@ async function loadTransactions() {
 
   if (error) { console.error('Error cargando transacciones:', error); return; }
 
-  STATE.transactions = data.map(t => ({
-    id: t.id,
-    description: t.description,
-    amount: t.amount,
-    type: t.type,
-    category: t.category,
-    expenseType: t.expense_type,
-    date: t.date,
-    createdAt: t.created_at
+  STATE.transactions = data.map(tx => ({
+    id: tx.id,
+    description: tx.description,
+    amount: tx.amount,
+    type: tx.type,
+    category: tx.category,
+    expenseType: tx.expense_type,
+    date: tx.date,
+    createdAt: tx.created_at
   }));
 }
 
@@ -577,8 +577,8 @@ function renderTransactions() {
     return;
   }
 
-  container.innerHTML = txs.map(t => {
-    const isIncome = t.type === 'income';
+  container.innerHTML = txs.map(tx => {
+    const isIncome = tx.type === 'income';
     const sign = isIncome ? '+' : '-';
     const color = isIncome ? '#22c55e' : '#ef4444';
     const icon = isIncome ? '📈' : '📉';
@@ -588,12 +588,12 @@ function renderTransactions() {
         <div style="display:flex;align-items:center;gap:12px;">
           <span style="font-size:1.4rem;">${icon}</span>
           <div>
-            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || t('no_description')}</div>
-            <div style="color:#8892A4;font-size:12px;">${t.category || ''} · ${t.date || ''}</div>
+            <div style="color:#fff;font-size:14px;font-weight:500;">${tx.description || t('no_description')}</div>
+            <div style="color:#8892A4;font-size:12px;">${tx.category || ''} · ${tx.date || ''}</div>
           </div>
         </div>
         <div style="color:${color};font-weight:700;font-size:15px;">
-          ${sign}${formatCurrency(Math.abs(t.amount))}
+          ${sign}${formatCurrency(Math.abs(tx.amount))}
         </div>
       </div>`;
   }).join('');
@@ -1517,7 +1517,7 @@ function detectSubscriptionsFromTransactions() {
     )
   );
   if (found.length > 0) {
-    const names = [...new Set(found.map(t => t.description))].slice(0, 2);
+    const names = [...new Set(found.map(tx => tx.description))].slice(0, 2);
     showToast(t('subs_detected') + names.join(', '), 'info');
   }
 }
@@ -2650,12 +2650,12 @@ function exportData(format) {
 
 function exportCSV(txs) {
   const headers = [t('csv_header_date'), t('csv_header_desc'), t('csv_header_cat'), t('csv_header_amount'), t('csv_header_type')];
-  const rows = txs.map(t => [
-    t.date || '',
-    `"${(t.description || '').replace(/"/g, '""')}"`,
-    t.category || '',
-    t.amount || 0,
-    t.type || ''
+  const rows = txs.map(tx => [
+    tx.date || '',
+    `"${(tx.description || '').replace(/"/g, '""')}"`,
+    tx.category || '',
+    tx.amount || 0,
+    tx.type || ''
   ]);
 
   const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
@@ -2672,17 +2672,17 @@ function exportCSV(txs) {
 }
 
 function exportPDF(txs) {
-  const totalIncome  = txs.filter(t => t.amount > 0).reduce((s,t) => s + t.amount, 0);
-  const totalExpense = txs.filter(t => t.amount < 0).reduce((s,t) => s + Math.abs(t.amount), 0);
+  const totalIncome  = txs.filter(t => tx.amount > 0).reduce((s,t) => s + tx.amount, 0);
+  const totalExpense = txs.filter(t => tx.amount < 0).reduce((s,t) => s + Math.abs(tx.amount), 0);
   const balance      = totalIncome - totalExpense;
 
-  const rows = txs.slice(0, 50).map(t => `
+  const rows = txs.slice(0, 50).map(tx => `
     <tr>
-      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${t.date || '—'}</td>
-      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${t.description || '—'}</td>
-      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${t.category || '—'}</td>
-      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;color:${t.amount >= 0 ? '#10b981' : '#ef4444'};font-weight:600;">
-        ${t.amount >= 0 ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}
+      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${tx.date || '—'}</td>
+      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${tx.description || '—'}</td>
+      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${tx.category || '—'}</td>
+      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;color:${tx.amount >= 0 ? '#10b981' : '#ef4444'};font-weight:600;">
+        ${tx.amount >= 0 ? '+' : ''}$${Math.abs(tx.amount).toFixed(2)}
       </td>
     </tr>
   `).join('');
@@ -3259,8 +3259,8 @@ function filterTransactions(filter, btn) {
     return;
   }
 
-  container.innerHTML = filtered.map(t => {
-    const isIncome = t.type === 'income';
+  container.innerHTML = filtered.map(tx => {
+    const isIncome = tx.type === 'income';
     const sign = isIncome ? '+' : '-';
     const color = isIncome ? '#22c55e' : '#ef4444';
     const icon = isIncome ? '📈' : '📉';
@@ -3270,12 +3270,12 @@ function filterTransactions(filter, btn) {
         <div style="display:flex;align-items:center;gap:12px;">
           <span style="font-size:1.4rem;">${icon}</span>
           <div>
-            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || t('no_description')}</div>
-            <div style="color:#8892A4;font-size:12px;">${t.category || ''} · ${t.date || ''}</div>
+            <div style="color:#fff;font-size:14px;font-weight:500;">${tx.description || t('no_description')}</div>
+            <div style="color:#8892A4;font-size:12px;">${tx.category || ''} · ${tx.date || ''}</div>
           </div>
         </div>
         <div style="color:${color};font-weight:700;font-size:15px;">
-          ${sign}${formatCurrency(Math.abs(t.amount))}
+          ${sign}${formatCurrency(Math.abs(tx.amount))}
         </div>
       </div>`;
   }).join('');
@@ -3290,16 +3290,16 @@ function filterTransactions(filter, btn) {
 
   switch(filter) {
     case 'income':
-      filtered = txs.filter(t => t.type === 'income');
+      filtered = txs.filter(t => tx.type === 'income');
       break;
     case 'expense':
-      filtered = txs.filter(t => t.type === 'expense');
+      filtered = txs.filter(t => tx.type === 'expense');
       break;
     case 'personal':
-      filtered = txs.filter(t => t.category_type === 'personal');
+      filtered = txs.filter(t => tx.category_type === 'personal');
       break;
     case 'business':
-      filtered = txs.filter(t => t.category_type === 'business');
+      filtered = txs.filter(t => tx.category_type === 'business');
       break;
     default:
       filtered = txs;
@@ -3317,8 +3317,8 @@ function filterTransactions(filter, btn) {
     return;
   }
 
-  container.innerHTML = filtered.map(t => {
-    const isIncome = t.type === 'income';
+  container.innerHTML = filtered.map(tx => {
+    const isIncome = tx.type === 'income';
     const sign = isIncome ? '+' : '-';
     const color = isIncome ? '#22c55e' : '#ef4444';
     const icon = isIncome ? '📈' : '📉';
@@ -3328,12 +3328,12 @@ function filterTransactions(filter, btn) {
         <div style="display:flex;align-items:center;gap:12px;">
           <span style="font-size:1.4rem;">${icon}</span>
           <div>
-            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || t('no_description')}</div>
-            <div style="color:#8892A4;font-size:12px;">${t.category || ''} · ${t.date || ''}</div>
+            <div style="color:#fff;font-size:14px;font-weight:500;">${tx.description || t('no_description')}</div>
+            <div style="color:#8892A4;font-size:12px;">${tx.category || ''} · ${tx.date || ''}</div>
           </div>
         </div>
         <div style="color:${color};font-weight:700;font-size:15px;">
-          ${sign}${formatCurrency(Math.abs(t.amount))}
+          ${sign}${formatCurrency(Math.abs(tx.amount))}
         </div>
       </div>`;
   }).join('');
