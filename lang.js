@@ -1936,3 +1936,11 @@ function setLang(lang) {
 function toggleLang() {
   setLang(currentLang === 'en' ? 'es' : 'en');
 }
+
+
+// ===========================
+// Inicializar idioma al cargar
+// ===========================
+document.addEventListener('DOMContentLoaded', () => {
+  applyLanguage(currentLang);
+});
