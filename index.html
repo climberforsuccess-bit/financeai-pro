@@ -1077,14 +1077,14 @@ body {
 
 <!-- ============ NOTIFICATION ============ -->
 <div class="notification" id="notification">
-  <div id="notif-text">✅ Acción completada</div>
+  <div id="notif-text"></div>
 </div>
 
 <!-- ============ MODAL ============ -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal" id="modal-content">
     <div class="modal-header">
-      <h3 class="modal-title" id="modal-title">Modal</h3>
+      <h3 class="modal-title" id="modal-title" data-i18n="modal_title">Modal</h3>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
     <div id="modal-body"></div>
@@ -1111,100 +1111,100 @@ body {
       </svg>
     </div>
     <div class="nav-links">
-      <a onclick="scrollToSection('features-section')" id="nav-features">Features</a>
-      <a onclick="scrollToSection('pricing-section')" id="nav-pricing">Pricing</a>
+      <a onclick="scrollToSection('features-section')" id="nav-features" data-i18n="nav_features">Features</a>
+      <a onclick="scrollToSection('pricing-section')" id="nav-pricing" data-i18n="nav_pricing">Pricing</a>
       <div class="lang-switch">
         <button class="lang-btn active" onclick="setLang('es')">ES</button>
         <button class="lang-btn" onclick="setLang('en')">EN</button>
       </div>
-      <button class="btn btn-outline btn-sm" onclick="showPage('auth')" id="nav-login">Login</button>
-      <button class="btn btn-primary btn-sm" onclick="showPage('auth')" id="nav-start">Empezar Gratis</button>
+      <button class="btn btn-outline btn-sm" onclick="showPage('auth')" id="nav-login" data-i18n="nav_login">Login</button>
+      <button class="btn btn-primary btn-sm" onclick="showPage('auth')" id="nav-start" data-i18n="nav_start">Empezar Gratis</button>
     </div>
   </nav>
 
   <div class="hero">
-    <div class="hero-badge" id="hero-badge">✨ POWERED BY AI — GRATIS PARA EMPEZAR</div>
-    <h1 id="hero-title">Toma el Control de tus <span>Finanzas</span> con Inteligencia Artificial</h1>
-    <p id="hero-desc">Escanea recibos, gestiona deudas, descubre las mejores tarjetas y recibe recomendaciones personalizadas con IA. Todo en un solo lugar.</p>
+    <div class="hero-badge" id="hero-badge" data-i18n="hero_badge">✨ POWERED BY AI — GRATIS PARA EMPEZAR</div>
+    <h1 id="hero-title" data-i18n="hero_title">Toma el Control de tus <span>Finanzas</span> con Inteligencia Artificial</h1>
+    <p id="hero-desc" data-i18n="hero_desc">Escanea recibos, gestiona deudas, descubre las mejores tarjetas y recibe recomendaciones personalizadas con IA. Todo en un solo lugar.</p>
     <div class="hero-buttons">
-      <button class="btn btn-primary btn-lg" onclick="showPage('auth')" id="hero-cta">🚀 Empezar Gratis Ahora</button>
-      <button class="btn btn-outline btn-lg" id="hero-demo">Ver Demo</button>
+      <button class="btn btn-primary btn-lg" onclick="showPage('auth')" id="hero-cta" data-i18n="hero_cta">🚀 Empezar Gratis Ahora</button>
+      <button class="btn btn-outline btn-lg" id="hero-demo" data-i18n="hero_demo">Ver Demo</button>
     </div>
     <div class="hero-stats">
       <div class="stat">
         <div class="stat-number">10K+</div>
-        <div class="stat-label" id="stat1">Usuarios Activos</div>
+        <div class="stat-label" id="stat1" data-i18n="stat1">Usuarios Activos</div>
       </div>
       <div class="stat">
         <div class="stat-number">$2M+</div>
-        <div class="stat-label" id="stat2">En Deudas Gestionadas</div>
+        <div class="stat-label" id="stat2" data-i18n="stat2">En Deudas Gestionadas</div>
       </div>
       <div class="stat">
         <div class="stat-number">500+</div>
-        <div class="stat-label" id="stat3">Tarjetas Compatibles</div>
+        <div class="stat-label" id="stat3" data-i18n="stat3">Tarjetas Compatibles</div>
       </div>
       <div class="stat">
         <div class="stat-number">4.9⭐</div>
-        <div class="stat-label" id="stat4">Calificación Promedio</div>
+        <div class="stat-label" id="stat4" data-i18n="stat4">Calificación Promedio</div>
       </div>
     </div>
   </div>
 
   <div class="features" id="features-section">
-    <h2 class="section-title" id="feat-title">Todo lo que necesitas para tus finanzas</h2>
-    <p class="section-subtitle" id="feat-sub">Funciones poderosas impulsadas por inteligencia artificial</p>
+    <h2 class="section-title" id="feat-title" data-i18n="feat_title">Todo lo que necesitas para tus finanzas</h2>
+    <p class="section-subtitle" id="feat-sub" data-i18n="feat_sub">Funciones poderosas impulsadas por inteligencia artificial</p>
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">📸</div>
-        <h3 id="f1-title">Escáner de Recibos IA</h3>
-        <p id="f1-desc">Fotografía cualquier recibo y nuestra IA detecta automáticamente el monto, categoría, fecha y comercio.</p>
+        <h3 id="f1-title" data-i18n="f1_title">Escáner de Recibos IA</h3>
+        <p id="f1-desc" data-i18n="f1_desc">Fotografía cualquier recibo y nuestra IA detecta automáticamente el monto, categoría, fecha y comercio.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">💳</div>
-        <h3 id="f2-title">Mejor Tarjeta para Cada Gasto</h3>
-        <p id="f2-desc">Recibe recomendaciones de qué tarjeta usar según los beneficios, cashback y puntos disponibles.</p>
+        <h3 id="f2-title" data-i18n="f2_title">Mejor Tarjeta para Cada Gasto</h3>
+        <p id="f2-desc" data-i18n="f2_desc">Recibe recomendaciones de qué tarjeta usar según los beneficios, cashback y puntos disponibles.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">📊</div>
-        <h3 id="f3-title">Plan de Pago de Deudas</h3>
-        <p id="f3-desc">Estrategias personalizadas para pagar tus deudas más rápido usando los métodos Avalanche y Snowball.</p>
+        <h3 id="f3-title" data-i18n="f3_title">Plan de Pago de Deudas</h3>
+        <p id="f3-desc" data-i18n="f3_desc">Estrategias personalizadas para pagar tus deudas más rápido usando los métodos Avalanche y Snowball.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🤖</div>
-        <h3 id="f4-title">Asistente Financiero IA</h3>
-        <p id="f4-desc">Pregunta cualquier cosa sobre tus finanzas y recibe consejos personalizados basados en tus datos reales.</p>
+        <h3 id="f4-title" data-i18n="f4_title">Asistente Financiero IA</h3>
+        <p id="f4-desc" data-i18n="f4_desc">Pregunta cualquier cosa sobre tus finanzas y recibe consejos personalizados basados en tus datos reales.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🔄</div>
-        <h3 id="f5-title">Gestión de Suscripciones</h3>
-        <p id="f5-desc">Detecta automáticamente tus suscripciones activas, te alerta antes de cobros y calcula cuánto gastas al mes.</p>
+        <h3 id="f5-title" data-i18n="f5_title">Gestión de Suscripciones</h3>
+        <p id="f5-desc" data-i18n="f5_desc">Detecta automáticamente tus suscripciones activas, te alerta antes de cobros y calcula cuánto gastas al mes.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🏢</div>
-        <h3 id="f6-title">Personal vs Empresa</h3>
-        <p id="f6-desc">Separa automáticamente gastos personales de los del negocio para mantener tus finanzas organizadas.</p>
+        <h3 id="f6-title" data-i18n="f6_title">Personal vs Empresa</h3>
+        <p id="f6-desc" data-i18n="f6_desc">Separa automáticamente gastos personales de los del negocio para mantener tus finanzas organizadas.</p>
       </div>
     </div>
   </div>
 
   <div class="pricing" id="pricing-section">
-    <h2 class="section-title" id="price-title">Planes y Precios</h2>
-    <p class="section-subtitle" id="price-sub">Comienza gratis, escala cuando estés listo</p>
+    <h2 class="section-title" id="price-title" data-i18n="price_title">Planes y Precios</h2>
+    <p class="section-subtitle" id="price-sub" data-i18n="price_sub">Comienza gratis, escala cuando estés listo</p>
     <!-- Toggle Mensual/Anual Landing -->
     <div style="display:flex; justify-content:center; margin-bottom:24px;">
       <div style="background:#1e293b; border-radius:50px; padding:4px; display:flex; gap:4px; border:1px solid #334155;">
         <button id="landing-btn-monthly" onclick="setLandingBilling('monthly')"
           style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:#334155; color:#94a3b8; transition:all 0.3s;">
-          Mensual
+          <span id="landing-btn-monthly-label" data-i18n="landing_btn_monthly">Mensual</span>
         </button>
         <button id="landing-btn-annual" onclick="setLandingBilling('annual')"
           style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; transition:all 0.3s;">
-          Anual &nbsp;<span style="background:#ef4444; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:900;">-20%</span>
+          <span id="landing-btn-annual-label" data-i18n="landing_btn_annual">Anual</span> &nbsp;<span style="background:#ef4444; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:900;">-20%</span>
         </button>
       </div>
     </div>
     <div id="landing-savings-banner" style="text-align:center; margin-bottom:20px; padding:10px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:10px;">
-      <span style="color:#10b981; font-size:13px; font-weight:700;">🎉 Pago anual = 2 meses GRATIS — Ahorras hasta <strong>$120/año</strong></span>
+      <span id="landing-savings-text" style="color:#10b981; font-size:13px; font-weight:700;" data-i18n="landing_savings_banner">🎉 Pago anual = 2 meses GRATIS — Ahorras hasta <strong>$120/año</strong></span>
     </div>
 
     <div class="pricing-grid">
@@ -1212,52 +1212,52 @@ body {
         <div class="price-name">FREE</div>
         <div class="price-amount">$0<span>/mes</span></div>
         <ul class="price-features">
-          <li id="pf1">Hasta 50 transacciones/mes</li>
-          <li id="pf2">1 tarjeta de crédito</li>
-          <li id="pf3">Dashboard básico</li>
-          <li id="pf4">Asistente IA limitado</li>
+          <li id="pf1" data-i18n="pf1">Hasta 50 transacciones/mes</li>
+          <li id="pf2" data-i18n="pf2">1 tarjeta de crédito</li>
+          <li id="pf3" data-i18n="pf3_dashboard">Dashboard básico</li>
+          <li id="pf4" data-i18n="pf4">Asistente IA limitado</li>
         </ul>
-        <button class="btn btn-outline btn-full" onclick="showPage('auth')">Empezar Gratis</button>
+        <button class="btn btn-outline btn-full" onclick="showPage('auth')" data-i18n="btn_start_free">Empezar Gratis</button>
       </div>
       <div class="price-card">
         <div class="price-name">⭐ PERSONAL</div>
         <div class="price-amount"><span id="landing-price-personal">$7.99</span><span>/mes</span></div>
-        <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-personal">Precio normal $9.99/mes</div>
+        <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-personal" data-i18n="landing_original_personal">Precio normal $9.99/mes</div>
         <ul class="price-features">
-          <li id="pf3">50 mensajes IA por día</li>
-          <li id="feat-unlimited-tx">Transacciones ilimitadas</li>
-          <li id="pf4">Hasta 3 tarjetas</li>
-          <li id="pf5">Scanner de recibos</li>
-          <li id="feat-basic-reports">Reportes básicos</li>
+          <li id="pf3" data-i18n="pf3">50 mensajes IA por día</li>
+          <li id="feat-unlimited-tx" data-i18n="feat_unlimited_tx">Transacciones ilimitadas</li>
+          <li id="pf4" data-i18n="pf4">Hasta 3 tarjetas</li>
+          <li id="pf5" data-i18n="pf5">Scanner de recibos</li>
+          <li id="feat-basic-reports" data-i18n="feat_basic_reports">Reportes básicos</li>
         </ul>
-        <button class="btn btn-outline btn-full" onclick="handlePlanClick('personal')">🚀 Empezar ahora</button>
+        <button class="btn btn-outline btn-full" onclick="handlePlanClick('personal')" data-i18n="btn_start_now">🚀 Empezar ahora</button>
       </div>
       <div class="price-card popular">
-        <div class="popular-badge"><span id="badge-popular">🔥 MÁS POPULAR</span></div>
+        <div class="popular-badge"><span id="badge-popular" data-i18n="badge_popular">🔥 MÁS POPULAR</span></div>
         <div class="price-name">💎 PRO</div>
         <div class="price-amount"><span id="landing-price-pro">$15.99</span><span>/mes</span></div>
-        <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-pro">Valor real $39.99/mes</div>
+        <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-pro" data-i18n="landing_original_pro">Valor real $39.99/mes</div>
         <ul class="price-features">
-          <li>✅ IA ilimitada 24/7</li>
-          <li>✅ GPT-4o — la más avanzada</li>
-          <li>✅ Tarjetas ilimitadas</li>
-          <li>✅ Scanner inteligente</li>
-          <li>✅ Reportes avanzados</li>
-          <li>✅ Metas financieras con IA</li>
-          <li style="color:#10b981;">✅ Ahorra $340/mes en promedio</li>
+          <li data-i18n="feat_unlimited_ai">✅ IA ilimitada 24/7</li>
+          <li data-i18n="feat_gpt4o">✅ GPT-4o — la más avanzada</li>
+          <li data-i18n="feat_unlimited_cards">✅ Tarjetas ilimitadas</li>
+          <li data-i18n="feat_smart_scanner">✅ Scanner inteligente</li>
+          <li data-i18n="feat_advanced_reports">✅ Reportes avanzados</li>
+          <li data-i18n="feat_ai_goals">✅ Metas financieras con IA</li>
+          <li style="color:#10b981;" data-i18n="feat_save_avg">✅ Ahorra $340/mes en promedio</li>
         </ul>
-        <button class="btn btn-primary btn-full" onclick="handlePlanClick('pro')">⚡ Quiero Pro</button>
+        <button class="btn btn-primary btn-full" onclick="handlePlanClick('pro')" data-i18n="btn_want_pro">⚡ Quiero Pro</button>
       </div>
       <div class="price-card">
         <div class="price-name">🏢 BUSINESS</div>
         <div class="price-amount"><span id="landing-price-business">$39.99</span><span>/mes</span></div>
-        <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-business">Precio normal $49.99/mes</div>
+        <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-business" data-i18n="landing_original_business">Precio normal $49.99/mes</div>
         <ul class="price-features">
-          <li id="feat-all-pro">Todo lo de Pro</li>
-          <li id="feat-5-users">Hasta 5 usuarios</li>
-          <li id="feat-admin-panel">Panel de administración</li>
-          <li id="feat-biz-reports">Reportes empresariales</li>
-          <li id="feat-support-247">Soporte prioritario 24/7</li>
+          <li id="feat-all-pro" data-i18n="feat_all_pro">Todo lo de Pro</li>
+          <li id="feat-5-users" data-i18n="feat_5_users">Hasta 5 usuarios</li>
+          <li id="feat-admin-panel" data-i18n="feat_admin_panel">Panel de administración</li>
+          <li id="feat-biz-reports" data-i18n="feat_biz_reports">Reportes empresariales</li>
+          <li id="feat-support-247" data-i18n="feat_support_247">Soporte prioritario 24/7</li>
           <li style="color:#10b981;">ROI garantizado o reembolso</li>
         </ul>
         <button class="btn btn-outline btn-full" onclick="handlePlanClick('business')">🏢 Elegir Business</button>
@@ -1300,8 +1300,8 @@ body {
         </svg>
       </div>
       <div class="auth-tabs">
-        <div class="auth-tab active" onclick="switchAuthTab('login')" id="tab-login">Iniciar Sesión</div>
-        <div class="auth-tab" onclick="switchAuthTab('register')" id="tab-register">Registrarse</div>
+        <div class="auth-tab active" onclick="switchAuthTab('login')" id="tab-login" data-i18n="tab_login">Iniciar Sesión</div>
+        <div class="auth-tab" onclick="switchAuthTab('register')" id="tab-register" data-i18n="tab_register">Registrarse</div>
       </div>
 
       <!-- Login Form -->
@@ -1311,33 +1311,33 @@ body {
           <input type="email" placeholder="tu@email.com" id="login-email">
         </div>
         <div class="form-group">
-          <label for="login-pass" id="lbl-login-pass">Contraseña</label>
+          <label for="login-pass" id="lbl-login-pass" data-i18n="lbl_password">Contraseña</label>
           <input type="password" placeholder="••••••••" id="login-pass">
         </div>
-        <button class="btn btn-primary btn-full" onclick="doLogin()">Iniciar Sesión</button>
+        <button class="btn btn-primary btn-full" onclick="doLogin()" data-i18n="tab_login">Iniciar Sesión</button>
         <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--gray);">
-          ¿Olvidaste tu contraseña? <a href="#" style="color:var(--accent);">Recuperar</a>
+          <span data-i18n="forgot_password">¿Olvidaste tu contraseña?</span> <a href="#" style="color:var(--accent);" data-i18n="recover_password">Recuperar</a>
         </p>
       </div>
 
       <!-- Register Form -->
       <div id="register-form" style="display:none;">
         <div class="form-group">
-          <label for="reg-name" id="lbl-reg-name">Nombre Completo</label>
-          <input type="text" placeholder="Tu nombre" id="reg-name">
+          <label for="reg-name" id="lbl-reg-name" data-i18n="lbl_name">Nombre Completo</label>
+          <input type="text" placeholder="Tu nombre" data-i18n-placeholder="ph_name" id="reg-name">
         </div>
         <div class="form-group">
           <label for="login-email" data-i18n="lbl_email">Email</label>
-          <input type="email" placeholder="tu@email.com" id="reg-email">
+          <input type="email" placeholder="tu@email.com" data-i18n-placeholder="ph_email" id="reg-email">
         </div>
         <div class="form-group">
-          <label for="login-pass" id="lbl-login-pass">Contraseña</label>
-          <input type="password" placeholder="Mínimo 8 caracteres" id="reg-pass">
+          <label for="login-pass" id="lbl-login-pass" data-i18n="lbl_password">Contraseña</label>
+          <input type="password" placeholder="Mínimo 8 caracteres" data-i18n-placeholder="ph_password_min" id="reg-pass">
         </div>
         <div class="form-group">
           <label for="reg-country" data-i18n="lbl_country">País</label>
           <select id="reg-country">
-            <option value="">Selecciona tu país</option>
+            <option value="" data-i18n="ph_select_country">Selecciona tu país</option>
             <optgroup label="🌎 América del Norte">
               <option value="us">🇺🇸 United States</option>
               <option value="ca">🇨🇦 Canada</option>
@@ -1376,22 +1376,22 @@ body {
           </select>
         </div>
         <div class="form-group">
-          <label for="reg-plan" id="lbl-reg-plan">Plan</label>
+          <label for="reg-plan" id="lbl-reg-plan" data-i18n="lbl_plan">Plan</label>
           <select id="reg-plan">
-            <option value="free">Free — $0/mes</option>
-            <option value="personal">Personal — $9.99/mes</option>
-            <option value="pro">Pro — $19.99/mes</option>
-            <option value="business">Business — $49.99/mes</option>
+            <option value="free" data-i18n="plan_free_option">Free — $0/mes</option>
+            <option value="personal" data-i18n="plan_personal_option">Personal — $9.99/mes</option>
+            <option value="pro" data-i18n="plan_pro_option">Pro — $19.99/mes</option>
+            <option value="business" data-i18n="plan_business_option">Business — $49.99/mes</option>
           </select>
         </div>
         <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;">
           <input type="checkbox" id="reg-terms" style="margin-top:3px;accent-color:var(--accent);">
           <label for="reg-terms" style="font-size:12px;color:var(--gray);line-height:1.5;">
-            Acepto los <a href="#" style="color:var(--accent);" onclick="showLegal('terms')">Términos de Servicio</a> 
-            y la <a href="#" style="color:var(--accent);" onclick="showLegal('privacy')">Política de Privacidad</a>
+            <span data-i18n="terms_accept">Acepto los</span> <a href="#" style="color:var(--accent);" onclick="showLegal('terms')" data-i18n="terms_service">Términos de Servicio</a> 
+            <span data-i18n="terms_and">y la</span> <a href="#" style="color:var(--accent);" onclick="showLegal('privacy')" data-i18n="privacy_policy">Política de Privacidad</a>
           </label>
         </div>
-        <button class="btn btn-primary btn-full" onclick="doRegister()">Crear Cuenta</button>
+        <button class="btn btn-primary btn-full" onclick="doRegister()" data-i18n="create_account">Crear Cuenta</button>
       </div>
     </div>
   </div>
@@ -1421,47 +1421,47 @@ body {
     <nav class="sidebar-nav">
       <div class="nav-item active" onclick="showSection('dashboard')">
         <span class="nav-icon">📊</span>
-        <span id="nav-dash">Dashboard</span>
+        <span id="nav-dash" data-i18n="nav_dash">Dashboard</span>
       </div>
       <div class="nav-item" onclick="showSection('scanner')">
         <span class="nav-icon">📸</span>
-        <span id="nav-scan">Escáner IA</span>
+        <span id="nav-scan" data-i18n="nav_scan">Escáner IA</span>
       </div>
       <div class="nav-item" onclick="showSection('transactions')">
         <span class="nav-icon">💰</span>
-        <span id="nav-trans">Transacciones</span>
+        <span id="nav-trans" data-i18n="nav_trans">Transacciones</span>
       </div>
       <div class="nav-item" onclick="showSection('cards')">
         <span class="nav-icon">💳</span>
-        <span id="nav-cards">Mis Tarjetas</span>
+        <span id="nav-cards" data-i18n="nav_cards">Mis Tarjetas</span>
       </div>
       <div class="nav-item" onclick="showSection('debts')">
         <span class="nav-icon">📉</span>
-        <span id="nav-debts">Deudas</span>
+        <span id="nav-debts" data-i18n="nav_debts">Deudas</span>
       </div>
       <div class="nav-item" onclick="showSection('subscriptions')">
         <span class="nav-icon">🔄</span>
-        <span id="nav-subs">Suscripciones</span>
+        <span id="nav-subs" data-i18n="nav_subs">Suscripciones</span>
       </div>
       <div class="nav-item" onclick="showSection('recommendations')">
         <span class="nav-icon">⭐</span>
-        <span id="nav-recs">Recomendaciones</span>
+        <span id="nav-recs" data-i18n="nav_recs">Recomendaciones</span>
       </div>
       <div class="nav-item" onclick="showSection('assistant')">
         <span class="nav-icon">🤖</span>
-        <span id="nav-ai">Asistente IA</span>
+        <span id="nav-ai" data-i18n="nav_ai">Asistente IA</span>
       </div>
       <div class="nav-item" onclick="showSection('reports')">
         <span class="nav-icon">📈</span>
-        <span id="nav-rep">Reportes</span>
+        <span id="nav-rep" data-i18n="nav_rep">Reportes</span>
       </div>
       <div class="nav-item" onclick="showSection('settings')">
         <span class="nav-icon">⚙️</span>
-        <span id="nav-set">Configuración</span>
+        <span id="nav-set" data-i18n="nav_set">Configuración</span>
       </div>
       <div class="nav-item" onclick="showSection('admin')" id="admin-nav-item" style="display:none;">
         <span class="nav-icon">🔐</span>
-        <span id="nav-admin-label">Admin Panel</span>
+        <span id="nav-admin-label" data-i18n="nav_admin_label">Admin Panel</span>
       </div>
     </nav>
     <div class="sidebar-footer">
@@ -1472,7 +1472,7 @@ body {
           <div class="user-plan" id="user-display-plan">Free</div>
         </div>
       </div>
-      <button class="btn btn-outline btn-sm" style="width:100%;" onclick="doLogout()">Cerrar Sesión</button>
+      <button class="btn btn-outline btn-sm" style="width:100%;" onclick="doLogout()" data-i18n="btn_logout">Cerrar Sesión</button>
     </div>
   </div>
 
@@ -1483,40 +1483,40 @@ body {
     <div id="section-dashboard" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title" id="dash-title">Dashboard</div>
-          <div class="page-subtitle" id="dash-sub">Resumen financiero de este mes</div>
+          <div class="page-title" id="dash-title" data-i18n="dash_title">Dashboard</div>
+          <div class="page-subtitle" id="dash-sub" data-i18n="dash_sub">Resumen financiero de este mes</div>
         </div>
         <div style="display:flex;gap:12px;align-items:center;">
           <div class="lang-switch">
             <button class="lang-btn active" onclick="setLang('es')" id="app-lang-es">ES</button>
             <button class="lang-btn" onclick="setLang('en')" id="app-lang-en">EN</button>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openAddTransaction()">+ Agregar</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddTransaction()" data-i18n="btn_add">+ Agregar</button>
         </div>
       </div>
 
       <div class="cards-grid">
         <div class="stat-card">
           <div class="stat-card-icon">💵</div>
-          <div class="stat-card-label" id="lbl-income">Ingresos del Mes</div>
+          <div class="stat-card-label" id="lbl-income" data-i18n="lbl_income">Ingresos del Mes</div>
           <div class="stat-card-value green" id="val-income">$4,250.00</div>
           <div class="stat-card-change">↑ 12% vs mes anterior</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💸</div>
-          <div class="stat-card-label" id="lbl-expense">Gastos del Mes</div>
+          <div class="stat-card-label" id="lbl-expense" data-i18n="lbl_expense">Gastos del Mes</div>
           <div class="stat-card-value red" id="val-expense">$2,847.50</div>
           <div class="stat-card-change" style="color:var(--danger);">↑ 5% vs mes anterior</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💰</div>
-          <div class="stat-card-label" id="lbl-balance">Balance Disponible</div>
+          <div class="stat-card-label" id="lbl-balance" data-i18n="lbl_balance">Balance Disponible</div>
           <div class="stat-card-value cyan" id="val-balance">$1,402.50</div>
           <div class="stat-card-change">✓ Finanzas saludables</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💳</div>
-          <div class="stat-card-label" id="lbl-debt">Deuda Total</div>
+          <div class="stat-card-label" id="lbl-debt" data-i18n="lbl_debt">Deuda Total</div>
           <div class="stat-card-value red" id="val-debt">$8,320.00</div>
           <div class="stat-card-change" style="color:var(--success);">↓ $340 este mes</div>
         </div>
@@ -1525,8 +1525,8 @@ body {
       <div class="content-grid">
         <div class="card">
           <div class="card-header">
-            <span class="card-title" id="lbl-recent">Transacciones Recientes</span>
-            <button class="btn btn-outline btn-sm" onclick="showSection('transactions')">Ver todas</button>
+            <span class="card-title" id="lbl-recent" data-i18n="lbl_recent">Transacciones Recientes</span>
+            <button class="btn btn-outline btn-sm" onclick="showSection('transactions')" data-i18n="btn_view_all">Ver todas</button>
           </div>
           <div id="recent-transactions">
             <div class="transaction-item">
@@ -1574,20 +1574,20 @@ body {
 
         <div class="card">
           <div class="card-header">
-            <span class="card-title">🤖 Asistente IA</span>
-            <span class="badge badge-cyan">En línea</span>
+            <span class="card-title" data-i18n="ai_assistant">🤖 Asistente IA</span>
+            <span class="badge badge-cyan" data-i18n="badge_online">En línea</span>
           </div>
           <div class="ai-chat">
             <div class="chat-messages" id="dash-chat">
               <div class="chat-msg ai">
-                👋 ¡Hola! Soy tu asistente financiero IA. Este mes has gastado <strong>$2,847.50</strong> y tu balance es positivo. ¿En qué te puedo ayudar?
+                <span data-i18n="dash_chat_intro">👋 ¡Hola! Soy tu asistente financiero IA. Este mes has gastado <strong>$2,847.50</strong> y tu balance es positivo. ¿En qué te puedo ayudar?</span>
               </div>
             </div>
             <div style="text-align:right; padding: 4px 8px;">
-              <span id="aiMessagesLeft" style="font-size:12px; color:#94a3b8;">5/5 mensajes hoy</span>
+              <span id="aiMessagesLeft" style="font-size:12px; color:#94a3b8;" data-i18n="ai_messages_left">5/5 mensajes hoy</span>
             </div>
             <div class="chat-input-area">
-              <input class="chat-input" id="dash-chat-input" placeholder="Pregúntame algo sobre tus finanzas..." onkeypress="if(event.key==='Enter') sendDashChat()">
+              <input class="chat-input" id="dash-chat-input" placeholder="Pregúntame algo sobre tus finanzas..." data-i18n-placeholder="ph_chat" onkeypress="if(event.key==='Enter') sendDashChat()">
               <button class="btn btn-primary btn-sm" onclick="sendDashChat()">→</button>
             </div>
           </div>
@@ -1597,14 +1597,14 @@ body {
       <div class="content-grid">
         <div class="card">
           <div class="card-header">
-            <span class="card-title" id="lbl-subs">Suscripciones Activas</span>
+            <span class="card-title" id="lbl-subs" data-i18n="lbl_subs">Suscripciones Activas</span>
             <span class="badge badge-warning">$67.97/mes</span>
           </div>
           <div class="sub-item">
             <div class="sub-icon" style="background:rgba(229,9,20,0.15);">📺</div>
             <div class="sub-info">
               <div class="sub-name">Netflix</div>
-              <div class="sub-date">Renueva Jun 15</div>
+              <div class="sub-date"><span data-i18n="sub_renews">Renueva</span> Jun 15</div>
             </div>
             <div class="sub-amount">$15.99</div>
           </div>
@@ -1612,7 +1612,7 @@ body {
             <div class="sub-icon" style="background:rgba(30,215,96,0.15);">🎵</div>
             <div class="sub-info">
               <div class="sub-name">Spotify</div>
-              <div class="sub-date">Renueva Jun 20</div>
+              <div class="sub-date"><span data-i18n="sub_renews">Renueva</span> Jun 20</div>
             </div>
             <div class="sub-amount">$9.99</div>
           </div>
@@ -1620,7 +1620,7 @@ body {
             <div class="sub-icon" style="background:rgba(0,100,255,0.15);">☁️</div>
             <div class="sub-info">
               <div class="sub-name">iCloud 200GB</div>
-              <div class="sub-date">Renueva Jun 28</div>
+              <div class="sub-date"><span data-i18n="sub_renews">Renueva</span> Jun 28</div>
             </div>
             <div class="sub-amount">$2.99</div>
           </div>
@@ -1628,7 +1628,7 @@ body {
             <div class="sub-icon" style="background:rgba(0,238,255,0.15);">🤖</div>
             <div class="sub-info">
               <div class="sub-name">ChatGPT Plus</div>
-              <div class="sub-date">Renueva Jun 10</div>
+              <div class="sub-date"><span data-i18n="sub_renews">Renueva</span> Jun 10</div>
             </div>
             <div class="sub-amount">$20.00</div>
           </div>
@@ -1636,7 +1636,7 @@ body {
             <div class="sub-icon" style="background:rgba(255,107,53,0.15);">📦</div>
             <div class="sub-info">
               <div class="sub-name">Amazon Prime</div>
-              <div class="sub-date">Renueva Jul 1</div>
+              <div class="sub-date"><span data-i18n="sub_renews">Renueva</span> Jul 1</div>
             </div>
             <div class="sub-amount">$19.00</div>
           </div>
@@ -1644,8 +1644,8 @@ body {
 
         <div class="card">
           <div class="card-header">
-            <span class="card-title" id="lbl-debts">Plan de Deudas</span>
-            <button class="btn btn-outline btn-sm" onclick="showSection('debts')">Ver Plan</button>
+            <span class="card-title" id="lbl-debts" data-i18n="lbl_debts">Plan de Deudas</span>
+            <button class="btn btn-outline btn-sm" onclick="showSection('debts')" data-i18n="btn_view_plan">Ver Plan</button>
           </div>
           <div class="debt-item">
             <div class="debt-header">
@@ -1656,8 +1656,8 @@ body {
               <div class="progress-fill danger" style="width:64%"></div>
             </div>
             <div class="debt-meta">
-              <span>Límite: $5,000</span>
-              <span>64% utilizado</span>
+              <span><span data-i18n="lbl_limit">Límite:</span> $5,000</span>
+              <span>64% <span data-i18n="lbl_used">utilizado</span></span>
             </div>
           </div>
           <div class="debt-item">
@@ -1669,8 +1669,8 @@ body {
               <div class="progress-fill warning" style="width:37%"></div>
             </div>
             <div class="debt-meta">
-              <span>Límite: $5,000</span>
-              <span>37% utilizado</span>
+              <span><span data-i18n="lbl_limit">Límite:</span> $5,000</span>
+              <span>37% <span data-i18n="lbl_used">utilizado</span></span>
             </div>
           </div>
           <div class="debt-item">
@@ -1682,8 +1682,8 @@ body {
               <div class="progress-fill danger" style="width:82%"></div>
             </div>
             <div class="debt-meta">
-              <span>Límite: $4,000</span>
-              <span>82% utilizado</span>
+              <span><span data-i18n="lbl_limit">Límite:</span> $4,000</span>
+              <span>82% <span data-i18n="lbl_used">utilizado</span></span>
             </div>
           </div>
         </div>
@@ -1694,72 +1694,72 @@ body {
     <div id="section-scanner" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title">📸 Escáner de Recibos IA</div>
-          <div class="page-subtitle" id="sub-scanner">Fotografía tu recibo y la IA detecta todo automáticamente</div>
+          <div class="page-title" data-i18n="scanner_title">📸 Escáner de Recibos IA</div>
+          <div class="page-subtitle" id="sub-scanner" data-i18n="scanner_sub">Fotografía tu recibo y la IA detecta todo automáticamente</div>
         </div>
       </div>
       <div style="max-width:700px;">
         <div class="upload-area" onclick="document.getElementById('receipt-input').click()">
           <input type="file" id="receipt-input" accept="image/*" style="display:none;" onchange="processReceipt(event)">
           <div class="upload-icon">📸</div>
-          <div class="upload-title">Subir Foto del Recibo</div>
-          <div class="upload-subtitle">Click aquí o arrastra una imagen · JPG, PNG, HEIC</div>
+          <div class="upload-title" data-i18n="upload_title">Subir Foto del Recibo</div>
+          <div class="upload-subtitle" data-i18n="upload_sub">Click aquí o arrastra una imagen · JPG, PNG, HEIC</div>
         </div>
 
         <div class="ai-result" id="scan-result">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
             <span style="font-size:24px;">🤖</span>
-            <span style="font-weight:700;color:var(--accent);">IA detectó:</span>
+            <span style="font-weight:700;color:var(--accent);" data-i18n="ia_detected">IA detectó:</span>
           </div>
           <div class="result-item">
-            <span class="result-label">🏪 Comercio</span>
+            <span class="result-label" data-i18n="lbl_merchant">🏪 Comercio</span>
             <span class="result-value" id="scan-merchant">Walmart Supercenter</span>
           </div>
           <div class="result-item">
-            <span class="result-label">💵 Monto Total</span>
+            <span class="result-label" data-i18n="lbl_amount">💵 Monto Total</span>
             <span class="result-value" id="scan-amount">$47.83</span>
           </div>
           <div class="result-item">
-            <span class="result-label">📁 Categoría</span>
+            <span class="result-label" data-i18n="lbl_category">📁 Categoría</span>
             <span class="result-value" id="scan-category">🛒 Supermercado</span>
           </div>
           <div class="result-item">
-            <span class="result-label">📅 Fecha</span>
+            <span class="result-label" data-i18n="lbl_date">📅 Fecha</span>
             <span class="result-value" id="scan-date">Jun 5, 2025</span>
           </div>
           <div class="result-item">
-            <span class="result-label">💳 Tarjeta Recomendada</span>
+            <span class="result-label" data-i18n="lbl_card_rec">💳 Tarjeta Recomendada</span>
             <span class="result-value" id="scan-card" style="color:var(--accent);">Chase Freedom · 5% cashback</span>
           </div>
           <div class="result-item">
-            <span class="result-label">🏷️ Tipo</span>
+            <span class="result-label" data-i18n="lbl_type">🏷️ Tipo</span>
             <span class="result-value">
               <select id="filter-category" name="filter-category" style="background:var(--bg-card);border:1px solid var(--border);color:var(--white);padding:4px 8px;border-radius:6px;font-size:13px;">
-                <option>Personal</option>
-                <option>Empresa</option>
+                <option data-i18n="opt_personal">Personal</option>
+                <option data-i18n="opt_business">Empresa</option>
               </select>
             </span>
           </div>
           <div style="margin-top:20px;display:flex;gap:12px;">
-            <button class="btn btn-primary" onclick="saveScannedTransaction()">✓ Guardar Transacción</button>
-            <button class="btn btn-outline" onclick="document.getElementById('scan-result').classList.remove('show')">× Descartar</button>
+            <button class="btn btn-primary" onclick="saveScannedTransaction()" data-i18n="btn_save_tx">✓ Guardar Transacción</button>
+            <button class="btn btn-outline" onclick="document.getElementById('scan-result').classList.remove('show')" data-i18n="btn_discard">× Descartar</button>
           </div>
         </div>
 
         <div class="card" style="margin-top:24px;">
-          <div class="card-title" style="margin-bottom:16px;">💡 Tips para mejores resultados</div>
+          <div class="card-title" style="margin-bottom:16px;" data-i18n="tips_title">💡 Tips para mejores resultados</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
             <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--gray);">
-              <span>✅</span><span id="scan-tip-1">Asegúrate de que el recibo esté completamente visible</span>
+              <span>✅</span><span id="scan-tip-1" data-i18n="scan_tip_1">Asegúrate de que el recibo esté completamente visible</span>
             </div>
             <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--gray);">
-              <span>✅</span><span id="scan-tip-2">Buena iluminación para mejor reconocimiento</span>
+              <span>✅</span><span id="scan-tip-2" data-i18n="scan_tip_2">Buena iluminación para mejor reconocimiento</span>
             </div>
             <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--gray);">
-              <span>✅</span><span id="scan-tip-3">Mantén el teléfono estable al fotografiar</span>
+              <span>✅</span><span id="scan-tip-3" data-i18n="scan_tip_3">Mantén el teléfono estable al fotografiar</span>
             </div>
             <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--gray);">
-              <span>✅</span><span id="scan-tip-4">Funciona con recibos en inglés y español</span>
+              <span>✅</span><span id="scan-tip-4" data-i18n="scan_tip_4">Funciona con recibos en inglés y español</span>
             </div>
           </div>
         </div>
@@ -1770,30 +1770,30 @@ body {
     <div id="section-transactions" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title">💰 Transacciones</div>
-          <div class="page-subtitle">Todos tus ingresos y gastos</div>
+          <div class="page-title" data-i18n="tx_title">💰 Transacciones</div>
+          <div class="page-subtitle" data-i18n="tx_sub">Todos tus ingresos y gastos</div>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="openAddTransaction()">+ Nueva Transacción</button>
+        <button class="btn btn-primary btn-sm" onclick="openAddTransaction()" data-i18n="btn_new_tx">+ Nueva Transacción</button>
       </div>
 
       <div class="section-tabs">
-        <button class="section-tab active" onclick="filterTransactions('all',this)">Todas</button>
-        <button class="section-tab" onclick="filterTransactions('income',this)">Ingresos</button>
-        <button class="section-tab" onclick="filterTransactions('expense',this)">Gastos</button>
-        <button class="section-tab" onclick="filterTransactions('personal',this)">Personal</button>
-        <button class="section-tab" onclick="filterTransactions('business',this)">Empresa</button>
+        <button class="section-tab active" onclick="filterTransactions('all',this)" data-i18n="tab_all">Todas</button>
+        <button class="section-tab" onclick="filterTransactions('income',this)" data-i18n="tab_income">Ingresos</button>
+        <button class="section-tab" onclick="filterTransactions('expense',this)" data-i18n="tab_expense">Gastos</button>
+        <button class="section-tab" onclick="filterTransactions('personal',this)" data-i18n="tab_personal">Personal</button>
+        <button class="section-tab" onclick="filterTransactions('business',this)" data-i18n="tab_business">Empresa</button>
       </div>
 
       <div class="card">
         <table class="table" id="transactions-table">
           <thead>
             <tr>
-              <th>DESCRIPCIÓN</th>
-              <th>CATEGORÍA</th>
-              <th>TIPO</th>
-              <th>FECHA</th>
-              <th>MONTO</th>
-              <th>ACCIONES</th>
+              <th data-i18n="th_desc">DESCRIPCIÓN</th>
+              <th data-i18n="th_cat">CATEGORÍA</th>
+              <th data-i18n="th_type">TIPO</th>
+              <th data-i18n="th_date">FECHA</th>
+              <th data-i18n="th_amount">MONTO</th>
+              <th data-i18n="th_actions">ACCIONES</th>
             </tr>
           </thead>
           <tbody id="transactions-body">
@@ -1803,7 +1803,7 @@ body {
               <td><span class="badge badge-cyan">Personal</span></td>
               <td>Jun 5, 2025</td>
               <td class="transaction-amount expense">-$87.43</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Transacción eliminada')">🗑️</button></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
             </tr>
             <tr>
               <td>Salario Mensual</td>
@@ -1811,7 +1811,7 @@ body {
               <td><span class="badge badge-success">Ingreso</span></td>
               <td>Jun 1, 2025</td>
               <td class="transaction-amount income">+$3,500.00</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Transacción eliminada')">🗑️</button></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
             </tr>
             <tr>
               <td>Domino's Pizza</td>
@@ -1819,7 +1819,7 @@ body {
               <td><span class="badge badge-cyan">Personal</span></td>
               <td>Jun 4, 2025</td>
               <td class="transaction-amount expense">-$24.99</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Transacción eliminada')">🗑️</button></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
             </tr>
             <tr>
               <td>Freelance Project</td>
@@ -1827,7 +1827,7 @@ body {
               <td><span class="badge badge-warning">Empresa</span></td>
               <td>May 30, 2025</td>
               <td class="transaction-amount income">+$750.00</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Transacción eliminada')">🗑️</button></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
             </tr>
             <tr>
               <td>Shell Gas Station</td>
@@ -1835,7 +1835,7 @@ body {
               <td><span class="badge badge-cyan">Personal</span></td>
               <td>May 29, 2025</td>
               <td class="transaction-amount expense">-$65.00</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Transacción eliminada')">🗑️</button></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
             </tr>
             <tr>
               <td>AWS Services</td>
@@ -1843,7 +1843,7 @@ body {
               <td><span class="badge badge-warning">Empresa</span></td>
               <td>May 28, 2025</td>
               <td class="transaction-amount expense">-$127.00</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Transacción eliminada')">🗑️</button></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
             </tr>
           </tbody>
         </table>
@@ -1854,10 +1854,10 @@ body {
     <div id="section-cards" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title">💳 Mis Tarjetas</div>
-          <div class="page-subtitle" id="sub-cards">Gestiona tus tarjetas de crédito y débito</div>
+          <div class="page-title" data-i18n="cards_title">💳 Mis Tarjetas</div>
+          <div class="page-subtitle" id="sub-cards" data-i18n="cards_sub">Gestiona tus tarjetas de crédito y débito</div>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="openAddCard()">+ Agregar Tarjeta</button>
+        <button class="btn btn-primary btn-sm" onclick="openAddCard()" data-i18n="btn_add_card">+ Agregar Tarjeta</button>
       </div>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;" id="cards-list">
@@ -1867,32 +1867,32 @@ body {
     <div id="section-debts" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title">📉 Plan de Pago de Deudas</div>
-          <div class="page-subtitle">Estrategia personalizada para salir de deudas más rápido</div>
+          <div class="page-title" data-i18n="debts_title">📉 Plan de Pago de Deudas</div>
+          <div class="page-subtitle" data-i18n="debts_sub">Estrategia personalizada para salir de deudas más rápido</div>
         </div>
-        <button onclick="openAddDebt()" class="btn btn-primary">+ Agregar Deuda</button>
+        <button onclick="openAddDebt()" class="btn btn-primary" data-i18n="btn_add_debt">+ Agregar Deuda</button>
       </div>
 
 
       <div class="section-tabs">
-        <button class="section-tab active" onclick="switchDebtMethod('avalanche',this)">❄️ Avalanche (Menos interés)</button>
-        <button class="section-tab" onclick="switchDebtMethod('snowball',this)">⛄ Snowball (Más motivación)</button>
+        <button class="section-tab active" onclick="switchDebtMethod('avalanche',this)" data-i18n="tab_avalanche">❄️ Avalanche (Menos interés)</button>
+        <button class="section-tab" onclick="switchDebtMethod('snowball',this)" data-i18n="tab_snowball">⛄ Snowball (Más motivación)</button>
       </div>
 
       <div class="cards-grid" style="grid-template-columns:repeat(3,1fr);">
         <div class="stat-card">
           <div class="stat-card-icon">💳</div>
-          <div class="stat-card-label">Deuda Total</div>
+          <div class="stat-card-label" data-i18n="lbl_total_debt">Deuda Total</div>
           <div class="stat-card-value red" id="debt-stat-total">$0.00</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">📅</div>
-          <div class="stat-card-label">Tiempo Estimado</div>
+          <div class="stat-card-label" data-i18n="lbl_est_time">Tiempo Estimado</div>
           <div class="stat-card-value cyan" id="debt-stat-time">--</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💰</div>
-          <div class="stat-card-label">Pago Mínimo Total</div>
+          <div class="stat-card-label" data-i18n="lbl_min_pay">Pago Mínimo Total</div>
           <div class="stat-card-value green" id="debt-stat-saving">$0.00</div>
         </div>
       </div>
@@ -1900,12 +1900,12 @@ body {
       <div class="content-grid">
         <div class="card">
           <div class="card-header">
-            <span class="card-title" id="debt-method-title">❄️ Método Avalanche</span>
+            <span class="card-title" id="debt-method-title" data-i18n="debt_method_title">❄️ Método Avalanche</span>
           </div>
           <div style="background:rgba(0,238,255,0.05);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px;">
             <div style="font-size:13px;color:var(--gray);line-height:1.6;" id="debt-method-desc">
               <span id="debt-tip-text" data-i18n="debt_tip_text">Paga primero la tarjeta con <strong style="color:var(--accent);">mayor tasa de interés</strong>.</span> 
-              Ahorras más dinero en intereses a largo plazo.
+              ${t('debt_saves_interest')}
             </div>
           </div>
           <div id="debt-items-list"></div>
@@ -1913,24 +1913,24 @@ body {
 
         <div class="card">
           <div class="card-header">
-            <span class="card-title" id="title-rec-ia">💡 Recomendaciones IA</span>
+            <span class="card-title" id="title-rec-ia" data-i18n="rec_ia_title">💡 Recomendaciones IA</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:16px;">
             <div style="background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.2);border-radius:12px;padding:16px;">
-              <div style="font-weight:700;color:var(--success);margin-bottom:8px;">✅ Si pagas $500/mes extra:</div>
-              <div style="font-size:13px;color:var(--gray);">Saldrías de deudas en <strong style="color:var(--white);">11 meses</strong> y ahorrarías <strong style="color:var(--success);">$890 en intereses</strong></div>
+              <div style="font-weight:700;color:var(--success);margin-bottom:8px;" data-i18n="debt_extra_pay">✅ Si pagas $500/mes extra:</div>
+              <div style="font-size:13px;color:var(--gray);" data-i18n="debt_extra_desc">Saldrías de deudas en <strong style="color:var(--white);">11 meses</strong> y ahorrarías <strong style="color:var(--success);">$890 en intereses</strong></div>
             </div>
             <div style="background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.2);border-radius:12px;padding:16px;">
               <div style="font-weight:700;color:var(--warning);margin-bottom:8px;">⚠️ Capital One al 82%:</div>
-              <div id="credit-score-warn" style="font-size:13px;color:var(--gray);">Tu score crediticio puede bajar. Prioriza reducir esta tarjeta primero.</div>
+              <div id="credit-score-warn" style="font-size:13px;color:var(--gray);" data-i18n="debt_score_warn">Tu score crediticio puede bajar. Prioriza reducir esta tarjeta primero.</div>
             </div>
             <div style="background:rgba(0,238,255,0.1);border:1px solid var(--border);border-radius:12px;padding:16px;">
-              <div style="font-weight:700;color:var(--accent);margin-bottom:8px;">💡 Consolidación:</div>
-              <div style="font-size:13px;color:var(--gray);">Considera un préstamo personal al 12-15% para consolidar y reducir intereses totales.</div>
+              <div style="font-weight:700;color:var(--accent);margin-bottom:8px;" data-i18n="debt_consol_title">💡 Consolidación:</div>
+              <div style="font-size:13px;color:var(--gray);" data-i18n="debt_consol_tip">Considera un préstamo personal al 12-15% para consolidar y reducir intereses totales.</div>
             </div>
             <div style="background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.2);border-radius:12px;padding:16px;">
-              <div style="font-weight:700;color:var(--success);margin-bottom:8px;">💰 Balance positivo:</div>
-              <div style="font-size:13px;color:var(--gray);">Tienes $1,402 de balance libre este mes. Aplica al menos $500 a Capital One.</div>
+              <div style="font-weight:700;color:var(--success);margin-bottom:8px;" data-i18n="debt_balance_title">💰 Balance positivo:</div>
+              <div style="font-size:13px;color:var(--gray);" data-i18n="debt_balance_tip">Tienes $1,402 de balance libre este mes. Aplica al menos $500 a Capital One.</div>
             </div>
           </div>
         </div>
@@ -1941,26 +1941,26 @@ body {
     <div id="section-subscriptions" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title">🔄 Suscripciones</div>
-          <div class="page-subtitle" id="sub-subs">Gestiona todas tus suscripciones activas</div>
+          <div class="page-title" data-i18n="subs_title">🔄 Suscripciones</div>
+          <div class="page-subtitle" id="sub-subs" data-i18n="subs_sub">Gestiona todas tus suscripciones activas</div>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="openAddSubscription()">+ Agregar</button>
+        <button class="btn btn-primary btn-sm" onclick="openAddSubscription()" data-i18n="btn_add_sub">+ Agregar</button>
       </div>
 
       <div class="cards-grid" style="grid-template-columns:repeat(3,1fr);">
         <div class="stat-card">
           <div class="stat-card-icon">🔄</div>
-          <div class="stat-card-label">Suscripciones Activas</div>
+          <div class="stat-card-label" data-i18n="lbl_active_subs">Suscripciones Activas</div>
           <div class="stat-card-value cyan">7</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💸</div>
-          <div class="stat-card-label">Gasto Mensual</div>
+          <div class="stat-card-label" data-i18n="lbl_monthly_exp">Gasto Mensual</div>
           <div class="stat-card-value red">$87.97</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">📅</div>
-          <div class="stat-card-label">Gasto Anual</div>
+          <div class="stat-card-label" data-i18n="lbl_annual_exp">Gasto Anual</div>
           <div class="stat-card-value red">$1,055.64</div>
         </div>
       </div>
@@ -1969,12 +1969,12 @@ body {
         <table class="table">
           <thead>
             <tr>
-              <th>SERVICIO</th>
-              <th>CATEGORÍA</th>
-              <th>PRECIO</th>
-              <th>RENOVACIÓN</th>
-              <th>ESTADO</th>
-              <th>ACCIONES</th>
+              <th data-i18n="th_service">SERVICIO</th>
+              <th data-i18n="th_cat">CATEGORÍA</th>
+              <th data-i18n="th_price">PRECIO</th>
+              <th data-i18n="th_renewal">RENOVACIÓN</th>
+              <th data-i18n="th_status">ESTADO</th>
+              <th data-i18n="th_actions">ACCIONES</th>
             </tr>
           </thead>
           <tbody id="subs-tbody">
@@ -1983,9 +1983,9 @@ body {
               <td>Entretenimiento</td>
               <td>$15.99/mes</td>
               <td>Jun 15</td>
-              <td><span class="badge badge-success">Activa</span></td>
+              <td><span class="badge badge-success" data-i18n="badge_active">Activa</span></td>
               <td>
-                <button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')">Cancelar</button>
+                <button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button>
               </td>
             </tr>
             <tr>
@@ -1993,57 +1993,55 @@ body {
               <td>Entretenimiento</td>
               <td>$9.99/mes</td>
               <td>Jun 20</td>
-              <td><span class="badge badge-success">Activa</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')">Cancelar</button></td>
+              <td><span class="badge badge-success" data-i18n="badge_active">Activa</span></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
             </tr>
             <tr>
               <td><span style="margin-right:8px;">🤖</span>ChatGPT Plus</td>
               <td>Productividad</td>
               <td>$20.00/mes</td>
               <td>Jun 10</td>
-              <td><span class="badge badge-warning" id="badge-vence-pronto">Vence pronto</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')">Cancelar</button></td>
+              <td><span class="badge badge-warning" id="badge-vence-pronto" data-i18n="badge_soon">Vence pronto</span></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
             </tr>
             <tr>
               <td><span style="margin-right:8px;">☁️</span>iCloud 200GB</td>
               <td>Almacenamiento</td>
               <td>$2.99/mes</td>
               <td>Jun 28</td>
-              <td><span class="badge badge-success">Activa</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')">Cancelar</button></td>
+              <td><span class="badge badge-success" data-i18n="badge_active">Activa</span></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
             </tr>
             <tr>
               <td><span style="margin-right:8px;">📦</span>Amazon Prime</td>
               <td>Compras</td>
               <td>$19.00/mes</td>
               <td>Jul 1</td>
-              <td><span class="badge badge-success">Activa</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')">Cancelar</button></td>
+              <td><span class="badge badge-success" data-i18n="badge_active">Activa</span></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
             </tr>
             <tr>
               <td><span style="margin-right:8px;">🎮</span>Xbox Game Pass</td>
               <td>Entretenimiento</td>
               <td>$14.99/mes</td>
               <td>Jun 25</td>
-              <td><span class="badge badge-danger">⚠️ Evaluar</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')">Cancelar</button></td>
+              <td><span class="badge badge-danger" data-i18n="badge_eval">⚠️ Evaluar</span></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
             </tr>
             <tr>
               <td><span style="margin-right:8px;">📊</span>Adobe Creative</td>
               <td>Trabajo</td>
               <td>$5.00/mes</td>
               <td>Jul 5</td>
-              <td><span class="badge badge-success">Activa</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')">Cancelar</button></td>
+              <td><span class="badge badge-success" data-i18n="badge_active">Activa</span></td>
+              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
             </tr>
           </tbody>
         </table>
 
         <div style="background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.2);border-radius:12px;padding:16px;margin-top:20px;">
-          <div id="debt-rec-ia-label" style="font-weight:700;color:var(--warning);margin-bottom:8px;">💡 Recomendación IA:</div>
-          <div style="font-size:13px;color:var(--gray);">
-            Xbox Game Pass tiene bajo uso según tus patrones. Cancelarla ahorraría <strong style="color:var(--white);">$179.88/año</strong>.
-          </div>
+          <div id="debt-rec-ia-label" style="font-weight:700;color:var(--warning);margin-bottom:8px;" data-i18n="subs_ia_rec">💡 Recomendación IA:</div>
+          <div id="subs-ia-desc" style="font-size:13px;color:var(--gray);"></div>
         </div>
       </div>
     </div>
@@ -2052,8 +2050,8 @@ body {
     <div id="section-recommendations" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title" id="title-card-recs">⭐ Recomendaciones de Tarjetas</div>
-          <div class="page-subtitle" id="sub-card-recs">Las mejores tarjetas según tus hábitos de gasto</div>
+          <div class="page-title" id="title-card-recs" data-i18n="recs_title">⭐ Recomendaciones de Tarjetas</div>
+          <div class="page-subtitle" id="sub-card-recs" data-i18n="recs_sub">Las mejores tarjetas según tus hábitos de gasto</div>
         </div>
       </div>
 
@@ -2061,9 +2059,9 @@ body {
         <div style="display:flex;align-items:center;gap:12px;">
           <span style="font-size:32px;">🤖</span>
           <div>
-            <div style="font-weight:700;font-size:15px;">Análisis IA de tus gastos</div>
+            <div style="font-weight:700;font-size:15px;" data-i18n="rec_ai_analysis">Análisis IA de tus gastos</div>
             <div style="color:var(--gray);font-size:13px;margin-top:4px;">
-              <span id="rec-based-on">Basado en tus transacciones: gastas más en </span>
+              <span id="rec-based-on" data-i18n="rec_based_on">Basado en tus transacciones: gastas más en </span>
               <strong style="color:var(--accent);">supermercado</strong>, 
               <strong style="color:var(--accent);">restaurantes</strong> y 
               <strong style="color:var(--accent);">gasolina</strong>. 
@@ -2076,7 +2074,7 @@ body {
       <div class="rec-card">
         <div class="rec-card-header">
           <div>
-            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;">USA — MEJOR OPCIÓN GENERAL</div>
+            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;" data-i18n="rec_best_general">USA — MEJOR OPCIÓN GENERAL</div>
             <div class="rec-title">💳 Chase Freedom Flex</div>
           </div>
           <div class="rec-score">98% match</div>
@@ -2093,7 +2091,7 @@ body {
       <div class="rec-card">
         <div class="rec-card-header">
           <div>
-            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;">USA — MEJOR PARA VIAJES</div>
+            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;" data-i18n="rec_best_travel">USA — MEJOR PARA VIAJES</div>
             <div class="rec-title">💳 Amex Gold Card</div>
           </div>
           <div class="rec-score">91% match</div>
@@ -2110,7 +2108,7 @@ body {
       <div class="rec-card">
         <div class="rec-card-header">
           <div>
-            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;">USA — MEJOR SIN CUOTA</div>
+            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;" data-i18n="rec_best_no_fee">USA — MEJOR SIN CUOTA</div>
             <div class="rec-title">💳 Citi Double Cash</div>
           </div>
           <div class="rec-score">87% match</div>
@@ -2127,12 +2125,12 @@ body {
       <div class="rec-card">
         <div class="rec-card-header">
           <div>
-            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;">LATINOAMÉRICA</div>
+            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;" data-i18n="rec_latam">LATINOAMÉRICA</div>
             <div class="rec-title">💳 Nu Card (Nubank)</div>
           </div>
           <div class="rec-score">85% match</div>
         </div>
-        <div class="rec-desc" id="rec-desc-default">Disponible en México, Colombia y Brasil. Sin cuotas ocultas, control total desde el app.</div>
+        <div class="rec-desc" id="rec-desc-default" data-i18n="rec_desc_default">Disponible en México, Colombia y Brasil. Sin cuotas ocultas, control total desde el app.</div>
         <div class="rec-benefits">
           <span class="rec-benefit">Sin cuota anual</span>
           <span class="rec-benefit">Sin comisiones</span>
@@ -2146,10 +2144,10 @@ body {
     <div id="section-assistant" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title">🤖 Asistente Financiero IA</div>
-          <div class="page-subtitle">Powered by Google Gemini AI</div>
+          <div class="page-title" data-i18n="ai_section_title">🤖 Asistente Financiero IA</div>
+          <div class="page-subtitle" data-i18n="ai_section_sub">Powered by Google Gemini AI</div>
         </div>
-        <span class="badge badge-success">● En línea</span>
+        <span class="badge badge-success" data-i18n="ai_online">● En línea</span>
       </div>
 
       <div class="card" style="max-width:800px;">
@@ -2158,27 +2156,27 @@ body {
             <div class="chat-msg ai">
               🤖 ¡Hola! Soy tu asistente financiero personal impulsado por Google Gemini AI.<br><br>
               Puedo ayudarte con:<br>
-              <span id="ai-cap-1">• 📊 Analizar tus gastos e ingresos</span><br>
-              • 💳 Recomendar la mejor tarjeta para cada compra<br>
-              • 📉 Crear un plan para pagar tus deudas<br>
-              • 💡 Darte consejos personalizados<br>
-              • 🔄 Detectar suscripciones que podrías cancelar<br><br>
-              ¿En qué te puedo ayudar hoy?
+              <span id="ai-cap-1" data-i18n="ai_cap_1">• 📊 Analizar tus gastos e ingresos</span><br>
+              <span data-i18n="ai_cap_2">• 💳 Recomendar la mejor tarjeta para cada compra</span><br>
+              <span data-i18n="ai_cap_3">• 📉 Crear un plan para pagar tus deudas</span><br>
+              <span data-i18n="ai_cap_4">• 💡 Darte consejos personalizados</span><br>
+              <span data-i18n="ai_cap_5">• 🔄 Detectar suscripciones que podrías cancelar</span><br><br>
+              <span data-i18n="ai_cap_end">¿En qué te puedo ayudar hoy?</span>
             </div>
           </div>
 
           <div style="padding:16px 0;border-top:1px solid var(--border);">
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-              <button class="btn btn-outline btn-sm" onclick="quickChat('¿Cómo puedo reducir mis gastos este mes?')">💡 Reducir gastos</button>
-              <button class="btn btn-outline btn-sm" onclick="quickChat('¿Cuál es la mejor tarjeta para el supermercado?')">💳 Mejor tarjeta</button>
-              <button class="btn btn-outline btn-sm" onclick="quickChat('Dame un plan para pagar mis deudas en 12 meses')">📉 Plan de deudas</button>
-              <button class="btn btn-outline btn-sm" onclick="quickChat('¿Qué suscripciones debería cancelar?')">🔄 Suscripciones</button>
+              <button class="btn btn-outline btn-sm" onclick="quickChat('¿Cómo puedo reducir mis gastos este mes?')" data-i18n="quick_reduce">💡 Reducir gastos</button>
+              <button class="btn btn-outline btn-sm" onclick="quickChat('¿Cuál es la mejor tarjeta para el supermercado?')" data-i18n="quick_best_card">💳 Mejor tarjeta</button>
+              <button class="btn btn-outline btn-sm" onclick="quickChat('Dame un plan para pagar mis deudas en 12 meses')" data-i18n="quick_debt_plan">📉 Plan de deudas</button>
+              <button class="btn btn-outline btn-sm" onclick="quickChat('¿Qué suscripciones debería cancelar?')" data-i18n="quick_subs">🔄 Suscripciones</button>
             </div>
             <div class="chat-input-area">
               <input class="chat-input" id="main-chat-input" 
-                placeholder="Escribe tu pregunta financiera..." 
+                placeholder="Escribe tu pregunta financiera..." data-i18n-placeholder="ai_placeholder" 
                 onkeypress="if(event.key==='Enter') sendMainChat()">
-              <button class="btn btn-primary" onclick="sendMainChat()">Enviar →</button>
+              <button class="btn btn-primary" onclick="sendMainChat()" data-i18n="btn_send">Enviar →</button>
             </div>
           </div>
         </div>
@@ -2189,89 +2187,89 @@ body {
     <div id="section-reports" style="display:none;">
       <div class="page-header">
         <div>
-          <div class="page-title">📈 Reportes</div>
-          <div class="page-subtitle">Análisis detallado de tus finanzas</div>
+          <div class="page-title" data-i18n="reports_title">📈 Reportes</div>
+          <div class="page-subtitle" data-i18n="reports_sub">Análisis detallado de tus finanzas</div>
         </div>
-        <button class="btn btn-outline btn-sm" onclick="exportData('csv')">⬇ CSV</button> <button class="btn btn-primary btn-sm" onclick="exportData('pdf')">⬇ PDF</button>
+        <button class="btn btn-outline btn-sm" onclick="exportData('csv')" data-i18n="btn_csv">⬇ CSV</button> <button class="btn btn-primary btn-sm" onclick="exportData('pdf')" data-i18n="btn_pdf">⬇ PDF</button>
       </div>
 
       <div class="cards-grid">
         <div class="stat-card">
           <div class="stat-card-icon">💵</div>
-          <div class="stat-card-label">Ingresos Total</div>
+          <div class="stat-card-label" data-i18n="lbl_total_income">Ingresos Total</div>
           <div class="stat-card-value green" id="report-total-income">$0.00</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💸</div>
-          <div class="stat-card-label">Gastos Total</div>
+          <div class="stat-card-label" data-i18n="lbl_total_expense">Gastos Total</div>
           <div class="stat-card-value red" id="report-total-expense">$0.00</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💰</div>
-          <div class="stat-card-label">Balance</div>
+          <div class="stat-card-label" data-i18n="th_balance">Balance</div>
           <div class="stat-card-value cyan" id="report-balance">$0.00</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">📊</div>
-          <div class="stat-card-label">Transacciones</div>
+          <div class="stat-card-label" data-i18n="lbl_transactions">Transacciones</div>
           <div class="stat-card-value green" id="report-total-txs">0</div>
         </div>
       </div>
 
       <div class="content-grid">
         <div class="card">
-          <div class="card-title" style="margin-bottom:20px;">📊 Gastos por Categoría</div>
+          <div class="card-title" style="margin-bottom:20px;" data-i18n="rep_by_cat">📊 Gastos por Categoría</div>
           <div style="display:flex;flex-direction:column;gap:12px;">
           <div id="report-top-categories">
-            <p id="no-trans-yet" style="color:#475569;font-size:13px;text-align:center;">Sin transacciones aún</p>
+            <p id="no-trans-yet" style="color:#475569;font-size:13px;text-align:center;" data-i18n="no_trans_yet">Sin transacciones aún</p>
           </div>
         </div>
         </div>
 
         <div class="card">
-          <div class="card-title" style="margin-bottom:20px;">📅 Resumen Mensual 2025</div>
+          <div class="card-title" style="margin-bottom:20px;" data-i18n="rep_monthly">📅 Resumen Mensual 2025</div>
           <table class="table">
             <thead>
               <tr>
-                <th>MES</th>
-                <th>INGRESOS</th>
-                <th>GASTOS</th>
-                <th>BALANCE</th>
+                <th data-i18n="th_month">MES</th>
+                <th data-i18n="th_income">INGRESOS</th>
+                <th data-i18n="th_expense">GASTOS</th>
+                <th data-i18n="th_balance">BALANCE</th>
               </tr>
             </thead>
             <tbody id="report-monthly-tbody">
               <tr>
-                <td>Enero</td>
+                <td data-i18n="month_jan">Enero</td>
                 <td style="color:var(--success)">$4,250</td>
                 <td style="color:var(--danger)">$3,100</td>
                 <td style="color:var(--accent)">$1,150</td>
               </tr>
               <tr>
-                <td>Febrero</td>
+                <td data-i18n="month_feb">Febrero</td>
                 <td style="color:var(--success)">$4,250</td>
                 <td style="color:var(--danger)">$2,890</td>
                 <td style="color:var(--accent)">$1,360</td>
               </tr>
               <tr>
-                <td>Marzo</td>
+                <td data-i18n="month_mar">Marzo</td>
                 <td style="color:var(--success)">$4,750</td>
                 <td style="color:var(--danger)">$3,200</td>
                 <td style="color:var(--accent)">$1,550</td>
               </tr>
               <tr>
-                <td>Abril</td>
+                <td data-i18n="month_apr">Abril</td>
                 <td style="color:var(--success)">$4,250</td>
                 <td style="color:var(--danger)">$2,750</td>
                 <td style="color:var(--accent)">$1,500</td>
               </tr>
               <tr>
-                <td>Mayo</td>
+                <td data-i18n="month_may">Mayo</td>
                 <td style="color:var(--success)">$5,000</td>
                 <td style="color:var(--danger)">$2,980</td>
                 <td style="color:var(--accent)">$2,020</td>
               </tr>
               <tr>
-                <td><strong>Junio</strong></td>
+                <td data-i18n="month_jun"><strong>Junio</strong></td>
                 <td style="color:var(--success)"><strong>$4,250</strong></td>
                 <td style="color:var(--danger)"><strong>$2,848</strong></td>
                 <td style="color:var(--accent)"><strong>$1,402</strong></td>
@@ -2394,7 +2392,7 @@ body {
               <span id="current-plan-label">✨ Tu plan actual: FREE</span>
             </div>
             <div class="card-title" style="font-size:22px; margin-bottom:6px;" data-i18n="set_plan">💳 Elige tu plan</div>
-            <p id="pricing-tagline" style="color:var(--gray); font-size:13px; margin:0;">Invierte menos que un café al día y recupera cientos al mes</p>
+            <p id="pricing-tagline" style="color:var(--gray); font-size:13px; margin:0;" data-i18n="pricing_tagline">Invierte menos que un café al día y recupera cientos al mes</p>
 
 
           </div>
@@ -2411,15 +2409,15 @@ body {
                 
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div id="modal-free-f1" style="font-size:12px; color:#64748b;">✅ 5 mensajes IA por día</div>
-                <div id="modal-free-f2" style="font-size:12px; color:#64748b;">✅ Hasta 30 transacciones</div>
-                <div id="modal-free-f3" style="font-size:12px; color:#64748b;">✅ 1 tarjeta</div>
-                <div id="modal-free-f4" style="font-size:12px; color:#ef4444;">❌ Sin scanner de recibos</div>
-                <div id="modal-free-f5" style="font-size:12px; color:#ef4444;">❌ Sin reportes avanzados</div>
-                <div id="modal-free-f6" style="font-size:12px; color:#ef4444;">❌ Sin GPT-4o</div>
+                <div id="modal-free-f1" style="font-size:12px; color:#64748b;" data-i18n="modal_free_f1">✅ 5 mensajes IA por día</div>
+                <div id="modal-free-f2" style="font-size:12px; color:#64748b;" data-i18n="modal_free_f2">✅ Hasta 30 transacciones</div>
+                <div id="modal-free-f3" style="font-size:12px; color:#64748b;" data-i18n="modal_free_f3">✅ 1 tarjeta</div>
+                <div id="modal-free-f4" style="font-size:12px; color:#ef4444;" data-i18n="modal_free_f4">❌ Sin scanner de recibos</div>
+                <div id="modal-free-f5" style="font-size:12px; color:#ef4444;" data-i18n="modal_free_f5">❌ Sin reportes avanzados</div>
+                <div id="modal-free-f6" style="font-size:12px; color:#ef4444;" data-i18n="modal_free_f6">❌ Sin GPT-4o</div>
               </div>
               <button id="btn-plan-free" disabled style="width:100%; padding:12px; background:#1e293b; border:1px solid #334155; border-radius:10px; color:#475569; font-size:13px; font-weight:600; cursor:not-allowed;">
-                <span id="btn-free-label">Gratis para siempre</span>
+                <span id="btn-free-label" data-i18n="btn_free_label">Gratis para siempre</span>
               </button>
             </div>
 
@@ -2428,16 +2426,16 @@ body {
               <div style="background:#1e293b; border-radius:50px; padding:4px; display:flex; gap:4px; border:1px solid #334155;">
                 <button id="pricing-btn-monthly" onclick="setBilling('monthly')"
                   style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:#334155; color:#94a3b8; transition:all 0.3s;">
-                  <span id="billing-monthly-label">Mensual</span>
+                  <span id="billing-monthly-label" data-i18n="billing_monthly">Mensual</span>
                 </button>
                 <button id="pricing-btn-annual" onclick="setBilling('annual')"
                   style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; transition:all 0.3s;">
-                  <span id="billing-annual-label">Anual</span> &nbsp;<span style="background:#ef4444; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:900;">-20%</span>
+                  <span id="billing-annual-label" data-i18n="billing_annual">Anual</span> &nbsp;<span style="background:#ef4444; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:900;">-20%</span>
                 </button>
               </div>
             </div>
             <div id="annual-savings-banner" style="text-align:center; margin-bottom:16px; padding:10px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:10px;">
-              <span id="annual-savings-text" style="color:#10b981; font-size:13px; font-weight:700;">🎉 Pagas anual y ahorras hasta <strong>$120/año</strong> — 2 meses GRATIS</span>
+              <span id="annual-savings-text" style="color:#10b981; font-size:13px; font-weight:700;" data-i18n="annual_savings_text">🎉 Pagas anual y ahorras hasta <strong>$120/año</strong> — 2 meses GRATIS</span>
             </div>
 
             <!-- PERSONAL -->
@@ -2451,16 +2449,16 @@ body {
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div id="modal-pro-f1" style="font-size:12px; color:#e2e8f0;">✅ 50 mensajes IA por día</div>
-                <div id="modal-personal-f1" style="font-size:12px; color:#e2e8f0;">✅ Transacciones ilimitadas</div>
-                <div id="modal-pro-f2" style="font-size:12px; color:#e2e8f0;">✅ Hasta 3 tarjetas</div>
-                <div id="modal-pro-f3" style="font-size:12px; color:#e2e8f0;">✅ Scanner de recibos</div>
-                <div id="modal-personal-f2" style="font-size:12px; color:#e2e8f0;">✅ Reportes básicos</div>
-                <div id="modal-personal-f3" style="font-size:12px; color:#ef4444;">❌ Sin GPT-4o</div>
+                <div id="modal-pro-f1" style="font-size:12px; color:#e2e8f0;" data-i18n="modal_pro_f1">✅ 50 mensajes IA por día</div>
+                <div id="modal-personal-f1" style="font-size:12px; color:#e2e8f0;" data-i18n="modal_personal_f1">✅ Transacciones ilimitadas</div>
+                <div id="modal-pro-f2" style="font-size:12px; color:#e2e8f0;" data-i18n="modal_pro_f2">✅ Hasta 3 tarjetas</div>
+                <div id="modal-pro-f3" style="font-size:12px; color:#e2e8f0;" data-i18n="modal_pro_f3">✅ Scanner de recibos</div>
+                <div id="modal-personal-f2" style="font-size:12px; color:#e2e8f0;" data-i18n="modal_personal_f2">✅ Reportes básicos</div>
+                <div id="modal-personal-f3" style="font-size:12px; color:#ef4444;" data-i18n="modal_personal_f3">❌ Sin GPT-4o</div>
               </div>
               <button onclick="startCheckout('personal', currentBilling)"
                 style="width:100%; padding:14px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:10px; color:#000; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(245,158,11,0.3);">
-                <span id="cta-personal-label">🚀 Empezar ahora — Solo </span><span id="cta-personal">$9.99/mes</span>
+                <span id="cta-personal-label" data-i18n="cta_personal_label">🚀 Empezar ahora — Solo </span><span id="cta-personal">$9.99/mes</span>
               </button>
             </div>
 
@@ -2468,7 +2466,7 @@ body {
             <div id="plan-card-pro" style="border:2px solid #f59e0b; border-radius:16px; padding:20px; position:relative; background:linear-gradient(145deg, rgba(245,158,11,0.05), rgba(15,23,42,0.8));">
               <!-- Popular badge -->
               <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; font-size:11px; font-weight:900; padding:4px 16px; border-radius:20px; white-space:nowrap; letter-spacing:0.5px;">
-                <span id="badge-popular">🔥 MÁS POPULAR</span>
+                <span id="badge-popular-modal" data-i18n="badge_popular">🔥 MÁS POPULAR</span>
               </div>
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; margin-top:8px;">
                 <div>
@@ -2476,17 +2474,17 @@ body {
                   <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
                     <span id="price-pro">$19.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-pro">/mes</span>
                   </div>
-                  <div id="plan-pro-real-price" style="font-size:11px; color:#64748b; text-decoration:line-through;">Valor real $39.99/mes</div>
+                  <div id="plan-pro-real-price" style="font-size:11px; color:#64748b; text-decoration:line-through;" data-i18n="plan_pro_real_price">Valor real $39.99/mes</div>
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div id="pro-f1" style="font-size:12px; color:#e2e8f0;">✅ <strong>IA ilimitada 24/7</strong></div>
-                <div id="pro-f2" style="font-size:12px; color:#e2e8f0;">✅ <strong>GPT-4o</strong> — la IA más avanzada</div>
-                <div id="pro-f3" style="font-size:12px; color:#e2e8f0;">✅ Transacciones ilimitadas · Hasta 10 tarjetas</div>
-                <div id="pro-f4" style="font-size:12px; color:#e2e8f0;">✅ Scanner inteligente de recibos</div>
-                <div id="pro-f5" style="font-size:12px; color:#e2e8f0;">✅ Reportes avanzados con insights</div>
-                <div id="pro-f6" style="font-size:12px; color:#e2e8f0;">✅ Metas financieras con IA</div>
-                <div id="pro-f7" style="font-size:12px; color:#10b981;">✅ <strong>Ahorra $340/mes en promedio</strong></div>
+                <div id="pro-f1" style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f1">✅ <strong>IA ilimitada 24/7</strong></div>
+                <div id="pro-f2" style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f2">✅ <strong>GPT-4o</strong> — la IA más avanzada</div>
+                <div id="pro-f3" style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f3">✅ Transacciones ilimitadas · Hasta 10 tarjetas</div>
+                <div id="pro-f4" style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f4">✅ Scanner inteligente de recibos</div>
+                <div id="pro-f5" style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f5">✅ Reportes avanzados con insights</div>
+                <div id="pro-f6" style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f6">✅ Metas financieras con IA</div>
+                <div id="pro-f7" style="font-size:12px; color:#10b981;" data-i18n="pro_f7">✅ <strong>Ahorra $340/mes en promedio</strong></div>
               </div>
               <button onclick="startCheckout('pro', currentBilling)"
                 style="width:100%; padding:16px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:12px; color:#000; font-size:15px; font-weight:900; cursor:pointer; box-shadow:0 6px 25px rgba(245,158,11,0.4); letter-spacing:0.3px;">
@@ -2506,14 +2504,14 @@ body {
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div id="biz-f1" style="font-size:12px; color:#e2e8f0;">✅ Todo lo de Pro</div>
-                <div id="biz-f2" style="font-size:12px; color:#e2e8f0;">✅ Hasta 5 usuarios</div>
-                <div id="biz-f3" style="font-size:12px; color:#e2e8f0;">✅ Gestión de equipo</div>
-                <div id="biz-f4" style="font-size:12px; color:#e2e8f0;">✅ Reportes empresariales</div>
-                <div id="biz-f5" style="font-size:12px; color:#e2e8f0;">✅ Soporte prioritario 24/7</div>
-                <div id="biz-f6" style="font-size:12px; color:#e2e8f0;">✅ API Access para integraciones</div>
-                <div id="biz-f7" style="font-size:12px; color:#e2e8f0;">✅ Tarjetas y usuarios ilimitados</div>
-                <div id="biz-f8" style="font-size:12px; color:#10b981;">✅ <strong>ROI garantizado o devolvemos tu dinero</strong></div>
+                <div id="biz-f1" style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f1">✅ Todo lo de Pro</div>
+                <div id="biz-f2" style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f2">✅ Hasta 5 usuarios</div>
+                <div id="biz-f3" style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f3">✅ Gestión de equipo</div>
+                <div id="biz-f4" style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f4">✅ Reportes empresariales</div>
+                <div id="biz-f5" style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f5">✅ Soporte prioritario 24/7</div>
+                <div id="biz-f6" style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f6">✅ API Access para integraciones</div>
+                <div id="biz-f7" style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f7">✅ Tarjetas y usuarios ilimitados</div>
+                <div id="biz-f8" style="font-size:12px; color:#10b981;" data-i18n="biz_f8">✅ <strong>ROI garantizado o devolvemos tu dinero</strong></div>
               </div>
               <button onclick="startCheckout('business', currentBilling)"
                 style="width:100%; padding:14px; background:linear-gradient(135deg,#6366f1,#4f46e5); border:none; border-radius:10px; color:#fff; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(99,102,241,0.3);">
@@ -2526,17 +2524,17 @@ body {
           <!-- Testimonial -->
           <div style="margin-top:20px; padding:16px; background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.2); border-radius:12px; text-align:center;">
             <p id="testimonial-text" style="color:#94a3b8; font-size:12px; margin:0; line-height:1.6;">
-              💬 <em id="testimonial-quote">"Recuperé $180 el primer mes detectando suscripciones olvidadas y gastos innecesarios"</em><br>
-              <strong id="testimonial-author" style="color:#10b981;">— María G., usuaria Pro desde 2024</strong>
+              💬 <em id="testimonial-quote" data-i18n="testimonial_quote">"Recuperé $180 el primer mes detectando suscripciones olvidadas y gastos innecesarios"</em><br>
+              <strong id="testimonial-author" style="color:#10b981;" data-i18n="testimonial_author">— María G., usuaria Pro desde 2024</strong>
             </p>
           </div>
 
           <!-- VIP Code -->
           <div style="margin-top:16px; text-align:center;">
-            <p id="vip-code-label" style="color:#64748b; font-size:12px; margin-bottom:8px;">¿Tienes un código VIP?</p>
+            <p id="vip-code-label" style="color:#64748b; font-size:12px; margin-bottom:8px;" data-i18n="vip_code_label">¿Tienes un código VIP?</p>
             <div style="display:flex; gap:8px;">
-              <input type="text" id="vip-code-input" placeholder="Ingresa tu código" style="flex:1; padding:10px 14px; background:#0f172a; border:1px solid #334155; border-radius:10px; color:#fff; font-size:13px;">
-              <button onclick="redeemVipCode()" style="padding:10px 16px; background:#f59e0b; border:none; border-radius:10px; color:#000; font-weight:700; font-size:13px; cursor:pointer;">
+              <input type="text" id="vip-code-input" placeholder="Ingresa tu código" data-i18n-placeholder="vip_code_placeholder" style="flex:1; padding:10px 14px; background:#0f172a; border:1px solid #334155; border-radius:10px; color:#fff; font-size:13px;">
+              <button onclick="redeemVipCode()" style="padding:10px 16px; background:#f59e0b; border:none; border-radius:10px; color:#000; font-weight:700; font-size:13px; cursor:pointer;" data-i18n="btn_apply">
                 ✅ Aplicar
               </button>
             </div>
@@ -2544,54 +2542,54 @@ body {
         </div>
 
         <div class="card">
-          <div class="card-title" style="margin-bottom:20px;">🔔 Notificaciones</div>
+          <div class="card-title" style="margin-bottom:20px;" data-i18n="set_notif">🔔 Notificaciones</div>
           <div style="display:flex;flex-direction:column;gap:16px;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span id="notif-label-1" style="font-size:14px;">Alertas de suscripciones</span>
+              <span id="notif-label-1" style="font-size:14px;" data-i18n="notif_label_1">Alertas de suscripciones</span>
               <input type="checkbox" id="notif-alerts" name="notif-alerts" checked style="accent-color:var(--accent);width:18px;height:18px;">
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span id="notif-label-2" style="font-size:14px;">Gastos inusuales</span>
+              <span id="notif-label-2" style="font-size:14px;" data-i18n="notif_label_2">Gastos inusuales</span>
               <input type="checkbox" id="notif-unusual" name="notif-unusual" checked style="accent-color:var(--accent);width:18px;height:18px;">
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span id="notif-label-3" style="font-size:14px;">Resumen semanal</span>
+              <span id="notif-label-3" style="font-size:14px;" data-i18n="notif_label_3">Resumen semanal</span>
               <input type="checkbox" id="notif-weekly" name="notif-weekly" style="accent-color:var(--accent);width:18px;height:18px;">
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span id="notif-label-4" style="font-size:14px;">Recordatorio de pagos</span>
+              <span id="notif-label-4" style="font-size:14px;" data-i18n="notif_label_4">Recordatorio de pagos</span>
               <input type="checkbox" id="notif-reminders" name="notif-reminders" checked style="accent-color:var(--accent);width:18px;height:18px;">
             </div>
           </div>
         </div>
 
         <div class="card" style="border-color:rgba(255,71,87,0.3);">
-          <div id="danger-zone-title" class="card-title" style="margin-bottom:20px;color:var(--danger);">⚠️ Zona de Peligro</div>
+          <div id="danger-zone-title" class="card-title" style="margin-bottom:20px;color:var(--danger);" data-i18n="danger_zone_title">⚠️ Zona de Peligro</div>
           <button class="btn btn-sm" style="background:rgba(255,71,87,0.2);color:var(--danger);border:1px solid var(--danger);" 
-            onclick="showNotif('⚠️ Función disponible próximamente')">
-            <span id="delete-account-btn-label">Eliminar Cuenta</span>
+            onclick="showNotif(t('notif_coming_soon'))">
+            <span id="delete-account-btn-label" data-i18n="delete_account_btn">Eliminar Cuenta</span>
           </button>
         </div>
       </div>
 
         <div class="card" style="border-color:rgba(0,238,255,0.2);margin-top:4px;">
-          <div id="legal-title" class="card-title" style="margin-bottom:16px;">⚖️ Legal</div>
+          <div id="legal-title" class="card-title" style="margin-bottom:16px;" data-i18n="legal_title">⚖️ Legal</div>
           <div style="display:flex;flex-direction:column;gap:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(0,238,255,0.05);border-radius:10px;border:1px solid rgba(0,238,255,0.1);">
               <div>
-                <div id="legal-terms-title" style="font-size:14px;color:#fff;font-weight:600;">📋 Términos de Servicio</div>
-                <div id="legal-terms-desc" style="font-size:12px;color:#8892A4;margin-top:2px;">Condiciones de uso de FinanceAI Pro</div>
+                <div id="legal-terms-title" style="font-size:14px;color:#fff;font-weight:600;" data-i18n="legal_terms_title">📋 Términos de Servicio</div>
+                <div id="legal-terms-desc" style="font-size:12px;color:#8892A4;margin-top:2px;" data-i18n="legal_terms_desc">Condiciones de uso de FinanceAI Pro</div>
               </div>
               <button onclick="showLegal('terms')" style="padding:8px 16px;background:rgba(0,238,255,0.1);border:1px solid rgba(0,238,255,0.3);border-radius:8px;color:#00EEFF;font-size:13px;cursor:pointer;font-weight:600;">Ver →</button>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(0,238,255,0.05);border-radius:10px;border:1px solid rgba(0,238,255,0.1);">
               <div>
-                <div id="legal-privacy-title" style="font-size:14px;color:#fff;font-weight:600;">🔒 Política de Privacidad</div>
-                <div id="legal-privacy-desc" style="font-size:12px;color:#8892A4;margin-top:2px;">Cómo protegemos tus datos</div>
+                <div id="legal-privacy-title" style="font-size:14px;color:#fff;font-weight:600;" data-i18n="legal_privacy_title">🔒 Política de Privacidad</div>
+                <div id="legal-privacy-desc" style="font-size:12px;color:#8892A4;margin-top:2px;" data-i18n="legal_privacy_desc">Cómo protegemos tus datos</div>
               </div>
               <button onclick="showLegal('privacy')" style="padding:8px 16px;background:rgba(0,238,255,0.1);border:1px solid rgba(0,238,255,0.3);border-radius:8px;color:#00EEFF;font-size:13px;cursor:pointer;font-weight:600;">Ver →</button>
             </div>
-            <p id="copyright-text" style="font-size:11px;color:#64748b;text-align:center;margin:4px 0 0;">© 2025 Climberforsuccess LLC · Todos los derechos reservados</p>
+            <p id="copyright-text" style="font-size:11px;color:#64748b;text-align:center;margin:4px 0 0;" data-i18n="copyright_text">© 2025 Climberforsuccess LLC · Todos los derechos reservados</p>
           </div>
         </div>
 
@@ -2601,8 +2599,8 @@ body {
     <div id="section-admin" style="display:none;">
       <div class="page-header">
         <div>
-          <div id="admin-page-title" class="page-title">🔐 Admin Panel</div>
-          <div id="admin-page-subtitle" class="page-subtitle">Climberforsuccess LLC — Panel de Control</div>
+          <div id="admin-page-title" class="page-title" data-i18n="admin_page_title">🔐 Admin Panel</div>
+          <div id="admin-page-subtitle" class="page-subtitle" data-i18n="admin_page_subtitle">Climberforsuccess LLC — Panel de Control</div>
         </div>
         <span class="badge badge-danger">ADMIN</span>
       </div>
@@ -2611,19 +2609,19 @@ body {
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:28px;">
         <div class="admin-stat">
           <div class="admin-stat-value" id="admin-total-users">—</div>
-          <div id="admin-label-total-users" class="admin-stat-label">👥 Usuarios Totales</div>
+          <div id="admin-label-total-users" class="admin-stat-label" data-i18n="admin_label_total">👥 Usuarios Totales</div>
         </div>
         <div class="admin-stat">
           <div class="admin-stat-value" id="admin-vip-users">—</div>
-          <div id="admin-label-vip-users" class="admin-stat-label">👑 Usuarios VIP</div>
+          <div id="admin-label-vip-users" class="admin-stat-label" data-i18n="admin_label_vip">👑 Usuarios VIP</div>
         </div>
         <div class="admin-stat">
           <div class="admin-stat-value" id="admin-codes-used">—</div>
-          <div id="admin-label-codes" class="admin-stat-label">🎁 Códigos Usados</div>
+          <div id="admin-label-codes" class="admin-stat-label" data-i18n="admin_label_codes">🎁 Códigos Usados</div>
         </div>
         <div class="admin-stat">
           <div class="admin-stat-value" id="admin-ai-calls">—</div>
-          <div id="admin-label-ai-calls" class="admin-stat-label">🤖 Llamadas IA Hoy</div>
+          <div id="admin-label-ai-calls" class="admin-stat-label" data-i18n="admin_label_ai_calls">🤖 Llamadas IA Hoy</div>
         </div>
       </div>
 
@@ -2631,35 +2629,35 @@ body {
 
         <!-- Gestión de Códigos VIP -->
         <div class="card">
-          <div id="admin-vip-mgmt-title" class="card-title" style="margin-bottom:20px;">🎁 Gestión de Códigos VIP</div>
+          <div id="admin-vip-mgmt-title" class="card-title" style="margin-bottom:20px;" data-i18n="admin_vip_mgmt_title">🎁 Gestión de Códigos VIP</div>
 
           <!-- Generar nuevo código -->
           <div style="background:#0f172a; border-radius:12px; padding:16px; margin-bottom:16px;">
-            <p id="admin-gen-code-label" style="color:#94a3b8; font-size:13px; margin-bottom:12px;">Generar nuevo código:</p>
+            <p id="admin-gen-code-label" style="color:#94a3b8; font-size:13px; margin-bottom:12px;" data-i18n="admin_gen_code_label">Generar nuevo código:</p>
             <div style="display:flex; gap:8px; margin-bottom:10px;">
               <select id="admin-code-plan" style="flex:1; padding:10px; background:#1e293b; border:1px solid #334155; border-radius:8px; color:#fff; font-size:13px;">
-                <option id="admin-opt-personal" value="Personal">⚡ VIP Personal</option>
-                <option id="admin-opt-familia" value="Familia">👨‍👩‍👧 VIP Familia</option>
+                <option id="admin-opt-personal" value="Personal" data-i18n="admin_opt_personal">⚡ VIP Personal</option>
+                <option id="admin-opt-familia" value="Familia" data-i18n="admin_opt_familia">👨‍👩‍👧 VIP Familia</option>
               </select>
               <select id="admin-code-months" style="flex:1; padding:10px; background:#1e293b; border:1px solid #334155; border-radius:8px; color:#fff; font-size:13px;">
-                <option id="admin-opt-1m" value="1">1 mes</option>
-                <option id="admin-opt-3m" value="3">3 meses</option>
-                <option id="admin-opt-6m" value="6">6 meses</option>
-                <option id="admin-opt-12m" value="12">1 año</option>
+                <option id="admin-opt-1m" value="1" data-i18n="admin_opt_1m">1 mes</option>
+                <option id="admin-opt-3m" value="3" data-i18n="admin_opt_3m">3 meses</option>
+                <option id="admin-opt-6m" value="6" data-i18n="admin_opt_6m">6 meses</option>
+                <option id="admin-opt-12m" value="12" data-i18n="admin_opt_12m">1 año</option>
               </select>
             </div>
             <button onclick="adminGenerateCode()"
               style="width:100%; padding:10px; background:linear-gradient(135deg,#f59e0b,#d97706);
               border:none; border-radius:8px; color:#000; font-weight:bold; cursor:pointer; font-size:13px;">
-              <span id="admin-gen-code-btn-label">✨ Generar Código</span>
+              <span id="admin-gen-code-btn-label" data-i18n="admin_gen_code_btn">✨ Generar Código</span>
             </button>
             <div id="admin-generated-code" style="margin-top:10px; display:none;">
               <div style="background:#1e293b; border:1px solid #f59e0b; border-radius:8px; padding:12px; text-align:center;">
-                <p id="admin-code-generated-label" style="color:#94a3b8; font-size:11px; margin-bottom:4px;">Código generado:</p>
+                <p id="admin-code-generated-label" style="color:#94a3b8; font-size:11px; margin-bottom:4px;" data-i18n="admin_code_generated_label">Código generado:</p>
                 <p id="admin-code-display" style="color:#f59e0b; font-size:18px; font-weight:bold; letter-spacing:3px; margin:0;"></p>
                 <button onclick="adminCopyCode()"
                   style="margin-top:8px; padding:6px 16px; background:#334155; border:none; border-radius:6px; color:#fff; cursor:pointer; font-size:12px;">
-                  <span id="admin-copy-btn-label">📋 Copiar</span>
+                  <span id="admin-copy-btn-label" data-i18n="admin_copy_btn">📋 Copiar</span>
                 </button>
               </div>
             </div>
@@ -2667,35 +2665,35 @@ body {
 
           <!-- Códigos generados -->
           <div>
-            <p id="admin-session-codes-label" style="color:#94a3b8; font-size:13px; margin-bottom:10px;">Códigos generados esta sesión:</p>
+            <p id="admin-session-codes-label" style="color:#94a3b8; font-size:13px; margin-bottom:10px;" data-i18n="admin_session_codes">Códigos generados esta sesión:</p>
             <div id="admin-codes-list" style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;">
-              <p id="admin-no-codes-msg" style="color:#475569; font-size:12px; text-align:center;">No hay códigos generados aún</p>
+              <p id="admin-no-codes-msg" style="color:#475569; font-size:12px; text-align:center;" data-i18n="admin_no_codes_msg">No hay códigos generados aún</p>
             </div>
           </div>
         </div>
 
         <!-- Stats y códigos usados -->
         <div class="card">
-          <div id="admin-used-codes-title" class="card-title" style="margin-bottom:20px;">📊 Códigos VIP Usados</div>
+          <div id="admin-used-codes-title" class="card-title" style="margin-bottom:20px;" data-i18n="admin_used_codes_title">📊 Códigos VIP Usados</div>
           <div id="admin-used-codes-list" style="display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto;">
-            <p id="admin-loading-msg" style="color:#475569; font-size:12px; text-align:center;">Cargando...</p>
+            <p id="admin-loading-msg" style="color:#475569; font-size:12px; text-align:center;" data-i18n="admin_loading_msg">Cargando...</p>
           </div>
 
           <div style="margin-top:20px; padding-top:16px; border-top:1px solid #1e293b;">
-            <div id="admin-activate-vip-title" class="card-title" style="margin-bottom:16px;">🌟 Activar Plan VIP</div>
+            <div id="admin-activate-vip-title" class="card-title" style="margin-bottom:16px;" data-i18n="admin_activate_vip">🌟 Activar Plan VIP</div>
 
             <!-- Estado actual -->
             <div id="vip-status-box" style="background:#0f172a; border-radius:12px; padding:16px; margin-bottom:16px; text-align:center;">
               <div id="vip-status-icon" style="font-size:36px; margin-bottom:6px;">🔓</div>
-              <div id="vip-status-label" style="color:#94a3b8; font-size:14px;">Plan actual: <strong style="color:#fff;" id="vip-plan-name">Gratuito</strong></div>
-              <div id="vip-status-sub" style="color:#64748b; font-size:12px; margin-top:4px;"><span id="vip-status-sub-text">5 mensajes IA por día</span></div>
+              <div id="vip-status-label" style="color:#94a3b8; font-size:14px;" data-i18n="vip_status_label">Plan actual: <strong style="color:#fff;" id="vip-plan-name" data-i18n="vip_plan_name">Gratuito</strong></div>
+              <div id="vip-status-sub" style="color:#64748b; font-size:12px; margin-top:4px;"><span id="vip-status-sub-text" data-i18n="vip_status_sub_text">5 mensajes IA por día</span></div>
             </div>
 
             <!-- Ingresar código -->
             <div id="vip-code-section">
-              <p id="admin-vip-enter-label" style="color:#94a3b8; font-size:13px; margin-bottom:10px;">¿Tienes un código VIP? Ingrésalo aquí:</p>
+              <p id="admin-vip-enter-label" style="color:#94a3b8; font-size:13px; margin-bottom:10px;" data-i18n="admin_vip_enter_label">¿Tienes un código VIP? Ingrésalo aquí:</p>
               <div style="display:flex; gap:8px;">
-                <input id="admin-vip-code-input" type="text" placeholder="Ej: VIP-XXXX-XXXX"
+                <input id="admin-vip-code-input" type="text" placeholder="Ej: VIP-XXXX-XXXX" data-i18n-placeholder="admin_vip_placeholder"
                   style="flex:1; padding:12px; background:#0f172a; border:1px solid #334155;
                   border-radius:10px; color:#fff; font-size:14px; text-transform:uppercase; letter-spacing:2px;"
                   oninput="this.value=this.value.toUpperCase()"
@@ -2703,7 +2701,7 @@ body {
                 <button onclick="activateVIPCode()"
                   style="padding:12px 16px; background:linear-gradient(135deg,#f59e0b,#d97706);
                   border:none; border-radius:10px; color:#000; font-weight:bold; cursor:pointer; font-size:14px;">
-                  <span id="activate-vip-btn-label">Activar</span>
+                  <span id="activate-vip-btn-label" data-i18n="activate_vip_btn">Activar</span>
                 </button>
               </div>
               <div id="vip-code-msg" style="margin-top:8px; font-size:13px; min-height:20px;"></div>
@@ -2712,7 +2710,7 @@ body {
             <!-- Separador -->
             <div style="display:flex; align-items:center; gap:10px; margin:16px 0;">
               <div style="flex:1; height:1px; background:#1e293b;"></div>
-              <span id="or-buy-plan-label" style="color:#475569; font-size:12px;">o compra un plan</span>
+              <span id="or-buy-plan-label" style="color:#475569; font-size:12px;" data-i18n="or_buy_plan">o compra un plan</span>
               <div style="flex:1; height:1px; background:#1e293b;"></div>
             </div>
 
@@ -2722,40 +2720,40 @@ body {
               <div style="background:#0f172a; border:1px solid #334155; border-radius:12px; padding:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <div>
-                    <span id="vip-personal-name" style="color:#fff; font-weight:bold; font-size:15px;">⚡ VIP Personal</span>
-                    <span id="vip-personal-badge" style="background:#1e3a5f; color:#60a5fa; font-size:10px; padding:2px 8px; border-radius:20px; margin-left:8px;">Popular</span>
+                    <span id="vip-personal-name" style="color:#fff; font-weight:bold; font-size:15px;" data-i18n="vip_personal_name">⚡ VIP Personal</span>
+                    <span id="vip-personal-badge" style="background:#1e3a5f; color:#60a5fa; font-size:10px; padding:2px 8px; border-radius:20px; margin-left:8px;" data-i18n="vip_personal_badge">Popular</span>
                   </div>
                   <span style="color:#f59e0b; font-weight:bold; font-size:18px;">$9.99<span style="font-size:11px; color:#94a3b8;">/mes</span></span>
                 </div>
                 <ul style="color:#94a3b8; font-size:12px; padding-left:16px; margin:0 0 12px 0; line-height:1.8;">
-                  <li id="vip-personal-f1">✅ Mensajes IA ilimitados</li>
-                  <li id="vip-personal-f2">✅ GPT-4o acceso completo</li>
-                  <li id="upgrade-li-scanner">✅ Scanner de recibos</li>
-                  <li id="vip-personal-f4">✅ Reportes avanzados</li>
+                  <li id="vip-personal-f1" data-i18n="vip_personal_f1">✅ Mensajes IA ilimitados</li>
+                  <li id="vip-personal-f2" data-i18n="vip_personal_f2">✅ GPT-4o acceso completo</li>
+                  <li id="upgrade-li-scanner" data-i18n="feat_smart_scanner">✅ Scanner de recibos</li>
+                  <li id="vip-personal-f4" data-i18n="vip_personal_f4">✅ Reportes avanzados</li>
                 </ul>
-                <button onclick="showToast('💳 Pagos disponibles muy pronto. ¡Usa un código VIP por ahora!', 'info')"
+                <button onclick="showToast(t('toast_payments_soon'), 'info')"
                   style="width:100%; padding:10px; background:linear-gradient(135deg,#f59e0b,#d97706);
                   border:none; border-radius:8px; color:#000; font-weight:bold; cursor:pointer; font-size:13px;">
-                  <span id="get-vip-personal-btn">🚀 Obtener VIP Personal</span>
+                  <span id="get-vip-personal-btn" data-i18n="get_vip_personal">🚀 Obtener VIP Personal</span>
                 </button>
               </div>
 
               <!-- Plan Familia -->
               <div style="background:#0f172a; border:1px solid #334155; border-radius:12px; padding:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                  <span id="vip-familia-name" style="color:#fff; font-weight:bold; font-size:15px;">👨‍👩‍👧 VIP Familia</span>
+                  <span id="vip-familia-name" style="color:#fff; font-weight:bold; font-size:15px;" data-i18n="vip_familia_name">👨‍👩‍👧 VIP Familia</span>
                   <span style="color:#f59e0b; font-weight:bold; font-size:18px;">$19.99<span style="font-size:11px; color:#94a3b8;">/mes</span></span>
                 </div>
                 <ul style="color:#94a3b8; font-size:12px; padding-left:16px; margin:0 0 12px 0; line-height:1.8;">
-                  <li id="vip-familia-f1">✅ Todo lo de Personal</li>
-                  <li id="vip-familia-f2">✅ Hasta 5 cuentas familiares</li>
-                  <li id="vip-familia-f3">✅ Dashboard familiar compartido</li>
-                  <li id="vip-familia-f4">✅ Soporte prioritario</li>
+                  <li id="vip-familia-f1" data-i18n="vip_familia_f1">✅ Todo lo de Personal</li>
+                  <li id="vip-familia-f2" data-i18n="vip_familia_f2">✅ Hasta 5 cuentas familiares</li>
+                  <li id="vip-familia-f3" data-i18n="vip_familia_f3">✅ Dashboard familiar compartido</li>
+                  <li id="vip-familia-f4" data-i18n="vip_familia_f4">✅ Soporte prioritario</li>
                 </ul>
-                <button onclick="showToast('💳 Pagos disponibles muy pronto. ¡Usa un código VIP por ahora!', 'info')"
+                <button onclick="showToast(t('toast_payments_soon'), 'info')"
                   style="width:100%; padding:10px; background:#1e293b;
                   border:1px solid #334155; border-radius:8px; color:#fff; font-weight:bold; cursor:pointer; font-size:13px;">
-                  <span id="get-vip-familia-btn">👨‍👩‍👧 Obtener VIP Familia</span>
+                  <span id="get-vip-familia-btn" data-i18n="get_vip_familia">👨‍👩‍👧 Obtener VIP Familia</span>
                 </button>
               </div>
             </div>
@@ -2770,7 +2768,7 @@ body {
 <!-- ============ LEGAL PAGES ============ -->
 <div class="page" id="legal">
   <div style="max-width:800px;margin:0 auto;padding:40px;">
-    <button class="btn btn-outline btn-sm" onclick="history.back();showPage(lastPage)" style="margin-bottom:24px;"><span id="legal-back-btn">← Volver</span></button>
+    <button class="btn btn-outline btn-sm" onclick="history.back();showPage(lastPage)" style="margin-bottom:24px;"><span id="legal-back-btn" data-i18n="legal_back_btn">← Volver</span></button>
     <div id="legal-content"></div>
   </div>
 </div>
@@ -2813,7 +2811,7 @@ body {
 
     <div style="text-align:center;margin-bottom:24px;">
       <div style="font-size:2rem;margin-bottom:8px;">💎</div>
-      <h2 id="modal-upgrade-title" style="font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:4px;">Upgrade Your Plan</h2>
+      <h2 id="modal-upgrade-title" style="font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:4px;" data-i18n="modal_upgrade_title">Upgrade Your Plan</h2>
       <p id="modalPlanName" style="color:#00EEFF;font-weight:600;"></p>
     </div>
 
@@ -2823,11 +2821,11 @@ body {
         flex:1;padding:8px;border:none;border-radius:50px;
         background:linear-gradient(135deg,#00EEFF,#0088FF);
         color:#000;font-weight:700;cursor:pointer;font-size:0.85rem;
-      "><span id="btn-monthly-label">Monthly</span></button>
+      "><span id="btn-monthly-label" data-i18n="btn_monthly_label">Monthly</span></button>
       <button id="btn-annual" onclick="switchBilling('annual')" style="
         flex:1;padding:8px;border:none;border-radius:50px;
         background:transparent;color:#A0B0C0;cursor:pointer;font-size:0.85rem;
-      "><span id="btn-annual-label">Annual</span> <span id="btn-annual-save" style="color:#00FF88;font-size:0.75rem;">Save 17%</span></button>
+      "><span id="btn-annual-label" data-i18n="btn_annual_label">Annual</span> <span id="btn-annual-save" style="color:#00FF88;font-size:0.75rem;" data-i18n="btn_annual_save">Save 17%</span></button>
     </div>
 
     <!-- Tabs -->
@@ -2836,12 +2834,12 @@ body {
         flex:1;padding:10px;border-radius:12px;
         background:rgba(0,238,255,0.1);border:1px solid rgba(0,238,255,0.3);
         color:#00EEFF;font-weight:600;cursor:pointer;font-size:0.85rem;
-      "><span id="tab-stripe-label">💳 Card (Stripe)</span></button>
+      "><span id="tab-stripe-label" data-i18n="tab_stripe">💳 Card (Stripe)</span></button>
       <button class="tab-btn" onclick="showTab('paypal')" style="
         flex:1;padding:10px;border-radius:12px;
         background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
         color:#A0B0C0;font-weight:600;cursor:pointer;font-size:0.85rem;
-      "><span id="tab-paypal-label">🅿️ PayPal</span></button>
+      "><span id="tab-paypal-label" data-i18n="tab_paypal">🅿️ PayPal</span></button>
     </div>
 
     <div id="stripeTab" class="tab-content" style="display:block;">
@@ -2851,7 +2849,7 @@ body {
       <div id="paypal-button-container"></div>
     </div>
 
-    <p id="modal-secure-text" style="text-align:center;font-size:0.75rem;color:#A0B0C0;margin-top:16px;">🔒 Secure • Cancel anytime • No hidden fees</p>
+    <p id="modal-secure-text" style="text-align:center;font-size:0.75rem;color:#A0B0C0;margin-top:16px;" data-i18n="modal_secure">🔒 Secure • Cancel anytime • No hidden fees</p>
   </div>
 </div>
 

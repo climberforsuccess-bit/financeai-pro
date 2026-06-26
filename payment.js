@@ -1,3 +1,9 @@
+// i18n helper
+function t(key) {
+  if (window.i18n && typeof window.i18n.t === 'function') return window.i18n.t(key);
+  return key;
+}
+
 // ===========================
 // FINANCEAI PRO — PAYMENT.JS
 // Stripe + PayPal Integration
@@ -156,11 +162,11 @@ function loadStripeButton(priceId, planName, price) {
         color: #A0B0C0;
       ">
         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-          <span>Plan:</span>
+          <span>${t('plan_label')}</span>
           <strong style="color:#fff">${planName}</strong>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span>Amount:</span>
+          <span>${t('amount_label')}</span>
           <strong style="color:#00EEFF">${price}</strong>
         </div>
       </div>
@@ -186,7 +192,7 @@ function loadStripeButton(priceId, planName, price) {
         onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 0 20px rgba(0,238,255,0.4)'"
         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
       >
-        💳 Pay with Card (Stripe)
+        ${t('pay_with_card')}
       </button>
       <p style="
         text-align: center;
@@ -194,7 +200,7 @@ function loadStripeButton(priceId, planName, price) {
         color: #A0B0C0;
         margin-top: 10px;
       ">
-        🔒 Secure payment powered by Stripe
+        ${t('secure_payment')}
       </p>
     </div>
   `;
@@ -226,7 +232,7 @@ async function redirectToStripeCheckout(priceId) {
     const data = await response.json();
 
     if (!response.ok || data.error) {
-      throw new Error(data.error || 'Could not create checkout session');
+      throw new Error(data.error || t('could_not_create'));
     }
 
     // Save intended plan before redirect
@@ -237,7 +243,7 @@ async function redirectToStripeCheckout(priceId) {
 
   } catch (err) {
     console.error('Stripe error:', err);
-    showPaymentError('stripe-button-container', err.message || 'Payment failed. Please try again.');
+    showPaymentError('stripe-button-container', err.message || t('payment_failed'));
   }
 }
 
@@ -266,7 +272,7 @@ function loadPayPalButton(planId) {
   const container = document.getElementById('paypal-button-container');
   if (!container) return;
 
-  container.innerHTML = '<div style="text-align:center; padding:20px; color:#A0B0C0;">Loading PayPal...</div>';
+  container.innerHTML = `<div style="text-align:center; padding:20px; color:#A0B0C0;">${t('loading_paypal')}</div>`;
 
   // Load PayPal SDK
   loadPayPalScript().then(() => {
@@ -290,7 +296,7 @@ function loadPayPalButton(planId) {
         },
         onError: function(err) {
           console.error('PayPal error:', err);
-          showPaymentError('paypal-button-container', 'PayPal payment failed. Please try again.');
+          showPaymentError('paypal-button-container', t('paypal_failed'));
         },
         onCancel: function(data) {
           console.log('PayPal cancelled:', data);
@@ -301,7 +307,7 @@ function loadPayPalButton(planId) {
               color: #A0B0C0;
               font-size: 0.9rem;
             ">
-              Payment cancelled. 
+              ${t('payment_cancelled')} 
               <button onclick="loadPayPalButton('${planId}')" style="
                 background: none;
                 border: none;
@@ -309,7 +315,7 @@ function loadPayPalButton(planId) {
                 cursor: pointer;
                 font-size: 0.9rem;
                 text-decoration: underline;
-              ">Try again</button>
+              ">${t('try_again')}</button>
             </div>
           `;
           paypalLoaded = false;
@@ -317,11 +323,11 @@ function loadPayPalButton(planId) {
       }).render('#paypal-button-container');
     } catch (err) {
       console.error('PayPal render error:', err);
-      showPaymentError('paypal-button-container', 'Could not load PayPal. Please use card payment.');
+      showPaymentError('paypal-button-container', t('could_not_load_paypal'));
     }
   }).catch(err => {
     console.error('PayPal SDK load error:', err);
-    showPaymentError('paypal-button-container', 'Could not load PayPal SDK.');
+    showPaymentError('paypal-button-container', t('could_not_load_sdk'));
   });
 }
 
@@ -393,10 +399,10 @@ function showSuccessMessage(subscriptionId) {
     <div style="display:flex; align-items:center; gap:12px;">
       <span style="font-size:1.5rem;">✅</span>
       <div>
-        <div style="font-weight:700; margin-bottom:4px;">Payment Successful!</div>
+        <div style="font-weight:700; margin-bottom:4px;">${t('payment_success')}</div>
         <div style="font-size:0.8rem; color:#A0B0C0;">
-          Welcome to FinanceAI Pro ${currentPlan}!<br>
-          Redirecting to dashboard...
+          ${t('welcome_pro')} ${currentPlan}!<br>
+          ${t('redirecting_dashboard')}
         </div>
       </div>
     </div>
@@ -430,7 +436,7 @@ function showLoadingState(containerId) {
           animation: spin 0.8s linear infinite;
           margin: 0 auto 12px;
         "></div>
-        <p style="font-size:0.9rem;">Processing...</p>
+        <p style="font-size:0.9rem;">${t('processing')}</p>
       </div>
     `;
   }
@@ -510,9 +516,9 @@ document.head.appendChild(style);
 function requirePlan(requiredPlan, featureName) {
   if (!isPlanActive(requiredPlan)) {
     const planNames = {
-      personal: 'Personal ($9.99/mo)',
-      pro: 'Pro ($19.99/mo)',
-      business: 'Business ($49.99/mo)'
+      personal: t('plan_personal_price'),
+      pro: t('plan_pro_price'),
+      business: t('plan_business_price')
     };
 
     const upgradeDiv = document.createElement('div');
@@ -540,11 +546,11 @@ function requirePlan(requiredPlan, featureName) {
       ">
         <div style="font-size:2.5rem; margin-bottom:16px;">🔒</div>
         <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:8px; color:#fff;">
-          Upgrade Required
+          ${t('upgrade_required')}
         </h3>
         <p style="color:#A0B0C0; font-size:0.9rem; margin-bottom:24px; line-height:1.6;">
-          <strong style="color:#00EEFF">${featureName}</strong> requires the 
-          <strong style="color:#fff">${planNames[requiredPlan]}</strong> plan or higher.
+          <strong style="color:#00EEFF">${featureName}</strong> ${t('requires_plan')} 
+          <strong style="color:#fff">${planNames[requiredPlan]}</strong> ${t('plan_or_higher')}
         </p>
         <div style="display:flex; gap:12px; justify-content:center;">
           <button 
@@ -559,7 +565,7 @@ function requirePlan(requiredPlan, featureName) {
               cursor: pointer;
               font-family: 'Inter', sans-serif;
             "
-          >Maybe Later</button>
+          >${t('maybe_later')}</button>
           <button 
             onclick="this.closest('div[style]').remove(); openPaymentModal('${requiredPlan}', 'monthly')"
             style="
@@ -573,7 +579,7 @@ function requirePlan(requiredPlan, featureName) {
               cursor: pointer;
               font-family: 'Inter', sans-serif;
             "
-          >Upgrade Now</button>
+          >${t('upgrade_now')}</button>
         </div>
       </div>
     `;

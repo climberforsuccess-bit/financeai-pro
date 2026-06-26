@@ -16,7 +16,7 @@ async function doLogin() {
     const password = document.getElementById('login-pass').value.trim();
 
     if (!email || !password) {
-        showAuthError('Please enter email and password');
+        showAuthError(t('please_enter_credentials'));
         return;
     }
 
@@ -53,12 +53,12 @@ async function doRegister() {
     const plan = document.getElementById('reg-plan')?.value || 'free';
 
     if (!name || !email || !password) {
-        showAuthError('Por favor completa todos los campos');
+        showAuthError(t('fill_all_fields'));
         return;
     }
 
     if (password.length < 6) {
-        showAuthError('La contraseña debe tener al menos 6 caracteres');
+        showAuthError(t('error_password_length'));
         return;
     }
 
@@ -83,7 +83,7 @@ async function doRegister() {
         return;
     }
 
-    showAuthSuccess('¡Cuenta creada! Revisa tu email para verificar tu cuenta.');
+    showAuthSuccess(t('account_created'));
 }
 
 // FORGOT PASSWORD
@@ -91,7 +91,7 @@ async function doForgotPassword() {
     const email = document.getElementById('login-email').value.trim();
 
     if (!email) {
-        showAuthError('Enter your email first');
+        showAuthError(t('enter_email_first'));
         return;
     }
 
@@ -104,7 +104,7 @@ async function doForgotPassword() {
         return;
     }
 
-    showAuthSuccess('Password reset email sent! Check your inbox.');
+    showAuthSuccess(t('password_reset_sent'));
 }
 
 // LOGOUT
@@ -180,7 +180,7 @@ function showAuthSuccess(msg) {
 function showAuthLoading(show) {
     const btn = document.querySelector('.btn-primary.btn-full');
     if (btn) {
-        btn.textContent = show ? 'Loading...' : 'Iniciar Sesión';
+        btn.textContent = show ? t('loading') : t('sign_in');
         btn.disabled = show;
     }
 }

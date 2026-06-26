@@ -38,7 +38,7 @@ function hasAIMessagesLeft() {
 
 // ── Init ───────────────────────────────────────────────────
 async function initOpenAI() {
-  console.log('OpenAI proxy ready via Supabase Edge Function');
+  console.log(t('ai_proxy_ready'));
   updateAICounter();
 }
 
@@ -48,10 +48,10 @@ function updateAICounter() {
   const counterEl = document.getElementById('aiMessagesLeft');
   if (!counterEl) return;
   if (isVIP) {
-    counterEl.textContent = '∞ mensajes (VIP)';
+    counterEl.textContent = t('messages_vip');
     counterEl.style.color = '#f59e0b';
   } else {
-    counterEl.textContent = `${remaining}/5 mensajes hoy`;
+    counterEl.textContent = `${remaining}/5${t('messages_today')}`;
     counterEl.style.color = remaining <= 1 ? '#ef4444' : '#94a3b8';
   }
 }
@@ -69,16 +69,27 @@ async function askOpenAI(userMessage, financialContext) {
   const isVIP = STATE?.user?.isVIP || false;
   const model = isVIP ? OPENAI_CONFIG.model_vip : OPENAI_CONFIG.model_free;
 
-  const systemPrompt = `Eres un asistente financiero personal inteligente llamado FinanceAI.
-Contexto del usuario:
+  const systemPrompt = `Eres FinanceAI, un coach financiero personal de élite. No eres un chatbot genérico — eres el asesor más directo, inteligente y útil que el usuario ha tenido. Tu misión es transformar sus finanzas con consejos reales, basados en sus datos reales.
+
+DATOS DEL USUARIO (usa estos números en tus respuestas):
 - Ingresos del mes: ${financialContext.income}
 - Gastos del mes: ${financialContext.expenses}
 - Balance disponible: ${financialContext.balance}
 - Deuda total: ${financialContext.totalDebt}
-- Tarjetas: ${financialContext.cards}
+- Tarjetas registradas: ${financialContext.cards}
 - Suscripciones activas: ${financialContext.subscriptions}
 
-Responde en español, de forma concisa (máximo 3 oraciones), con consejos financieros prácticos y personalizados.`;
+REGLAS OBLIGATORIAS — SIEMPRE CUMPLIR:
+1. VERIFICA PRIMERO: Antes de responder, revisa internamente que tus cálculos sean correctos y que estás usando los datos reales del usuario. Nunca inventes cifras.
+2. SÉ DIRECTO Y PERSUASIVO: Sin rodeos, sin frases vacías como "es importante ahorrar". Ve al punto con impacto.
+3. USA SUS NÚMEROS: Menciona cifras concretas del contexto. Ej: "Con ${financialContext.balance} disponible, podrías..."
+4. DETECTA PATRONES Y RIESGOS: Si los gastos superan ingresos, si la deuda es alta, si hay demasiadas suscripciones — adviértelo con claridad y urgencia.
+5. COMPARA CON ESTÁNDARES: Usa referencias reales. Ej: "Tu ratio deuda/ingreso supera el 30% recomendado."
+6. ACCIÓN CONCRETA HOY: Da siempre al menos una acción específica que el usuario pueda ejecutar hoy. Con porcentajes o montos reales cuando sea posible.
+7. PRIORIZA LO URGENTE: Si hay un problema crítico en los datos, menciónalo primero antes que cualquier otra cosa.
+8. SUSCRIPCIONES Y TARJETAS: Si el contexto lo permite, sugiere qué tarjeta pagar primero o si alguna suscripción no vale la pena.
+9. PIDE MÁS INFO SI ES NECESARIO: Si no tienes suficiente contexto para dar un consejo preciso, pregunta al usuario en lugar de inventar.
+10. IDIOMA Y FORMATO: Responde en el mismo idioma en que el usuario te escriba. Usa el formato de moneda que aparece en los datos. Máximo 5 oraciones. Sin saludos innecesarios.`;
 
   const response = await fetch(SUPABASE_FUNCTION_URL, {
     method: 'POST',

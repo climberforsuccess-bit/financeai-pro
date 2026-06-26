@@ -27,17 +27,17 @@ function canUseFeature(feature) {
 
 function showUpgradeModal(feature) {
   const featureMessages = {
-    scanner:   { title: '📸 ¿Guardas recibos en papel?', desc: 'El 73% de los gastos se olvidan en menos de 48 horas. Con el scanner de IA capturas cada gasto en segundos y nunca más pierdes dinero sin saberlo.', minPlan: 'Personal' },
-    reports:   { title: '📊 Tu dinero tiene patrones ocultos', desc: 'Los reportes avanzados revelan exactamente en qué gastas de más, cuándo y por qué. Usuarios Pro ahorran en promedio $300/mes solo con esta función.', minPlan: 'Pro' },
-    gpt4:      { title: '🤖 Tu asesor financiero personal, 24/7', desc: 'GPT-4o analiza tus finanzas en profundidad, detecta riesgos, sugiere ahorros y responde cualquier pregunta sobre tu dinero — como tener un CFO en tu bolsillo.', minPlan: 'Pro' },
-    export:    { title: '📤 Lleva tus finanzas a cualquier lugar', desc: 'Exporta en PDF o Excel para compartir con tu contador, banco o simplemente para tu archivo personal. Profesionaliza el control de tu dinero.', minPlan: 'Pro' },
-    cards:     { title: '💳 ¡Alcanzaste tu límite de tarjetas!', desc: 'Millones se endeudaron por no tener control. Tú puedes ser diferente — agrega todas tus tarjetas y sabe exactamente cuánto debes, cuándo y a quién.', minPlan: 'Personal' },
-    multiUser: { title: '👥 Multi-Usuario', desc: 'Comparte el acceso con tu familia o equipo de trabajo.', minPlan: 'Business' },
-    api:       { title: '🔌 API Access', desc: 'Integra FinanceAI Pro con tus propias aplicaciones.', minPlan: 'Business' },
-    transactions: { title: '📝 ¡Casi sin espacio!', desc: 'Cada transacción no registrada es dinero que pierdes sin saberlo. No pares ahora — desbloquea el registro ilimitado y mantén el control total de tu dinero.', minPlan: 'Personal' }
+    scanner:      { title: t('up_scanner_title'),      desc: t('up_scanner_desc'),      minPlan: 'Personal' },
+    reports:      { title: t('up_reports_title'),      desc: t('up_reports_desc'),      minPlan: 'Pro' },
+    gpt4:         { title: t('up_gpt4_title'),         desc: t('up_gpt4_desc'),         minPlan: 'Pro' },
+    export:       { title: t('up_export_title'),       desc: t('up_export_desc'),       minPlan: 'Pro' },
+    cards:        { title: t('up_cards_title'),        desc: t('up_cards_desc'),        minPlan: 'Personal' },
+    multiUser:    { title: t('up_multiuser_title'),    desc: t('up_multiuser_desc'),    minPlan: 'Business' },
+    api:          { title: t('up_api_title'),          desc: t('up_api_desc'),          minPlan: 'Business' },
+    transactions: { title: t('up_transactions_title'), desc: t('up_transactions_desc'), minPlan: 'Personal' }
   };
 
-  const info = featureMessages[feature] || { title: 'Función Premium', desc: 'Actualiza tu plan para acceder.', minPlan: 'Personal' };
+  const info = featureMessages[feature] || { title: t('upgrade_title'), desc: t('upgrade_cancel'), minPlan: 'Personal' };
 
   // Crear modal si no existe
   let modal = document.getElementById('upgrade-modal');
@@ -51,19 +51,19 @@ function showUpgradeModal(feature) {
           style="position:absolute; top:16px; right:16px; background:none; border:none; color:#64748b; font-size:20px; cursor:pointer;">✕</button>
         <div id="upgrade-modal-icon" style="font-size:48px; margin-bottom:16px;"></div>
         <div style="background:linear-gradient(135deg,#f59e0b22,#ef444422); border:1px solid #f59e0b44; border-radius:10px; padding:8px 14px; display:inline-block; margin-bottom:14px;">
-          <span style="color:#f59e0b; font-size:12px; font-weight:700;">⚡ Miles de usuarios ya controlan sus finanzas con esto</span>
+          <span style="color:#f59e0b; font-size:12px; font-weight:700;">${t('upgrade_social_proof')}</span>
         </div>
         <h2 id="upgrade-modal-title" style="color:#fff; font-size:22px; margin-bottom:12px;"></h2>
         <p id="upgrade-modal-desc" style="color:#94a3b8; font-size:15px; margin-bottom:8px;"></p>
         <p id="upgrade-modal-plan" style="color:#f59e0b; font-size:13px; font-weight:600; margin-bottom:16px;"></p>
-        <p style="color:#64748b; font-size:12px; margin-bottom:20px;">Estás a 1 paso de tener control total de tu dinero 💡</p>
+        <p style="color:#64748b; font-size:12px; margin-bottom:20px;">${t('upgrade_one_step')}</p>
         <button onclick="document.getElementById('upgrade-modal').style.display='none'; scrollToSection('pricing-section')"
           style="width:100%; padding:16px; background:linear-gradient(135deg,#f59e0b,#ef4444); border:none; border-radius:12px; color:#fff; font-size:16px; font-weight:700; cursor:pointer; box-shadow:0 4px 20px rgba(245,158,11,0.4);">
-          🔓 Desbloquear Ahora — Ver Planes
+          ${t('upgrade_unlock_btn')}
         </button>
         <button onclick="document.getElementById('upgrade-modal').style.display='none'"
           style="width:100%; padding:12px; background:none; border:none; color:#475569; font-size:13px; cursor:pointer; margin-top:10px;">
-          No, prefiero seguir perdiendo dinero sin saberlo
+          ${t('upgrade_dismiss')}
         </button>
       </div>`;
     document.body.appendChild(modal);
@@ -74,7 +74,7 @@ function showUpgradeModal(feature) {
   document.getElementById('upgrade-modal-icon').textContent = icons[feature] || '⭐';
   document.getElementById('upgrade-modal-title').textContent = info.title;
   document.getElementById('upgrade-modal-desc').textContent  = info.desc;
-  document.getElementById('upgrade-modal-plan').textContent  = '✨ Disponible desde el plan ' + info.minPlan;
+  document.getElementById('upgrade-modal-plan').textContent  = '✨ ' + t('upgrade_available') + ' ' + info.minPlan;
   modal.style.display = 'flex';
 }
 
@@ -89,7 +89,7 @@ function checkTransactionLimit() {
   // Advertencia al 80%
   if (count >= limits.transactions * 0.8) {
     const remaining = limits.transactions - count;
-    showToast(`🚨 Solo te quedan \${remaining} transacciones — cada una sin registrar es dinero perdido. ¡Actualiza ahora!`, 'warning');
+    showToast(t('upgrade_warning').replace('{n}', remaining), 'warning');
   }
   return true;
 }
@@ -498,7 +498,7 @@ function updateUserDisplay() {
     || 'Usuario';
   const plan    = STATE.settings.plan || 'free';
   const billing = STATE.settings.billingPeriod || 'monthly';
-  const billingLabel = billing === 'annual' ? 'Anual' : 'Mensual';
+  const billingLabel = billing === 'annual' ? t('billing_annual') : t('billing_monthly');
 
   const planNames = {
     free:     'Free',
@@ -509,7 +509,7 @@ function updateUserDisplay() {
 
   const planName  = planNames[plan] || 'Free';
   const planLabel = plan === 'free'
-    ? 'Free'
+    ? t('plan_free_label')
     : `${planName} · ${billingLabel}`;
 
   setTxt('user-display-name', name);
@@ -572,7 +572,7 @@ function renderTransactions() {
     container.innerHTML = `
       <div style="text-align:center;padding:60px;color:#8892A4;">
         <div style="font-size:3rem;margin-bottom:12px;opacity:0.4;">💸</div>
-        No tienes transacciones registradas.
+        ${t('no_transactions')}
       </div>`;
     return;
   }
@@ -588,7 +588,7 @@ function renderTransactions() {
         <div style="display:flex;align-items:center;gap:12px;">
           <span style="font-size:1.4rem;">${icon}</span>
           <div>
-            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || 'Sin descripción'}</div>
+            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || t('no_description')}</div>
             <div style="color:#8892A4;font-size:12px;">${t.category || ''} · ${t.date || ''}</div>
           </div>
         </div>
@@ -618,15 +618,15 @@ function renderDashboard() {
       banner.style.background = 'linear-gradient(135deg,#ef444433,#ef444411)';
       banner.style.border = '1px solid #ef4444';
       banner.style.color = '#ef4444';
-      banner.innerHTML = `🚫 Límite alcanzado: \${count}/\${limits.transactions} transacciones — <u>Actualiza tu plan</u>`;
+      banner.innerHTML = `🚫 ${t("dash_limit_reached")} ${count}/${limits.transactions} ${t("dash_txs_used")} — <u>${t("dash_upgrade")}</u>`;
     } else if (pct >= 0.8) {
       banner.style.display = 'block';
       banner.style.background = 'linear-gradient(135deg,#f59e0b33,#f59e0b11)';
       banner.style.border = '1px solid #f59e0b';
       banner.style.color = '#f59e0b';
-      banner.innerHTML = `⚠️ \${count}/\${limits.transactions} transacciones usadas — <u>Considera actualizar tu plan</u>`;
+      banner.innerHTML = `⚠️ ${count}/${limits.transactions} ${t("dash_txs_used")} — <u>${t("dash_consider_upgrade")}</u>`;
     } else {
-      banner.style.display = 'none';
+      banner.style.display = "none";
     }
   }
 
@@ -676,12 +676,12 @@ function renderDashboard() {
   if (changeIncome) {
     const up = parseFloat(incomePct) >= 0;
     changeIncome.className = 'stat-card-change ' + (up ? 'up' : 'down');
-    changeIncome.textContent = (up ? '▲ +' : '▼ ') + incomePct + '% vs last month';
+    changeIncome.textContent = (up ? '▲ +' : '▼ ') + incomePct + '% ' + t('dash_vs_last');
   }
   if (changeExpense) {
     const up = parseFloat(expensePct) >= 0;
     changeExpense.className = 'stat-card-change ' + (up ? 'down' : 'up');
-    changeExpense.textContent = (up ? '▲ +' : '▼ ') + expensePct + '% vs last month';
+    changeExpense.textContent = (up ? '▲ +' : '▼ ') + expensePct + '% ' + t('dash_vs_last');
   }
 
   // --- Deuda total (tarjetas) ---
@@ -801,7 +801,7 @@ function renderCards() {
           <button onclick="editCard('${c.id}')" style="
             background:rgba(255,255,255,0.15);border:none;border-radius:8px;
             padding:4px 10px;color:${txtColor};cursor:pointer;font-size:12px;">
-            ✏️ Editar
+            ✏️ ${t('btn_edit')}
           </button>
           <button onclick="deleteCard('${c.id}')" style="
             background:rgba(255,71,87,0.3);border:none;border-radius:8px;
@@ -823,8 +823,8 @@ function renderCards() {
         </div>
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);">
           <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
-            <span style="color:${txtColor};opacity:0.7;">${c.type || 'Crédito'}</span>
-            <span style="color:${barColor};">${formatCurrency(used)} usado (${pct}%)</span>
+            <span style="color:${txtColor};opacity:0.7;">${c.type || t('card_type_credit')}</span>
+            <span style="color:${barColor};">${formatCurrency(used)} ${t('card_used')} (${pct}%)</span>
           </div>
           <div class="progress-bar">
             <div style="height:100%;width:${pct}%;background:${barColor};border-radius:4px;transition:width 0.3s ease;"></div>
@@ -888,9 +888,9 @@ function editCard(id) {
           <select id="ec-type" style="
             width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
             border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
-            <option value="Crédito" data-i18n-val="Crédito" ${card.type==='Crédito'?'selected':''}>Crédito</option>
-            <option value="Débito" ${card.type==='Débito'?'selected':''}>Débito</option>
-            <option value="Prepago" ${card.type==='Prepago'?'selected':''}>Prepago</option>
+            <option value="Crédito" data-i18n-val="Crédito" ${card.type==='Crédito'?'selected':''}>${t('card_type_credit')}</option>
+            <option value="Débito" ${card.type==='Débito'?'selected':''}>${t('card_type_debit')}</option>
+            <option value="Prepago" ${card.type==='Prepago'?'selected':''}>${t('card_type_prepaid')}</option>
           </select>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
@@ -1339,11 +1339,11 @@ function renderSubscriptions() {
   if (subs.length === 0) {
     tbody.innerHTML = `
       <tr><td colspan="6" style="text-align:center;padding:40px;color:#8892A4;">
-        No tienes suscripciones.<br>
+        ${t('no_subscriptions')}<br>
         <button onclick="openAddSubscription()" style="
           background:none;border:none;color:#00EEFF;
           cursor:pointer;text-decoration:underline;
-          font-size:inherit;margin-top:8px;">+ Agregar</button>
+          font-size:inherit;margin-top:8px;">${t('add_sub_short')}</button>
       </td></tr>`;
     return;
   }
@@ -1361,16 +1361,16 @@ function renderSubscriptions() {
       ? s.billingDay - today
       : (30 - today) + s.billingDay;
     const statusClass = daysUntil <= 3 ? 'badge-warning' : 'badge-success';
-    const statusText  = daysUntil <= 3 ? 'Vence pronto' : 'Activa';
+    const statusText  = daysUntil <= 3 ? t('status_due_soon') : t('status_active');
     return `
       <tr>
         <td>${catIcons[s.category] || '📌'} ${s.name}</td>
-        <td>${s.category || 'Otro'}</td>
-        <td>${formatCurrency(s.amount)}/mes</td>
-        <td>Día ${s.billingDay || '—'}</td>
+        <td>${s.category || t('cat_other')}</td>
+        <td>${formatCurrency(s.amount)}${t('per_month_short')}</td>
+        <td>${t('sub_day')} ${s.billingDay || '—'}</td>
         <td><span class="badge ${statusClass}">${statusText}</span></td>
         <td><button class="btn btn-outline btn-sm"
-          onclick="deleteSubscription('${s.id}')">Cancelar</button></td>
+          onclick="deleteSubscription('${s.id}')">${t('cancel_sub')}</button></td>
       </tr>`;
   }).join('');
 }
@@ -1392,44 +1392,44 @@ function openAddSubscription() {
       font-family:'Segoe UI',Arial,sans-serif;">
       <div style="display:flex;justify-content:space-between;
         align-items:center;margin-bottom:24px;">
-        <h2 style="color:#fff;font-size:1.3rem;">🔄 Agregar Suscripción</h2>
+        <h2 style="color:#fff;font-size:1.3rem;">${t('add_sub_title')}</h2>
         <button onclick="gel('modal-sub').remove()" style="
           background:none;border:none;color:#8892A4;
           font-size:1.5rem;cursor:pointer;">×</button>
       </div>
       <div class="form-group">
-        <label>Nombre del Servicio</label>
+        <label>${t('sub_name_label')}</label>
         <input type="text" id="s-name"
           placeholder="ej: Netflix, Spotify..." style="width:100%;">
       </div>
       <div class="form-group">
-        <label>Monto Mensual ($)</label>
+        <label>${t('sub_amount_label')}</label>
         <input type="number" id="s-amount"
           step="0.01" placeholder="9.99" style="width:100%;">
       </div>
       <div class="form-group">
-        <label>Día de Cobro (1-31)</label>
+        <label>${t('sub_billing_day')}</label>
         <input type="number" id="s-day"
           min="1" max="31" placeholder="15" style="width:100%;">
       </div>
       <div class="form-group">
-        <label>Categoría</label>
+        <label>${t('sub_category')}</label>
         <select id="s-category" style="width:100%;">
           <option value="streaming">📺 Streaming</option>
-          <option value="music">🎵 Música</option>
+          <option value="music">🎵 ${t('cat_music')}</option>
           <option value="software">💻 Software</option>
-          <option value="productivity">🤖 Productividad</option>
-          <option value="storage">☁️ Almacenamiento</option>
-          <option value="shopping">📦 Compras</option>
-          <option value="gaming">🎮 Juegos</option>
-          <option value="fitness">💪 Fitness</option>
-          <option value="design">🎨 Diseño</option>
-          <option value="other">📌 Otro</option>
+          <option value="productivity">🤖 ${t('cat_productivity')}</option>
+          <option value="storage">☁️ ${t('cat_storage')}</option>
+          <option value="shopping">📦 ${t('cat_shopping')}</option>
+          <option value="gaming">🎮 ${t('cat_gaming')}</option>
+          <option value="fitness">💪 ${t('cat_fitness')}</option>
+          <option value="design">🎨 ${t('cat_design')}</option>
+          <option value="other">📌 ${t('cat_other')}</option>
         </select>
       </div>
       <button onclick="saveSubscription()" class="btn btn-primary"
         style="width:100%;margin-top:8px;">
-        💾 Guardar Suscripción
+        ${t('sub_save')}
       </button>
     </div>`;
   modal.addEventListener('click', e => {
@@ -1444,7 +1444,7 @@ async function saveSubscription() {
   const billingDay = parseInt(getVal('s-day'))        || 1;
   const category   = getVal('s-category') || 'other';
   if (!name)      { showToast(t('card_name_required'), 'error'); return; }
-  if (amount <= 0) { showToast('Ingresa un monto válido', 'error'); return; }
+  if (amount <= 0) { showToast(t('subs_invalid_amount'), 'error'); return; }
 
   try {
     const { data: { session } } = await supabase.auth.getSession();
@@ -1480,10 +1480,10 @@ async function saveSubscription() {
     const modal = gel('modal-sub');
     if (modal) modal.remove();
     renderSubscriptions();
-    showToast('✅ Suscripción agregada!');
+    showToast(t('subs_added'));
   } catch(e) {
     console.error('Error guardando suscripción:', e);
-    showToast('Error al guardar suscripción', 'error');
+    showToast(t('subs_save_error'), 'error');
   }
 }
 
@@ -1498,10 +1498,10 @@ async function deleteSubscription(id) {
 
     STATE.subscriptions = STATE.subscriptions.filter(s => s.id !== id);
     renderSubscriptions();
-    showToast('Suscripción eliminada');
+    showToast(t('subs_deleted'));
   } catch(e) {
     console.error('Error eliminando suscripción:', e);
-    showToast('Error al eliminar suscripción', 'error');
+    showToast(t('subs_delete_error'), 'error');
   }
 }
 
@@ -1518,7 +1518,7 @@ function detectSubscriptionsFromTransactions() {
   );
   if (found.length > 0) {
     const names = [...new Set(found.map(t => t.description))].slice(0, 2);
-    showToast('💡 Suscripción detectada: ' + names.join(', '), 'info');
+    showToast(t('subs_detected') + names.join(', '), 'info');
   }
 }
 
@@ -1536,13 +1536,13 @@ function getFinancialContext() {
   const totalDebt    = debts.reduce((s,d) => s + Number(d.amount||0), 0);
 
   return [
-    `- Ingresos totales: $${totalIncome.toFixed(2)}`,
-    `- Gastos totales: $${totalExpense.toFixed(2)}`,
-    `- Balance neto: $${(totalIncome - totalExpense).toFixed(2)}`,
-    `- Deuda total: $${totalDebt.toFixed(2)}`,
-    `- Tarjetas: ${cards.length}`,
-    `- Suscripciones: ${subs.length}`,
-    `- Plan: ${STATE.isVIP ? 'VIP' : 'Gratuito'}`
+    `${t('ctx_total_income')}: $${totalIncome.toFixed(2)}`,
+    `${t('ctx_total_expense')}: $${totalExpense.toFixed(2)}`,
+    `${t('ctx_net_balance')}: $${(totalIncome - totalExpense).toFixed(2)}`,
+    `${t('ctx_total_debt')}: $${totalDebt.toFixed(2)}`,
+    `${t('ctx_cards')}: ${cards.length}`,
+    `${t('ctx_subscriptions')}: ${subs.length}`,
+    `${t('ctx_plan')}: ${STATE.isVIP ? 'VIP' : t('plan_free_label')}`
   ].join('\n');
 }
 
@@ -1572,13 +1572,13 @@ async function sendDashChat() {
   // Verificar límite antes de enviar
   if (!hasAIMessagesLeft()) {
     appendChatMessage('dash-chat', 'user', msg);
-    appendChatMessage('dash-chat', 'ai', '🔒 Alcanzaste tu límite de 5 mensajes hoy. ¡Actualiza a VIP para mensajes ilimitados! 🌟');
+    appendChatMessage('dash-chat', 'ai', t('ai_limit_reached'));
     showUpgradePrompt();
     return;
   }
 
   appendChatMessage('dash-chat', 'user', msg);
-  appendChatMessage('dash-chat', 'ai', '⏳ Analizando...');
+  appendChatMessage('dash-chat', 'ai', t('ai_analyzing'));
 
   try {
     const reply = await askOpenAI(msg, getFinancialContext());
@@ -1587,10 +1587,10 @@ async function sendDashChat() {
   } catch(e) {
     const msgs = document.getElementById('dash-chat');
     if (e.message === 'LIMIT_REACHED') {
-      msgs.lastChild.textContent = '🔒 Límite diario alcanzado. ¡Actualiza a VIP! 🌟';
+      msgs.lastChild.textContent = t('ai_limit_daily');
       showUpgradePrompt();
     } else {
-      msgs.lastChild.textContent = '❌ Error al conectar con IA. Intenta de nuevo.';
+      msgs.lastChild.textContent = t('ai_connect_error');
     }
     console.error('OpenAI error:', e);
   }
@@ -1612,13 +1612,13 @@ async function sendMainChat() {
   // Verificar límite antes de enviar
   if (!hasAIMessagesLeft()) {
     appendChatMessage('main-chat', 'user', msg);
-    appendChatMessage('main-chat', 'ai', '🔒 Alcanzaste tu límite de 5 mensajes hoy. ¡Actualiza a VIP para mensajes ilimitados! 🌟');
+    appendChatMessage('main-chat', 'ai', t('ai_limit_reached'));
     showUpgradePrompt();
     return;
   }
 
   appendChatMessage('main-chat', 'user', msg);
-  appendChatMessage('main-chat', 'ai', '⏳ Analizando...');
+  appendChatMessage('main-chat', 'ai', t('ai_analyzing'));
 
   try {
     const reply = await askOpenAI(msg, getFinancialContext());
@@ -1627,10 +1627,10 @@ async function sendMainChat() {
   } catch(e) {
     const msgs = document.getElementById('main-chat');
     if (e.message === 'LIMIT_REACHED') {
-      msgs.lastChild.textContent = '🔒 Límite diario alcanzado. ¡Actualiza a VIP! 🌟';
+      msgs.lastChild.textContent = t('ai_limit_daily');
       showUpgradePrompt();
     } else {
-      msgs.lastChild.textContent = '❌ Error al conectar con IA. Intenta de nuevo.';
+      msgs.lastChild.textContent = t('ai_connect_error');
     }
     console.error('OpenAI error:', e);
   }
@@ -1676,47 +1676,47 @@ function showUpgradePrompt() {
 
       <!-- Urgency badge -->
       <div style="background: #ef4444; color: #fff; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase;">
-        ⚡ Oferta limitada — Solo hoy
+        ${t('upgrade_limited_offer')}
       </div>
 
       <!-- Header -->
       <div style="font-size: 56px; margin-bottom: 8px;">💸</div>
-      <h2 style="color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 6px; line-height: 1.3;">Estás perdiendo dinero<br>sin saberlo</h2>
-      <p style="color: #94a3b8; font-size: 13px; margin-bottom: 18px; line-height: 1.6;">Alcanzaste tu límite de IA gratuita. Los usuarios Pro detectan gastos ocultos y ahorran en promedio <strong style="color:#f59e0b;">$340 al mes</strong>. ¿Cuánto estás perdiendo tú?</p>
+      <h2 style="color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 6px; line-height: 1.3;">${t('upgrade_losing_money')}</h2>
+      <p style="color: #94a3b8; font-size: 13px; margin-bottom: 18px; line-height: 1.6;">${t('upgrade_ai_limit_desc')}</p>
 
       <!-- Benefits -->
       <div style="background: rgba(15,23,42,0.8); border-radius: 14px; padding: 16px; margin-bottom: 18px; text-align: left; border: 1px solid rgba(245,158,11,0.15);">
-        <p style="color: #f59e0b; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px;">🔓 Desbloquea todo ahora:</p>
+        <p style="color: #f59e0b; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px;">${t('upgrade_unlock_all')}</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <div style="display:flex; align-items:center; gap:10px;">
             <span style="font-size:20px;">💬</span>
-            <span style="color:#e2e8f0; font-size:13px;"><strong>IA ilimitada 24/7</strong> — tu asesor financiero personal siempre disponible</span>
+            <span style="color:#e2e8f0; font-size:13px;">${t('upgrade_feat_ai')}</span>
           </div>
           <div style="display:flex; align-items:center; gap:10px;">
             <span style="font-size:20px;">🧠</span>
-            <span style="color:#e2e8f0; font-size:13px;"><strong>GPT-4o</strong> — detecta patrones de gasto que tú no ves</span>
+            <span style="color:#e2e8f0; font-size:13px;">${t('upgrade_feat_gpt4')}</span>
           </div>
           <div style="display:flex; align-items:center; gap:10px;">
             <span style="font-size:20px;">📸</span>
-            <span style="color:#e2e8f0; font-size:13px;"><strong>Scanner inteligente</strong> — registra recibos en 2 segundos</span>
+            <span style="color:#e2e8f0; font-size:13px;">${t('upgrade_feat_scanner')}</span>
           </div>
           <div style="display:flex; align-items:center; gap:10px;">
             <span style="font-size:20px;">📊</span>
-            <span style="color:#e2e8f0; font-size:13px;"><strong>Reportes que te hacen ahorrar</strong> — ve exactamente dónde va tu dinero</span>
+            <span style="color:#e2e8f0; font-size:13px;">${t('upgrade_feat_reports')}</span>
           </div>
           <div style="display:flex; align-items:center; gap:10px;">
             <span style="font-size:20px;">🎯</span>
-            <span style="color:#e2e8f0; font-size:13px;"><strong>Metas con IA</strong> — alcanza libertad financiera más rápido</span>
+            <span style="color:#e2e8f0; font-size:13px;">${t('upgrade_feat_goals')}</span>
           </div>
         </div>
       </div>
 
       <!-- Price with anchor -->
       <div style="margin-bottom: 20px;">
-        <p style="color:#64748b; font-size:12px; text-decoration: line-through; margin-bottom:2px;">Valor real: $29.99/mes</p>
-        <p style="color:#94a3b8; font-size:12px; margin-bottom:4px;">Hoy lo obtienes por</p>
+        <p style="color:#64748b; font-size:12px; text-decoration: line-through; margin-bottom:2px;">${t('upgrade_real_value')}</p>
+        <p style="color:#94a3b8; font-size:12px; margin-bottom:4px;">${t('upgrade_today_get')}</p>
         <p style="color: #f59e0b; font-size: 38px; font-weight: 900; margin: 0; line-height:1;">$9.99<span style="font-size:15px; color:#94a3b8; font-weight:400;">/mes</span></p>
-        <p style="color:#10b981; font-size:12px; margin-top:4px;">✅ Cancela cuando quieras · Sin contratos</p>
+        <p style="color:#10b981; font-size:12px; margin-top:4px;">${t('upgrade_cancel_anytime')}</p>
       </div>
 
       <!-- Main CTA -->
@@ -1725,27 +1725,27 @@ function showUpgradePrompt() {
         border: none; border-radius: 14px; color: #000; font-weight: 900; font-size: 17px; cursor: pointer; margin-bottom: 8px;
         box-shadow: 0 6px 30px rgba(245,158,11,0.5); letter-spacing: 0.3px; transition: transform 0.1s;"
         onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-        ⚡ Sí, quiero controlar mi dinero ahora
+        ${t('cta_control_now')}
       </button>
 
       <!-- Secondary CTA annual -->
       <button onclick="document.getElementById('upgradeModal').remove(); startCheckout('pro', 'annual')"
         style="width:100%; padding: 12px; background: rgba(245,158,11,0.1);
         border: 1px solid #f59e0b; border-radius: 12px; color: #f59e0b; font-weight: 700; font-size: 13px; cursor: pointer; margin-bottom: 12px;">
-        💰 Mejor deal: Plan anual — Ahorra 40%
+        ${t('upgrade_annual_deal')}
       </button>
 
       <!-- Social proof -->
       <div style="margin-bottom: 12px;">
-        <p style="color:#94a3b8; font-size:12px; margin-bottom:4px;">⭐⭐⭐⭐⭐ <strong style="color:#fff;">+1,200 usuarios</strong> ya toman control de su dinero</p>
-        <p style="color:#64748b; font-size:11px;">"Recuperé $180 el primer mes detectando suscripciones olvidadas" — María G.</p>
+        <p style="color:#94a3b8; font-size:12px; margin-bottom:4px;">${t('upgrade_social_proof2')}</p>
+        <p style="color:#64748b; font-size:11px;">${t('upgrade_testimonial')}</p>
       </div>
 
       <!-- Dismiss -->
       <button onclick="document.getElementById('upgradeModal').remove();"
         style="width:100%; padding: 10px; background: transparent;
         border: none; color: #334155; cursor: pointer; font-size: 11px;">
-        No me interesa ahorrar dinero ahora mismo
+        ${t('upgrade_no_thanks')}
       </button>
     </div>
   `;
@@ -1772,7 +1772,7 @@ function activateVIPCode() {
   const code = input.value.trim().toUpperCase();
   if (!code) {
     msg.style.color = '#ef4444';
-    msg.textContent = '❌ Ingresa un código válido.';
+    msg.textContent = '❌ ' + t('vip_invalid_code');
     return;
   }
 
@@ -1780,14 +1780,14 @@ function activateVIPCode() {
   const usedCodes = JSON.parse(localStorage.getItem('fai_used_codes') || '[]');
   if (usedCodes.includes(code)) {
     msg.style.color = '#ef4444';
-    msg.textContent = '❌ Este código ya fue usado.';
+    msg.textContent = '❌ ' + t('vip_code_used');
     return;
   }
 
   const vipData = VIP_CODES[code];
   if (!vipData) {
     msg.style.color = '#ef4444';
-    msg.textContent = '❌ Código inválido. Verifica e intenta de nuevo.';
+    msg.textContent = '❌ ' + t('vip_code_wrong');
     return;
   }
 
@@ -1807,10 +1807,10 @@ function activateVIPCode() {
   // Actualizar UI
   input.value = '';
   msg.style.color = '#22c55e';
-  msg.textContent = `✅ ¡Código activado! Plan VIP ${vipData.plan} por ${vipData.months} mes(es).`;
+  msg.textContent = '✅ ' + t('vip_code_ok') + ' ' + vipData.plan + ' ' + t('vip_months') + ' ' + vipData.months;
 
   updateVIPStatus();
-  showToast(`🌟 ¡Bienvenido a VIP ${vipData.plan}! Disfruta tus beneficios.`, 'success');
+  showToast(`${t('vip_welcome')} ${vipData.plan}! ${t('enjoy_benefits')}`, 'success');
 
   // Reset contador IA
   localStorage.removeItem('fai_ai_count');
@@ -1832,14 +1832,14 @@ function updateVIPStatus() {
 
     icon.textContent  = '👑';
     if (name) name.textContent = `VIP ${STATE.vipPlan}`;
-    if (label) label.innerHTML = `Plan actual: <strong style="color:#f59e0b;">VIP ${STATE.vipPlan}</strong>`;
-    if (sub)   sub.textContent = `Mensajes ilimitados · Vence en ${days} días`;
+    if (label) label.innerHTML = `${t('plan_actual')} <strong style="color:#f59e0b;">VIP ${STATE.vipPlan}</strong>`;
+    if (sub)   sub.textContent = t('plan_vip_sub').replace('{n}', days);
     if (sub)   sub.style.color = days < 7 ? '#ef4444' : '#22c55e';
   } else {
     icon.textContent  = '🔓';
-    if (name) name.textContent = 'Gratuito';
-    if (label) label.innerHTML = `Plan actual: <strong style="color:#fff;">Gratuito</strong>`;
-    if (sub)   sub.textContent = '5 mensajes IA por día';
+    if (name) name.textContent = t('plan_free');
+    if (label) label.innerHTML = `${t('plan_actual')} <strong style="color:#fff;">${t('plan_free')}</strong>`;
+    if (sub)   sub.textContent = t('ai_msgs_day');
     if (sub)   sub.style.color = '#64748b';
   }
 }
@@ -1878,14 +1878,14 @@ function adminGenerateCode() {
   // Actualizar lista
   adminRefreshCodesList();
   adminLoadStats();
-  showToast(`✅ Código ${code} generado — ${plan} ${months} mes(es)`, 'success');
+  showToast(`✅ ${t('code_label')} ${code} ${t('code_generated')} — ${plan} ${months} ${t('months_label')}`, 'success');
 }
 
 function adminCopyCode() {
   const code = document.getElementById('admin-code-display')?.textContent;
   if (!code) return;
   navigator.clipboard.writeText(code).then(() => {
-    showToast('📋 Código copiado al portapapeles', 'success');
+    showToast(t('code_copied_clipboard'), 'success');
   });
 }
 
@@ -1895,7 +1895,7 @@ function adminRefreshCodesList() {
 
   const stored = JSON.parse(localStorage.getItem('fai_admin_codes') || '[]');
   if (stored.length === 0) {
-    list.innerHTML = '<p style="color:#475569; font-size:12px; text-align:center;">No hay códigos generados aún</p>';
+    list.innerHTML = `<p style="color:#475569; font-size:12px; text-align:center;">${t('no_codes_generated')}</p>`;
     return;
   }
 
@@ -1907,9 +1907,9 @@ function adminRefreshCodesList() {
       </div>
       <div style="display:flex; gap:6px; align-items:center;">
         ${entry.used
-          ? '<span style="color:#22c55e; font-size:11px;">✅ Usado</span>'
-          : '<span style="color:#94a3b8; font-size:11px;">⏳ Pendiente</span>'}
-        <button onclick="navigator.clipboard.writeText(\'${entry.code}\').then(()=>showToast(\'📋 Copiado\',\'success\'))"
+          ? `<span style="color:#22c55e; font-size:11px;">${t('code_status_used')}</span>`
+          : `<span style="color:#94a3b8; font-size:11px;">${t('code_status_pending')}</span>`}
+        <button onclick="navigator.clipboard.writeText(\'${entry.code}\').then(()=>showToast(t(\'code_copied\'),\'success\'))"
           style="padding:3px 8px; background:#334155; border:none; border-radius:4px; color:#fff; cursor:pointer; font-size:11px;">
           📋
         </button>
@@ -1924,7 +1924,7 @@ function adminLoadUsedCodes() {
 
   const usedCodes = JSON.parse(localStorage.getItem('fai_used_codes') || '[]');
   if (usedCodes.length === 0) {
-    list.innerHTML = '<p style="color:#475569; font-size:12px; text-align:center;">Ningún código activado aún</p>';
+    list.innerHTML = `<p style="color:#475569; font-size:12px; text-align:center;">${t('no_codes_activated')}</p>`;
     return;
   }
 
@@ -1937,7 +1937,7 @@ function adminLoadUsedCodes() {
           <span style="color:#22c55e; font-size:13px; font-weight:bold;">${code}</span>
           ${entry ? `<span style="color:#64748b; font-size:11px; margin-left:8px;">${entry.plan} · ${entry.months}m</span>` : ''}
         </div>
-        <span style="color:#22c55e; font-size:11px;">✅ Activado</span>
+        <span style="color:#22c55e; font-size:11px;">${t('code_status_activated')}</span>
       </div>
     `;
   }).join('');
@@ -1971,14 +1971,14 @@ function renderSettings() {
 
   // Mostrar plan actual
   const planEl = document.getElementById('settings-plan-name');
-  if (planEl) planEl.textContent = STATE.isVIP ? `VIP ${STATE.vipPlan}` : 'Gratuito';
+  if (planEl) planEl.textContent = STATE.isVIP ? `VIP ${STATE.vipPlan}` : t('plan_free');
 
   // Mostrar vencimiento VIP
   const expiryEl = document.getElementById('settings-vip-expiry');
   if (expiryEl && STATE.isVIP && STATE.vipExpiry) {
     const expiry = new Date(STATE.vipExpiry);
     const days   = Math.ceil((expiry - new Date()) / (1000*60*60*24));
-    expiryEl.textContent = `Vence en ${days} días (${expiry.toLocaleDateString()})`;
+    expiryEl.textContent = t('plan_expires').replace('{n}', days) + ` (${expiry.toLocaleDateString()})`;
     expiryEl.style.color = days < 7 ? '#ef4444' : '#22c55e';
   } else if (expiryEl) {
     expiryEl.textContent = '';
@@ -2014,7 +2014,7 @@ function renderReports() {
   if (topList) {
     const sorted = Object.entries(cats).sort((a,b) => b[1]-a[1]).slice(0,5);
     if (sorted.length === 0) {
-      topList.innerHTML = '<p style="color:#475569;font-size:13px;text-align:center;">Sin transacciones aún</p>';
+      topList.innerHTML = `<p style="color:#475569;font-size:13px;text-align:center;">${t('trans_empty')}</p>`;
     } else {
       const max = sorted[0][1];
       topList.innerHTML = sorted.map(([cat, amt]) => `
@@ -2052,14 +2052,11 @@ async function askOpenAI(userMessage, context = '') {
   if (limits.aiMessages !== -1) {
     const remaining = limits.aiMessages - (used + 1);
     if (remaining === Math.floor(limits.aiMessages * 0.2)) {
-      showToast(`⚠️ Te quedan \${remaining} mensajes IA hoy — considera actualizar tu plan`, 'warning');
+      showToast(t('ai_msgs_warning').replace('{n}', remaining), 'warning');
     }
   }
-  const systemPrompt = `Eres un asistente financiero personal inteligente llamado FinanceAI. 
-Ayudas a los usuarios a entender sus finanzas, dar consejos de ahorro, analizar gastos y más.
-Responde siempre en el idioma que use el usuario (español o inglés).
-Sé conciso, amigable y útil. Máximo 3 párrafos.
-${context ? `\nContexto financiero del usuario:\n${context}` : ''}`;
+  const systemPrompt = `${t('ai_system_prompt')}
+${context ? `\n${t('ctx_plan').replace('- Plan','Financial context')}:\n${context}` : ''}`;
 
   const messages = [
     { role: 'system', content: systemPrompt },
@@ -2078,7 +2075,7 @@ ${context ? `\nContexto financiero del usuario:\n${context}` : ''}`;
   
   if (data.error) throw new Error(data.error.message || 'OpenAI error');
   
-  return data.choices?.[0]?.message?.content || '❌ Sin respuesta';
+  return data.choices?.[0]?.message?.content || t('ai_no_response');
 }
 
 
@@ -2129,7 +2126,7 @@ const PRICES = {
 async function startCheckout(plan, billing = 'monthly') {
   const user = STATE.user;
   if (!user) {
-    showToast('⚠️ Inicia sesión para continuar', 'error');
+    showToast(t('login_required'), 'error');
     showPage('auth');
     return;
   }
@@ -2138,9 +2135,9 @@ async function startCheckout(plan, billing = 'monthly') {
   const prices     = PRICES[billing] || PRICES['annual'];
   const price      = prices[plan] || 0;
   const label      = planLabels[plan] || plan;
-  const suffix     = billing === 'annual' ? '/mes (anual)' : '/mes';
+  const suffix     = billing === 'annual' ? t('price_suffix_annual') : t('price_suffix_monthly');
 
-  showToast(`🔒 Procesando ${label} — $${price.toFixed(2)}${suffix}...`, 'info');
+  showToast(`${t('processing_payment')} ${label} — $${price.toFixed(2)}${suffix}...`, 'info');
 
   try {
     const res = await fetch('/api/stripe-checkout', {
@@ -2159,14 +2156,14 @@ async function startCheckout(plan, billing = 'monthly') {
 
     if (data.url) {
       // Toast final persuasivo antes de redirigir
-      showToast(`🚀 ¡Redirigiendo al pago seguro con Stripe!`, 'success');
+      showToast(t('redirecting_stripe'), 'success');
       setTimeout(() => { window.location.href = data.url; }, 800);
     } else {
-      showToast('❌ Error al crear sesión de pago — intenta de nuevo', 'error');
+      showToast(t('stripe_session_error'), 'error');
     }
   } catch (err) {
     console.error('Checkout error:', err);
-    showToast('❌ Error de conexión — verifica tu internet', 'error');
+    showToast(t('connection_error'), 'error');
   }
 }
 
@@ -2175,15 +2172,15 @@ function updateCurrentPlanBadge() {
   const plan    = STATE.settings.plan || STATE.userPlan || localStorage.getItem('fai_plan') || 'free';
   const billing = STATE.settings.billingPeriod || localStorage.getItem('fai_billing') || 'monthly';
   const planLabels    = { free: 'FREE', personal: 'PERSONAL ⭐', pro: 'PRO 💎', business: 'BUSINESS 🏢' };
-  const billingLabels = { monthly: 'Mensual', annual: 'Anual' };
+  const billingLabels = { monthly: t('billing_monthly'), annual: t('billing_annual') };
 
   // Badge superior
   const badge = document.getElementById('current-plan-badge');
   if (badge) {
     if (plan === 'free') {
-      badge.textContent = '✨ Tu plan actual: FREE';
+      badge.textContent = t('current_plan_badge') + ' ' + t('plan_free_label');
     } else {
-      badge.textContent = '✨ Tu plan actual: ' + (planLabels[plan] || plan.toUpperCase()) + ' · ' + (billingLabels[billing] || billing);
+      badge.textContent = t('current_plan_badge') + ' ' + (planLabels[plan] || plan.toUpperCase()) + ' · ' + (billingLabels[billing] || billing);
     }
   }
 
@@ -2191,7 +2188,7 @@ function updateCurrentPlanBadge() {
   const sidebarPlan = document.getElementById('sidebar-plan-label');
   if (sidebarPlan) {
     if (plan === 'free') {
-      sidebarPlan.textContent = 'Free';
+      sidebarPlan.textContent = t('plan_free');
     } else {
       sidebarPlan.textContent = (planLabels[plan] || plan) + ' · ' + (billingLabels[billing] || billing);
     }
@@ -2220,7 +2217,7 @@ function updateCurrentPlanBadge() {
       if (freeBtn) {
         freeBtn.disabled = false;
         freeBtn.style.cssText = 'width:100%; padding:12px; background:#1e293b; border:1px solid #475569; border-radius:10px; color:#94a3b8; font-size:13px; font-weight:600; cursor:pointer;';
-        freeBtn.textContent = 'Gratis para siempre';
+        freeBtn.textContent = t('plan_free_forever');
       }
     }
 
@@ -2231,7 +2228,7 @@ function updateCurrentPlanBadge() {
         const newBadge = document.createElement('span');
         newBadge.className = 'plan-current-badge';
         newBadge.style.cssText = 'background:#334155; color:#94a3b8; font-size:11px; padding:4px 10px; border-radius:10px; font-weight:600; margin-left:8px;';
-        newBadge.textContent = 'Tu plan actual';
+        newBadge.textContent = t('plan_current');
         header.appendChild(newBadge);
       }
 
@@ -2242,9 +2239,9 @@ function updateCurrentPlanBadge() {
         btn.disabled = true;
         btn.style.cssText = 'width:100%; padding:14px; background:#1e293b; border:1px solid #334155; border-radius:10px; color:#475569; font-size:13px; font-weight:600; cursor:not-allowed;';
         if (p === 'free') {
-          btn.textContent = 'Tu plan actual — Gratis';
+          btn.textContent = t('plan_current_free');
         } else {
-          btn.textContent = '✓ ' + (planLabels[p] || p) + ' · ' + (billingLabels[billing] || billing);
+          btn.textContent = '✓ ' + (planLabels[p] || p) + ' · ' + (billingLabels[billing] || t('billing_monthly'));
         }
       }
     }
@@ -2270,9 +2267,9 @@ function setBilling(type) {
     'price-personal':  p.personal,
     'price-pro':       p.pro,
     'price-business':  p.business,
-    'cta-personal':    p.personal + '/mes',
-    'cta-pro':         p.pro + '/mes',
-    'cta-business':    p.business + '/mes',
+    'cta-personal':    p.personal + t('price_suffix_monthly'),
+    'cta-pro':         p.pro + t('price_suffix_monthly'),
+    'cta-business':    p.business + t('price_suffix_monthly'),
     // Landing IDs
     'landing-price-personal': p.lp,
     'landing-price-pro':      p.lpr,
@@ -2327,7 +2324,7 @@ async function processReceipt(event) {
   // Verificar que el usuario tiene acceso al scanner
   const limits = getPlanLimits();
   if (!limits.scanner) {
-    showToast('El Scanner requiere plan Personal o superior', 'error');
+    showToast(t('scan_requires_plan'), 'error');
     showSection('subscriptions');
     return;
   }
@@ -2335,7 +2332,7 @@ async function processReceipt(event) {
   // Mostrar loading
   const uploadArea = document.querySelector('.upload-area');
   if (uploadArea) {
-    uploadArea.innerHTML = '<div style="padding:40px;text-align:center;"><span style="font-size:40px;">⏳</span><div style="margin-top:12px;color:var(--gray);">Analizando recibo con IA...</div></div>';
+    uploadArea.innerHTML = `<div style="padding:40px;text-align:center;"><span style="font-size:40px;">⏳</span><div style="margin-top:12px;color:var(--gray);">${t('scanning_receipt')}</div></div>`;
   }
 
   try {
@@ -2358,15 +2355,15 @@ async function processReceipt(event) {
             content: [
               {
                 type: 'text',
-                text: `Analiza este recibo y extrae la información en formato JSON exacto:
+                text: `Analyze this receipt and extract the information in exact JSON format:
 {
-  "merchant": "nombre del comercio",
-  "amount": numero_sin_simbolo,
-  "category": "categoria en español (Supermercado, Restaurante, Gasolina, Farmacia, Ropa, Entretenimiento, Transporte, Servicios, Otro)",
+  "merchant": "merchant name",
+  "amount": number_without_symbol,
+  "category": "category (${t('scan_prompt_categories')})",
   "date": "YYYY-MM-DD",
-  "currency": "USD o moneda detectada"
+  "currency": "USD or detected currency"
 }
-Solo responde con el JSON, sin texto adicional.`
+Only respond with the JSON, no additional text.\`
               },
               {
                 type: 'image_url',
@@ -2379,26 +2376,26 @@ Solo responde con el JSON, sin texto adicional.`
       })
     });
 
-    if (!response.ok) throw new Error('Error al analizar imagen');
+    if (!response.ok) throw new Error(t('scan_error_image'));
     const data = await response.json();
     const text = data.choices[0].message.content.trim();
 
     // Parsear JSON de la respuesta
     const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('No se pudo extraer información del recibo');
+    if (!jsonMatch) throw new Error(t('scan_error_extract'));
     const result = JSON.parse(jsonMatch[0]);
 
     // Mostrar resultado en la UI
     const categoryEmojis = {
-      'Supermercado': '🛒', 'Restaurante': '🍽️', 'Gasolina': '⛽',
-      'Farmacia': '💊', 'Ropa': '👕', 'Entretenimiento': '🎬',
-      'Transporte': '🚗', 'Servicios': '⚡', 'Otro': '📦'
+      [t('scan_cat_supermarket')]: '🛒', [t('scan_cat_restaurant')]: '🍽️', [t('scan_cat_gas')]: '⛽',
+      [t('scan_cat_pharmacy')]: '💊', [t('scan_cat_clothing')]: '👕', [t('scan_cat_entertainment')]: '🎬',
+      [t('scan_cat_transport')]: '🚗', [t('scan_cat_services')]: '⚡', [t('scan_cat_other')]: '📦'
     };
     const emoji = categoryEmojis[result.category] || '📦';
 
-    document.getElementById('scan-merchant').textContent = result.merchant || 'Desconocido';
+    document.getElementById('scan-merchant').textContent = result.merchant || t('scan_unknown');
     document.getElementById('scan-amount').textContent = `$${parseFloat(result.amount).toFixed(2)}`;
-    document.getElementById('scan-category').textContent = `${emoji} ${result.category || 'Otro'}`;
+    document.getElementById('scan-category').textContent = `${emoji} ${result.category || t('scan_other')}`;
     document.getElementById('scan-date').textContent = result.date || new Date().toISOString().split('T')[0];
 
     // Guardar en STATE para usar en saveScannedTransaction
@@ -2412,21 +2409,21 @@ Solo responde con el JSON, sin texto adicional.`
       uploadArea.innerHTML = `
         <input type="file" id="receipt-input" accept="image/*" style="display:none;" onchange="processReceipt(event)">
         <div class="upload-icon">✅</div>
-        <div class="upload-title">Recibo analizado correctamente</div>
-        <div class="upload-subtitle">Click para escanear otro recibo</div>`;
+        <div class="upload-title">${t('receipt_analyzed_ok')}</div>
+        <div class="upload-subtitle">${t('scan_again')}</div>`;
       uploadArea.onclick = () => document.getElementById('receipt-input').click();
     }
 
   } catch(e) {
     console.error('Scanner error:', e);
-    showToast('Error al analizar el recibo. Intenta con otra imagen.', 'error');
+    showToast(t('scan_error'), 'error');
     // Restaurar upload area
     if (uploadArea) {
       uploadArea.innerHTML = `
         <input type="file" id="receipt-input" accept="image/*" style="display:none;" onchange="processReceipt(event)">
         <div class="upload-icon">📸</div>
-        <div class="upload-title">Subir Foto del Recibo</div>
-        <div class="upload-subtitle">Click aquí o arrastra una imagen · JPG, PNG, HEIC</div>`;
+        <div class="upload-title">${t('upload_receipt_title')}</div>
+        <div class="upload-subtitle">${t('scan_upload_hint')}</div>`;
       uploadArea.onclick = () => document.getElementById('receipt-input').click();
     }
   }
@@ -2443,7 +2440,7 @@ function fileToBase64(file) {
 
 async function saveScannedTransaction() {
   if (!STATE.lastScan) {
-    showToast('No hay datos del recibo para guardar', 'error');
+    showToast(t('scan_no_data'), 'error');
     return;
   }
 
@@ -2453,9 +2450,9 @@ async function saveScannedTransaction() {
   try {
     const transaction = {
       user_id: STATE.user.id,
-      description: scan.merchant || 'Recibo escaneado',
+      description: scan.merchant || t('receipt_scanned'),
       amount: -Math.abs(parseFloat(scan.amount)),
-      category: scan.category || 'Otro',
+      category: scan.category || t('cat_other'),
       date: scan.date || new Date().toISOString().split('T')[0],
       type: type,
       source: 'scanner'
@@ -2471,11 +2468,11 @@ async function saveScannedTransaction() {
     STATE.transactions = [data[0], ...(STATE.transactions || [])];
     document.getElementById('scan-result').classList.remove('show');
     STATE.lastScan = null;
-    showToast('✅ Transacción guardada correctamente');
+    showToast(t('transaction_saved'));
 
   } catch(e) {
     console.error('Error guardando transacción:', e);
-    showToast('Error al guardar la transacción', 'error');
+    showToast(t('scan_save_error'), 'error');
   }
 }
 
@@ -2488,14 +2485,14 @@ async function processReceipt(event) {
 
   const limits = getPlanLimits();
   if (!limits.scanner) {
-    showToast('✨ Desbloquea el Scanner IA — ahorra horas cada semana', 'info');
+    showToast(t('scanner_unlock'), 'info');
     setTimeout(() => showSection('subscriptions'), 1200);
     return;
   }
 
   const uploadArea = document.querySelector('.upload-area');
   if (uploadArea) {
-    uploadArea.innerHTML = '<div style="padding:40px;text-align:center;"><span style="font-size:40px;">🤖</span><div style="margin-top:12px;color:var(--gray);font-weight:600;">Tu IA está leyendo el recibo...<br><span style="font-size:12px;font-weight:400;">Esto solo toma unos segundos</span></div></div>';
+    uploadArea.innerHTML = `<div style="padding:40px;text-align:center;"><span style="font-size:40px;">🤖</span><div style="margin-top:12px;color:var(--gray);font-weight:600;">${t('ai_reading_receipt')}<br><span style="font-size:12px;font-weight:400;">${t('ai_reading_seconds')}</span></div></div>`;
   }
 
   try {
@@ -2516,15 +2513,15 @@ async function processReceipt(event) {
             content: [
               {
                 type: 'text',
-                text: `Analiza este recibo y extrae la información en formato JSON exacto:
+                text: `Analyze this receipt and extract the information in exact JSON format:
 {
-  "merchant": "nombre del comercio",
-  "amount": numero_sin_simbolo,
-  "category": "categoria en español (Supermercado, Restaurante, Gasolina, Farmacia, Ropa, Entretenimiento, Transporte, Servicios, Otro)",
+  "merchant": "merchant name",
+  "amount": number_without_symbol,
+  "category": "category (${t('scan_prompt_categories')})",
   "date": "YYYY-MM-DD",
-  "currency": "USD o moneda detectada"
+  "currency": "USD or detected currency"
 }
-Solo responde con el JSON, sin texto adicional.`
+Only respond with the JSON, no additional text.\`
               },
               {
                 type: 'image_url',
@@ -2537,48 +2534,48 @@ Solo responde con el JSON, sin texto adicional.`
       })
     });
 
-    if (!response.ok) throw new Error('Error al analizar imagen');
+    if (!response.ok) throw new Error(t('scan_error_image'));
     const data = await response.json();
     const text = data.choices[0].message.content.trim();
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('No se pudo extraer información del recibo');
+    if (!jsonMatch) throw new Error(t('scan_error_extract'));
     const result = JSON.parse(jsonMatch[0]);
 
     const categoryEmojis = {
-      'Supermercado': '🛒', 'Restaurante': '🍽️', 'Gasolina': '⛽',
-      'Farmacia': '💊', 'Ropa': '👕', 'Entretenimiento': '🎬',
-      'Transporte': '🚗', 'Servicios': '⚡', 'Otro': '📦'
+      [t('scan_cat_supermarket')]: '🛒', [t('scan_cat_restaurant')]: '🍽️', [t('scan_cat_gas')]: '⛽',
+      [t('scan_cat_pharmacy')]: '💊', [t('scan_cat_clothing')]: '👕', [t('scan_cat_entertainment')]: '🎬',
+      [t('scan_cat_transport')]: '🚗', [t('scan_cat_services')]: '⚡', [t('scan_cat_other')]: '📦'
     };
     const emoji = categoryEmojis[result.category] || '📦';
 
-    document.getElementById('scan-merchant').textContent = result.merchant || 'Desconocido';
+    document.getElementById('scan-merchant').textContent = result.merchant || t('scan_unknown');
     document.getElementById('scan-amount').textContent = `$${parseFloat(result.amount).toFixed(2)}`;
-    document.getElementById('scan-category').textContent = `${emoji} ${result.category || 'Otro'}`;
+    document.getElementById('scan-category').textContent = `${emoji} ${result.category || t('scan_other')}`;
     document.getElementById('scan-date').textContent = result.date || new Date().toISOString().split('T')[0];
 
     STATE.lastScan = result;
     document.getElementById('scan-result').classList.add('show');
-    showToast('🎯 ¡Recibo detectado! Revisa los datos y guarda en 1 click');
+    showToast(t('receipt_detected'));
 
     if (uploadArea) {
       uploadArea.innerHTML = `
         <input type="file" id="receipt-input" accept="image/*" style="display:none;" onchange="processReceipt(event)">
         <div class="upload-icon">✅</div>
-        <div class="upload-title">¡Recibo analizado exitosamente!</div>
-        <div class="upload-subtitle">Click para escanear otro recibo</div>`;
+        <div class="upload-title">${t('receipt_analyzed')}</div>
+        <div class="upload-subtitle">${t('scan_again')}</div>`;
       uploadArea.onclick = () => document.getElementById('receipt-input').click();
     }
 
   } catch(e) {
     console.error('Scanner error:', e);
-    showToast('No pudimos leer ese recibo — intenta con mejor iluminación 📸', 'error');
+    showToast(t('scan_read_error'), 'error');
     if (uploadArea) {
       uploadArea.innerHTML = `
         <input type="file" id="receipt-input" accept="image/*" style="display:none;" onchange="processReceipt(event)">
         <div class="upload-icon">📸</div>
-        <div class="upload-title">Subir Foto del Recibo</div>
-        <div class="upload-subtitle">Click aquí o arrastra una imagen · JPG, PNG, HEIC</div>`;
+        <div class="upload-title">${t('upload_receipt_title')}</div>
+        <div class="upload-subtitle">${t('scan_upload_hint')}</div>`;
       uploadArea.onclick = () => document.getElementById('receipt-input').click();
     }
   }
@@ -2595,7 +2592,7 @@ function fileToBase64(file) {
 
 async function saveScannedTransaction() {
   if (!STATE.lastScan) {
-    showToast('Escanea un recibo primero para guardarlo 📸', 'error');
+    showToast(t('scan_first'), 'error');
     return;
   }
 
@@ -2605,9 +2602,9 @@ async function saveScannedTransaction() {
   try {
     const transaction = {
       user_id: STATE.user.id,
-      description: scan.merchant || 'Recibo escaneado',
+      description: scan.merchant || t('receipt_scanned'),
       amount: -Math.abs(parseFloat(scan.amount)),
-      category: scan.category || 'Otro',
+      category: scan.category || t('cat_other'),
       date: scan.date || new Date().toISOString().split('T')[0],
       type: type,
       source: 'scanner'
@@ -2623,11 +2620,11 @@ async function saveScannedTransaction() {
     STATE.transactions = [data[0], ...(STATE.transactions || [])];
     document.getElementById('scan-result').classList.remove('show');
     STATE.lastScan = null;
-    showToast('✅ ¡Guardado! Tu historial financiero se actualiza automáticamente 🚀');
+    showToast(t('saved_history'));
 
   } catch(e) {
     console.error('Error guardando transacción:', e);
-    showToast('Error al guardar — intenta de nuevo en un momento', 'error');
+    showToast(t('scan_save_error2'), 'error');
   }
 }
 
@@ -2636,14 +2633,14 @@ async function saveScannedTransaction() {
 // ============================================
 function exportData(format) {
   if (!canUseFeature('export')) {
-    showToast('📤 Exportar requiere plan Pro — ¡lleva tus finanzas al siguiente nivel!', 'info');
+    showToast(t('export_requires_pro'), 'info');
     setTimeout(() => showSection('subscriptions'), 1200);
     return;
   }
 
   const txs = STATE.transactions || [];
   if (txs.length === 0) {
-    showToast('No hay transacciones para exportar aún — ¡agrega algunas!', 'error');
+    showToast(t('trans_export_empty'), 'error');
     return;
   }
 
@@ -2652,7 +2649,7 @@ function exportData(format) {
 }
 
 function exportCSV(txs) {
-  const headers = ['Fecha', 'Descripción', 'Categoría', 'Monto', 'Tipo'];
+  const headers = [t('csv_header_date'), t('csv_header_desc'), t('csv_header_cat'), t('csv_header_amount'), t('csv_header_type')];
   const rows = txs.map(t => [
     t.date || '',
     `"${(t.description || '').replace(/"/g, '""')}"`,
@@ -2666,12 +2663,12 @@ function exportCSV(txs) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `financeai_transacciones_${new Date().toISOString().split('T')[0]}.csv`;
+  a.download = `${t('export_filename')}_${new Date().toISOString().split('T')[0]}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast('✅ CSV descargado — ábrelo en Excel o Google Sheets 🎉');
+  showToast(t('csv_downloaded'));
 }
 
 function exportPDF(txs) {
@@ -2695,7 +2692,7 @@ function exportPDF(txs) {
     <html>
     <head>
       <meta charset="UTF-8">
-      <title>FinanceAI Pro — Reporte Financiero</title>
+      <title>${t('pdf_title')}</title>
       <style>
         body { font-family: Arial, sans-serif; padding: 40px; color: #1e293b; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 3px solid #f59e0b; padding-bottom: 16px; }
@@ -2716,15 +2713,15 @@ function exportPDF(txs) {
     <body>
       <div class="header">
         <div class="logo">💰 FinanceAI Pro</div>
-        <div class="date">Reporte generado: ${new Date().toLocaleDateString('es-ES', { year:'numeric', month:'long', day:'numeric' })}</div>
+        <div class="date">${t('pdf_generated')} ${new Date().toLocaleDateString(STATE.settings?.language === 'en' ? 'en-US' : 'es-ES', { year:'numeric', month:'long', day:'numeric' })}</div>
       </div>
       <div class="summary">
         <div class="summary-card">
-          <div class="summary-label">Total Ingresos</div>
+          <div class="summary-label">${t('summary_income')}</div>
           <div class="summary-value green">+$${totalIncome.toFixed(2)}</div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">Total Gastos</div>
+          <div class="summary-label">${t('summary_expenses')}</div>
           <div class="summary-value red">-$${totalExpense.toFixed(2)}</div>
         </div>
         <div class="summary-card">
@@ -2732,20 +2729,20 @@ function exportPDF(txs) {
           <div class="summary-value blue">$${balance.toFixed(2)}</div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">Transacciones</div>
+          <div class="summary-label">${t('pdf_transactions')}</div>
           <div class="summary-value">${txs.length}</div>
         </div>
       </div>
       <table>
         <thead>
           <tr>
-            <th>Fecha</th><th>Descripción</th><th>Categoría</th><th>Monto</th>
+            <th>${t('col_date')}</th><th>${t('col_desc')}</th><th>${t('col_cat')}</th><th>${t('col_amount')}</th>
           </tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
       <div class="footer">
-        Generado por FinanceAI Pro · climberforsuccess.online · ${new Date().getFullYear()}
+        ${t('pdf_footer')} · ${new Date().getFullYear()}
       </div>
     </body>
     </html>
@@ -2756,7 +2753,7 @@ function exportPDF(txs) {
   win.document.close();
   setTimeout(() => {
     win.print();
-    showToast('✅ PDF listo — usa "Guardar como PDF" en el diálogo de impresión 🎉');
+    showToast(t('pdf_ready'));
   }, 500);
 }
 
@@ -2769,8 +2766,9 @@ function renderMonthlyReport() {
   if (!tbody) return;
 
   const monthNames = [
-    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
-    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+    t('month_jan'),t('month_feb'),t('month_mar'),t('month_apr'),
+    t('month_may'),t('month_jun'),t('month_jul'),t('month_aug'),
+    t('month_sep'),t('month_oct'),t('month_nov'),t('month_dec')
   ];
 
   const byMonth = {};
@@ -2789,10 +2787,10 @@ function renderMonthlyReport() {
     tbody.innerHTML = `
       <tr>
         <td colspan="4" style="text-align:center;padding:24px;color:#475569;font-size:13px;">
-          📊 Tu resumen mensual aparecerá aquí —
+          ${t('reports_empty_1')}
           <span style="color:var(--accent);cursor:pointer;font-weight:600;"
                 onclick="showSection('transactions')">
-            Agrega tu primera transacción y empieza a ver resultados →
+            ${t('reports_empty_2')}
           </span>
         </td>
       </tr>`;
@@ -2813,13 +2811,13 @@ function renderMonthlyReport() {
       <tr style="${isWorst ? 'background:rgba(239,68,68,0.04);' : ''}">
         <td>
           <strong>${monthNames[parseInt(month)-1]} ${year}</strong>
-          ${isWorst ? '<span style="font-size:10px;color:#ef4444;margin-left:6px;">📛 más gastos</span>' : ''}
+          ${isWorst ? `<span style="font-size:10px;color:#ef4444;margin-left:6px;">${t('worst_month_badge')}</span>` : ''}
         </td>
         <td style="color:var(--success)">+$${data.income.toFixed(2)}</td>
         <td style="color:var(--danger)">-$${data.expense.toFixed(2)}</td>
         <td style="color:${balance >= 0 ? 'var(--accent)' : 'var(--danger)'};font-weight:600;">
           ${balance >= 0 ? '+' : ''}$${balance.toFixed(2)}
-          ${balance < 0 ? '<span style="font-size:10px;margin-left:4px;cursor:pointer;" onclick="showSection(\'plans\')">⚡ Optimiza →</span>' : ''}
+          ${balance < 0 ? `<span style="font-size:10px;margin-left:4px;cursor:pointer;" onclick="showSection('plans')">${t('optimize_cta')}</span>` : ''}
         </td>
       </tr>`;
   }).join('');
@@ -2829,19 +2827,62 @@ function renderMonthlyReport() {
 // TÉRMINOS Y POLÍTICA DE PRIVACIDAD
 // ============================================
 function showLegal(type) {
-  const isTerms = type === 'terms';
+  const isTerms   = type === 'terms';
   const isPrivacy = type === 'privacy';
   const isCookies = type === 'cookies';
+  const lang      = STATE.settings?.language || 'es';
+  const isEN      = lang === 'en';
 
-  const termsContent = `
-    <h2 style="color:#00EEFF;margin:0 0 8px;">📋 Términos de Servicio</h2>
-    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">Última actualización: ${new Date().toLocaleDateString('es-ES', {year:'numeric',month:'long',day:'numeric'})}</p>
+  const dateStr = new Date().toLocaleDateString(
+    isEN ? 'en-US' : 'es-ES',
+    { year:'numeric', month:'long', day:'numeric' }
+  );
 
+  const termsContent = isEN ? `
+    <h2 style="color:#00EEFF;margin:0 0 8px;">Terms of Service</h2>
+    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">Last updated: ${dateStr}</p>
     <div style="color:#CBD5E1;font-size:14px;line-height:1.8;">
-
+      <h3 style="color:#fff;margin:20px 0 8px;">1. Acceptance of Terms</h3>
+      <p>By accessing and using FinanceAI Pro ("the Application"), you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you may not access the service.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">2. Description of Service</h3>
+      <p>FinanceAI Pro is a personal finance management platform that allows you to:</p>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>Log and categorize income and expenses</li>
+        <li>Manage credit and debit cards</li>
+        <li>Scan and process receipts</li>
+        <li>Analyze debts and subscriptions</li>
+        <li>Generate AI-powered financial reports</li>
+      </ul>
+      <h3 style="color:#fff;margin:20px 0 8px;">3. Plans and Payments</h3>
+      <p>FinanceAI Pro offers subscription plans (Free, Personal, Pro, and Business). Charges are securely processed via Stripe. By subscribing:</p>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>You agree to pay recurring fees</li>
+        <li>You can cancel at any time from your customer portal</li>
+        <li>No refunds for partial months</li>
+        <li>Prices may change with notice</li>
+      </ul>
+      <h3 style="color:#fff;margin:20px 0 8px;">4. Acceptable Use</h3>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>Provide accurate account information</li>
+        <li>Keep your credentials confidential</li>
+        <li>Do not use the app for illegal activities</li>
+        <li>Do not attempt to access other users data</li>
+        <li>Do not reverse engineer or copy the software</li>
+      </ul>
+      <h3 style="color:#fff;margin:20px 0 8px;">5. Limitation of Liability</h3>
+      <p>FinanceAI Pro is a personal finance organization tool. <strong style="color:#FF4757;">We are not financial advisors.</strong> AI-generated information is for guidance only and does not constitute professional financial, legal, or tax advice.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">6. Termination</h3>
+      <p>We reserve the right to suspend or terminate accounts that violate these terms. You may delete your account at any time from settings.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">7. Changes to Terms</h3>
+      <p>We may update these terms. Continued use of the app after changes constitutes acceptance.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">8. Governing Law</h3>
+      <p>These terms are governed by applicable laws in the user's jurisdiction. Disputes will be resolved through arbitration or competent courts.</p>
+    </div>` : `
+    <h2 style="color:#00EEFF;margin:0 0 8px;">${t('nav_terms')}</h2>
+    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">${t('last_updated')} ${dateStr}</p>
+    <div style="color:#CBD5E1;font-size:14px;line-height:1.8;">
       <h3 style="color:#fff;margin:20px 0 8px;">1. Aceptación de los Términos</h3>
       <p>Al acceder y utilizar FinanceAI Pro ("la Aplicación"), usted acepta estar sujeto a estos Términos de Servicio. Si no está de acuerdo con alguna parte de estos términos, no podrá acceder al servicio.</p>
-
       <h3 style="color:#fff;margin:20px 0 8px;">2. Descripción del Servicio</h3>
       <p>FinanceAI Pro es una plataforma de gestión financiera personal que permite:</p>
       <ul style="margin:8px 0 8px 20px;color:#8892A4;">
@@ -2851,119 +2892,137 @@ function showLegal(type) {
         <li>Analizar deudas y suscripciones</li>
         <li>Generar reportes financieros con inteligencia artificial</li>
       </ul>
-
       <h3 style="color:#fff;margin:20px 0 8px;">3. Planes y Pagos</h3>
       <p>FinanceAI Pro ofrece planes de suscripción (Free, Personal, Pro y Business). Los cargos son procesados de forma segura mediante Stripe. Al suscribirse:</p>
       <ul style="margin:8px 0 8px 20px;color:#8892A4;">
-        <li>Los cargos son recurrentes (mensual o anual según el plan elegido)</li>
+        <li>Acepta pagar las tarifas recurrentes</li>
         <li>Puede cancelar en cualquier momento desde su portal de cliente</li>
-        <li>No se emiten reembolsos por períodos parciales</li>
-        <li>Los precios pueden cambiar con previo aviso de 30 días</li>
+        <li>No se realizan reembolsos por meses parciales</li>
+        <li>Los precios pueden cambiar con previo aviso</li>
       </ul>
-
       <h3 style="color:#fff;margin:20px 0 8px;">4. Uso Aceptable</h3>
-      <p>Usted se compromete a:</p>
       <ul style="margin:8px 0 8px 20px;color:#8892A4;">
         <li>Proporcionar información verídica en su cuenta</li>
-        <li>Mantener la confidencialidad de sus credenciales</li>
+        <li>Mantener confidencialidad de sus credenciales</li>
         <li>No usar la aplicación para actividades ilegales o fraudulentas</li>
         <li>No intentar acceder a datos de otros usuarios</li>
         <li>No realizar ingeniería inversa o copiar el software</li>
       </ul>
-
       <h3 style="color:#fff;margin:20px 0 8px;">5. Limitación de Responsabilidad</h3>
-      <p>FinanceAI Pro es una herramienta de organización financiera personal. <strong style="color:#FF4757;">No somos asesores financieros.</strong> La información generada por la IA es orientativa y no constituye asesoramiento financiero, legal o fiscal profesional. Siempre consulte a un profesional calificado para decisiones financieras importantes.</p>
-
-      <h3 style="color:#fff;margin:20px 0 8px;">6. Disponibilidad del Servicio</h3>
-      <p>Nos esforzamos por mantener el servicio disponible 24/7, pero no garantizamos disponibilidad ininterrumpida. Podemos realizar mantenimientos programados con previo aviso.</p>
-
-      <h3 style="color:#fff;margin:20px 0 8px;">7. Terminación</h3>
+      <p>FinanceAI Pro es una herramienta de organización financiera personal. <strong style="color:#FF4757;">No somos asesores financieros.</strong> La información generada por la IA es orientativa y no constituye asesoramiento financiero, legal o fiscal profesional.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">6. Terminación</h3>
       <p>Nos reservamos el derecho de suspender o terminar cuentas que violen estos términos. Usted puede eliminar su cuenta en cualquier momento desde la configuración.</p>
-
-      <h3 style="color:#fff;margin:20px 0 8px;">8. Cambios a los Términos</h3>
-      <p>Podemos actualizar estos términos ocasionalmente. Le notificaremos cambios significativos por email. El uso continuado del servicio constituye aceptación de los nuevos términos.</p>
-
-      <h3 style="color:#fff;margin:20px 0 8px;">9. Ley Aplicable</h3>
+      <h3 style="color:#fff;margin:20px 0 8px;">7. Cambios a los Términos</h3>
+      <p>Podemos actualizar estos términos. El uso continuado de la app después de los cambios constituye aceptación.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">8. Ley Aplicable</h3>
       <p>Estos términos se rigen por las leyes aplicables en la jurisdicción del usuario. Cualquier disputa se resolverá mediante arbitraje o en los tribunales competentes.</p>
+    </div>`;
 
-      <h3 style="color:#fff;margin:20px 0 8px;">10. Contacto</h3>
-      <p>Para preguntas sobre estos términos: <a href="mailto:climberforsuccess@gmail.com" style="color:#00EEFF;">climberforsuccess@gmail.com</a></p>
-    </div>
-  `;
-
-  const privacyContent = `
-    <h2 style="color:#00EEFF;margin:0 0 8px;">🔒 Política de Privacidad</h2>
-    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">Última actualización: ${new Date().toLocaleDateString('es-ES', {year:'numeric',month:'long',day:'numeric'})}</p>
-
+  const privacyContent = isEN ? `
+    <h2 style="color:#00EEFF;margin:0 0 8px;">Privacy Policy</h2>
+    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">Last updated: ${dateStr}</p>
     <div style="color:#CBD5E1;font-size:14px;line-height:1.8;">
-
-      <h3 style="color:#fff;margin:20px 0 8px;">1. Información que Recopilamos</h3>
-      <p>Recopilamos la siguiente información para operar el servicio:</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">1. Information We Collect</h3>
       <ul style="margin:8px 0 8px 20px;color:#8892A4;">
-        <li><strong style="color:#CBD5E1;">Información de cuenta:</strong> nombre, email, contraseña (cifrada)</li>
-        <li><strong style="color:#CBD5E1;">Datos financieros:</strong> transacciones, tarjetas, deudas y suscripciones que usted registra</li>
+        <li><strong style="color:#CBD5E1;">Account info:</strong> name, email, encrypted password</li>
+        <li><strong style="color:#CBD5E1;">Financial data:</strong> transactions, cards, debts, subscriptions</li>
+        <li><strong style="color:#CBD5E1;">Usage data:</strong> pages visited, features used</li>
+        <li><strong style="color:#CBD5E1;">Technical info:</strong> device type, browser, IP address</li>
+      </ul>
+      <h3 style="color:#fff;margin:20px 0 8px;">2. How We Use Your Information</h3>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>Provide and improve the service</li>
+        <li>Process payments securely</li>
+        <li>Generate personalized AI financial analysis</li>
+        <li>Send important service communications</li>
+      </ul>
+      <h3 style="color:#fff;margin:20px 0 8px;">3. Data Sharing</h3>
+      <p><strong style="color:#00EEFF;">We do not sell your personal data.</strong> We share information only with:</p>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li><strong style="color:#CBD5E1;">Supabase:</strong> secure data storage</li>
+        <li><strong style="color:#CBD5E1;">Stripe:</strong> payment processing</li>
+        <li><strong style="color:#CBD5E1;">OpenAI:</strong> AI analysis (anonymized data)</li>
+      </ul>
+      <h3 style="color:#fff;margin:20px 0 8px;">4. Data Security</h3>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>Encrypted HTTPS connections</li>
+        <li>Passwords encrypted with bcrypt</li>
+        <li>Row-level security in Supabase</li>
+        <li>No financial data stored on our servers</li>
+      </ul>
+      <h3 style="color:#fff;margin:20px 0 8px;">5. Your Rights</h3>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li>Access and export your data</li>
+        <li>Correct inaccurate data</li>
+        <li>Delete your account and all data</li>
+        <li>Opt out of non-essential communications</li>
+      </ul>
+      <h3 style="color:#fff;margin:20px 0 8px;">6. Contact</h3>
+      <p>Privacy questions: <a href="mailto:climberforsuccess@gmail.com" style="color:#00EEFF;">climberforsuccess@gmail.com</a></p>
+    </div>` : `
+    <h2 style="color:#00EEFF;margin:0 0 8px;">${t('nav_privacy')}</h2>
+    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">${t('last_updated')} ${dateStr}</p>
+    <div style="color:#CBD5E1;font-size:14px;line-height:1.8;">
+      <h3 style="color:#fff;margin:20px 0 8px;">1. Información que Recopilamos</h3>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li><strong style="color:#CBD5E1;">Información de cuenta:</strong> nombre, email, contraseña cifrada</li>
+        <li><strong style="color:#CBD5E1;">Datos financieros:</strong> transacciones, tarjetas, deudas y suscripciones</li>
         <li><strong style="color:#CBD5E1;">Datos de uso:</strong> páginas visitadas, funciones utilizadas</li>
         <li><strong style="color:#CBD5E1;">Información técnica:</strong> tipo de dispositivo, navegador, dirección IP</li>
       </ul>
-
       <h3 style="color:#fff;margin:20px 0 8px;">2. Cómo Usamos su Información</h3>
       <ul style="margin:8px 0 8px 20px;color:#8892A4;">
         <li>Proveer y mejorar el servicio</li>
         <li>Procesar pagos de forma segura</li>
-        <li>Enviar notificaciones importantes sobre su cuenta</li>
         <li>Generar análisis financieros personalizados con IA</li>
-        <li>Cumplir obligaciones legales</li>
+        <li>Enviar comunicaciones importantes del servicio</li>
       </ul>
-
       <h3 style="color:#fff;margin:20px 0 8px;">3. Compartición de Datos</h3>
       <p><strong style="color:#00EEFF;">No vendemos sus datos personales.</strong> Compartimos información únicamente con:</p>
       <ul style="margin:8px 0 8px 20px;color:#8892A4;">
         <li><strong style="color:#CBD5E1;">Supabase:</strong> almacenamiento seguro de datos</li>
-        <li><strong style="color:#CBD5E1;">Stripe:</strong> procesamiento de pagos (no almacenamos datos de tarjetas)</li>
+        <li><strong style="color:#CBD5E1;">Stripe:</strong> procesamiento de pagos</li>
         <li><strong style="color:#CBD5E1;">OpenAI:</strong> análisis de IA (datos anonimizados)</li>
-        <li>Autoridades legales cuando sea requerido por ley</li>
       </ul>
-
-      <h3 style="color:#fff;margin:20px 0 8px;">4. Seguridad de los Datos</h3>
-      <p>Protegemos sus datos mediante:</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">4. Seguridad de Datos</h3>
       <ul style="margin:8px 0 8px 20px;color:#8892A4;">
-        <li>Cifrado SSL/TLS en todas las comunicaciones</li>
+        <li>Conexiones HTTPS cifradas</li>
         <li>Contraseñas cifradas con bcrypt</li>
-        <li>Acceso restringido a datos por Row Level Security (RLS)</li>
-        <li>Infraestructura segura en Supabase y Vercel</li>
+        <li>Seguridad a nivel de fila en Supabase</li>
+        <li>Sin datos financieros almacenados en nuestros servidores</li>
       </ul>
-
       <h3 style="color:#fff;margin:20px 0 8px;">5. Sus Derechos</h3>
-      <p>Usted tiene derecho a:</p>
       <ul style="margin:8px 0 8px 20px;color:#8892A4;">
-        <li>Acceder a sus datos personales</li>
-        <li>Corregir datos inexactos</li>
+        <li>Acceder y exportar sus datos</li>
+        <li>Corregir datos incorrectos</li>
         <li>Eliminar su cuenta y todos sus datos</li>
-        <li>Exportar sus datos en formato CSV</li>
-        <li>Oponerse al procesamiento de sus datos</li>
+        <li>Optar por no recibir comunicaciones no esenciales</li>
       </ul>
+      <h3 style="color:#fff;margin:20px 0 8px;">6. Contacto</h3>
+      <p>Consultas de privacidad: <a href="mailto:climberforsuccess@gmail.com" style="color:#00EEFF;">climberforsuccess@gmail.com</a></p>
+    </div>`;
 
-      <h3 style="color:#fff;margin:20px 0 8px;">6. Cookies</h3>
-      <p>Usamos cookies esenciales para mantener su sesión activa y preferencias de la app. No usamos cookies de rastreo de terceros con fines publicitarios.</p>
-
-      <h3 style="color:#fff;margin:20px 0 8px;">7. Retención de Datos</h3>
-      <p>Mantenemos sus datos mientras su cuenta esté activa. Al eliminar su cuenta, sus datos son eliminados permanentemente en un plazo máximo de 30 días.</p>
-
-      <h3 style="color:#fff;margin:20px 0 8px;">8. Menores de Edad</h3>
-      <p>FinanceAI Pro no está dirigido a menores de 18 años. No recopilamos intencionalmente datos de menores.</p>
-
-      <h3 style="color:#fff;margin:20px 0 8px;">9. Cambios a esta Política</h3>
-      <p>Notificaremos cambios significativos por email con al menos 15 días de anticipación.</p>
-
-      <h3 style="color:#fff;margin:20px 0 8px;">10. Contacto</h3>
-      <p>Para ejercer sus derechos o consultas de privacidad: <a href="mailto:climberforsuccess@gmail.com" style="color:#00EEFF;">climberforsuccess@gmail.com</a></p>
-    </div>
-  `;
-
-
-  const cookiesContent = `
-    <h2 style="color:#00EEFF;margin:0 0 8px;">🍪 Política de Cookies</h2>
-    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">Última actualización: ${new Date().toLocaleDateString('es-ES', {year:'numeric',month:'long',day:'numeric'})}</p>
+  const cookiesContent = isEN ? `
+    <h2 style="color:#00EEFF;margin:0 0 8px;">🍪 Cookie Policy</h2>
+    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">Last updated: ${dateStr}</p>
+    <div style="color:#CBD5E1;font-size:14px;line-height:1.8;">
+      <h3 style="color:#fff;margin:20px 0 8px;">1. What are cookies?</h3>
+      <p>Cookies are small text files stored on your device when you visit our application. They help us remember your preferences and keep your session active.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">2. Cookies we use</h3>
+      <ul style="margin:8px 0 8px 20px;color:#8892A4;">
+        <li><strong style="color:#CBD5E1;">Session:</strong> Keep you securely logged in</li>
+        <li><strong style="color:#CBD5E1;">Preferences:</strong> Save your language, currency, and settings</li>
+        <li><strong style="color:#CBD5E1;">Security:</strong> Protect against unauthorized access</li>
+      </ul>
+      <h3 style="color:#fff;margin:20px 0 8px;">3. Third-party cookies</h3>
+      <p>We do not use advertising tracking cookies. Stripe may use technical cookies for secure payment processing.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">4. Cookie control</h3>
+      <p>You can configure your browser to reject cookies, though this may affect app functionality. Essential cookies cannot be disabled.</p>
+      <h3 style="color:#fff;margin:20px 0 8px;">5. Contact</h3>
+      <p>Cookie queries: <a href="mailto:climberforsuccess@gmail.com" style="color:#00EEFF;">climberforsuccess@gmail.com</a></p>
+    </div>` : `
+    <h2 style="color:#00EEFF;margin:0 0 8px;">🍪 ${t('nav_cookies')}</h2>
+    <p style="color:#8892A4;font-size:13px;margin:0 0 24px;">${t('last_updated')} ${dateStr}</p>
     <div style="color:#CBD5E1;font-size:14px;line-height:1.8;">
       <h3 style="color:#fff;margin:20px 0 8px;">1. ¿Qué son las cookies?</h3>
       <p>Las cookies son pequeños archivos de texto que se almacenan en su dispositivo al visitar nuestra aplicación. Nos ayudan a recordar sus preferencias y mantener su sesión activa.</p>
@@ -2979,8 +3038,7 @@ function showLegal(type) {
       <p>Puede configurar su navegador para rechazar cookies, aunque esto puede afectar el funcionamiento de la aplicación. Las cookies esenciales no pueden desactivarse.</p>
       <h3 style="color:#fff;margin:20px 0 8px;">5. Contacto</h3>
       <p>Consultas sobre cookies: <a href="mailto:climberforsuccess@gmail.com" style="color:#00EEFF;">climberforsuccess@gmail.com</a></p>
-    </div>
-  `;
+    </div>`;
 
   const existing = document.getElementById('legal-modal');
   if (existing) existing.remove();
@@ -3005,21 +3063,21 @@ function showLegal(type) {
           background:${isTerms ? 'linear-gradient(135deg,#00EEFF,#0066FF)' : 'rgba(255,255,255,0.05)'};
           border:${isTerms ? 'none' : '1px solid rgba(255,255,255,0.1)'};
           color:${isTerms ? '#000' : '#8892A4'};">
-          📋 Términos de Servicio
+          ${t('nav_terms')}
         </button>
         <button onclick="showLegal('privacy')" style="
           flex:1;padding:10px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;
           background:${isPrivacy ? 'linear-gradient(135deg,#00EEFF,#0066FF)' : 'rgba(255,255,255,0.05)'};
           border:${isPrivacy ? 'none' : '1px solid rgba(255,255,255,0.1)'};
           color:${isPrivacy ? '#000' : '#8892A4'};">
-          🔒 Política de Privacidad
+          ${t('nav_privacy')}
         </button>
         <button onclick="showLegal('cookies')" style="
           flex:1;padding:10px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;
           background:${isCookies ? 'linear-gradient(135deg,#00EEFF,#0066FF)' : 'rgba(255,255,255,0.05)'};
           border:${isCookies ? 'none' : '1px solid rgba(255,255,255,0.1)'};
           color:${isCookies ? '#000' : '#8892A4'};">
-          🍪 Cookies
+          ${t('nav_cookies')}
         </button>
       </div>
 
@@ -3031,7 +3089,7 @@ function showLegal(type) {
         margin-top:24px;padding:12px;width:100%;
         background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
         border-radius:12px;color:#8892A4;cursor:pointer;font-size:14px;">
-        ✖ Cerrar
+        ${t('btn_close')}
       </button>
     </div>`;
 
@@ -3054,30 +3112,30 @@ function openAddCard() {
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center;';
   modal.innerHTML = `
     <div style="background:#1a1a3e;border-radius:16px;padding:32px;width:90%;max-width:440px;border:1px solid #00EEFF33;">
-      <h2 style="color:#fff;margin-bottom:24px;font-size:20px;">💳 Nueva Tarjeta</h2>
+      <h2 style="color:#fff;margin-bottom:24px;font-size:20px;">${t('card_modal_title')}</h2>
 
-      <label style="color:#94a3b8;font-size:13px;">Nombre del titular</label>
-      <input id="nc-name" placeholder="Ej: Juan Pérez" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
+      <label style="color:#94a3b8;font-size:13px;">${t('card_holder_label')}</label>
+      <input id="nc-name" placeholder="${t('card_holder_placeholder')}" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
 
-      <label style="color:#94a3b8;font-size:13px;">Tipo de tarjeta</label>
+      <label style="color:#94a3b8;font-size:13px;">${t('card_type_label')}</label>
       <select id="nc-type" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
-        <option value="Crédito" data-i18n-val="Crédito">Crédito</option>
-        <option value="Débito">Débito</option>
+        <option value="Crédito" data-i18n-val="Crédito">${t('card_type_credit')}</option>
+        <option value="Débito">${t('card_type_debit')}</option>
       </select>
 
-      <label style="color:#94a3b8;font-size:13px;">Uso de la tarjeta</label>
+      <label style="color:#94a3b8;font-size:13px;">${t('card_usage_label')}</label>
       <select id="nc-owner-type" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
-        <option value="personal">👤 Personal</option>
-        <option value="business">🏢 Empresa</option>
+        <option value="personal">${t('card_usage_personal')}</option>
+        <option value="business">${t('card_usage_business')}</option>
       </select>
 
       <label style="color:#94a3b8;font-size:13px;">${t('card_last4')}</label>
       <input id="nc-last4" placeholder="1234" maxlength="4" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
 
-      <label style="color:#94a3b8;font-size:13px;">Límite de crédito</label>
+      <label style="color:#94a3b8;font-size:13px;">${t('credit_limit')}</label>
       <input id="nc-limit" type="number" placeholder="0.00" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
 
-      <label style="color:#94a3b8;font-size:13px;">Balance actual usado</label>
+      <label style="color:#94a3b8;font-size:13px;">${t('card_balance_lbl')}</label>
       <input id="nc-balance" type="number" placeholder="0.00" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
 
       <label style="color:#94a3b8;font-size:13px;">${t('card_apr')}</label>
@@ -3098,8 +3156,8 @@ function openAddCard() {
         <div onclick="selectCardColor(this)" data-gradient="linear-gradient(135deg,#e8e8e8,#ffffff)" style="width:40px;height:28px;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#e8e8e8,#ffffff);"></div>
       </div>
       <div style="display:flex;gap:12px;">
-        <button onclick="document.getElementById('add-card-modal').remove()" style="flex:1;padding:12px;background:transparent;border:1px solid #444;border-radius:8px;color:#94a3b8;cursor:pointer;">Cancelar</button>
-        <button onclick="saveNewCard()" style="flex:1;padding:12px;background:linear-gradient(135deg,#00EEFF,#0066FF);border:none;border-radius:8px;color:#000;font-weight:700;cursor:pointer;">Guardar</button>
+        <button onclick="document.getElementById('add-card-modal').remove()" style="flex:1;padding:12px;background:transparent;border:1px solid #444;border-radius:8px;color:#94a3b8;cursor:pointer;">${t('btn_cancel')}</button>
+        <button onclick="saveNewCard()" style="flex:1;padding:12px;background:linear-gradient(135deg,#00EEFF,#0066FF);border:none;border-radius:8px;color:#000;font-weight:700;cursor:pointer;">${t('btn_save_card')}</button>
       </div>
     </div>
   `;
@@ -3120,7 +3178,7 @@ async function saveNewCard() {
   const colorEl  = document.querySelector('#nc-colors [data-gradient][style*="2px solid #fff"]');
   const color    = colorEl ? colorEl.dataset.gradient : 'linear-gradient(135deg,#1a1a3e,#00EEFF44)';
 
-  if (!name) { showToast('Ingresa el nombre del titular', 'error'); return; }
+  if (!name) { showToast(t('card_name_required'), 'error'); return; }
   if (!checkCardLimit(ownerType)) return;
 
   const { data: { session } } = await supabase.auth.getSession();
@@ -3141,7 +3199,7 @@ async function saveNewCard() {
 
   if (error) {
     console.error('Error guardando tarjeta:', error);
-    showToast('Error al guardar tarjeta', 'error');
+    showToast(t('card_save_error'), 'error');
     return;
   }
 
@@ -3161,7 +3219,7 @@ async function saveNewCard() {
 
   document.getElementById('add-card-modal').remove();
   renderCards();
-  showToast('✅ Tarjeta guardada');
+  showToast(t('card_saved_ok'));
 }
 
 
@@ -3196,7 +3254,7 @@ function filterTransactions(filter, btn) {
     container.innerHTML = `
       <div style="text-align:center;padding:60px;color:#8892A4;">
         <div style="font-size:3rem;margin-bottom:12px;opacity:0.4;">💸</div>
-        No tienes transacciones en esta categoría.
+        ${t('trans_empty_cat')}
       </div>`;
     return;
   }
@@ -3212,7 +3270,7 @@ function filterTransactions(filter, btn) {
         <div style="display:flex;align-items:center;gap:12px;">
           <span style="font-size:1.4rem;">${icon}</span>
           <div>
-            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || 'Sin descripción'}</div>
+            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || t('no_description')}</div>
             <div style="color:#8892A4;font-size:12px;">${t.category || ''} · ${t.date || ''}</div>
           </div>
         </div>
@@ -3254,7 +3312,7 @@ function filterTransactions(filter, btn) {
     container.innerHTML = `
       <div style="text-align:center;padding:60px;color:#8892A4;">
         <div style="font-size:3rem;margin-bottom:12px;opacity:0.4;">💸</div>
-        No tienes transacciones en esta categoría.
+        ${t('trans_empty_cat')}
       </div>`;
     return;
   }
@@ -3270,7 +3328,7 @@ function filterTransactions(filter, btn) {
         <div style="display:flex;align-items:center;gap:12px;">
           <span style="font-size:1.4rem;">${icon}</span>
           <div>
-            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || 'Sin descripción'}</div>
+            <div style="color:#fff;font-size:14px;font-weight:500;">${t.description || t('no_description')}</div>
             <div style="color:#8892A4;font-size:12px;">${t.category || ''} · ${t.date || ''}</div>
           </div>
         </div>
@@ -3292,18 +3350,18 @@ function openAddTransaction() {
   modal.innerHTML = `
     <div style="background:#1a1f2e;border-radius:16px;padding:32px;width:90%;max-width:480px;
                 border:1px solid #ffffff15;">
-      <h2 style="color:#fff;margin:0 0 24px;font-size:1.3rem;">+ Nueva Transacción</h2>
+      <h2 style="color:#fff;margin:0 0 24px;font-size:1.3rem;">${t('tx_new_title')}</h2>
       
       <div style="display:flex;flex-direction:column;gap:16px;">
         <div>
-          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Descripción</label>
-          <input id="tx-description" type="text" placeholder="Ej: Salario, Supermercado..."
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">${t('tx_label_desc')}</label>
+          <input id="tx-description" type="text" placeholder="${t('tx_placeholder_desc')}"
             style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
                    border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
         </div>
         
         <div>
-          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Monto</label>
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">${t('tx_label_amount')}</label>
           <input id="tx-amount" type="number" placeholder="0.00" min="0" step="0.01"
             style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
                    border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
@@ -3314,30 +3372,30 @@ function openAddTransaction() {
           <select id="tx-type"
             style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
                    border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
-            <option value="expense">Gasto</option>
-            <option value="income">Ingreso</option>
+            <option value="expense">${t('tx_opt_expense')}</option>
+            <option value="income">${t('tx_opt_income')}</option>
           </select>
         </div>
 
         <div>
-          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">¿Es personal o de empresa?</label>
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">${t('tx_label_owner')}</label>
           <select id="tx-category-type"
             style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
                    border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
-            <option value="personal">Personal</option>
-            <option value="business">Empresa</option>
+            <option value="personal">${t('tx_opt_personal')}</option>
+            <option value="business">${t('tx_opt_business')}</option>
           </select>
         </div>
         
         <div>
-          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Categoría</label>
-          <input id="tx-category" type="text" placeholder="Ej: Alimentación, Transporte..."
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">${t('tx_label_category')}</label>
+          <input id="tx-category" type="text" placeholder="${t('tx_cat_placeholder')}"
             style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
                    border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
         </div>
         
         <div>
-          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">Fecha</label>
+          <label style="color:#8892A4;font-size:13px;display:block;margin-bottom:6px;">${t('tx_label_date')}</label>
           <input id="tx-date" type="date"
             style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #ffffff20;
                    border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;"
@@ -3348,11 +3406,11 @@ function openAddTransaction() {
       <div style="display:flex;gap:12px;margin-top:24px;">
         <button onclick="closeAddTransaction()"
           style="flex:1;padding:12px;background:#ffffff10;border:none;border-radius:8px;
-                 color:#fff;font-size:14px;cursor:pointer;">Cancelar</button>
+                 color:#fff;font-size:14px;cursor:pointer;">${t('btn_cancel')}</button>
         <button onclick="saveNewTransaction()"
           style="flex:1;padding:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);
                  border:none;border-radius:8px;color:#fff;font-size:14px;
-                 font-weight:600;cursor:pointer;">Guardar</button>
+                 font-weight:600;cursor:pointer;">${t('btn_save_card')}</button>
       </div>
     </div>`;
   
@@ -3374,7 +3432,7 @@ async function saveNewTransaction() {
   const date = document.getElementById('tx-date').value;
 
   if (!description || !amount || !date) {
-    alert('Por favor completa descripción, monto y fecha.');
+    showToast(t('tx_alert_required'), 'error');
     return;
   }
 
@@ -3392,7 +3450,7 @@ async function saveNewTransaction() {
   }]);
 
   if (error) {
-    alert('Error al guardar: ' + error.message);
+    showToast(t('tx_alert_error') + error.message, 'error');
     return;
   }
 
