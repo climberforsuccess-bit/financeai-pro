@@ -311,6 +311,12 @@ function showSection(sectionId) {
   if (sectionId === 'reports')       renderReports();
   if (sectionId === 'settings')      renderSettings();
   if (sectionId === 'admin')         adminLoadStats();
+
+  // Re-apply translations after section renders
+  if (typeof applyLanguage === 'function') {
+    const lang = localStorage.getItem('financeai_lang') || 'en';
+    applyLanguage(lang);
+  }
 }
 
 function scrollToSection(sectionId) {
