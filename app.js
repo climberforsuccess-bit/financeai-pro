@@ -645,23 +645,23 @@ function renderDashboard() {
 
   const txs = STATE.transactions || [];
 
-  const thisMonthTxs = txs.filter(t => {
-    const d = new Date(t.date || t.created_at);
+  const thisMonthTxs = txs.filter(tx => {
+    const d = new Date(tx.date || tx.created_at);
     return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
   });
 
-  const lastMonthTxs = txs.filter(t => {
-    const d = new Date(t.date || t.created_at);
+  const lastMonthTxs = txs.filter(tx => {
+    const d = new Date(tx.date || tx.created_at);
     return d.getMonth() === lastMonth && d.getFullYear() === lastYear;
   });
 
-  const income  = thisMonthTxs.filter(t => t.type === 'income').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
-  const expense = thisMonthTxs.filter(t => t.type === 'expense').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+  const income  = thisMonthTxs.filter(tx => tx.type === 'income').reduce((s, tx) => s + (parseFloat(tx.amount) || 0), 0);
+  const expense = thisMonthTxs.filter(tx => tx.type === 'expense').reduce((s, tx) => s + (parseFloat(tx.amount) || 0), 0);
   const balance = income - expense;
   const savings = income > 0 ? ((balance / income) * 100).toFixed(1) : 0;
 
-  const lastIncome  = lastMonthTxs.filter(t => t.type === 'income').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
-  const lastExpense = lastMonthTxs.filter(t => t.type === 'expense').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+  const lastIncome  = lastMonthTxs.filter(tx => tx.type === 'income').reduce((s, tx) => s + (parseFloat(tx.amount) || 0), 0);
+  const lastExpense = lastMonthTxs.filter(tx => tx.type === 'expense').reduce((s, tx) => s + (parseFloat(tx.amount) || 0), 0);
 
   const incomePct  = lastIncome  > 0 ? (((income  - lastIncome)  / lastIncome)  * 100).toFixed(1) : 0;
   const expensePct = lastExpense > 0 ? (((expense - lastExpense) / lastExpense) * 100).toFixed(1) : 0;
@@ -1517,9 +1517,9 @@ function detectSubscriptionsFromTransactions() {
     'youtube','apple','chatgpt','openai','adobe',
     'gym','xbox','playstation','icloud'
   ];
-  const found = STATE.transactions.filter(t =>
+  const found = STATE.transactions.filter(tx =>
     keywords.some(k =>
-      (t.description || '').toLowerCase().includes(k)
+      (tx.description || '').toLowerCase().includes(k)
     )
   );
   if (found.length > 0) {
@@ -1537,8 +1537,8 @@ function getFinancialContext() {
   const debts = STATE.debts || [];
   const subs  = STATE.subscriptions || [];
 
-  const totalIncome  = txs.filter(t => t.type === 'income').reduce((s,t) => s + Number(t.amount||0), 0);
-  const totalExpense = txs.filter(t => t.type === 'expense').reduce((s,t) => s + Number(t.amount||0), 0);
+  const totalIncome  = txs.filter(tx => tx.type === 'income').reduce((s,tx) => s + Number(tx.amount||0), 0);
+  const totalExpense = txs.filter(tx => tx.type === 'expense').reduce((s,tx) => s + Number(tx.amount||0), 0);
   const totalDebt    = debts.reduce((s,d) => s + Number(d.amount||0), 0);
 
   return [
@@ -2000,8 +2000,8 @@ function renderReports() {
   const txs = STATE.transactions || [];
 
   // Totales
-  const totalIncome  = txs.filter(t => t.type === 'income').reduce((s,t) => s + (t.amount||0), 0);
-  const totalExpense = txs.filter(t => t.type === 'expense').reduce((s,t) => s + (t.amount||0), 0);
+  const totalIncome  = txs.filter(tx => tx.type === 'income').reduce((s,tx) => s + (tx.amount||0), 0);
+  const totalExpense = txs.filter(tx => tx.type === 'expense').reduce((s,tx) => s + (tx.amount||0), 0);
   const balance      = totalIncome - totalExpense;
 
   const el = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
@@ -2012,8 +2012,8 @@ function renderReports() {
 
   // Top categorías de gastos
   const cats = {};
-  txs.filter(t => t.type === 'expense').forEach(t => {
-    cats[t.category || 'Otros'] = (cats[t.category || 'Otros'] || 0) + (t.amount || 0);
+  txs.filter(tx => tx.type === 'expense').forEach(tx => {
+    cats[tx.category || 'Otros'] = (cats[tx.category || 'Otros'] || 0) + (tx.amount || 0);
   });
 
   const topList = document.getElementById('report-top-categories');
@@ -2678,8 +2678,8 @@ function exportCSV(txs) {
 }
 
 function exportPDF(txs) {
-  const totalIncome  = txs.filter(t => tx.amount > 0).reduce((s,t) => s + tx.amount, 0);
-  const totalExpense = txs.filter(t => tx.amount < 0).reduce((s,t) => s + Math.abs(tx.amount), 0);
+  const totalIncome  = txs.filter(tx => tx.amount > 0).reduce((s,tx) => s + tx.amount, 0);
+  const totalExpense = txs.filter(tx => tx.amount < 0).reduce((s,tx) => s + Math.abs(tx.amount), 0);
   const balance      = totalIncome - totalExpense;
 
   const rows = txs.slice(0, 50).map(tx => `
@@ -2778,13 +2778,13 @@ function renderMonthlyReport() {
   ];
 
   const byMonth = {};
-  txs.forEach(t => {
-    if (!t.date) return;
-    const d = new Date(t.date);
+  txs.forEach(tx => {
+    if (!tx.date) return;
+    const d = new Date(tx.date);
     const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
     if (!byMonth[key]) byMonth[key] = { income: 0, expense: 0 };
-    if (t.amount > 0) byMonth[key].income  += t.amount;
-    else              byMonth[key].expense += Math.abs(t.amount);
+    if (tx.amount > 0) byMonth[key].income  += tx.amount;
+    else              byMonth[key].expense += Math.abs(tx.amount);
   });
 
   const sorted = Object.keys(byMonth).sort().reverse().slice(0, 12);
@@ -3238,16 +3238,16 @@ function filterTransactions(filter, btn) {
 
   switch(filter) {
     case 'income':
-      filtered = txs.filter(t => t.type === 'income');
+      filtered = txs.filter(tx => tx.type === 'income');
       break;
     case 'expense':
-      filtered = txs.filter(t => t.type === 'expense');
+      filtered = txs.filter(tx => tx.type === 'expense');
       break;
     case 'personal':
-      filtered = txs.filter(t => t.category_type === 'personal');
+      filtered = txs.filter(tx => tx.category_type === 'personal');
       break;
     case 'business':
-      filtered = txs.filter(t => t.category_type === 'business');
+      filtered = txs.filter(tx => tx.category_type === 'business');
       break;
     default:
       filtered = txs;
@@ -3296,16 +3296,16 @@ function filterTransactions(filter, btn) {
 
   switch(filter) {
     case 'income':
-      filtered = txs.filter(t => tx.type === 'income');
+      filtered = txs.filter(tx => tx.type === 'income');
       break;
     case 'expense':
-      filtered = txs.filter(t => tx.type === 'expense');
+      filtered = txs.filter(tx => tx.type === 'expense');
       break;
     case 'personal':
-      filtered = txs.filter(t => tx.category_type === 'personal');
+      filtered = txs.filter(tx => tx.category_type === 'personal');
       break;
     case 'business':
-      filtered = txs.filter(t => tx.category_type === 'business');
+      filtered = txs.filter(tx => tx.category_type === 'business');
       break;
     default:
       filtered = txs;
