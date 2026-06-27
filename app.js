@@ -696,6 +696,14 @@ function renderDashboard() {
   const totalDebt = cardDebts + manualDebts;
   if (el('totalDebt')) el('totalDebt').textContent = fmt(totalDebt);
 
+  // --- Actualizar mensaje AI Assistant con datos reales ---
+  const chatIntroEl = document.querySelector('[data-i18n="dash_chat_intro"]');
+  if (chatIntroEl) {
+    const balancePositive = balance >= 0;
+    const balanceMsg = balancePositive ? t('dash_balance_positive') : t('dash_balance_negative');
+    chatIntroEl.innerHTML = '👋 ' + t('dash_chat_greeting') + ' <strong>' + fmt(expense) + '</strong> ' + t('dash_chat_spent') + ' ' + balanceMsg + ' ' + t('dash_chat_help');
+  }
+
   // --- Transacciones recientes (últimas 5) ---
   const recentContainer = el('recentTransactions') || el('recent-transactions');
   if (recentContainer) {
