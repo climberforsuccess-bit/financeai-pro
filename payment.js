@@ -1,9 +1,3 @@
-// i18n helper
-function t(key) {
-  if (window.i18n && typeof window.i18n.t === 'function') return window.i18n.t(key);
-  return key;
-}
-
 // ===========================
 // FINANCEAI PRO — PAYMENT.JS
 // Stripe + PayPal Integration
