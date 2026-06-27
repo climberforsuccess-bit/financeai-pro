@@ -3468,12 +3468,12 @@ async function saveNewTransaction() {
 // LANGUAGE CHANGE LISTENER
 // ===========================
 window.addEventListener('langChanged', async () => {
-  const activePage = document.querySelector('.page.active')?.id || '';
-  if (activePage === 'dashboard') { renderDashboard(); }
-  else if (activePage === 'transactions') { renderTransactions(); }
-  else if (activePage === 'cards') { renderCards(); }
-  else if (activePage === 'debts') { renderDebts(); }
-  else if (activePage === 'subscriptions') { renderSubscriptions(); }
-  else if (activePage === 'reports') { renderReports(); }
-  else if (activePage === 'settings') { renderSettings(); }
+  const activeSection = STATE.currentSection || '';
+  if (activeSection === 'dashboard') { renderDashboard(); }
+  else if (activeSection === 'transactions') { renderTransactions(); }
+  else if (activeSection === 'cards') { renderCards(); }
+  else if (activeSection === 'debts') { renderDebts(); }
+  else if (activeSection === 'subscriptions') { renderSubscriptions(); }
+  else if (activeSection === 'reports') { renderReports(); }
+  else if (activeSection === 'settings') { renderSettings(); }
 });
