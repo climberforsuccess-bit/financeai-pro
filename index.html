@@ -1529,46 +1529,7 @@ body {
             <button class="btn btn-outline btn-sm" onclick="showSection('transactions')" data-i18n="btn_view_all">Ver todas</button>
           </div>
           <div id="recent-transactions">
-            <div class="transaction-item">
-              <div class="transaction-icon" style="background:rgba(255,71,87,0.15);">🛒</div>
-              <div class="transaction-info">
-                <div class="transaction-name">Walmart Supercenter</div>
-                <div class="transaction-date">Hoy, 2:30 PM · Personal</div>
-              </div>
-              <div class="transaction-amount expense">-$87.43</div>
-            </div>
-            <div class="transaction-item">
-              <div class="transaction-icon" style="background:rgba(0,200,150,0.15);">💵</div>
-              <div class="transaction-info">
-                <div class="transaction-name">Salario Mensual</div>
-                <div class="transaction-date">Jun 1, 9:00 AM · Ingreso</div>
-              </div>
-              <div class="transaction-amount income">+$3,500.00</div>
-            </div>
-            <div class="transaction-item">
-              <div class="transaction-icon" style="background:rgba(255,107,53,0.15);">🍕</div>
-              <div class="transaction-info">
-                <div class="transaction-name">Domino's Pizza</div>
-                <div class="transaction-date">Ayer, 7:45 PM · Personal</div>
-              </div>
-              <div class="transaction-amount expense">-$24.99</div>
-            </div>
-            <div class="transaction-item">
-              <div class="transaction-icon" style="background:rgba(0,238,255,0.15);">💼</div>
-              <div class="transaction-info">
-                <div class="transaction-name">Freelance Project</div>
-                <div class="transaction-date">May 30 · Ingreso</div>
-              </div>
-              <div class="transaction-amount income">+$750.00</div>
-            </div>
-            <div class="transaction-item">
-              <div class="transaction-icon" style="background:rgba(255,71,87,0.15);">⛽</div>
-              <div class="transaction-info">
-                <div class="transaction-name">Shell Gas Station</div>
-                <div class="transaction-date">May 29 · Personal</div>
-              </div>
-              <div class="transaction-amount expense">-$65.00</div>
-            </div>
+            <!-- populated by app.js -->
           </div>
         </div>
 
@@ -1784,69 +1745,9 @@ body {
         <button class="section-tab" onclick="filterTransactions('business',this)" data-i18n="tab_business">Empresa</button>
       </div>
 
-      <div class="card">
-        <table class="table" id="transactions-table">
-          <thead>
-            <tr>
-              <th data-i18n="th_desc">DESCRIPCIÓN</th>
-              <th data-i18n="th_cat">CATEGORÍA</th>
-              <th data-i18n="th_type">TIPO</th>
-              <th data-i18n="th_date">FECHA</th>
-              <th data-i18n="th_amount">MONTO</th>
-              <th data-i18n="th_actions">ACCIONES</th>
-            </tr>
-          </thead>
-          <tbody id="transactions-body">
-            <tr>
-              <td>Walmart Supercenter</td>
-              <td>🛒 Supermercado</td>
-              <td><span class="badge badge-cyan">Personal</span></td>
-              <td>Jun 5, 2025</td>
-              <td class="transaction-amount expense">-$87.43</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
-            </tr>
-            <tr>
-              <td>Salario Mensual</td>
-              <td>💵 Ingreso</td>
-              <td><span class="badge badge-success">Ingreso</span></td>
-              <td>Jun 1, 2025</td>
-              <td class="transaction-amount income">+$3,500.00</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
-            </tr>
-            <tr>
-              <td>Domino's Pizza</td>
-              <td>🍕 Restaurante</td>
-              <td><span class="badge badge-cyan">Personal</span></td>
-              <td>Jun 4, 2025</td>
-              <td class="transaction-amount expense">-$24.99</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
-            </tr>
-            <tr>
-              <td>Freelance Project</td>
-              <td>💼 Freelance</td>
-              <td><span class="badge badge-warning">Empresa</span></td>
-              <td>May 30, 2025</td>
-              <td class="transaction-amount income">+$750.00</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
-            </tr>
-            <tr>
-              <td>Shell Gas Station</td>
-              <td>⛽ Gasolina</td>
-              <td><span class="badge badge-cyan">Personal</span></td>
-              <td>May 29, 2025</td>
-              <td class="transaction-amount expense">-$65.00</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
-            </tr>
-            <tr>
-              <td>AWS Services</td>
-              <td>☁️ Tecnología</td>
-              <td><span class="badge badge-warning">Empresa</span></td>
-              <td>May 28, 2025</td>
-              <td class="transaction-amount expense">-$127.00</td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif(t('notif_tx_deleted'))">🗑️</button></td>
-            </tr>
-          </tbody>
-        </table>
+        <div id="transactions-list">
+          <!-- populated by app.js -->
+        </div>
       </div>
     </div>
 

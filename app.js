@@ -563,49 +563,75 @@ function selectEditCardColor(el) {
   el.style.outline = "2px solid #fff";
   window._selectedEditCardColor = el.dataset.gradient;
 }
-function renderTransactions() {
-  const txs = STATE.transactions || [];
-  const section = document.getElementById('section-transactions');
-  if (!section) return;
+function renderTransactions(filter = 'all') {
+  const allTxs = STATE.transactions || [];
+  const container = document.getElementById('transactions-list');
+  if (!container) return;
 
-  let container = document.getElementById('transactions-list');
-  if (!container) {
-    const card = section.querySelector('.content-grid .card') || section.querySelector('.card');
-    if (!card) return;
-    container = document.createElement('div');
-    container.id = 'transactions-list';
-    card.appendChild(container);
-  }
+  // Aplicar filtro
+  const txs = allTxs.filter(tx => {
+    if (filter === 'all')      return true;
+    if (filter === 'income')   return tx.type === 'income';
+    if (filter === 'expense')  return tx.type === 'expense';
+    if (filter === 'personal') return (tx.expenseType || '').toLowerCase() === 'personal';
+    if (filter === 'business') return (tx.expenseType || '').toLowerCase() === 'business';
+    return true;
+  });
 
   if (txs.length === 0) {
     container.innerHTML = `
       <div style="text-align:center;padding:60px;color:#8892A4;">
         <div style="font-size:3rem;margin-bottom:12px;opacity:0.4;">💸</div>
-        ${t('no_transactions')}
+        <div>${t('no_transactions')}</div>
       </div>`;
     return;
   }
 
-  container.innerHTML = txs.map(tx => {
-    const isIncome = tx.type === 'income';
-    const sign = isIncome ? '+' : '-';
-    const color = isIncome ? '#22c55e' : '#ef4444';
-    const icon = isIncome ? '📈' : '📉';
-    return `
-      <div style="display:flex;align-items:center;justify-content:space-between;
-                  padding:14px 16px;border-bottom:1px solid #ffffff0d;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <span style="font-size:1.4rem;">${icon}</span>
-          <div>
-            <div style="color:#fff;font-size:14px;font-weight:500;">${tx.description || t('no_description')}</div>
-            <div style="color:#8892A4;font-size:12px;">${tx.category || ''} · ${tx.date || ''}</div>
-          </div>
-        </div>
-        <div style="color:${color};font-weight:700;font-size:15px;">
-          ${sign}${formatCurrency(Math.abs(tx.amount))}
-        </div>
-      </div>`;
-  }).join('');
+  const categoryIcons = {
+    supermercado: '🛒', restaurante: '🍕', transporte: '🚗', gasolina: '⛽',
+    entretenimiento: '🎬', salud: '💊', educacion: '📚', ropa: '👕',
+    tecnologia: '💻', freelance: '💼', salario: '💵', ingreso: '💵',
+    otros: '📦', other: '📦'
+  };
+
+  container.innerHTML = `
+    <table class="table" style="width:100%;">
+      <thead>
+        <tr>
+          <th data-i18n="th_desc">${t('th_desc')}</th>
+          <th data-i18n="th_cat">${t('th_cat')}</th>
+          <th data-i18n="th_type">${t('th_type')}</th>
+          <th data-i18n="th_date">${t('th_date')}</th>
+          <th data-i18n="th_amount">${t('th_amount')}</th>
+          <th data-i18n="th_actions">${t('th_actions')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${txs.map(tx => {
+          const isIncome = tx.type === 'income';
+          const sign     = isIncome ? '+' : '-';
+          const color    = isIncome ? '#22c55e' : '#ef4444';
+          const catKey   = (tx.category || '').toLowerCase();
+          const icon     = categoryIcons[catKey] || (isIncome ? '💵' : '📦');
+          const typeLabel = isIncome ? t('tab_income') : t('tab_expense');
+          const typeBadge = isIncome ? 'badge-success' : 'badge-danger';
+          const expType  = tx.expenseType || '';
+          const expBadge = expType.toLowerCase() === 'business' ? 'badge-warning' : 'badge-cyan';
+          const dateStr  = tx.date ? new Date(tx.date).toLocaleDateString() : '';
+          return `
+            <tr>
+              <td style="color:#fff;font-weight:500;">${tx.description || t('no_description')}</td>
+              <td>${icon} ${tx.category || ''}</td>
+              <td><span class="badge ${typeBadge}">${typeLabel}</span></td>
+              <td style="color:#8892A4;">${dateStr}</td>
+              <td style="color:${color};font-weight:700;">${sign}${formatCurrency(Math.abs(tx.amount))}</td>
+              <td>
+                <button class="btn btn-outline btn-sm" onclick="deleteTransaction('${tx.id}')">🗑️</button>
+              </td>
+            </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
 }
 function renderDashboard() {
   // Banner de límite de transacciones
@@ -3243,118 +3269,9 @@ async function saveNewCard() {
 function filterTransactions(filter, btn) {
   document.querySelectorAll('#section-transactions .section-tab').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-
-  const txs = STATE.transactions || [];
-  let filtered;
-
-  switch(filter) {
-    case 'income':
-      filtered = txs.filter(tx => tx.type === 'income');
-      break;
-    case 'expense':
-      filtered = txs.filter(tx => tx.type === 'expense');
-      break;
-    case 'personal':
-      filtered = txs.filter(tx => tx.category_type === 'personal');
-      break;
-    case 'business':
-      filtered = txs.filter(tx => tx.category_type === 'business');
-      break;
-    default:
-      filtered = txs;
-  }
-
-  const container = document.getElementById('transactions-list');
-  if (!container) return;
-
-  if (filtered.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:60px;color:#8892A4;">
-        <div style="font-size:3rem;margin-bottom:12px;opacity:0.4;">💸</div>
-        ${t('trans_empty_cat')}
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = filtered.map(tx => {
-    const isIncome = tx.type === 'income';
-    const sign = isIncome ? '+' : '-';
-    const color = isIncome ? '#22c55e' : '#ef4444';
-    const icon = isIncome ? '📈' : '📉';
-    return `
-      <div style="display:flex;align-items:center;justify-content:space-between;
-                  padding:14px 16px;border-bottom:1px solid #ffffff0d;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <span style="font-size:1.4rem;">${icon}</span>
-          <div>
-            <div style="color:#fff;font-size:14px;font-weight:500;">${tx.description || t('no_description')}</div>
-            <div style="color:#8892A4;font-size:12px;">${tx.category || ''} · ${tx.date || ''}</div>
-          </div>
-        </div>
-        <div style="color:${color};font-weight:700;font-size:15px;">
-          ${sign}${formatCurrency(Math.abs(tx.amount))}
-        </div>
-      </div>`;
-  }).join('');
+  renderTransactions(filter);
 }
 
-function filterTransactions(filter, btn) {
-  document.querySelectorAll('#section-transactions .section-tab').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-
-  const txs = STATE.transactions || [];
-  let filtered;
-
-  switch(filter) {
-    case 'income':
-      filtered = txs.filter(tx => tx.type === 'income');
-      break;
-    case 'expense':
-      filtered = txs.filter(tx => tx.type === 'expense');
-      break;
-    case 'personal':
-      filtered = txs.filter(tx => tx.category_type === 'personal');
-      break;
-    case 'business':
-      filtered = txs.filter(tx => tx.category_type === 'business');
-      break;
-    default:
-      filtered = txs;
-  }
-
-  const container = document.getElementById('transactions-list');
-  if (!container) return;
-
-  if (filtered.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:60px;color:#8892A4;">
-        <div style="font-size:3rem;margin-bottom:12px;opacity:0.4;">💸</div>
-        ${t('trans_empty_cat')}
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = filtered.map(tx => {
-    const isIncome = tx.type === 'income';
-    const sign = isIncome ? '+' : '-';
-    const color = isIncome ? '#22c55e' : '#ef4444';
-    const icon = isIncome ? '📈' : '📉';
-    return `
-      <div style="display:flex;align-items:center;justify-content:space-between;
-                  padding:14px 16px;border-bottom:1px solid #ffffff0d;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <span style="font-size:1.4rem;">${icon}</span>
-          <div>
-            <div style="color:#fff;font-size:14px;font-weight:500;">${tx.description || t('no_description')}</div>
-            <div style="color:#8892A4;font-size:12px;">${tx.category || ''} · ${tx.date || ''}</div>
-          </div>
-        </div>
-        <div style="color:${color};font-weight:700;font-size:15px;">
-          ${sign}${formatCurrency(Math.abs(tx.amount))}
-        </div>
-      </div>`;
-  }).join('');
-}
 
 function openAddTransaction() {
   const modal = document.createElement('div');
@@ -3475,6 +3392,26 @@ async function saveNewTransaction() {
   await loadTransactions();
   renderTransactions();
 }
+async function deleteTransaction(id) {
+  if (!confirm(t('tx_confirm_delete'))) return;
+
+  const { error } = await supabase
+    .from('transactions')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    showToast(t('tx_alert_error') + error.message, 'error');
+    return;
+  }
+
+  // Eliminar del STATE local
+  STATE.transactions = STATE.transactions.filter(tx => tx.id !== id);
+  renderTransactions();
+  renderDashboard();
+  showToast(t('notif_tx_deleted'), 'success');
+}
+
 // ===========================
 // LANGUAGE CHANGE LISTENER
 // ===========================
