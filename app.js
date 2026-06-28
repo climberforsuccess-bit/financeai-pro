@@ -461,6 +461,10 @@ async function initApp() {
         await loadSubscriptions();
         showPage('app');
         showSection('dashboard');
+        if (typeof applyLanguage === 'function') {
+          const lang = localStorage.getItem('financeai_lang') || 'en';
+          applyLanguage(lang);
+        }
         updateUserDisplay();
         updateCurrentPlanBadge();
         checkAdminAccess();
