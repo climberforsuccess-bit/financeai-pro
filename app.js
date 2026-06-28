@@ -3487,4 +3487,11 @@ window.addEventListener('langChanged', async () => {
   else if (activeSection === 'subscriptions') { renderSubscriptions(); }
   else if (activeSection === 'reports') { renderReports(); }
   else if (activeSection === 'settings') { renderSettings(); }
+
+  // Re-apply translations after dynamic render
+  const lang = localStorage.getItem('financeai_lang') || 'en';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (key && typeof t === 'function') el.innerHTML = t(key);
+  });
 });
