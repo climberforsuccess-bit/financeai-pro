@@ -777,7 +777,7 @@ const TRANSLATIONS = {
     debt_rec_ia_label: '💡 AI Recommendation:',
     title_card_recs:   '⭐ Card Recommendations',
     sub_card_recs:     'The best cards according to your spending habits',
-    ai_greeting:       '🤖 Hi! I'm your personal financial assistant powered by Google Gemini AI.',
+    ai_greeting:       '🤖 Hi! I\'m your personal financial assistant powered by Google Gemini AI.',
     ai_can_help:       'I can help you with:',
     ai_cap_1:          '• 📊 Analyze your expenses and income',
     pf3:             '50 AI messages per day',
