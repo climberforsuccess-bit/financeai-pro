@@ -1878,7 +1878,7 @@ const ID_KEY_MAP = {
 // ===========================
 // LANGUAGE STATE
 // ===========================
-let currentLang = localStorage.getItem('financeai_lang') || 'es';
+let currentLang = localStorage.getItem('financeai_lang') || 'en';
 
 // ===========================
 // t() — get translation
@@ -1933,7 +1933,14 @@ function applyLanguage(lang) {
   });
 
   // 6. Dispatch event for app.js dynamic content
+  // Fire FIRST so renders happen, then re-translate below
   window.dispatchEvent(new CustomEvent('langChanged', { detail: { lang } }));
+
+  // 7. Re-apply data-i18n AFTER dynamic renders
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (key) el.innerHTML = t(key);
+  });
 }
 
 // ===========================
