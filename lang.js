@@ -1009,6 +1009,8 @@ const TRANSLATIONS = {
     plan_pro_option:        'Pro — $19.99/mo',
     plan_business_option:   'Business — $49.99/mo',
     ph_email:               'your@email.com',
+    price_suffix_monthly:    '/mo',
+    price_suffix_annual:     '/mo (annual)',
   },
 
   es: {

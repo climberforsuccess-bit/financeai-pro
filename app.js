@@ -39,13 +39,13 @@ function showUpgradeModal(feature) {
 
   const info = featureMessages[feature] || { title: t('upgrade_title'), desc: t('upgrade_cancel'), minPlan: 'Personal' };
 
-  // Crear modal si no existe
+  // Crear modal (siempre recrear para respetar idioma actual)
   let modal = document.getElementById('upgrade-modal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'upgrade-modal';
-    modal.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;';
-    modal.innerHTML = `
+  if (modal) modal.remove();
+  modal = document.createElement('div');
+  modal.id = 'upgrade-modal';
+  modal.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;';
+  modal.innerHTML = `
       <div style="background:#1e293b; border:1px solid #334155; border-radius:20px; padding:40px; max-width:420px; width:90%; text-align:center; position:relative;">
         <button onclick="document.getElementById('upgrade-modal').style.display='none'" 
           style="position:absolute; top:16px; right:16px; background:none; border:none; color:#64748b; font-size:20px; cursor:pointer;">✕</button>
@@ -66,8 +66,7 @@ function showUpgradeModal(feature) {
           ${t('upgrade_dismiss')}
         </button>
       </div>`;
-    document.body.appendChild(modal);
-  }
+  document.body.appendChild(modal);
 
   // Llenar datos
   const icons = { scanner:'📸', reports:'📊', gpt4:'🤖', export:'📤', cards:'💳', multiUser:'👥', api:'🔌', transactions:'📝' };
@@ -2281,9 +2280,9 @@ function setBilling(type) {
     'price-personal':  p.personal,
     'price-pro':       p.pro,
     'price-business':  p.business,
-    'cta-personal':    p.personal + t('price_suffix_monthly'),
-    'cta-pro':         p.pro + t('price_suffix_monthly'),
-    'cta-business':    p.business + t('price_suffix_monthly'),
+    'cta-personal':    p.personal + (type === 'annual' ? t('price_suffix_annual') : t('price_suffix_monthly')),
+    'cta-pro':         p.pro + (type === 'annual' ? t('price_suffix_annual') : t('price_suffix_monthly')),
+    'cta-business':    p.business + (type === 'annual' ? t('price_suffix_annual') : t('price_suffix_monthly')),
     // Landing IDs
     'landing-price-personal': p.lp,
     'landing-price-pro':      p.lpr,
