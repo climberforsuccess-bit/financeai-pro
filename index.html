@@ -1605,47 +1605,11 @@ body {
 
         <div class="card">
           <div class="card-header">
-            <span class="card-title" id="lbl-debts" data-i18n="lbl_debts">Plan de Deudas</span>
-            <button class="btn btn-outline btn-sm" onclick="showSection('debts')" data-i18n="btn_view_plan">Ver Plan</button>
+            <span class="card-title" id="lbl-debts" data-i18n="lbl_debts">Debt Plan</span>
+            <button class="btn btn-outline btn-sm" onclick="showSection('debts')" data-i18n="btn_view_plan">View Plan</button>
           </div>
-          <div class="debt-item">
-            <div class="debt-header">
-              <span class="debt-name">Chase Sapphire</span>
-              <span class="debt-amount">$3,200</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill danger" style="width:64%"></div>
-            </div>
-            <div class="debt-meta">
-              <span><span data-i18n="lbl_limit">Límite:</span> $5,000</span>
-              <span>64% <span data-i18n="lbl_used">utilizado</span></span>
-            </div>
-          </div>
-          <div class="debt-item">
-            <div class="debt-header">
-              <span class="debt-name">Bank of America</span>
-              <span class="debt-amount">$1,850</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill warning" style="width:37%"></div>
-            </div>
-            <div class="debt-meta">
-              <span><span data-i18n="lbl_limit">Límite:</span> $5,000</span>
-              <span>37% <span data-i18n="lbl_used">utilizado</span></span>
-            </div>
-          </div>
-          <div class="debt-item">
-            <div class="debt-header">
-              <span class="debt-name">Capital One</span>
-              <span class="debt-amount">$3,270</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill danger" style="width:82%"></div>
-            </div>
-            <div class="debt-meta">
-              <span><span data-i18n="lbl_limit">Límite:</span> $4,000</span>
-              <span>82% <span data-i18n="lbl_used">utilizado</span></span>
-            </div>
+          <div id="dashboard-debt-list">
+            <p style="color:#8892A4;text-align:center;padding:20px;">Loading...</p>
           </div>
         </div>
       </div>

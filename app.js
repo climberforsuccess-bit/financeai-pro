@@ -736,6 +736,55 @@ function renderDashboard() {
     chatIntroEl.innerHTML = '👋 ' + t('dash_chat_greeting') + ' <strong>' + fmt(expense) + '</strong> ' + t('dash_chat_spent') + ' ' + balanceMsg + ' ' + t('dash_chat_help');
   }
 
+  // --- Debt Plan widget (datos reales) ---
+  const debtListEl = el('dashboard-debt-list');
+  if (debtListEl) {
+    const allDebts = STATE.debts || [];
+    const allCards = STATE.cards || [];
+
+    // Combinar deudas y tarjetas con balance
+    const items = [
+      ...allDebts.map(d => ({
+        name: d.name,
+        balance: parseFloat(d.balance) || 0,
+        limit: parseFloat(d.originalBalance) || 0,
+        type: 'debt'
+      })),
+      ...allCards.filter(c => (parseFloat(c.balance) || 0) > 0).map(c => ({
+        name: c.name || c.bank || 'Card',
+        balance: parseFloat(c.balance) || 0,
+        limit: parseFloat(c.limit) || 0,
+        type: 'card'
+      }))
+    ].sort((a, b) => b.balance - a.balance).slice(0, 4);
+
+    if (items.length === 0) {
+      debtListEl.innerHTML = '<p style="color:#8892A4;text-align:center;padding:20px;">' + t('debts_empty') + '</p>';
+    } else {
+      debtListEl.innerHTML = items.map(item => {
+        const pct = item.limit > 0 ? Math.round((item.balance / item.limit) * 100) : 0;
+        const fillClass = pct >= 75 ? 'danger' : pct >= 50 ? 'warning' : 'success';
+        return \`<div class="debt-item">
+          <div class="debt-header">
+            <span class="debt-name">\${item.name}</span>
+            <span class="debt-amount">\${fmt(item.balance)}</span>
+          </div>
+          \${item.limit > 0 ? \`
+          <div class="progress-bar">
+            <div class="progress-fill \${fillClass}" style="width:\${Math.min(pct,100)}%"></div>
+          </div>
+          <div class="debt-meta">
+            <span>\${t('lbl_limit')}: \${fmt(item.limit)}</span>
+            <span>\${pct}% \${t('lbl_used')}</span>
+          </div>\` : \`
+          <div class="debt-meta">
+            <span style="color:#8892A4;">\${t('debts_no_limit')}</span>
+          </div>\`}
+        </div>\`;
+      }).join('');
+    }
+  }
+
   // --- Transacciones recientes (últimas 5) ---
   const recentContainer = el('recentTransactions') || el('recent-transactions');
   if (recentContainer) {
