@@ -392,17 +392,20 @@ async function loadDebts() {
 
   if (error) { console.error('Error cargando deudas:', error); return; }
 
-  STATE.debts = data.map(d => ({
-    id: d.id,
-    name: d.name,
-    balance: d.current_balance,
-    originalBalance: d.total_amount,
-    apr: d.interest_rate,
-    minPayment: d.minimum_payment,
-    dueDate: d.due_date,
-    debtType: d.debt_type,
-    createdAt: d.created_at
-  }));
+  if (data && data.length > 0) {
+    STATE.debts = data.map(d => ({
+      id: d.id,
+      name: d.name,
+      balance: d.current_balance,
+      originalBalance: d.total_amount,
+      apr: d.interest_rate,
+      minPayment: d.minimum_payment,
+      dueDate: d.due_date,
+      debtType: d.debt_type,
+      createdAt: d.created_at
+    }));
+  }
+  // If Supabase returns empty, keep localStorage data already in STATE.debts
 }
 
 async function loadSubscriptions() {
