@@ -254,6 +254,15 @@ const TRANSLATIONS = {
     th_status:       'STATUS',
     badge_active:    'Active',
     badge_soon:      'Expiring soon',
+    status_active:   'Active',
+    status_due_soon: 'Due soon',
+
+    per_month_short: '/mo',
+    sub_renews:      'Renews on day',
+    sub_day:         'Day',
+    no_subscriptions:'No subscriptions yet',
+    add_sub_short:   'Add one',
+    cancel_sub:      'Cancel',
 
     subs_total:      'Total Monthly',
     subs_count:      'Active Subscriptions',
@@ -1280,6 +1289,15 @@ const TRANSLATIONS = {
     th_status:       'ESTADO',
     badge_active:    'Activa',
     badge_soon:      'Vence pronto',
+    status_active:   'Activa',
+    status_due_soon: 'Vence pronto',
+
+    per_month_short: '/mes',
+    sub_renews:      'Renueva el día',
+    sub_day:         'Día',
+    no_subscriptions:'Sin suscripciones aún',
+    add_sub_short:   'Agregar una',
+    cancel_sub:      'Cancelar',
 
     subs_total:      'Total Mensual',
     subs_count:      'Suscripciones Activas',

@@ -793,6 +793,9 @@ function renderDashboard() {
       }).join('');
     }
   }
+
+  // --- Suscripciones widget dashboard ---
+  renderSubscriptions();
 }
 
 
@@ -1569,7 +1572,6 @@ async function deleteDebt(id) {
 // ============================================
 function renderSubscriptions() {
   const subs   = STATE.subscriptions || [];
-  if (subs.length === 0) return; // mantener HTML demo
   const total  = subs.reduce((s, sub) => s + (sub.amount || 0), 0);
   const annual = total * 12;
 
@@ -1628,6 +1630,34 @@ function renderSubscriptions() {
           onclick="deleteSubscription('${s.id}')">${t('cancel_sub')}</button></td>
       </tr>`;
   }).join('');
+
+  // Render widget dashboard
+  const dashList = gel('dashboard-subs-list');
+  if (dashList) {
+    const total = subs.reduce((s, sub) => s + (sub.amount || 0), 0);
+    // Badge total en header
+    const badge = gel('dashboard-subs-badge');
+    if (badge) badge.textContent = formatCurrency(total) + t('per_month_short');
+
+    if (subs.length === 0) {
+      dashList.innerHTML = '<p style="color:#8892A4;text-align:center;padding:20px;">' + t('no_subscriptions') + '</p>';
+    } else {
+      dashList.innerHTML = subs.slice(0, 5).map(s => {
+        const icon = catIcons[s.category] || '📌';
+        const today = new Date().getDate();
+        const daysUntil = s.billingDay >= today ? s.billingDay - today : (30 - today) + s.billingDay;
+        return `
+          <div class="sub-item">
+            <div class="sub-icon">${icon}</div>
+            <div class="sub-info">
+              <div class="sub-name">${s.name}</div>
+              <div class="sub-date">${t('sub_renews')} ${t('sub_day')} ${s.billingDay || '—'}</div>
+            </div>
+            <div class="sub-amount">${formatCurrency(s.amount)}</div>
+          </div>`;
+      }).join('');
+    }
+  }
 }
 
 function openAddSubscription() {

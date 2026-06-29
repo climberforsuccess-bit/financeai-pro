@@ -1559,48 +1559,9 @@ body {
         <div class="card">
           <div class="card-header">
             <span class="card-title" id="lbl-subs" data-i18n="lbl_subs">Suscripciones Activas</span>
-            <span class="badge badge-warning">$67.97/mes</span>
+            <span class="badge badge-warning" id="dashboard-subs-badge">$67.97/mes</span>
           </div>
-          <div class="sub-item">
-            <div class="sub-icon" style="background:rgba(229,9,20,0.15);">📺</div>
-            <div class="sub-info">
-              <div class="sub-name">Netflix</div>
-              <div class="sub-date"><span data-i18n="sub_renews">Renueva</span> Jun 15</div>
-            </div>
-            <div class="sub-amount">$15.99</div>
-          </div>
-          <div class="sub-item">
-            <div class="sub-icon" style="background:rgba(30,215,96,0.15);">🎵</div>
-            <div class="sub-info">
-              <div class="sub-name">Spotify</div>
-              <div class="sub-date"><span data-i18n="sub_renews">Renueva</span> Jun 20</div>
-            </div>
-            <div class="sub-amount">$9.99</div>
-          </div>
-          <div class="sub-item">
-            <div class="sub-icon" style="background:rgba(0,100,255,0.15);">☁️</div>
-            <div class="sub-info">
-              <div class="sub-name">iCloud 200GB</div>
-              <div class="sub-date"><span data-i18n="sub_renews">Renueva</span> Jun 28</div>
-            </div>
-            <div class="sub-amount">$2.99</div>
-          </div>
-          <div class="sub-item">
-            <div class="sub-icon" style="background:rgba(0,238,255,0.15);">🤖</div>
-            <div class="sub-info">
-              <div class="sub-name">ChatGPT Plus</div>
-              <div class="sub-date"><span data-i18n="sub_renews">Renueva</span> Jun 10</div>
-            </div>
-            <div class="sub-amount">$20.00</div>
-          </div>
-          <div class="sub-item">
-            <div class="sub-icon" style="background:rgba(255,107,53,0.15);">📦</div>
-            <div class="sub-info">
-              <div class="sub-name">Amazon Prime</div>
-              <div class="sub-date"><span data-i18n="sub_renews">Renueva</span> Jul 1</div>
-            </div>
-            <div class="sub-amount">$19.00</div>
-          </div>
+          <div id="dashboard-subs-list"><p style="color:#8892A4;text-align:center;padding:20px;">Loading...</p></div>
         </div>
 
         <div class="card">
@@ -1824,66 +1785,7 @@ body {
               <th data-i18n="th_actions">ACCIONES</th>
             </tr>
           </thead>
-          <tbody id="subs-tbody">
-            <tr>
-              <td><span style="margin-right:8px;">📺</span>Netflix</td>
-              <td>Entretenimiento</td>
-              <td>$15.99/mes</td>
-              <td>Jun 15</td>
-              <td><span class="badge badge-success" data-i18n="badge_active">Activa</span></td>
-              <td>
-                <button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button>
-              </td>
-            </tr>
-            <tr>
-              <td><span style="margin-right:8px;">🎵</span>Spotify</td>
-              <td>Entretenimiento</td>
-              <td>$9.99/mes</td>
-              <td>Jun 20</td>
-              <td><span class="badge badge-success" data-i18n="badge_active">Activa</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
-            </tr>
-            <tr>
-              <td><span style="margin-right:8px;">🤖</span>ChatGPT Plus</td>
-              <td>Productividad</td>
-              <td>$20.00/mes</td>
-              <td>Jun 10</td>
-              <td><span class="badge badge-warning" id="badge-vence-pronto" data-i18n="badge_soon">Vence pronto</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
-            </tr>
-            <tr>
-              <td><span style="margin-right:8px;">☁️</span>iCloud 200GB</td>
-              <td>Almacenamiento</td>
-              <td>$2.99/mes</td>
-              <td>Jun 28</td>
-              <td><span class="badge badge-success" data-i18n="badge_active">Activa</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
-            </tr>
-            <tr>
-              <td><span style="margin-right:8px;">📦</span>Amazon Prime</td>
-              <td>Compras</td>
-              <td>$19.00/mes</td>
-              <td>Jul 1</td>
-              <td><span class="badge badge-success" data-i18n="badge_active">Activa</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
-            </tr>
-            <tr>
-              <td><span style="margin-right:8px;">🎮</span>Xbox Game Pass</td>
-              <td>Entretenimiento</td>
-              <td>$14.99/mes</td>
-              <td>Jun 25</td>
-              <td><span class="badge badge-danger" data-i18n="badge_eval">⚠️ Evaluar</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
-            </tr>
-            <tr>
-              <td><span style="margin-right:8px;">📊</span>Adobe Creative</td>
-              <td>Trabajo</td>
-              <td>$5.00/mes</td>
-              <td>Jul 5</td>
-              <td><span class="badge badge-success" data-i18n="badge_active">Activa</span></td>
-              <td><button class="btn btn-outline btn-sm" onclick="showNotif('Suscripción cancelada')" data-i18n="btn_cancel">Cancelar</button></td>
-            </tr>
-          </tbody>
+          <tbody id="subs-tbody"></tbody>
         </table>
 
         <div style="background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.2);border-radius:12px;padding:16px;margin-top:20px;">
