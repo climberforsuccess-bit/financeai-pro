@@ -1206,6 +1206,179 @@ function renderDebts() {
   }
 
   container.innerHTML = html;
+  renderAIRecommendations(STATE.debts || []);
+}
+
+function renderAIRecommendations(allDebts) {
+  const container = document.getElementById('ai-recommendations-content');
+  if (!container) return;
+
+  if (allDebts.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  // ── Métricas base ──
+  const totalDebt   = allDebts.reduce((s, d) => s + (d.balance || 0), 0);
+  const totalMinPay = allDebts.reduce((s, d) => s + (d.minPayment || 0), 0);
+  const avgAPR      = allDebts.reduce((s, d) => s + (d.apr || 0), 0) / allDebts.length;
+
+  // Tarjeta con mayor APR
+  const highAPR = [...allDebts].sort((a, b) => (b.apr || 0) - (a.apr || 0))[0];
+
+  // Tarjeta con mayor % de uso
+  const highUsage = allDebts
+    .filter(d => (d.originalBalance || 0) > 0)
+    .map(d => ({ ...d, pct: Math.round((d.balance / d.originalBalance) * 100) }))
+    .sort((a, b) => b.pct - a.pct)[0];
+
+  // Flujo de caja real
+  const income   = (STATE.transactions || [])
+    .filter(tx => tx.type === 'income')
+    .reduce((s, tx) => s + (tx.amount || 0), 0);
+  const expenses = (STATE.transactions || [])
+    .filter(tx => tx.type === 'expense')
+    .reduce((s, tx) => s + (tx.amount || 0), 0);
+  const freeFlow    = income - expenses - totalMinPay;
+  const debtRatio   = income > 0 ? (totalDebt / income) : 99;
+
+  // Proyección inversión (7% anual, 10 años)
+  const investAmount = Math.round(freeFlow * 0.3);
+  const projection   = Math.round(investAmount * 12 * ((Math.pow(1.07, 10) - 1) / 0.07));
+
+  // Tiempo y ahorro con pago extra
+  const extraPayment  = freeFlow > 200 ? Math.round(freeFlow * 0.5) : 100;
+  const totalMonthly  = totalMinPay + extraPayment;
+  const monthsExtra   = totalMonthly > 0 ? Math.ceil(totalDebt / totalMonthly) : 0;
+  const monthsMin     = totalMinPay  > 0 ? Math.ceil(totalDebt / totalMinPay)  : 0;
+  const interestSaved = Math.round(totalDebt * (avgAPR / 100) * ((monthsMin - monthsExtra) / 12));
+
+  // Tiempo libre de deuda
+  const timeStr = monthsExtra >= 24
+    ? Math.ceil(monthsExtra / 12) + ' ' + t('time_years')
+    : monthsExtra + ' ' + t('time_months');
+
+  let html = '';
+
+  // ── PERFIL: gastos > ingresos ──
+  if (freeFlow <= 0) {
+    html += `
+      <div style="background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;color:var(--danger);margin-bottom:8px;">
+          ${t('debt_negative_balance_title')}
+        </div>
+        <div style="font-size:13px;color:var(--gray);line-height:1.6;">
+          ${t('debt_negative_balance_tip')}
+        </div>
+      </div>`;
+  }
+
+  // ── Card 1: Plan personalizado paso a paso ──
+  if (highAPR && monthsExtra > 0) {
+    html += `
+      <div style="background:rgba(0,238,255,0.07);border:1px solid rgba(0,238,255,0.2);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;color:var(--accent);margin-bottom:12px;">
+          ${t('debt_plan_title')}
+        </div>
+        <div style="font-size:13px;color:var(--gray);line-height:1.8;">
+          <div style="margin-bottom:6px;">
+            ${t('debt_plan_step1').replace('{card}', '<strong style="color:var(--white);">' + highAPR.name + '</strong>')}
+          </div>
+          <div style="margin-bottom:6px;">
+            ${t('debt_plan_step2')
+              .replace('{card}', '<strong style="color:var(--white);">' + highAPR.name + '</strong>')
+              .replace('{apr}', highAPR.apr || 0)}
+          </div>
+          <div style="margin-bottom:10px;">
+            ${t('debt_plan_step3').replace('{card}', '<strong style="color:var(--white);">' + highAPR.name + '</strong>')}
+          </div>
+          <div style="background:rgba(0,200,150,0.1);border-radius:8px;padding:10px;color:var(--success);font-weight:600;">
+            ${t('debt_plan_result')
+              .replace('{time}', timeStr)
+              .replace('{savings}', formatCurrency(interestSaved > 0 ? interestSaved : 0))}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ── Card 2: Flujo alto — acelerar deuda ──
+  if (freeFlow > 300 && highAPR) {
+    const suggested = Math.round(freeFlow * 0.5);
+    html += `
+      <div style="background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.2);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;color:var(--success);margin-bottom:8px;">
+          ${t('debt_high_flow_title')}
+        </div>
+        <div style="font-size:13px;color:var(--gray);line-height:1.6;">
+          ${t('debt_high_flow_tip')
+            .replace('{flow}', formatCurrency(Math.round(freeFlow)))
+            .replace('{suggested}', formatCurrency(suggested))
+            .replace('{card}', '<strong style="color:var(--white);">' + highAPR.name + '</strong>')}
+        </div>
+      </div>`;
+  }
+
+  // ── Card 3: Score crediticio en riesgo ──
+  if (highUsage && highUsage.pct >= 70) {
+    html += `
+      <div style="background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.2);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;color:var(--warning);margin-bottom:8px;">
+          ⚠️ ${highUsage.name} ${t('debt_at')} ${highUsage.pct}%
+        </div>
+        <div style="font-size:13px;color:var(--gray);line-height:1.6;">
+          ${t('debt_score_warn')}
+        </div>
+      </div>`;
+  }
+
+  // ── Card 4: Consolidación (APR promedio alto) ──
+  if (avgAPR > 18 && allDebts.length >= 2) {
+    html += `
+      <div style="background:rgba(0,238,255,0.07);border:1px solid var(--border);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;color:var(--accent);margin-bottom:8px;">
+          💡 ${t('debt_consol_title')}
+        </div>
+        <div style="font-size:13px;color:var(--gray);line-height:1.6;">
+          ${t('debt_consol_tip')}
+        </div>
+      </div>`;
+  }
+
+  // ── Card 5: Flujo muy alto — puerta a inversión ──
+  if (freeFlow > 500 && debtRatio < 3) {
+    html += `
+      <div style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.2);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;color:#a855f7;margin-bottom:8px;">
+          ${t('debt_invest_title')}
+        </div>
+        <div style="font-size:13px;color:var(--gray);line-height:1.6;">
+          ${t('debt_invest_tip')
+            .replace('{amount}', formatCurrency(investAmount))
+            .replace('{projection}', formatCurrency(projection))}
+        </div>
+      </div>`;
+  }
+
+  // ── Card 6: Balance libre moderado ──
+  if (freeFlow > 0 && freeFlow <= 500 && highAPR) {
+    const suggested  = Math.round(freeFlow * 0.3);
+    const intSaved   = Math.round(suggested * (highAPR.apr / 100) * 2);
+    html += `
+      <div style="background:rgba(0,200,150,0.08);border:1px solid rgba(0,200,150,0.2);border-radius:12px;padding:16px;">
+        <div style="font-weight:700;color:var(--success);margin-bottom:8px;">
+          ${t('debt_free_balance_title')}
+        </div>
+        <div style="font-size:13px;color:var(--gray);line-height:1.6;">
+          ${t('debt_free_balance_tip')
+            .replace('{amount}', formatCurrency(Math.round(freeFlow)))
+            .replace('{suggested}', formatCurrency(suggested))
+            .replace('{card}', '<strong style="color:var(--white);">' + highAPR.name + '</strong>')
+            .replace('{interest}', formatCurrency(intSaved))}
+        </div>
+      </div>`;
+  }
+
+  container.innerHTML = html || '<div style="color:var(--gray);font-size:13px;padding:16px;">' + t('debts_empty') + '</div>';
 }
 
 function calcPayoffTime(debts) {
