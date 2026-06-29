@@ -764,23 +764,10 @@ function renderDashboard() {
       debtListEl.innerHTML = items.map(item => {
         const pct = item.limit > 0 ? Math.round((item.balance / item.limit) * 100) : 0;
         const fillClass = pct >= 75 ? 'danger' : pct >= 50 ? 'warning' : 'success';
-        return \`<div class="debt-item">
-          <div class="debt-header">
-            <span class="debt-name">\${item.name}</span>
-            <span class="debt-amount">\${fmt(item.balance)}</span>
-          </div>
-          \${item.limit > 0 ? \`
-          <div class="progress-bar">
-            <div class="progress-fill \${fillClass}" style="width:\${Math.min(pct,100)}%"></div>
-          </div>
-          <div class="debt-meta">
-            <span>\${t('lbl_limit')}: \${fmt(item.limit)}</span>
-            <span>\${pct}% \${t('lbl_used')}</span>
-          </div>\` : \`
-          <div class="debt-meta">
-            <span style="color:#8892A4;">\${t('debts_no_limit')}</span>
-          </div>\`}
-        </div>\`;
+        const limitHtml = item.limit > 0
+          ? '<div class="progress-bar"><div class="progress-fill ' + fillClass + '" style="width:' + Math.min(pct,100) + '%"></div></div><div class="debt-meta"><span>' + t('lbl_limit') + ': ' + fmt(item.limit) + '</span><span>' + pct + '% ' + t('lbl_used') + '</span></div>'
+          : '<div class="debt-meta"><span style="color:#8892A4;">' + t('debts_no_limit') + '</span></div>';
+        return '<div class="debt-item"><div class="debt-header"><span class="debt-name">' + item.name + '</span><span class="debt-amount">' + fmt(item.balance) + '</span></div>' + limitHtml + '</div>';
       }).join('');
     }
   }
