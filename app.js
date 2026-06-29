@@ -763,7 +763,7 @@ function renderDashboard() {
     } else {
       debtListEl.innerHTML = items.map(item => {
         const pct = item.limit > 0 ? Math.round((item.balance / item.limit) * 100) : 0;
-        const fillClass = pct >= 75 ? 'danger' : pct >= 50 ? 'warning' : 'success';
+        const fillClass = pct >= 50 ? 'danger' : pct >= 30 ? 'warning' : 'success';
         const limitHtml = item.limit > 0
           ? '<div class="progress-bar"><div class="progress-fill ' + fillClass + '" style="width:' + Math.min(pct,100) + '%"></div></div><div class="debt-meta"><span>' + t('lbl_limit') + ': ' + fmt(item.limit) + '</span><span>' + pct + '% ' + t('lbl_used') + '</span></div>'
           : '<div class="debt-meta"><span style="color:#8892A4;">' + t('debts_no_limit') + '</span></div>';
@@ -1187,7 +1187,7 @@ function renderDebts() {
     // Color basado en % usado (igual que en Mis Tarjetas)
     // Color barra: <30 verde, 30-60 amarillo, >60 rojo (igual que Mis Tarjetas)
     const barColor = pct < 30 ? '#00C851' : pct < 60 ? '#f59e0b' : '#FF4757';
-    const usageClass = pct < 30 ? 'success' : pct < 60 ? 'warning' : 'danger';
+    const usageClass = pct < 30 ? 'success' : pct < 50 ? 'warning' : 'danger';
 
     // Texto de prioridad sigue usando APR (info útil)
     const priorityText = d.apr > 22 ? t('debt_priority_high')
