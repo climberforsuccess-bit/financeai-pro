@@ -895,6 +895,7 @@ function renderCards() {
           </button>
         </div>
         <div class="card-chip" style="margin-top:28px;">💳</div>
+        ${c.bank ? `<div style="font-size:11px;color:${txtColor};opacity:0.8;margin-bottom:4px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">${c.bank}</div>` : ''}
         <div class="card-number" style="color:${txtColor};">${lastFour}</div>
         <div class="card-meta">
           <div>
@@ -965,6 +966,12 @@ function editCard(id) {
         <div>
           <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">${t('card_name_bank')}</label>
           <input id="ec-name" value="${card.name || ''}" style="
+            width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
+            border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:12px;color:#8892A4;display:block;margin-bottom:6px;">${t('card_bank_label')}</label>
+          <input id="ec-bank" value="${card.bank || ''}" placeholder="${t('card_bank_placeholder')}" style="
             width:100%;padding:10px 14px;background:#0D1421;border:1px solid rgba(255,255,255,0.1);
             border-radius:10px;color:#fff;font-size:14px;box-sizing:border-box;">
         </div>
@@ -1059,6 +1066,7 @@ async function saveEditCard(id) {
   const lastFour = document.getElementById('ec-last4')?.value?.slice(-4);
   const apr      = parseFloat(document.getElementById('ec-apr')?.value) || 0;
   const dueDate  = parseInt(document.getElementById('ec-due')?.value) || null;
+  const bank     = document.getElementById('ec-bank')?.value?.trim() || '';
   const color = window._selectedEditCardColor || 
     (document.querySelector("#ec-colors div[style*='outline']")?.dataset?.gradient) || null;
 
@@ -1075,6 +1083,7 @@ async function saveEditCard(id) {
         last_four:    lastFour,
         apr,
         due_date:     dueDate,
+        bank,
         ...(color && { color })
       })
       .eq('id', id);
@@ -1084,7 +1093,7 @@ async function saveEditCard(id) {
     const idx = STATE.cards.findIndex(c => c.id === id);
     if (idx !== -1) {
       const existingColor = STATE.cards[idx].color;
-      STATE.cards[idx] = { ...STATE.cards[idx], name, type, limit, balance, lastFour, apr, dueDate, color: color || existingColor };
+      STATE.cards[idx] = { ...STATE.cards[idx], name, bank, type, limit, balance, lastFour, apr, dueDate, color: color || existingColor };
     }
 
     document.getElementById('edit-card-modal')?.remove();
@@ -3402,6 +3411,9 @@ function openAddCard() {
       <label style="color:#94a3b8;font-size:13px;">${t('card_holder_label')}</label>
       <input id="nc-name" placeholder="${t('card_holder_placeholder')}" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
 
+      <label style="color:#94a3b8;font-size:13px;">${t('card_bank_label')}</label>
+      <input id="nc-bank" placeholder="${t('card_bank_placeholder')}" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
+
       <label style="color:#94a3b8;font-size:13px;">${t('card_type_label')}</label>
       <select id="nc-type" style="width:100%;padding:10px;margin:6px 0 14px;background:#0d0d2b;border:1px solid #00EEFF33;border-radius:8px;color:#fff;box-sizing:border-box;">
         <option value="Crédito" data-i18n-val="Crédito">${t('card_type_credit')}</option>
@@ -3460,6 +3472,7 @@ async function saveNewCard() {
   const balance  = parseFloat(document.getElementById('nc-balance').value) || 0;
   const apr      = parseFloat(document.getElementById('nc-apr').value) || 0;
   const dueDate  = document.getElementById('nc-due').value.trim();
+  const bank     = document.getElementById('nc-bank').value.trim();
   const colorEl  = document.querySelector('#nc-colors [data-gradient][style*="2px solid #fff"]');
   const color    = colorEl ? colorEl.dataset.gradient : 'linear-gradient(135deg,#1a1a3e,#00EEFF44)';
 
@@ -3479,7 +3492,8 @@ async function saveNewCard() {
     balance:      balance,
     apr:          apr,
     due_date:     dueDate,
-    color:        color
+    color:        color,
+    bank:         bank
   }]).select().single();
 
   if (error) {
@@ -3499,6 +3513,7 @@ async function saveNewCard() {
     dueDate:   data.due_date,
     apr:       data.apr || 0,
     color:     data.color || null,
+    bank:      data.bank || '',
     createdAt: data.created_at
   });
 
