@@ -2435,6 +2435,9 @@ function renderReports() {
   el('report-balance',       `$${balance.toFixed(2)}`);
   el('report-total-txs',     `${txs.length}`);
 
+  // Render monthly summary
+  renderMonthlyReport();
+
   // Top categorías de gastos
   const cats = {};
   txs.filter(tx => tx.type === 'expense').forEach(tx => {
@@ -2463,7 +2466,6 @@ function renderReports() {
   }
 }
 
-renderMonthlyReport();
 
 // ── OpenAI via Vercel Function ──────────────────────────────
 async function askOpenAI(userMessage, context = '') {
