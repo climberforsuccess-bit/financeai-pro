@@ -849,6 +849,12 @@ const TRANSLATIONS = {
     tx_opt_business:         'Business',
     tx_label_category:       'Category',
     tx_label_date:           'Date',
+    nav_terms:               'Terms of Service',
+    nav_privacy:             'Privacy Policy',
+    nav_cookies:             '🍪 Cookies',
+    btn_close:               '✖ Close',
+    debt_method_avalanche_desc: '📊 Pay highest interest rate first — saves the most money overall',
+    debt_method_snowball_desc:  '⛄ Pay smallest balance first — builds momentum and motivation',
   },
 
   es: {
@@ -1260,6 +1266,8 @@ const TRANSLATIONS = {
     time_months:          'meses',
     method_avalanche:     '❄️ Método Avalanche',
     method_snowball:      '⛄ Método Snowball',
+    debt_method_avalanche_desc: '📊 Paga primero la deuda con mayor interés — ahorras más dinero en total',
+    debt_method_snowball_desc:  '⛄ Paga primero la deuda más pequeña — genera impulso y motivación',
     toast_avalanche:      '📊 Avalanche: ¡Pagas menos intereses en total!',
     toast_snowball:       '⛄ Snowball: ¡Más motivación para seguir!',
     cards_limit:     'Límite de Crédito',
