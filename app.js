@@ -3232,15 +3232,15 @@ function renderMonthlyReport() {
   }
 
   // Detectar mes con más gastos para motivar upgrade
-  const worstMonth = sorted.reduce((a, b) =>
+  const worstMonth = sorted.length > 1 ? sorted.reduce((a, b) =>
     byMonth[a].expense > byMonth[b].expense ? a : b
-  );
+  ) : null;
 
   tbody.innerHTML = sorted.map(key => {
     const [year, month] = key.split('-');
     const data    = byMonth[key];
     const balance = data.income - data.expense;
-    const isWorst = key === worstMonth && data.expense > 0;
+    const isWorst = worstMonth && key === worstMonth && data.expense > 0;
     return `
       <tr style="${isWorst ? 'background:rgba(239,68,68,0.04);' : ''}">
         <td>
