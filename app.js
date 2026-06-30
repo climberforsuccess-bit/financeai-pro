@@ -1267,7 +1267,7 @@ async function deleteCard(id) {
 // SECCIÓN 9: DEBTS
 // ============================================
 function renderDebts() {
-  // Restore active button based on current method
+  // Restore active button and description based on current method
   const methodBtns = document.querySelectorAll('#section-debts .section-tab');
   methodBtns.forEach(b => {
     const isAvalanche = b.getAttribute('onclick')?.includes('avalanche');
@@ -1276,6 +1276,15 @@ function renderDebts() {
     else if (isSnowball && STATE.currentDebtMethod === 'snowball') b.classList.add('active');
     else b.classList.remove('active');
   });
+
+  // Restore title and description
+  if (STATE.currentDebtMethod === 'avalanche') {
+    setTxt('debt-method-title', t('method_avalanche'));
+    setTxt('debt-method-desc', t('debt_method_avalanche_desc'));
+  } else {
+    setTxt('debt-method-title', t('method_snowball'));
+    setTxt('debt-method-desc', t('debt_method_snowball_desc'));
+  }
 
   const allCardDebts = (STATE.cards || [])
     .filter(c => (c.type === 'Crédito' || c.type === 'credit') && c.balance > 0)
@@ -1607,9 +1616,11 @@ function switchDebtMethod(method, btn) {
   STATE.currentDebtMethod = method;
   if (method === 'avalanche') {
     setTxt('debt-method-title', t('method_avalanche'));
+    setTxt('debt-method-desc', t('debt_method_avalanche_desc'));
     showToast(t('toast_avalanche'));
   } else {
     setTxt('debt-method-title', t('method_snowball'));
+    setTxt('debt-method-desc', t('debt_method_snowball_desc'));
     showToast(t('toast_snowball'));
   }
   saveState();
