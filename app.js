@@ -829,8 +829,23 @@ function renderDashboard() {
   const el = id => document.getElementById(id);
   if (el('val-income'))  el('val-income').textContent  = fmt(income);
   if (el('val-expense'))el('val-expense').textContent = fmt(expense);
-  if (el('val-balance')) el('val-balance').textContent  = fmt(balance);
-  if (el('val-balance')) el('val-balance').textContent  = savings + '%';
+  if (el('val-balance')) el('val-balance').textContent = fmt(balance);
+
+  const totalDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.amount) || 0), 0)
+                  + (STATE.cards || []).reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
+  const netWorth = balance - totalDebt;
+  if (el('val-balance-status')) {
+    if (netWorth >= 0) {
+      el('val-balance-status').textContent = t('dash_healthy');
+      el('val-balance-status').style.color = '#00C851';
+    } else if (netWorth > -5000) {
+      el('val-balance-status').textContent = t('dash_watch');
+      el('val-balance-status').style.color = '#f59e0b';
+    } else {
+      el('val-balance-status').textContent = t('dash_critical');
+      el('val-balance-status').style.color = '#FF4757';
+    }
+  }
 
   // --- Cambios vs mes anterior ---
   const changeIncome  = el('val-income')  && el('val-income').closest('.stat-card')  && el('val-income').closest('.stat-card').querySelector('.stat-card-change');

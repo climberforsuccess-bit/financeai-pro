@@ -129,6 +129,8 @@ const TRANSLATIONS = {
     dash_chat_ph:    'Ask me something about your finances...',
     dash_vs_last:        '↑ % vs last month',
     dash_healthy:        '✓ Healthy finances',
+    dash_watch:          '⚠️ Watch your spending',
+    dash_critical:       '🔴 Critical: High debt',
     dash_debt_month:     '↓ this month',
     dash_messages_left:  'messages today',
 
@@ -1177,6 +1179,8 @@ const TRANSLATIONS = {
     dash_chat_ph:    'Pregúntame algo sobre tus finanzas...',
     dash_vs_last:        '↑ % vs mes anterior',
     dash_healthy:        '✓ Finanzas saludables',
+    dash_watch:          '⚠️ Controla tus gastos',
+    dash_critical:       '🔴 Crítico: Deuda alta',
     dash_debt_month:     '↓ este mes',
     dash_messages_left:  'mensajes hoy',
 
