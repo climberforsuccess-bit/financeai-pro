@@ -170,6 +170,7 @@ const STATE = {
   cards: [],
   debts: [],
   subscriptions: [],
+  currentDebtMethod: 'avalanche',
   settings: { currency: 'USD', lang: 'es', plan: 'free' }
 };
 
@@ -179,6 +180,7 @@ function loadState() {
     STATE.cards         = JSON.parse(localStorage.getItem('fai_cards')         || '[]');
     STATE.debts         = JSON.parse(localStorage.getItem('fai_debts')         || '[]');
     STATE.subscriptions = JSON.parse(localStorage.getItem('fai_subscriptions') || '[]');
+    STATE.currentDebtMethod = localStorage.getItem('fai_debt_method') || 'avalanche';
     const s = localStorage.getItem('fai_settings');
     if (s) STATE.settings = { ...STATE.settings, ...JSON.parse(s) };
   } catch(e) { console.warn('loadState error:', e); }
@@ -190,6 +192,7 @@ function saveState() {
     localStorage.setItem('fai_cards',         JSON.stringify(STATE.cards));
     localStorage.setItem('fai_debts',         JSON.stringify(STATE.debts));
     localStorage.setItem('fai_subscriptions', JSON.stringify(STATE.subscriptions));
+    localStorage.setItem('fai_debt_method',   STATE.currentDebtMethod || 'avalanche');
     localStorage.setItem('fai_settings',      JSON.stringify(STATE.settings));
   } catch(e) { console.warn('saveState error:', e); }
 }
@@ -1264,6 +1267,16 @@ async function deleteCard(id) {
 // SECCIÓN 9: DEBTS
 // ============================================
 function renderDebts() {
+  // Restore active button based on current method
+  const methodBtns = document.querySelectorAll('#section-debts .section-tab');
+  methodBtns.forEach(b => {
+    const isAvalanche = b.getAttribute('onclick')?.includes('avalanche');
+    const isSnowball  = b.getAttribute('onclick')?.includes('snowball');
+    if (isAvalanche && STATE.currentDebtMethod === 'avalanche') b.classList.add('active');
+    else if (isSnowball && STATE.currentDebtMethod === 'snowball') b.classList.add('active');
+    else b.classList.remove('active');
+  });
+
   const allCardDebts = (STATE.cards || [])
     .filter(c => (c.type === 'Crédito' || c.type === 'credit') && c.balance > 0)
     .map(c => ({
@@ -1283,7 +1296,17 @@ function renderDebts() {
     ownerType: d.ownerType || 'personal'
   }));
 
-  const allDebts = [...allCardDebts, ...manualDebts];
+  let allDebts = [...allCardDebts, ...manualDebts];
+
+  // Sort based on active method
+  const method = STATE.currentDebtMethod || 'avalanche';
+  if (method === 'avalanche') {
+    // Highest APR first
+    allDebts.sort((a, b) => (b.apr || 0) - (a.apr || 0));
+  } else {
+    // Snowball: lowest balance first
+    allDebts.sort((a, b) => (a.balance || 0) - (b.balance || 0));
+  }
 
   const personalDebts = allDebts.filter(d => d.ownerType === 'personal');
   const businessDebts = allDebts.filter(d => d.ownerType === 'business');
@@ -1581,12 +1604,11 @@ function switchDebtMethod(method, btn) {
   document.querySelectorAll('#section-debts .section-tab')
     .forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
+  STATE.currentDebtMethod = method;
   if (method === 'avalanche') {
-    STATE.debts.sort((a, b) => (b.apr || 0) - (a.apr || 0));
     setTxt('debt-method-title', t('method_avalanche'));
     showToast(t('toast_avalanche'));
   } else {
-    STATE.debts.sort((a, b) => (a.balance || 0) - (b.balance || 0));
     setTxt('debt-method-title', t('method_snowball'));
     showToast(t('toast_snowball'));
   }
