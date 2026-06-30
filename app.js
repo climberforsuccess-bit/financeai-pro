@@ -3761,7 +3761,7 @@ async function saveNewTransaction() {
     amount: type === 'expense' ? -Math.abs(amount) : Math.abs(amount),
     type,
     category,
-    category_type,
+    expense_type: category_type,
     date
   }]);
 
