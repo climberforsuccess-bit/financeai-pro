@@ -1809,94 +1809,16 @@ body {
           <span style="font-size:32px;">🤖</span>
           <div>
             <div style="font-weight:700;font-size:15px;" data-i18n="rec_ai_analysis">Análisis IA de tus gastos</div>
-            <div style="color:var(--gray);font-size:13px;margin-top:4px;">
-              <span id="rec-based-on" data-i18n="rec_based_on">Basado en tus transacciones: gastas más en </span>
-              <strong style="color:var(--accent);">supermercado</strong>, 
-              <strong style="color:var(--accent);">restaurantes</strong> y 
-              <strong style="color:var(--accent);">gasolina</strong>. 
-              Estas tarjetas maximizan tus beneficios.
-            </div>
+            <div id="rec-ai-summary" style="color:var(--gray);font-size:13px;margin-top:4px;">Analizando tus transacciones...</div>
           </div>
         </div>
       </div>
 
-      <div class="rec-card">
-        <div class="rec-card-header">
-          <div>
-            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;" data-i18n="rec_best_general">USA — MEJOR OPCIÓN GENERAL</div>
-            <div class="rec-title">💳 Chase Freedom Flex</div>
-          </div>
-          <div class="rec-score">98% match</div>
+      <div id="rec-cards-container">
+        <div style="text-align:center;padding:40px;color:var(--gray);">
+          <div style="font-size:40px;margin-bottom:12px;">⏳</div>
+          <div>Cargando recomendaciones personalizadas...</div>
         </div>
-        <div class="rec-desc">Perfecta para tus hábitos. Ofrece 5% cashback en categorías rotativas que incluyen supermercados y gasolina.</div>
-        <div class="rec-benefits">
-          <span class="rec-benefit">5% Supermercados</span>
-          <span class="rec-benefit">3% Restaurantes</span>
-          <span class="rec-benefit">Sin cuota anual</span>
-          <span class="rec-benefit">$200 bono bienvenida</span>
-        </div>
-      </div>
-
-      <div class="rec-card">
-        <div class="rec-card-header">
-          <div>
-            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;" data-i18n="rec_best_travel">USA — MEJOR PARA VIAJES</div>
-            <div class="rec-title">💳 Amex Gold Card</div>
-          </div>
-          <div class="rec-score">91% match</div>
-        </div>
-        <div class="rec-desc">Ideal si viajas frecuentemente. 4x puntos en restaurantes y supermercados en USA.</div>
-        <div class="rec-benefits">
-          <span class="rec-benefit">4x Restaurantes</span>
-          <span class="rec-benefit">4x Supermercados</span>
-          <span class="rec-benefit">$120 crédito comidas</span>
-          <span class="rec-benefit">Puntos transferibles</span>
-        </div>
-      </div>
-
-      <div class="rec-card">
-        <div class="rec-card-header">
-          <div>
-            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;" data-i18n="rec_best_no_fee">USA — MEJOR SIN CUOTA</div>
-            <div class="rec-title">💳 Citi Double Cash</div>
-          </div>
-          <div class="rec-score">87% match</div>
-        </div>
-        <div class="rec-desc">2% cashback en todo sin límites ni categorías. Simple y efectiva para todo tipo de gastos.</div>
-        <div class="rec-benefits">
-          <span class="rec-benefit">2% en todo</span>
-          <span class="rec-benefit">Sin cuota anual</span>
-          <span class="rec-benefit">Sin límite cashback</span>
-          <span class="rec-benefit">Fácil de aprobar</span>
-        </div>
-      </div>
-
-      <div class="rec-card">
-        <div class="rec-card-header">
-          <div>
-            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;" data-i18n="rec_latam">LATINOAMÉRICA</div>
-            <div class="rec-title">💳 Nu Card (Nubank)</div>
-          </div>
-          <div class="rec-score">85% match</div>
-        </div>
-        <div class="rec-desc" id="rec-desc-default" data-i18n="rec_desc_default">Disponible en México, Colombia y Brasil. Sin cuotas ocultas, control total desde el app.</div>
-        <div class="rec-benefits">
-          <span class="rec-benefit">Sin cuota anual</span>
-          <span class="rec-benefit">Sin comisiones</span>
-          <span class="rec-benefit">App excelente</span>
-          <span class="rec-benefit">Fácil de aprobar</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== AI ASSISTANT ===== -->
-    <div id="section-assistant" style="display:none;">
-      <div class="page-header">
-        <div>
-          <div class="page-title" data-i18n="ai_section_title">🤖 Asistente Financiero IA</div>
-          <div class="page-subtitle" data-i18n="ai_section_sub">Powered by Google Gemini AI</div>
-        </div>
-        <span class="badge badge-success" data-i18n="ai_online">● En línea</span>
       </div>
 
       <div class="card" style="max-width:800px;">

@@ -284,6 +284,131 @@ function showPage(pageId) {
   window.scrollTo(0, 0);
 }
 
+
+async function loadCardRecommendations() {
+  const container = document.getElementById('rec-cards-container');
+  const summary   = document.getElementById('rec-ai-summary');
+  if (!container) return;
+
+  const expenses = (STATE.transactions || []).filter(tx => tx.type === 'expense');
+
+  if (expenses.length === 0) {
+    if (summary) summary.innerHTML = 'Add transactions to get personalized recommendations.';
+    container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--gray);">
+      <div style="font-size:40px;margin-bottom:12px;">💳</div>
+      <div style="font-size:15px;">No transactions yet</div>
+      <div style="font-size:13px;margin-top:8px;">Add your expenses to get personalized card recommendations.</div>
+    </div>`;
+    return;
+  }
+
+  const categoryTotals = {};
+  expenses.forEach(tx => {
+    const cat = (tx.category || tx.expenseType || 'otros').toLowerCase().trim();
+    categoryTotals[cat] = (categoryTotals[cat] || 0) + (parseFloat(tx.amount) || 0);
+  });
+
+  const sorted      = Object.entries(categoryTotals).sort((a,b) => b[1]-a[1]);
+  const top3        = sorted.slice(0,3).map(([cat,amt]) => ({cat, amount: Math.round(amt)}));
+  const totalSpend  = expenses.reduce((s,tx) => s+(parseFloat(tx.amount)||0), 0);
+  const avgMonthly  = Math.round(totalSpend / Math.max(1, Math.ceil(expenses.length/30)));
+  const country     = STATE.settings?.country || 'USA';
+  const currency    = STATE.settings?.currency || 'USD';
+  const lang        = localStorage.getItem('financeai_lang') || 'en';
+
+  if (summary) {
+    summary.innerHTML = `Based on your transactions: you spend most on
+      ${top3.map(c=>`<strong style="color:var(--accent);">${c.cat}</strong>`).join(', ')}.
+      Monthly average: <strong style="color:var(--accent);">${currency} ${avgMonthly}</strong>.
+      These cards maximize your rewards.`;
+  }
+
+  container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--gray);">
+    <div style="font-size:40px;margin-bottom:12px;">🤖</div>
+    <div style="font-size:15px;margin-bottom:8px;">Analyzing your spending habits...</div>
+    <div style="font-size:13px;">Finding the best cards for you</div>
+  </div>`;
+
+  const breakdown = sorted.slice(0,5).map(([cat,amt]) => `  - ${cat}: ${currency} ${Math.round(amt)}`).join('\n');
+
+  const prompt = `You are a senior credit card expert with deep knowledge of the global credit card market.
+
+USER PROFILE:
+- Country/Region: ${country}
+- Language: ${lang === 'es' ? 'Spanish' : 'English'}
+- Spending breakdown:\n${breakdown}
+- Monthly average: ${currency} ${avgMonthly}
+- Total analyzed: ${currency} ${Math.round(totalSpend)}
+
+TASK: Recommend exactly 4 REAL credit cards available in ${new Date().getFullYear()}.
+
+SCORING (be honest and precise):
+- Rewards alignment with top spending categories: 0-40pts
+- Net value after annual fee based on actual spend: 0-25pts  
+- Ease of approval for average consumer: 0-15pts
+- Relevant perks and benefits: 0-20pts
+
+STRICT RULES:
+- Cards must be REAL and currently available
+- At least 1 card must be relevant to ${country}
+- Include: 1 best overall, 1 best for top category, 1 no annual fee, 1 premium
+- Scores must honestly reflect fit for THIS user's specific spending
+- Benefits must be 100% accurate (correct cashback %, correct annual fees, correct sign-up bonuses)
+- Descriptions must mention the user's actual spending categories
+- NO discontinued cards, NO invented cards
+
+Respond ONLY with a JSON array. Zero explanation. Zero markdown:
+[{"name":"exact card name","issuer":"bank","region":"e.g. USA — BEST OVERALL","score":94,"description":"personalized explanation mentioning their actual categories and estimated monthly savings","benefits":["accurate benefit 1","accurate benefit 2","accurate benefit 3","accurate benefit 4"],"annualFee":"$0 or exact fee","bestFor":"main category"}]`;
+
+  try {
+    const res  = await fetch('/api/openai-proxy', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        messages:[
+          {role:'system', content:'You are a credit card expert. Respond with valid JSON array only. No markdown. No explanations.'},
+          {role:'user', content: prompt}
+        ]
+      })
+    });
+    if (!res.ok) throw new Error('API ' + res.status);
+    const data  = await res.json();
+    const text  = data.choices?.[0]?.message?.content?.trim() || '';
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) throw new Error('No JSON found');
+    const cards = JSON.parse(match[0]);
+    if (!Array.isArray(cards) || !cards.length) throw new Error('Empty');
+
+    container.innerHTML = cards.map(card => `
+      <div class="rec-card">
+        <div class="rec-card-header">
+          <div>
+            <div style="font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;">${card.region || card.issuer || 'RECOMMENDED'}</div>
+            <div class="rec-title">💳 ${card.name}</div>
+          </div>
+          <div class="rec-score">${card.score}% match</div>
+        </div>
+        <div class="rec-desc">${card.description}</div>
+        <div class="rec-benefits">
+          ${(card.benefits||[]).map(b=>`<span class="rec-benefit">${b}</span>`).join('')}
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:var(--gray);">
+          💰 Annual fee: <strong style="color:var(--accent);">${card.annualFee || 'N/A'}</strong>
+          ${card.bestFor ? ` &nbsp;·&nbsp; 🏆 Best for: <strong>${card.bestFor}</strong>` : ''}
+        </div>
+      </div>`).join('');
+
+  } catch(err) {
+    console.error('Rec error:', err);
+    container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--gray);">
+      <div style="font-size:40px;margin-bottom:12px;">⚠️</div>
+      <div style="font-size:15px;margin-bottom:8px;">Could not load recommendations</div>
+      <div style="font-size:13px;margin-bottom:16px;">${err.message}</div>
+      <button class="btn btn-outline" onclick="loadCardRecommendations()">🔄 Retry</button>
+    </div>`;
+  }
+}
+
 function showSection(sectionId) {
   showPage('app');
   document.querySelectorAll('[id^="section-"]').forEach(s => {
@@ -308,6 +433,7 @@ function showSection(sectionId) {
   if (sectionId === 'debts')         Promise.all([loadCards(), loadDebts()]).then(() => renderDebts());
   if (sectionId === 'subscriptions') renderSubscriptions();
   if (sectionId === 'reports')       renderReports();
+  if (sectionId === 'recommendations') loadCardRecommendations();
   if (sectionId === 'settings')      renderSettings();
   if (sectionId === 'admin')         adminLoadStats();
 
@@ -368,6 +494,7 @@ async function loadCards() {
   STATE.cards = data.map(c => ({
     id: c.id,
     name: c.name,
+    bank: c.bank || '',
     type: c.card_type,
     limit: c.limit_amount,
     balance: c.balance,
@@ -392,20 +519,17 @@ async function loadDebts() {
 
   if (error) { console.error('Error cargando deudas:', error); return; }
 
-  if (data && data.length > 0) {
-    STATE.debts = data.map(d => ({
-      id: d.id,
-      name: d.name,
-      balance: d.current_balance,
-      originalBalance: d.total_amount,
-      apr: d.interest_rate,
-      minPayment: d.minimum_payment,
-      dueDate: d.due_date,
-      debtType: d.debt_type,
-      createdAt: d.created_at
-    }));
-  }
-  // If Supabase returns empty, keep localStorage data already in STATE.debts
+  STATE.debts = (data || []).map(d => ({
+    id: d.id,
+    name: d.name,
+    balance: d.current_balance,
+    originalBalance: d.total_amount,
+    apr: d.interest_rate,
+    minPayment: d.minimum_payment,
+    dueDate: d.due_date,
+    debtType: d.debt_type,
+    createdAt: d.created_at
+  }));
 }
 
 async function loadSubscriptions() {
