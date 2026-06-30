@@ -3207,7 +3207,8 @@ function renderMonthlyReport() {
   const byMonth = {};
   txs.forEach(tx => {
     if (!tx.date) return;
-    const d = new Date(tx.date);
+    const parts = tx.date.substring(0,10).split('-');
+    const d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
     const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
     if (!byMonth[key]) byMonth[key] = { income: 0, expense: 0 };
     if (tx.type === 'income') byMonth[key].income  += Math.abs(tx.amount);
@@ -3244,13 +3245,13 @@ function renderMonthlyReport() {
       <tr style="${isWorst ? 'background:rgba(239,68,68,0.04);' : ''}">
         <td>
           <strong>${monthNames[parseInt(month)-1]} ${year}</strong>
-          ${isWorst ? `<span style="font-size:10px;color:#ef4444;margin-left:6px;">${t('worst_month_badge')}</span>` : ''}
+          ${isWorst ? `<span style="font-size:10px;color:#ef4444;margin-left:6px;">⚠️ Worst Month</span>` : ''}
         </td>
         <td style="color:var(--success)">+$${data.income.toFixed(2)}</td>
         <td style="color:var(--danger)">-$${data.expense.toFixed(2)}</td>
         <td style="color:${balance >= 0 ? 'var(--accent)' : 'var(--danger)'};font-weight:600;">
           ${balance >= 0 ? '+' : ''}$${balance.toFixed(2)}
-          ${balance < 0 ? `<span style="font-size:10px;margin-left:4px;cursor:pointer;" onclick="showSection('plans')">${t('optimize_cta')}</span>` : ''}
+          ${balance < 0 ? `<span style="font-size:10px;margin-left:4px;cursor:pointer;" onclick="showSection('plans')">💡 Optimize</span>` : ''}
         </td>
       </tr>`;
   }).join('');
