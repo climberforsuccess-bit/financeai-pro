@@ -836,8 +836,6 @@ const TRANSLATIONS = {
     terms_service:          'Terms of Service',
     privacy_policy:         'Privacy Policy',
     terms_and:              'and the',
-  },
-
     tx_label_desc:           'Description',
     tx_placeholder_desc:     'e.g. Salary, Netflix, Groceries...',
     tx_label_amount:         'Amount',
@@ -849,6 +847,8 @@ const TRANSLATIONS = {
     tx_opt_business:         'Business',
     tx_label_category:       'Category',
     tx_label_date:           'Date',
+  },
+
   es: {
     badge_popular:       '🔥 MÁS POPULAR',
     notif_label_4:       'Recordatorio de pagos',
