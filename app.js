@@ -3208,8 +3208,8 @@ function renderMonthlyReport() {
     const d = new Date(tx.date);
     const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
     if (!byMonth[key]) byMonth[key] = { income: 0, expense: 0 };
-    if (tx.amount > 0) byMonth[key].income  += tx.amount;
-    else              byMonth[key].expense += Math.abs(tx.amount);
+    if (tx.type === 'income') byMonth[key].income  += Math.abs(tx.amount);
+    else                      byMonth[key].expense += Math.abs(tx.amount);
   });
 
   const sorted = Object.keys(byMonth).sort().reverse().slice(0, 12);
