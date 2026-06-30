@@ -369,7 +369,7 @@ Respond ONLY with a JSON array. Zero explanation. Zero markdown:
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         messages:[
-          {role:'system', content:'You are a credit card expert. Respond with valid JSON array only. No markdown. No explanations.'},
+          {role:'system', content:'You are a credit card expert. Respond ONLY with a valid JSON array. No markdown, no code blocks, no apostrophes in text, no special characters. Use only plain ASCII text in all string values. No explanations outside JSON.'},
           {role:'user', content: prompt}
         ]
       })
@@ -379,7 +379,13 @@ Respond ONLY with a JSON array. Zero explanation. Zero markdown:
     const text  = data.choices?.[0]?.message?.content?.trim() || '';
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) throw new Error('No JSON found');
-    const cards = JSON.parse(match[0]);
+    let jsonStr = match[0]
+      .replace(/[\u2018\u2019]/g, "'")
+      .replace(/[\u201C\u201D]/g, '"')
+      .replace(/\n/g, ' ')
+      .replace(/,\s*]/g, ']')
+      .replace(/,\s*}/g, '}');
+    const cards = JSON.parse(jsonStr);
     if (!Array.isArray(cards) || !cards.length) throw new Error('Empty');
 
     container.innerHTML = cards.map(card => `
