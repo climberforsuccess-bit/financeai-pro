@@ -827,14 +827,14 @@ function renderDashboard() {
 
   // --- Llenar stat cards ---
   const el = id => document.getElementById(id);
-  if (el('statIncome'))  el('statIncome').textContent  = fmt(income);
-  if (el('statExpenses'))el('statExpenses').textContent = fmt(expense);
-  if (el('statBalance')) el('statBalance').textContent  = fmt(balance);
-  if (el('statSavings')) el('statSavings').textContent  = savings + '%';
+  if (el('val-income'))  el('val-income').textContent  = fmt(income);
+  if (el('val-expense'))el('val-expense').textContent = fmt(expense);
+  if (el('val-balance')) el('val-balance').textContent  = fmt(balance);
+  if (el('val-balance')) el('val-balance').textContent  = savings + '%';
 
   // --- Cambios vs mes anterior ---
-  const changeIncome  = el('statIncome')  && el('statIncome').closest('.stat-card')  && el('statIncome').closest('.stat-card').querySelector('.stat-card-change');
-  const changeExpense = el('statExpenses')&& el('statExpenses').closest('.stat-card')&& el('statExpenses').closest('.stat-card').querySelector('.stat-card-change');
+  const changeIncome  = el('val-income')  && el('val-income').closest('.stat-card')  && el('val-income').closest('.stat-card').querySelector('.stat-card-change');
+  const changeExpense = el('val-expense')&& el('val-expense').closest('.stat-card')&& el('val-expense').closest('.stat-card').querySelector('.stat-card-change');
 
   if (changeIncome) {
     const up = parseFloat(incomePct) >= 0;
@@ -851,7 +851,7 @@ function renderDashboard() {
   const cardDebts = (STATE.cards || []).reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
   const manualDebts = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
   const totalDebt = cardDebts + manualDebts;
-  if (el('totalDebt')) el('totalDebt').textContent = fmt(totalDebt);
+  if (el('val-debt')) el('val-debt').textContent = fmt(totalDebt);
 
   // --- Actualizar mensaje AI Assistant con datos reales ---
   const chatIntroEl = document.querySelector('[data-i18n="dash_chat_intro"]');
