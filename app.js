@@ -435,7 +435,7 @@ function showSection(sectionId) {
   if (sectionId === 'reports')       renderReports();
   if (sectionId === 'recommendations') loadCardRecommendations();
   if (sectionId === 'settings')      renderSettings();
-  if (sectionId === 'ai-assistant')   initAIAssistant();
+  
   if (sectionId === 'admin')         adminLoadStats();
 
   // Re-apply translations after section renders
