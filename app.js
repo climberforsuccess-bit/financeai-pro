@@ -722,7 +722,7 @@ function showTrialExpiredModal() {
           ✅ Soporte prioritario
         </div>
       </div>
-      <button onclick="window.location.href='index.html#pricing'" style="
+      <button onclick="if(document.querySelector('.modal-overlay')){document.querySelector('.modal-overlay').style.display='none';}showSection('settings');setTimeout(()=>{const el=document.getElementById('pricing');if(el)el.scrollIntoView({behavior:'smooth'});},300);" style="
         width: 100%; padding: 16px; border-radius: 12px; border: none;
         background: linear-gradient(135deg, #f59e0b, #ef4444);
         color: white; font-size: 16px; font-weight: 800; cursor: pointer;
