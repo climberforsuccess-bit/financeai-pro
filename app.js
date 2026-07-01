@@ -620,7 +620,7 @@ async function loadUserProfile() {
   try {
     const { data, error } = await supabase
       .from('profiles')
-      .select('plan, subscription_status, billing_period')
+      .select('plan, subscription_status, billing_period, trial_ends_at, subscription_ends_at')
       .eq('id', STATE.user.id)
       .single();
 
@@ -628,12 +628,114 @@ async function loadUserProfile() {
       STATE.settings.plan           = data.plan || 'free';
       STATE.settings.subscriptionStatus = data.subscription_status || 'inactive';
       STATE.settings.billingPeriod  = data.billing_period || 'monthly';
+      STATE.settings.trialEndsAt    = data.trial_ends_at || null;
+      STATE.settings.subscriptionEnd = data.subscription_ends_at || null;
+      checkTrialStatus();
       localStorage.setItem('fai_plan', STATE.settings.plan);
       localStorage.setItem('fai_billing', STATE.settings.billingPeriod);
     }
   } catch(e) {
     console.warn('loadUserProfile error:', e);
   }
+}
+
+
+function checkTrialStatus() {
+  const plan = STATE.settings.plan || 'free';
+  const trialEndsAt = STATE.settings.trialEndsAt;
+  const subscriptionEnd = STATE.settings.subscriptionEnd;
+  const now = new Date();
+
+  if (plan === 'pro' || plan === 'personal' || plan === 'business') {
+    const subEnd = subscriptionEnd ? new Date(subscriptionEnd) : null;
+    if (!subEnd || subEnd > now) return;
+  }
+
+  if (trialEndsAt) {
+    const trialEnd = new Date(trialEndsAt);
+    if (trialEnd < now) {
+      showTrialExpiredModal();
+    } else {
+      const daysLeft = Math.ceil((trialEnd - now) / (1000 * 60 * 60 * 24));
+      showTrialBanner(daysLeft);
+    }
+  }
+}
+
+function showTrialBanner(daysLeft) {
+  const existing = document.getElementById('trial-banner');
+  if (existing) return;
+  const banner = document.createElement('div');
+  banner.id = 'trial-banner';
+  banner.style.cssText = `
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
+    background: linear-gradient(90deg, #f59e0b, #ef4444);
+    color: white; text-align: center; padding: 10px 16px;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.3px;
+  `;
+  banner.innerHTML = daysLeft <= 1
+    ? `⚡ Tu prueba gratuita termina HOY — <a href="#" onclick="showTrialExpiredModal()" style="color:white;text-decoration:underline;">Activa tu plan ahora</a>`
+    : `🎯 Te quedan <strong>${daysLeft} días</strong> de prueba gratuita — <a href="#" onclick="showTrialExpiredModal()" style="color:white;text-decoration:underline;">Ver planes</a>`;
+  document.body.prepend(banner);
+}
+
+function showTrialExpiredModal() {
+  const existing = document.getElementById('trial-expired-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'trial-expired-modal';
+  modal.style.cssText = `
+    position: fixed; inset: 0; z-index: 99999;
+    background: rgba(0,0,0,0.85);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  `;
+  modal.innerHTML = `
+    <div style="
+      background: #0f172a; border-radius: 24px; padding: 40px 32px;
+      max-width: 420px; width: 100%; text-align: center;
+      border: 1px solid rgba(245,158,11,0.3);
+      box-shadow: 0 0 60px rgba(245,158,11,0.15);
+    ">
+      <div style="font-size: 48px; margin-bottom: 12px;">🔒</div>
+      <h2 style="color: #f59e0b; font-size: 22px; font-weight: 800; margin-bottom: 8px;">
+        Tu prueba gratuita ha terminado
+      </h2>
+      <p style="color: #94a3b8; font-size: 14px; margin-bottom: 8px;">
+        Has experimentado el poder de <strong style="color:white;">FinanceAI Pro</strong>.
+      </p>
+      <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 24px; line-height: 1.6;">
+        Miles de personas ya controlan sus finanzas, eliminan deudas más rápido
+        y toman mejores decisiones con FinanceAI. <strong style="color:#f59e0b;">No pierdas tu progreso.</strong>
+      </p>
+      <div style="
+        background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);
+        border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: left;
+      ">
+        <div style="color: #f59e0b; font-weight: 700; margin-bottom: 10px; font-size: 13px;">✨ Lo que obtienes con Pro:</div>
+        <div style="color: #e2e8f0; font-size: 13px; line-height: 1.8;">
+          ✅ Transacciones ilimitadas<br>
+          ✅ Recomendaciones AI personalizadas<br>
+          ✅ Reportes financieros mensuales<br>
+          ✅ Hasta 15 tarjetas de crédito<br>
+          ✅ Soporte prioritario
+        </div>
+      </div>
+      <button onclick="window.location.href='index.html#pricing'" style="
+        width: 100%; padding: 16px; border-radius: 12px; border: none;
+        background: linear-gradient(135deg, #f59e0b, #ef4444);
+        color: white; font-size: 16px; font-weight: 800; cursor: pointer;
+        margin-bottom: 12px; letter-spacing: 0.5px;
+      ">
+        🚀 Activar FinanceAI Pro — desde $9.99/mes
+      </button>
+      <p style="color: #64748b; font-size: 11px;">
+        💳 Cancela cuando quieras · Sin compromisos · 100% seguro
+      </p>
+    </div>
+  `;
+  document.body.appendChild(modal);
 }
 
 function updateUserDisplay() {
