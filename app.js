@@ -144,6 +144,12 @@ function setLandingBilling(type) {
     if (op)     op.style.display  = 'block';
     if (opr)    opr.style.display = 'block';
     if (opb)    opb.style.display = 'block';
+    var bp  = document.getElementById('landing-billed-personal');
+    var bpr = document.getElementById('landing-billed-pro');
+    var bpb = document.getElementById('landing-billed-business');
+    if (bp)  bp.style.display  = 'block';
+    if (bpr) bpr.style.display = 'block';
+    if (bpb) bpb.style.display = 'block';
     if (banner) banner.style.display = 'block';
     if (btnA) { btnA.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)'; btnA.style.color = '#000'; }
     if (btnM) { btnM.style.background = '#334155'; btnM.style.color = '#94a3b8'; }
@@ -151,6 +157,12 @@ function setLandingBilling(type) {
     if (op)     op.style.display  = 'none';
     if (opr)    opr.style.display = 'none';
     if (opb)    opb.style.display = 'none';
+    var bp  = document.getElementById('landing-billed-personal');
+    var bpr = document.getElementById('landing-billed-pro');
+    var bpb = document.getElementById('landing-billed-business');
+    if (bp)  bp.style.display  = 'none';
+    if (bpr) bpr.style.display = 'none';
+    if (bpb) bpb.style.display = 'none';
     if (banner) banner.style.display = 'none';
     if (btnM) { btnM.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)'; btnM.style.color = '#000'; }
     if (btnA) { btnA.style.background = '#334155'; btnA.style.color = '#94a3b8'; }
@@ -722,7 +734,8 @@ function showTrialExpiredModal() {
           ✅ Soporte prioritario
         </div>
       </div>
-      <button onclick="document.getElementById('trial-expired-modal').remove();showSection('settings');setTimeout(()=>{const el=document.getElementById('pricing');if(el)el.scrollIntoView({behavior:'smooth'});},300);" style="
+      <button onclick="if(document.querySelector('.modal-overlay')){document.querySelector('.modal-overlay').style.display='none';} showSection('settings'); setTimeout(()=>{const el=document.getElementById('pricing');if(el)el.scrollIntoView({behavior:'smooth'});},300);" style="
+
         width: 100%; padding: 16px; border-radius: 12px; border: none;
         background: linear-gradient(135deg, #f59e0b, #ef4444);
         color: white; font-size: 16px; font-weight: 800; cursor: pointer;
