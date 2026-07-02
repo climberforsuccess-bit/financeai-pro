@@ -1261,7 +1261,7 @@ body {
     <div class="pricing-grid">
       <div class="price-card">
         <div class="price-name">FREE</div>
-        <div class="price-amount">$0<span>/mes</span></div>
+        <div class="price-amount">$0<span data-i18n="por_mes">/mes</span></div>
         <ul class="price-features">
           <li id="pf1" data-i18n="pf1">Hasta 50 transacciones/mes</li>
           <li id="pf2" data-i18n="pf2">1 tarjeta de crédito</li>
@@ -1272,7 +1272,7 @@ body {
       </div>
       <div class="price-card">
         <div class="price-name">⭐ PERSONAL</div>
-        <div class="price-amount"><span id="landing-price-personal">$7.99</span><span>/mes</span></div>
+        <div class="price-amount"><span id="landing-price-personal">$7.99</span><span data-i18n="por_mes">/mes</span></div>
         <div id="landing-billed-personal" style="font-size:11px; color:#10b981; font-weight:700; margin-top:-6px; margin-bottom:4px; display:none;" data-i18n="billed_annually">Billed annually</div>
         <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-personal" data-i18n="landing_original_personal">Precio normal $9.99/mes</div>
         <ul class="price-features">
@@ -1287,7 +1287,7 @@ body {
       <div class="price-card popular">
         <div class="popular-badge"><span id="badge-popular" data-i18n="badge_popular">🔥 MÁS POPULAR</span></div>
         <div class="price-name">💎 PRO</div>
-        <div class="price-amount"><span id="landing-price-pro">$15.99</span><span>/mes</span></div>
+        <div class="price-amount"><span id="landing-price-pro">$15.99</span><span data-i18n="por_mes">/mes</span></div>
         <div id="landing-billed-pro" style="font-size:11px; color:#10b981; font-weight:700; margin-top:-6px; margin-bottom:4px; display:none;" data-i18n="billed_annually">Billed annually</div>
         <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-pro" data-i18n="landing_original_pro">Valor real $19.99/mes</div>
         <ul class="price-features">
@@ -1303,7 +1303,7 @@ body {
       </div>
       <div class="price-card">
         <div class="price-name">🏢 BUSINESS</div>
-        <div class="price-amount"><span id="landing-price-business">$39.99</span><span>/mes</span></div>
+        <div class="price-amount"><span id="landing-price-business">$39.99</span><span data-i18n="por_mes">/mes</span></div>
         <div id="landing-billed-business" style="font-size:11px; color:#10b981; font-weight:700; margin-top:-6px; margin-bottom:4px; display:none;" data-i18n="billed_annually">Billed annually</div>
         <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-business" data-i18n="landing_original_business">Precio normal $49.99/mes</div>
         <ul class="price-features">
@@ -1312,9 +1312,9 @@ body {
           <li id="feat-admin-panel" data-i18n="feat_admin_panel">Panel de administración</li>
           <li id="feat-biz-reports" data-i18n="feat_biz_reports">Reportes empresariales</li>
           <li id="feat-support-247" data-i18n="feat_support_247">Soporte prioritario 24/7</li>
-          <li style="color:#10b981;">ROI garantizado o reembolso</li>
+          <li style="color:#10b981;" data-i18n="roi_garantizado">ROI garantizado o reembolso</li>
         </ul>
-        <button class="btn btn-outline btn-full" onclick="handlePlanClick('business')">🏢 Elegir Business</button>
+        <button class="btn btn-outline btn-full" onclick="handlePlanClick('business')"><span data-i18n="elegir_business">🏢 Elegir Business</span></button>
       </div>
     </div>
   </div>
@@ -1554,25 +1554,25 @@ body {
           <div class="stat-card-icon">💵</div>
           <div class="stat-card-label" id="lbl-income" data-i18n="lbl_income">Ingresos del Mes</div>
           <div class="stat-card-value green" id="val-income">$0.00</div>
-          <div class="stat-card-change">↑ 12% vs mes anterior</div>
+          <div class="stat-card-change" data-i18n="vs_mes_anterior">↑ 12% vs mes anterior</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💸</div>
           <div class="stat-card-label" id="lbl-expense" data-i18n="lbl_expense">Gastos del Mes</div>
           <div class="stat-card-value red" id="val-expense">$0.00</div>
-          <div class="stat-card-change" style="color:var(--danger);">↑ 5% vs mes anterior</div>
+          <div class="stat-card-change" style="color:var(--danger);" data-i18n="vs_mes_gasto">↑ 5% vs mes anterior</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💰</div>
           <div class="stat-card-label" id="lbl-balance" data-i18n="lbl_balance">Balance Disponible</div>
           <div class="stat-card-value cyan" id="val-balance">$0.00</div>
-          <div class="stat-card-change" id="val-balance-status">✓ Finanzas saludables</div>
+          <div class="stat-card-change" id="val-balance-status" data-i18n="finanzas_saludables">✓ Finanzas saludables</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">💳</div>
           <div class="stat-card-label" id="lbl-debt" data-i18n="lbl_debt">Deuda Total</div>
           <div class="stat-card-value red" id="val-debt">$0.00</div>
-          <div class="stat-card-change" style="color:var(--success);">↓ $340 este mes</div>
+          <div class="stat-card-change" style="color:var(--success);" data-i18n="ahorro_este_mes">↓ $340 este mes</div>
         </div>
       </div>
 
@@ -1615,7 +1615,7 @@ body {
             <span class="card-title" id="lbl-subs" data-i18n="lbl_subs">Suscripciones Activas</span>
             <span class="badge badge-warning" id="dashboard-subs-badge">$67.97/mes</span>
           </div>
-          <div id="dashboard-subs-list"><p style="color:#8892A4;text-align:center;padding:20px;">Loading...</p></div>
+          <div id="dashboard-subs-list"><p style="color:#8892A4;text-align:center;padding:20px;" data-i18n="loading_txt">Loading...</p></div>
         </div>
 
         <div class="card">
@@ -1624,7 +1624,7 @@ body {
             <button class="btn btn-outline btn-sm" onclick="showSection('debts')" data-i18n="btn_view_plan">View Plan</button>
           </div>
           <div id="dashboard-debt-list">
-            <p style="color:#8892A4;text-align:center;padding:20px;">Loading...</p>
+            <p style="color:#8892A4;text-align:center;padding:20px;" data-i18n="loading_txt">Loading...</p>
           </div>
         </div>
       </div>
@@ -2125,12 +2125,14 @@ body {
 
           <!-- LAUNCH BANNER -->
           <div style="background:linear-gradient(135deg,#ef4444,#dc2626); text-align:center; padding:10px; margin:-1px -1px 20px -1px; border-radius:12px 12px 0 0;">
-            <span style="color:#fff; font-size:12px; font-weight:800; letter-spacing:1px;">🚀 PRECIO DE LANZAMIENTO — SUBE PRONTO</span>
+            <span data-i18n="pricing_launch_banner" style="color:#fff; font-size:12px; font-weight:800; letter-spacing:1px;">🚀 PRECIO DE LANZAMIENTO — SUBE PRONTO</span>
+
           </div>
 
           <!-- SOCIAL PROOF BAR -->
           <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); border-radius:10px; padding:10px 16px; margin-bottom:20px; text-align:center;">
-            <span style="color:#10b981; font-size:12px; font-weight:700;">🌎 Usado por personas en America y Europa para recuperar control de sus finanzas</span>
+            <span data-i18n="pricing_social_proof" style="color:#10b981; font-size:12px; font-weight:700;">🌎 Usado por personas en America y Europa para recuperar control de sus finanzas</span>
+
           </div>
 
           <div style="text-align:center; margin-bottom:24px;">
@@ -2152,17 +2154,17 @@ body {
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div style="font-size:12px; color:#64748b;">⚠️ Solo 5 mensajes IA por dia</div>
-                <div style="font-size:12px; color:#64748b;">⚠️ Maximo 30 transacciones</div>
-                <div style="font-size:12px; color:#64748b;">⚠️ Solo 1 tarjeta</div>
-                <div style="font-size:12px; color:#ef4444;">❌ Sin scanner de recibos</div>
-                <div style="font-size:12px; color:#ef4444;">❌ Sin reportes avanzados</div>
-                <div style="font-size:12px; color:#ef4444;">❌ Sin GPT-4o</div>
-                <div style="font-size:12px; color:#ef4444;">❌ Sin metas financieras</div>
-                <div style="font-size:12px; color:#ef4444;">❌ Sin recomendaciones personalizadas</div>
+                <div style="font-size:12px; color:#64748b;" data-i18n="modal_free_f1">⚠️ Solo 5 mensajes IA por dia</div>
+                <div style="font-size:12px; color:#64748b;" data-i18n="modal_free_f2">⚠️ Maximo 30 transacciones</div>
+                <div style="font-size:12px; color:#64748b;" data-i18n="solo_1_tarjeta">⚠️ Solo 1 tarjeta</div>
+                <div style="font-size:12px; color:#ef4444;" data-i18n="free_no_scanner">❌ Sin scanner de recibos</div>
+                <div style="font-size:12px; color:#ef4444;" data-i18n="modal_free_f5">❌ Sin reportes avanzados</div>
+                <div style="font-size:12px; color:#ef4444;" data-i18n="sin_gpt">❌ Sin GPT-4o</div>
+                <div style="font-size:12px; color:#ef4444;" data-i18n="sin_metas">❌ Sin metas financieras</div>
+                <div style="font-size:12px; color:#ef4444;" data-i18n="sin_recom">❌ Sin recomendaciones personalizadas</div>
               </div>
               <button id="btn-plan-free" disabled style="width:100%; padding:12px; background:#1e293b; border:1px solid #334155; border-radius:10px; color:#475569; font-size:13px; font-weight:600; cursor:not-allowed;">
-                Plan actual — muy limitado
+                <span data-i18n="plan_actual_limitado">Plan actual — muy limitado</span>
               </button>
             </div>
 
@@ -2170,23 +2172,23 @@ body {
             <div style="display:flex; justify-content:center; margin-bottom:8px;">
               <div style="background:#1e293b; border-radius:50px; padding:4px; display:flex; gap:4px; border:1px solid #334155;">
                 <button id="pricing-btn-monthly" onclick="setBilling('monthly')"
-                  style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:#334155; color:#94a3b8; transition:all 0.3s;">
+                  style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:#334155; color:#94a3b8; transition:all 0.3s;" data-i18n="mensual_btn">
                   Mensual
                 </button>
                 <button id="pricing-btn-annual" onclick="setBilling('annual')"
-                  style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; transition:all 0.3s;">
+                  style="padding:8px 20px; border-radius:50px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; transition:all 0.3s;" data-i18n="anual_btn">
                   Anual &nbsp;<span style="background:#ef4444; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:900;">-20%</span>
                 </button>
               </div>
             </div>
 
             <div id="annual-savings-banner" style="text-align:center; margin-bottom:16px; padding:10px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:10px;">
-              <span id="annual-savings-text" style="color:#10b981; font-size:13px; font-weight:700;">🎉 Paga anual y ahorra hasta <strong>$120/año</strong> — 2 meses GRATIS</span>
+              <span id="annual-savings-text" style="color:#10b981; font-size:13px; font-weight:700;" data-i18n="ahorra_anual">🎉 Paga anual y ahorra hasta <strong>$120/año</strong> — 2 meses GRATIS</span>
             </div>
 
             <!-- PERSONAL -->
             <div id="plan-card-personal" style="border:2px solid #334155; border-radius:16px; padding:20px; position:relative;">
-              <div style="position:absolute; top:-10px; right:16px; background:#ef4444; color:#fff; font-size:10px; font-weight:900; padding:3px 10px; border-radius:10px;">PRECIO LANZAMIENTO</div>
+              <div style="position:absolute; top:-10px; right:16px; background:#ef4444; color:#fff; font-size:10px; font-weight:900; padding:3px 10px; border-radius:10px;" data-i18n="precio_lanzamiento">PRECIO LANZAMIENTO</div>
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
                 <div>
                   <div style="font-size:16px; font-weight:800; color:#fff;">⭐ Personal</div>
@@ -2200,31 +2202,31 @@ body {
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div style="font-size:12px; color:#e2e8f0;">✅ 50 mensajes IA por dia</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Transacciones ilimitadas</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Hasta 3 tarjetas</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Scanner de recibos</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Reportes basicos</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="personal_ai_50">✅ 50 mensajes IA por dia</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="feat_unlimited_tx">✅ Transacciones ilimitadas</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="personal_3_cards">✅ Hasta 3 tarjetas</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="modal_pro_f3">✅ Scanner de recibos</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="feat_basic_reports">✅ Reportes basicos</div>
                 <div style="font-size:12px; color:#ef4444;">❌ Sin GPT-4o</div>
               </div>
               <button onclick="startCheckout('personal', currentBilling)"
                 style="width:100%; padding:14px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:10px; color:#000; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(245,158,11,0.3);">
-                🚀 Empezar ahora — Solo <span id="cta-personal">$5.99/mes</span>
+                <span data-i18n="empezar_ahora_cta">🚀 Empezar ahora — Solo</span> <span id="cta-personal">$5.99/mes</span>
               </button>
-              <p style="color:#64748b; font-size:11px; text-align:center; margin-top:6px; margin-bottom:0;">✅ Cancela cuando quieras</p>
+              <p style="color:#64748b; font-size:11px; text-align:center; margin-top:6px; margin-bottom:0;" data-i18n="personal_cancel_note">✅ Cancela cuando quieras</p>
             </div>
 
             <!-- PRO — DESTACADO -->
             <div id="plan-card-pro" style="border:2px solid #f59e0b; border-radius:16px; padding:20px; position:relative; background:linear-gradient(145deg, rgba(245,158,11,0.05), rgba(15,23,42,0.8));">
               <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; font-size:11px; font-weight:900; padding:4px 16px; border-radius:20px; white-space:nowrap;">
-                🔥 MAS POPULAR
+                <span data-i18n="mas_popular">🔥 MAS POPULAR</span>
               </div>
-              <div style="position:absolute; top:-10px; right:16px; background:#ef4444; color:#fff; font-size:10px; font-weight:900; padding:3px 10px; border-radius:10px;">PRECIO LANZAMIENTO</div>
+              <div style="position:absolute; top:-10px; right:16px; background:#ef4444; color:#fff; font-size:10px; font-weight:900; padding:3px 10px; border-radius:10px;" data-i18n="precio_lanzamiento">PRECIO LANZAMIENTO</div>
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; margin-top:8px;">
                 <div>
                   <div style="font-size:16px; font-weight:800; color:#fff;">💎 Pro</div>
                   <div style="display:flex; align-items:baseline; gap:8px;">
-                    <div style="font-size:14px; color:#64748b; text-decoration:line-through;">$19.99/mes</div>
+                    <div style="font-size:14px; color:#64748b; text-decoration:line-through;" data-i18n="pro_original_price">$19.99/mes</div>
                     <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
                       <span id="price-pro">$19.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-pro">/mo</span>
                     </div>
@@ -2233,24 +2235,24 @@ body {
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div style="font-size:12px; color:#e2e8f0;">✅ <strong>IA ilimitada 24/7</strong></div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ <strong>GPT-4o</strong> — la IA mas avanzada</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Transacciones ilimitadas · Hasta 10 tarjetas</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Scanner inteligente de recibos</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Reportes avanzados con insights</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Metas financieras con IA</div>
-                <div style="font-size:12px; color:#10b981;">✅ <strong>Usuarios ahorran cientos al mes en promedio</strong></div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f1">✅ <strong>IA ilimitada 24/7</strong></div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f2">✅ <strong>GPT-4o</strong> — la IA mas avanzada</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f3">✅ Transacciones ilimitadas · Hasta 10 tarjetas</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f4">✅ Scanner inteligente de recibos</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f5_reports">✅ Reportes avanzados con insights</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="pro_f6">✅ Metas financieras con IA</div>
+                <div style="font-size:12px; color:#10b981;" data-i18n="users_save_avg">✅ <strong>Usuarios ahorran cientos al mes en promedio</strong></div>
               </div>
               <button onclick="startCheckout('pro', currentBilling)"
                 style="width:100%; padding:16px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:12px; color:#000; font-size:15px; font-weight:900; cursor:pointer; box-shadow:0 6px 25px rgba(245,158,11,0.4);">
-                ⚡ Quiero controlar mis finanzas — <span id="cta-pro">$11.99/mes</span>
+                <span data-i18n="quiero_controlar">⚡ Quiero controlar mis finanzas — </span><span id="cta-pro">$11.99/mes</span>
               </button>
-              <p id="pro-cancel-note" style="color:#64748b; font-size:11px; text-align:center; margin-top:8px; margin-bottom:0;">✅ Cancela cuando quieras · 30 dias de garantia · Pago 100% seguro</p>
+              <p id="pro-cancel-note" style="color:#64748b; font-size:11px; text-align:center; margin-top:8px; margin-bottom:0;" data-i18n="pro_cancel_note">✅ Cancela cuando quieras · 30 dias de garantia · Pago 100% seguro</p>
             </div>
 
             <!-- BUSINESS -->
             <div id="plan-card-business" style="border:2px solid #334155; border-radius:16px; padding:20px; position:relative;">
-              <div style="position:absolute; top:-10px; right:16px; background:#ef4444; color:#fff; font-size:10px; font-weight:900; padding:3px 10px; border-radius:10px;">PRECIO LANZAMIENTO</div>
+              <div style="position:absolute; top:-10px; right:16px; background:#ef4444; color:#fff; font-size:10px; font-weight:900; padding:3px 10px; border-radius:10px;" data-i18n="precio_lanzamiento">PRECIO LANZAMIENTO</div>
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
                 <div>
                   <div style="font-size:16px; font-weight:800; color:#fff;">🏢 Business</div>
@@ -2264,20 +2266,20 @@ body {
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                <div style="font-size:12px; color:#e2e8f0;">✅ Todo lo de Pro</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Hasta 5 usuarios</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Gestion de equipo</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Reportes empresariales</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Soporte prioritario 24/7</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ API Access para integraciones</div>
-                <div style="font-size:12px; color:#e2e8f0;">✅ Tarjetas y usuarios ilimitados</div>
-                <div style="font-size:12px; color:#10b981;">✅ <strong>ROI garantizado o devolvemos tu dinero</strong></div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="todo_lo_pro">✅ Todo lo de Pro</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f2">✅ Hasta 5 usuarios</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f3">✅ Gestion de equipo</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f4">✅ Reportes empresariales</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f5">✅ Soporte prioritario 24/7</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f6">✅ API Access para integraciones</div>
+                <div style="font-size:12px; color:#e2e8f0;" data-i18n="biz_f7">✅ Tarjetas y usuarios ilimitados</div>
+                <div style="font-size:12px; color:#10b981;" data-i18n="biz_f8">✅ <strong>ROI garantizado o devolvemos tu dinero</strong></div>
               </div>
               <button onclick="startCheckout('business', currentBilling)"
                 style="width:100%; padding:14px; background:linear-gradient(135deg,#6366f1,#4f46e5); border:none; border-radius:10px; color:#fff; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(99,102,241,0.3);">
-                🏢 Potencia tu negocio — <span id="cta-business">$29.99/mes</span>
+                <span data-i18n="potencia_negocio">🏢 Potencia tu negocio — </span><span id="cta-business">$29.99/mes</span>
               </button>
-              <p style="color:#64748b; font-size:11px; text-align:center; margin-top:6px; margin-bottom:0;">✅ Cancela cuando quieras · 30 dias de garantia · Pago 100% seguro</p>
+              <p style="color:#64748b; font-size:11px; text-align:center; margin-top:6px; margin-bottom:0;" data-i18n="pro_cancel_note">✅ Cancela cuando quieras · 30 dias de garantia · Pago 100% seguro</p>
             </div>
 
           </div>
@@ -2285,19 +2287,19 @@ body {
           <!-- TESTIMONIALS -->
           <div style="margin-top:24px;">
             <div style="text-align:center; margin-bottom:12px;">
-              <span style="color:#64748b; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Lo que dicen nuestros usuarios</span>
+              <span style="color:#64748b; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" data-i18n="testimonials_title">Lo que dicen nuestros usuarios</span>
             </div>
             <div style="display:flex; flex-direction:column; gap:10px;">
               <div style="background:rgba(255,255,255,0.03); border:1px solid #1e293b; border-radius:12px; padding:14px;">
-                <p style="color:#e2e8f0; font-size:12px; margin:0 0 8px 0; line-height:1.6;"><em>"En la primera semana ya tenia claro en que estaba gastando mi dinero. Nunca habia visto mis finanzas tan organizadas."</em></p>
+                <p style="color:#e2e8f0; font-size:12px; margin:0 0 8px 0; line-height:1.6;" data-i18n="testimonio_1"><em>"En la primera semana ya tenia claro en que estaba gastando mi dinero. Nunca habia visto mis finanzas tan organizadas."</em></p>
                 <span style="color:#10b981; font-size:11px; font-weight:700;">— M.G. · Miami, FL ⭐⭐⭐⭐⭐</span>
               </div>
               <div style="background:rgba(255,255,255,0.03); border:1px solid #1e293b; border-radius:12px; padding:14px;">
-                <p style="color:#e2e8f0; font-size:12px; margin:0 0 8px 0; line-height:1.6;"><em>"Llevo dos semanas usando FinanceAI y por fin entiendo mis gastos. La IA explica todo de forma muy clara."</em></p>
+                <p style="color:#e2e8f0; font-size:12px; margin:0 0 8px 0; line-height:1.6;" data-i18n="testimonial2_quote"><em>"Llevo dos semanas usando FinanceAI y por fin entiendo mis gastos. La IA explica todo de forma muy clara."</em></p>
                 <span style="color:#10b981; font-size:11px; font-weight:700;">— C.R. · Madrid, ES ⭐⭐⭐⭐⭐</span>
               </div>
               <div style="background:rgba(255,255,255,0.03); border:1px solid #1e293b; border-radius:12px; padding:14px;">
-                <p style="color:#e2e8f0; font-size:12px; margin:0 0 8px 0; line-height:1.6;"><em>"Uso el plan Business para mi empresa. Los reportes son increibles y el soporte responde rapidisimo."</em></p>
+                <p style="color:#e2e8f0; font-size:12px; margin:0 0 8px 0; line-height:1.6;" data-i18n="testimonial_quote"><em>"Uso el plan Business para mi empresa. Los reportes son increibles y el soporte responde rapidisimo."</em></p>
                 <span style="color:#10b981; font-size:11px; font-weight:700;">— A.M. · Bogota, CO ⭐⭐⭐⭐⭐</span>
               </div>
             </div>
@@ -2306,20 +2308,20 @@ body {
           <!-- FAQ -->
           <div style="margin-top:24px;">
             <div style="text-align:center; margin-bottom:12px;">
-              <span style="color:#64748b; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Preguntas frecuentes</span>
+              <span style="color:#64748b; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" data-i18n="faq_title">Preguntas frecuentes</span>
             </div>
             <div style="display:flex; flex-direction:column; gap:8px;">
               <details style="background:rgba(255,255,255,0.03); border:1px solid #1e293b; border-radius:10px; padding:14px;">
-                <summary style="color:#e2e8f0; font-size:13px; font-weight:600; cursor:pointer;">¿Puedo cancelar en cualquier momento?</summary>
-                <p style="color:#94a3b8; font-size:12px; margin:10px 0 0 0; line-height:1.6;">Si, sin preguntas y sin penalizaciones. Cancelas con un clic desde Settings. Tu acceso continua hasta el fin del periodo pagado.</p>
+                <summary style="color:#e2e8f0; font-size:13px; font-weight:600; cursor:pointer;" data-i18n="faq_cancel_q">¿Puedo cancelar en cualquier momento?</summary>
+                <p style="color:#94a3b8; font-size:12px; margin:10px 0 0 0; line-height:1.6;" data-i18n="faq_cancel_a">Si, sin preguntas y sin penalizaciones. Cancelas con un clic desde Settings. Tu acceso continua hasta el fin del periodo pagado.</p>
               </details>
               <details style="background:rgba(255,255,255,0.03); border:1px solid #1e293b; border-radius:10px; padding:14px;">
-                <summary style="color:#e2e8f0; font-size:13px; font-weight:600; cursor:pointer;">¿Es seguro conectar mis datos financieros?</summary>
-                <p style="color:#94a3b8; font-size:12px; margin:10px 0 0 0; line-height:1.6;">Tus datos se encriptan con AES-256 y nunca se comparten con terceros. Usamos la misma tecnologia que los bancos mas grandes del mundo.</p>
+                <summary style="color:#e2e8f0; font-size:13px; font-weight:600; cursor:pointer;" data-i18n="faq_security_q">¿Es seguro conectar mis datos financieros?</summary>
+                <p style="color:#94a3b8; font-size:12px; margin:10px 0 0 0; line-height:1.6;" data-i18n="faq_security_a">Tus datos se encriptan con AES-256 y nunca se comparten con terceros. Usamos la misma tecnologia que los bancos mas grandes del mundo.</p>
               </details>
               <details style="background:rgba(255,255,255,0.03); border:1px solid #1e293b; border-radius:10px; padding:14px;">
-                <summary style="color:#e2e8f0; font-size:13px; font-weight:600; cursor:pointer;">¿Que pasa cuando suba el precio de lanzamiento?</summary>
-                <p style="color:#94a3b8; font-size:12px; margin:10px 0 0 0; line-height:1.6;">Si te suscribes ahora, mantienes el precio de lanzamiento mientras tu suscripcion este activa. El aumento solo aplica a nuevos usuarios.</p>
+                <summary style="color:#e2e8f0; font-size:13px; font-weight:600; cursor:pointer;" data-i18n="faq_price_q">¿Que pasa cuando suba el precio de lanzamiento?</summary>
+                <p style="color:#94a3b8; font-size:12px; margin:10px 0 0 0; line-height:1.6;" data-i18n="launch_price_note">Si te suscribes ahora, mantienes el precio de lanzamiento mientras tu suscripcion este activa. El aumento solo aplica a nuevos usuarios.</p>
               </details>
             </div>
           </div>
@@ -2327,8 +2329,8 @@ body {
           <!-- GUARANTEE -->
           <div style="margin-top:20px; padding:16px; background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.2); border-radius:12px; text-align:center;">
             <div style="font-size:28px; margin-bottom:4px;">🛡️</div>
-            <div style="color:#10b981; font-size:13px; font-weight:800; margin-bottom:4px;">Garantia de 14 dias</div>
-            <p style="color:#64748b; font-size:12px; margin:0; line-height:1.5;">Si no ves resultados en 14 dias, te devolvemos el 100% de tu dinero. Sin preguntas.</p>
+            <div style="color:#10b981; font-size:13px; font-weight:800; margin-bottom:4px;" data-i18n="garantia_14_title">Garantia de 14 dias</div>
+            <p style="color:#64748b; font-size:12px; margin:0; line-height:1.5;" data-i18n="guarantee_14_text">Si no ves resultados en 14 dias, te devolvemos el 100% de tu dinero. Sin preguntas.</p>
           </div>
 
                     <!-- VIP Code -->
@@ -2368,13 +2370,13 @@ body {
 
         <!-- SUBSCRIPTION MANAGEMENT CARD -->
         <div id="subscription-management-card" class="card" style="border-color:rgba(99,102,241,0.3);">
-          <div class="card-title" style="margin-bottom:20px;" data-i18n="my_subscription">💳 Mi Suscripción</div>
+          <div class="card-title" style="margin-bottom:20px;">💳 Mi Suscripción</div>
 
           <!-- Plan activo -->
           <div id="sub-mgmt-active" style="display:none;">
             <div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:16px;margin-bottom:16px;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <span style="color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Plan Activo</span>
+                <span style="color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;" data-i18n="plan_activo_label">Plan Activo</span>
                 <span id="sub-mgmt-badge" style="background:rgba(16,185,129,0.2);color:#10b981;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">✅ ACTIVO</span>
               </div>
               <div id="sub-mgmt-plan-name" style="font-size:20px;font-weight:800;color:#fff;margin-bottom:4px;">Pro Monthly</div>
@@ -2386,10 +2388,10 @@ body {
               style="width:100%;padding:12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;"
               onmouseover="this.style.background='rgba(239,68,68,0.2)'"
               onmouseout="this.style.background='rgba(239,68,68,0.1)'">
-              <span data-i18n="btn_cancel_sub">🚫 Cancelar Suscripción</span>
+              <span data-i18n="cancel_sub_btn">🚫 Cancelar Suscripción</span>
             </button>
             <p style="color:#475569;font-size:11px;text-align:center;margin-top:8px;">
-              Tu acceso continúa hasta el fin del periodo pagado
+              <span data-i18n="acceso_continua">Tu acceso continúa hasta el fin del periodo pagado</span>
             </p>
           </div>
 
@@ -2397,17 +2399,17 @@ body {
           <div id="sub-mgmt-inactive" style="display:none;">
             <div style="text-align:center;padding:20px 0;">
               <div style="font-size:32px;margin-bottom:8px;">🆓</div>
-              <div style="color:#94a3b8;font-size:14px;margin-bottom:16px;">Estás en el plan <strong>Free</strong></div>
+              <div style="color:#94a3b8;font-size:14px;margin-bottom:16px;" data-i18n="estas_free">Estás en el plan <strong>Free</strong></div>
               <button onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})"
                 style="padding:12px 24px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">
-                ⚡ Upgrade a Pro
+                <span data-i18n="upgrade_pro_btn">⚡ Upgrade a Pro</span>
               </button>
             </div>
           </div>
 
           <!-- Loading -->
           <div id="sub-mgmt-loading" style="text-align:center;padding:20px;color:#64748b;font-size:13px;">
-            Cargando info de suscripción...
+            <span data-i18n="cargando_sub">Cargando info de suscripción...</span>
           </div>
         </div>
 
@@ -2571,7 +2573,7 @@ body {
                     <span id="vip-personal-name" style="color:#fff; font-weight:bold; font-size:15px;" data-i18n="vip_personal_name">⚡ VIP Personal</span>
                     <span id="vip-personal-badge" style="background:#1e3a5f; color:#60a5fa; font-size:10px; padding:2px 8px; border-radius:20px; margin-left:8px;" data-i18n="vip_personal_badge">Popular</span>
                   </div>
-                  <span style="color:#f59e0b; font-weight:bold; font-size:18px;">$9.99<span style="font-size:11px; color:#94a3b8;">/mes</span></span>
+                  <span style="color:#f59e0b; font-weight:bold; font-size:18px;">$9.99<span style="font-size:11px; color:#94a3b8;" data-i18n="por_mes">/mes</span></span>
                 </div>
                 <ul style="color:#94a3b8; font-size:12px; padding-left:16px; margin:0 0 12px 0; line-height:1.8;">
                   <li id="vip-personal-f1" data-i18n="vip_personal_f1">✅ Mensajes IA ilimitados</li>
@@ -2590,7 +2592,7 @@ body {
               <div style="background:#0f172a; border:1px solid #334155; border-radius:12px; padding:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <span id="vip-familia-name" style="color:#fff; font-weight:bold; font-size:15px;" data-i18n="vip_familia_name">👨‍👩‍👧 VIP Familia</span>
-                  <span style="color:#f59e0b; font-weight:bold; font-size:18px;">$19.99<span style="font-size:11px; color:#94a3b8;">/mes</span></span>
+                  <span style="color:#f59e0b; font-weight:bold; font-size:18px;">$19.99<span style="font-size:11px; color:#94a3b8;" data-i18n="por_mes">/mes</span></span>
                 </div>
                 <ul style="color:#94a3b8; font-size:12px; padding-left:16px; margin:0 0 12px 0; line-height:1.8;">
                   <li id="vip-familia-f1" data-i18n="vip_familia_f1">✅ Todo lo de Personal</li>
