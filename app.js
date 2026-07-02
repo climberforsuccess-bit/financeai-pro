@@ -4262,3 +4262,67 @@ window.addEventListener('langChanged', async () => {
     if (key && typeof t === 'function') el.innerHTML = t(key);
   });
 });
+
+// ============================================================
+// PRO BADGE + SECTION LOCK
+// ============================================================
+
+const PRO_SECTIONS = ['reports', 'investments', 'ai-assistant'];
+
+function applyProAccess() {
+  const plan = STATE.settings.plan || 'free';
+  const isPro = ['pro', 'personal', 'business'].includes(plan);
+
+  // 1) Badge en header
+  let badge = document.getElementById('pro-plan-badge');
+  if (!badge) {
+    const userInfo = document.querySelector('.user-info') || document.querySelector('.sidebar-user');
+    if (userInfo) {
+      badge = document.createElement('span');
+      badge.id = 'pro-plan-badge';
+      badge.style.cssText = `
+        display:inline-block;
+        background: linear-gradient(135deg,#f59e0b,#f97316);
+        color:#fff;
+        font-size:10px;
+        font-weight:700;
+        padding:2px 8px;
+        border-radius:20px;
+        margin-left:6px;
+        letter-spacing:0.5px;
+        text-transform:uppercase;
+        vertical-align:middle;
+      `;
+      userInfo.appendChild(badge);
+    }
+  }
+  if (badge) badge.textContent = isPro ? '⚡ PRO' : '🆓 FREE';
+
+  // 2) Lock nav items para free users
+  PRO_SECTIONS.forEach(sectionId => {
+    const navItem = document.querySelector(`[onclick*="showSection('${sectionId}')"]`);
+    if (!navItem) return;
+
+    // Remover lock previo
+    const oldLock = navItem.querySelector('.nav-lock-icon');
+    if (oldLock) oldLock.remove();
+
+    if (!isPro) {
+      const lock = document.createElement('span');
+      lock.className = 'nav-lock-icon';
+      lock.textContent = ' 🔒';
+      lock.style.cssText = 'font-size:11px; opacity:0.7;';
+      navItem.appendChild(lock);
+    }
+  });
+}
+
+function checkProAccess(sectionId) {
+  const plan = STATE.settings.plan || 'free';
+  const isPro = ['pro', 'personal', 'business'].includes(plan);
+  if (!isPro && PRO_SECTIONS.includes(sectionId)) {
+    showUpgradeModal(sectionId);
+    return false;
+  }
+  return true;
+}
