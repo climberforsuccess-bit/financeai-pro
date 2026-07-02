@@ -585,6 +585,8 @@ const TRANSLATIONS = {
     notif_label_2:       'Unusual expenses',
     notif_label_3:       'Weekly summary',
     current_plan_label:   '✨ Current plan: FREE',
+    my_subscription:        '💳 My Subscription',
+    btn_cancel_sub:         '🚫 Cancel Subscription',
     pricing_tagline:      'Invest less than a coffee a day and recover hundreds a month',
     pricing_launch_banner:   '🚀 LAUNCH PRICE — GOING UP SOON',
 pricing_social_proof:    '🌎 Used by people in America and Europe to recover control of their finances',
@@ -1056,6 +1058,8 @@ pricing_social_proof:    '🌎 Usado por personas en America y Europa para recup
 
     notif_label_3:       'Resumen semanal',
     current_plan_label:   '✨ Tu plan actual: FREE',
+    my_subscription:        '💳 Mi Suscripción',
+    btn_cancel_sub:         '🚫 Cancelar Suscripción',
     pricing_tagline:      'Invierte menos que un café al día y recupera cientos al mes',
     plan_free_name:       '🆓 Free',
     plan_free_period:     '/mes',
