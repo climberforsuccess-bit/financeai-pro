@@ -3042,6 +3042,13 @@ function updateCurrentPlanBadge() {
 
   // Badge superior
   const badge = document.getElementById('current-plan-badge');
+  // Actualizar también el label de plan en sidebar
+  const planDisplay = document.getElementById('user-display-plan');
+  if (planDisplay && isPro) {
+    planDisplay.style.color = '#f59e0b';
+    planDisplay.style.fontWeight = '700';
+  }
+
   if (badge) {
     if (plan === 'free') {
       badge.textContent = t('current_plan_badge') + ' ' + t('plan_free_label');
@@ -4276,7 +4283,7 @@ function applyProAccess() {
   // 1) Badge en header
   let badge = document.getElementById('pro-plan-badge');
   if (!badge) {
-    const userInfo = document.querySelector('.user-info') || document.querySelector('.sidebar-user');
+    const userInfo = document.querySelector('.user-info');
     if (userInfo) {
       badge = document.createElement('span');
       badge.id = 'pro-plan-badge';
@@ -4296,7 +4303,12 @@ function applyProAccess() {
       userInfo.appendChild(badge);
     }
   }
-  if (badge) badge.textContent = isPro ? '⚡ PRO' : '🆓 FREE';
+  if (badge) {
+    badge.textContent = isPro ? '⚡ PRO' : '🆓 FREE';
+    badge.style.background = isPro
+      ? 'linear-gradient(135deg,#f59e0b,#f97316)'
+      : 'linear-gradient(135deg,#64748b,#475569)';
+  }
 
   // 2) Lock nav items para free users
   PRO_SECTIONS.forEach(sectionId => {
