@@ -1073,7 +1073,40 @@ body {
 }
 </style>
 </head>
-<body>
+<body style="padding-top: 52px;">
+
+<!-- FOUNDER PRICING BANNER -->
+<div id="founder-banner" style="background: linear-gradient(135deg, #f59e0b, #ef4444); padding: 12px 20px; text-align: center; position: fixed; top: 0; left: 0; right: 0; z-index: 99999; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+  <p style="color: white; font-weight: 700; font-size: 15px; margin: 0;">
+    🔒 Founder's Price — Ends in: 
+    <span id="countdown-timer" style="font-size: 18px; letter-spacing: 1px;">loading...</span>
+    &nbsp;·&nbsp; Price increases on <strong>September 30, 2026</strong>
+  </p>
+</div>
+
+<script>
+(function() {
+  const deadline = new Date("2026-09-30T23:59:59");
+  function updateCountdown() {
+    const now = new Date();
+    const diff = deadline - now;
+    if (diff <= 0) {
+      document.getElementById("countdown-timer").textContent = "EXPIRED";
+      return;
+    }
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+    document.getElementById("countdown-timer").textContent = 
+      days + "d " + String(hours).padStart(2,"0") + "h " + 
+      String(mins).padStart(2,"0") + "m " + String(secs).padStart(2,"0") + "s";
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+})();
+</script>
+
 
 <!-- ============ NOTIFICATION ============ -->
 <div class="notification" id="notification">
@@ -1238,7 +1271,7 @@ body {
         <div class="price-name">💎 PRO</div>
         <div class="price-amount"><span id="landing-price-pro">$15.99</span><span>/mes</span></div>
         <div id="landing-billed-pro" style="font-size:11px; color:#10b981; font-weight:700; margin-top:-6px; margin-bottom:4px; display:none;" data-i18n="billed_annually">Billed annually</div>
-        <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-pro" data-i18n="landing_original_pro">Valor real $39.99/mes</div>
+        <div style="font-size:11px; color:#64748b; text-decoration:line-through; margin-top:-8px; margin-bottom:8px;" id="landing-original-pro" data-i18n="landing_original_pro">Valor real $19.99/mes</div>
         <ul class="price-features">
           <li data-i18n="feat_unlimited_ai">✅ IA ilimitada 24/7</li>
           <li data-i18n="feat_gpt4o">✅ GPT-4o — la más avanzada</li>
@@ -1382,9 +1415,9 @@ body {
           <label for="reg-plan" id="lbl-reg-plan" data-i18n="lbl_plan">Plan</label>
           <select id="reg-plan">
             <option value="free" data-i18n="plan_free_option">Free — $0/mes</option>
-            <option value="personal" data-i18n="plan_personal_option">Personal — $9.99/mes</option>
-            <option value="pro" data-i18n="plan_pro_option">Pro — $19.99/mes</option>
-            <option value="business" data-i18n="plan_business_option">Business — $49.99/mes</option>
+            <option value="personal" data-i18n="plan_personal_option">Personal — $7.99/mes</option>
+            <option value="pro" data-i18n="plan_pro_option">Pro — $15.99/mes</option>
+            <option value="business" data-i18n="plan_business_option">Business — $39.99/mes</option>
           </select>
         </div>
         <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;">
@@ -2140,7 +2173,7 @@ body {
                 <div>
                   <div style="font-size:16px; font-weight:800; color:#fff;">⭐ Personal</div>
                   <div style="display:flex; align-items:baseline; gap:8px;">
-                    <div style="font-size:14px; color:#64748b; text-decoration:line-through;">$14.99</div>
+                    <div style="font-size:14px; color:#64748b; text-decoration:line-through;">$9.99</div>
                     <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
                       <span id="price-personal">$9.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-personal">/mo</span>
                     </div>
@@ -2158,7 +2191,7 @@ body {
               </div>
               <button onclick="startCheckout('personal', currentBilling)"
                 style="width:100%; padding:14px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:10px; color:#000; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(245,158,11,0.3);">
-                🚀 Empezar ahora — Solo <span id="cta-personal">$9.99/mes</span>
+                🚀 Empezar ahora — Solo <span id="cta-personal">$5.99/mes</span>
               </button>
               <p style="color:#64748b; font-size:11px; text-align:center; margin-top:6px; margin-bottom:0;">✅ Cancela cuando quieras</p>
             </div>
@@ -2173,7 +2206,7 @@ body {
                 <div>
                   <div style="font-size:16px; font-weight:800; color:#fff;">💎 Pro</div>
                   <div style="display:flex; align-items:baseline; gap:8px;">
-                    <div style="font-size:14px; color:#64748b; text-decoration:line-through;">$27.99</div>
+                    <div style="font-size:14px; color:#64748b; text-decoration:line-through;">$19.99/mes</div>
                     <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
                       <span id="price-pro">$19.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-pro">/mo</span>
                     </div>
@@ -2192,7 +2225,7 @@ body {
               </div>
               <button onclick="startCheckout('pro', currentBilling)"
                 style="width:100%; padding:16px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:12px; color:#000; font-size:15px; font-weight:900; cursor:pointer; box-shadow:0 6px 25px rgba(245,158,11,0.4);">
-                ⚡ Quiero controlar mis finanzas — <span id="cta-pro">$19.99/mes</span>
+                ⚡ Quiero controlar mis finanzas — <span id="cta-pro">$11.99/mes</span>
               </button>
               <p id="pro-cancel-note" style="color:#64748b; font-size:11px; text-align:center; margin-top:8px; margin-bottom:0;">✅ Cancela cuando quieras · 30 dias de garantia · Pago 100% seguro</p>
             </div>
@@ -2204,7 +2237,7 @@ body {
                 <div>
                   <div style="font-size:16px; font-weight:800; color:#fff;">🏢 Business</div>
                   <div style="display:flex; align-items:baseline; gap:8px;">
-                    <div style="font-size:14px; color:#64748b; text-decoration:line-through;">$69.99</div>
+                    <div style="font-size:14px; color:#64748b; text-decoration:line-through;">$49.99</div>
                     <div style="font-size:28px; font-weight:900; color:#f59e0b; line-height:1.1;">
                       <span id="price-business">$49.99</span><span style="font-size:13px; color:var(--gray); font-weight:400;" id="period-business">/mo</span>
                     </div>
@@ -2224,7 +2257,7 @@ body {
               </div>
               <button onclick="startCheckout('business', currentBilling)"
                 style="width:100%; padding:14px; background:linear-gradient(135deg,#6366f1,#4f46e5); border:none; border-radius:10px; color:#fff; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(99,102,241,0.3);">
-                🏢 Potencia tu negocio — <span id="cta-business">$49.99/mes</span>
+                🏢 Potencia tu negocio — <span id="cta-business">$29.99/mes</span>
               </button>
               <p style="color:#64748b; font-size:11px; text-align:center; margin-top:6px; margin-bottom:0;">✅ Cancela cuando quieras · 30 dias de garantia · Pago 100% seguro</p>
             </div>
@@ -2238,11 +2271,11 @@ body {
             </div>
             <div style="display:flex; flex-direction:column; gap:10px;">
               <div style="background:rgba(255,255,255,0.03); border:1px solid #1e293b; border-radius:12px; padding:14px;">
-                <p style="color:#e2e8f0; font-size:12px; margin:0 0 8px 0; line-height:1.6;"><em>"Recupere mas de $180 el primer mes detectando suscripciones olvidadas. No puedo creer que antes no sabia en que gastaba mi dinero."</em></p>
+                <p style="color:#e2e8f0; font-size:12px; margin:0 0 8px 0; line-height:1.6;"><em>"En la primera semana ya tenia claro en que estaba gastando mi dinero. Nunca habia visto mis finanzas tan organizadas."</em></p>
                 <span style="color:#10b981; font-size:11px; font-weight:700;">— M.G. · Miami, FL ⭐⭐⭐⭐⭐</span>
               </div>
               <div style="background:rgba(255,255,255,0.03); border:1px solid #1e293b; border-radius:12px; padding:14px;">
-                <p style="color:#e2e8f0; font-size:12px; margin:0 0 8px 0; line-height:1.6;"><em>"La IA me ayudo a crear un plan para salir de mis deudas en 8 meses. Llevo 3 meses y voy adelantado."</em></p>
+                <p style="color:#e2e8f0; font-size:12px; margin:0 0 8px 0; line-height:1.6;"><em>"Llevo dos semanas usando FinanceAI y por fin entiendo mis gastos. La IA explica todo de forma muy clara."</em></p>
                 <span style="color:#10b981; font-size:11px; font-weight:700;">— C.R. · Madrid, ES ⭐⭐⭐⭐⭐</span>
               </div>
               <div style="background:rgba(255,255,255,0.03); border:1px solid #1e293b; border-radius:12px; padding:14px;">
@@ -2311,6 +2344,52 @@ body {
               <span id="notif-label-4" style="font-size:14px;" data-i18n="notif_label_4">Recordatorio de pagos</span>
               <input type="checkbox" id="notif-reminders" name="notif-reminders" checked style="accent-color:var(--accent);width:18px;height:18px;">
             </div>
+          </div>
+        </div>
+
+
+        <!-- SUBSCRIPTION MANAGEMENT CARD -->
+        <div id="subscription-management-card" class="card" style="border-color:rgba(99,102,241,0.3);">
+          <div class="card-title" style="margin-bottom:20px;">💳 Mi Suscripción</div>
+
+          <!-- Plan activo -->
+          <div id="sub-mgmt-active" style="display:none;">
+            <div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:16px;margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span style="color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Plan Activo</span>
+                <span id="sub-mgmt-badge" style="background:rgba(16,185,129,0.2);color:#10b981;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">✅ ACTIVO</span>
+              </div>
+              <div id="sub-mgmt-plan-name" style="font-size:20px;font-weight:800;color:#fff;margin-bottom:4px;">Pro Monthly</div>
+              <div id="sub-mgmt-renewal" style="font-size:12px;color:#64748b;"></div>
+            </div>
+
+            <!-- Botón cancelar -->
+            <button onclick="confirmCancelSubscription()" 
+              style="width:100%;padding:12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;"
+              onmouseover="this.style.background='rgba(239,68,68,0.2)'"
+              onmouseout="this.style.background='rgba(239,68,68,0.1)'">
+              🚫 Cancelar Suscripción
+            </button>
+            <p style="color:#475569;font-size:11px;text-align:center;margin-top:8px;">
+              Tu acceso continúa hasta el fin del periodo pagado
+            </p>
+          </div>
+
+          <!-- Sin suscripción activa -->
+          <div id="sub-mgmt-inactive" style="display:none;">
+            <div style="text-align:center;padding:20px 0;">
+              <div style="font-size:32px;margin-bottom:8px;">🆓</div>
+              <div style="color:#94a3b8;font-size:14px;margin-bottom:16px;">Estás en el plan <strong>Free</strong></div>
+              <button onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})"
+                style="padding:12px 24px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">
+                ⚡ Upgrade a Pro
+              </button>
+            </div>
+          </div>
+
+          <!-- Loading -->
+          <div id="sub-mgmt-loading" style="text-align:center;padding:20px;color:#64748b;font-size:13px;">
+            Cargando info de suscripción...
           </div>
         </div>
 

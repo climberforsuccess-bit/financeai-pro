@@ -2,7 +2,32 @@
 // Climberforsuccess LLC
 // ============================================
 
-'use strict';
+'use strict'
+
+// FOUNDER PRICING - Updated automatically
+const FOUNDER_PRICES = {
+  personal: {
+    monthly: 7.99,
+    monthly_original: 9.99,
+    annual: 5.99,
+    annual_original: 7.99
+  },
+  pro: {
+    monthly: 15.99,
+    monthly_original: 19.99,
+    annual: 11.99,
+    annual_original: 15.99
+  },
+  business: {
+    monthly: 39.99,
+    monthly_original: 49.99,
+    annual: 29.99,
+    annual_original: 39.99
+  }
+};
+const FOUNDER_DEADLINE = "September 30, 2026";
+const FOUNDER_DEADLINE_ISO = "2026-09-30T23:59:59";
+;
 
 // ============================================================
 // PLAN LIMITS — restricciones por plan
@@ -118,8 +143,8 @@ function checkCardLimit(ownerType) {
 // ── LANDING BILLING TOGGLE ──────────────────────────────────────────
 var currentLandingBilling = 'annual';
 var landingPrices = {
-  monthly: { personal: '$9.99',  pro: '$19.99', business: '$49.99' },
-  annual:  { personal: '$7.99',  pro: '$15.99', business: '$39.99' }
+  monthly: { personal: '$5.99',  pro: '$11.99', business: '$29.99' },
+  annual:  { personal: '$5.99',  pro: '$11.99', business: '$29.99' }
 };
 
 function setLandingBilling(type) {
@@ -741,7 +766,7 @@ function showTrialExpiredModal() {
         color: white; font-size: 16px; font-weight: 800; cursor: pointer;
         margin-bottom: 12px; letter-spacing: 0.5px;
       ">
-        🚀 Activar FinanceAI Pro — desde $9.99/mes
+        🚀 Activar FinanceAI Pro — desde $7.99/mes
       </button>
       <p style="color: #64748b; font-size: 11px;">
         💳 Cancela cuando quieras · Sin compromisos · 100% seguro
@@ -2300,7 +2325,7 @@ function showUpgradePrompt() {
       <div style="margin-bottom: 20px;">
         <p style="color:#64748b; font-size:12px; text-decoration: line-through; margin-bottom:2px;">${t('upgrade_real_value')}</p>
         <p style="color:#94a3b8; font-size:12px; margin-bottom:4px;">${t('upgrade_today_get')}</p>
-        <p style="color: #f59e0b; font-size: 38px; font-weight: 900; margin: 0; line-height:1;">$9.99<span style="font-size:15px; color:#94a3b8; font-weight:400;">/mes</span></p>
+        <p style="color: #f59e0b; font-size: 38px; font-weight: 900; margin: 0; line-height:1;">$7.99<span style="font-size:15px; color:#94a3b8; font-weight:400;">/mes</span></p>
         <p style="color:#10b981; font-size:12px; margin-top:4px;">${t('upgrade_cancel_anytime')}</p>
       </div>
 
@@ -2546,9 +2571,146 @@ function adminLoadStats() {
 }
 
 // ── Render Settings ─────────────────────────────────────────
+
+// ── Subscription Management ─────────────────────────────────
+
+async function loadSubscriptionStatus() {
+  const active  = document.getElementById('sub-mgmt-active');
+  const inactive = document.getElementById('sub-mgmt-inactive');
+  const loading  = document.getElementById('sub-mgmt-loading');
+
+  if (!active || !inactive || !loading) return;
+
+  // Show loading
+  loading.style.display = 'block';
+  active.style.display  = 'none';
+  inactive.style.display = 'none';
+
+  try {
+    if (STATE.isVIP && STATE.vipExpiry) {
+      // Has active subscription
+      loading.style.display  = 'none';
+      active.style.display   = 'block';
+
+      const planName = document.getElementById('sub-mgmt-plan-name');
+      const renewal  = document.getElementById('sub-mgmt-renewal');
+
+      if (planName) planName.textContent = STATE.vipPlan
+        ? `Pro ${STATE.vipPlan.charAt(0).toUpperCase() + STATE.vipPlan.slice(1)}`
+        : 'Pro';
+
+      if (renewal && STATE.vipExpiry) {
+        const expiry = new Date(STATE.vipExpiry);
+        const days   = Math.ceil((expiry - new Date()) / (1000*60*60*24));
+        renewal.textContent = days > 0
+          ? `🔄 Renueva el ${expiry.toLocaleDateString()} (en ${days} días)`
+          : `⚠️ Expiró el ${expiry.toLocaleDateString()}`;
+      }
+
+    } else {
+      // No active subscription
+      loading.style.display   = 'none';
+      inactive.style.display  = 'block';
+    }
+  } catch(e) {
+    loading.style.display = 'none';
+    inactive.style.display = 'block';
+  }
+}
+
+async function confirmCancelSubscription() {
+  // Confirmation modal
+  const confirmed = await showCancelConfirmModal();
+  if (!confirmed) return;
+
+  const btn = document.querySelector('[onclick="confirmCancelSubscription()"]');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Procesando...';
+  }
+
+  try {
+    const { data: { session } } = await window.supabase.auth.getSession();
+    if (!session) throw new Error('No session');
+
+    const res = await fetch('/api/cancel-subscription', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || 'Error al cancelar');
+
+    showToast('✅ Suscripción cancelada. Tu acceso continúa hasta ' + new Date(data.accessUntil).toLocaleDateString(), 'success', 6000);
+
+    // Reload status
+    setTimeout(() => loadSubscriptionStatus(), 1500);
+
+  } catch(e) {
+    console.error('Cancel error:', e);
+    showToast('❌ Error: ' + e.message, 'error');
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '🚫 Cancelar Suscripción';
+    }
+  }
+}
+
+function showCancelConfirmModal() {
+  return new Promise((resolve) => {
+    // Remove existing
+    const existing = document.getElementById('cancel-confirm-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'cancel-confirm-modal';
+    modal.style.cssText = `
+      position:fixed;inset:0;background:rgba(0,0,0,0.8);
+      display:flex;align-items:center;justify-content:center;
+      z-index:9999;padding:20px;
+    `;
+
+    modal.innerHTML = `
+      <div style="background:#1e293b;border:1px solid #334155;border-radius:20px;padding:32px;max-width:400px;width:100%;text-align:center;">
+        <div style="font-size:48px;margin-bottom:16px;">😢</div>
+        <h3 style="color:#fff;font-size:18px;font-weight:800;margin-bottom:8px;">¿Seguro que quieres cancelar?</h3>
+        <p style="color:#94a3b8;font-size:13px;line-height:1.6;margin-bottom:8px;">
+          Perderás acceso a todas las funciones Pro al final de tu periodo actual.
+        </p>
+        <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px;margin-bottom:24px;">
+          <div style="color:#ef4444;font-size:12px;font-weight:600;margin-bottom:6px;">❌ Perderás acceso a:</div>
+          <div style="color:#94a3b8;font-size:11px;line-height:1.8;">
+            IA ilimitada · Reportes avanzados<br>
+            Scanner de recibos · Metas financieras<br>
+            Recomendaciones personalizadas
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <button onclick="document.getElementById('cancel-confirm-modal').remove(); window._cancelResolve(false);"
+            style="flex:1;padding:12px;background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.4);border-radius:10px;color:#a5b4fc;font-size:13px;font-weight:700;cursor:pointer;">
+            👈 Mantener Plan
+          </button>
+          <button onclick="document.getElementById('cancel-confirm-modal').remove(); window._cancelResolve(true);"
+            style="flex:1;padding:12px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:13px;font-weight:600;cursor:pointer;">
+            Sí, cancelar
+          </button>
+        </div>
+      </div>
+    `;
+
+    window._cancelResolve = resolve;
+    document.body.appendChild(modal);
+  });
+}
+
 function renderSettings() {
   updateVIPStatus();
   updateAICounter();
+  loadSubscriptionStatus();
 
   // Mostrar email del usuario
   const emailEl = document.getElementById('settings-user-email');
@@ -2698,14 +2860,14 @@ window.addEventListener('resize', initMobileNav);
 // ── PRICES MAP (sincronizado con payment.js) ─────────────────
 const PRICES = {
   monthly: {
-    personal: 9.99,
-    pro:      19.99,
-    business: 49.99
+    personal: 5.99,
+    pro:      11.99,
+    business: 29.99
   },
   annual: {
-    personal: 7.99,
-    pro:      15.99,
-    business: 39.99
+    personal: 5.99,
+    pro:      11.99,
+    business: 29.99
   }
 };
 
@@ -2842,10 +3004,10 @@ function setBilling(type) {
   currentBilling = type;
 
   var prices = {
-    monthly: { personal: '$9.99',  pro: '$19.99', business: '$49.99',
-                lp: '$9.99', lpr: '$19.99', lpb: '$49.99' },
-    annual:  { personal: '$7.99',  pro: '$15.99', business: '$39.99',
-                lp: '$7.99', lpr: '$15.99', lpb: '$39.99' }
+    monthly: { personal: '$5.99',  pro: '$11.99', business: '$29.99',
+                lp: '$5.99', lpr: '$11.99', lpb: '$29.99' },
+    annual:  { personal: '$5.99',  pro: '$11.99', business: '$29.99',
+                lp: '$5.99', lpr: '$11.99', lpb: '$29.99' }
   };
   var p = prices[type];
 
