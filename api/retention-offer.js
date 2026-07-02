@@ -109,20 +109,33 @@ export default async function handler(req, res) {
 
     const aiMessage = aiResponse.choices[0]?.message?.content?.trim() || '';
 
-    // 6) Save retention offer to DB
-    const { data: retentionRecord } = await supabase
-      .from('retention_offers')
-      .insert({
-        user_id: user.id,
-        reason,
-        offer_type: offerType,
-        offer_accepted: false,
-        discount_coupon: couponId,
-        ai_message: aiMessage,
-        expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString()
-      })
-      .select()
-      .single();
+      // 6) Save retention offer to DB
+      let retentionRecord = null;
+      const { data: profileCheck } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+
+      if (profileCheck) {
+        const { data: inserted, error: insertError } = await supabase
+          .from('retention_offers')
+          .insert({
+            user_id: user.id,
+            reason,
+            offer_type: offerType,
+            offer_accepted: false,
+            discount_coupon: couponId,
+            ai_message: aiMessage,
+            expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString()
+          })
+          .select()
+          .single();
+        if (insertError) console.error('Retention insert error:', insertError.message);
+        else retentionRecord = inserted;
+      } else {
+        console.warn('Profile not found for user:', user.id);
+      }
 
     return res.status(200).json({
       success: true,
