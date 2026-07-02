@@ -3044,6 +3044,7 @@ function updateCurrentPlanBadge() {
   const badge = document.getElementById('current-plan-badge');
   // Actualizar también el label de plan en sidebar
   const planDisplay = document.getElementById('user-display-plan');
+  const isPro = ['pro', 'personal', 'business'].includes(plan);
   if (planDisplay && isPro) {
     planDisplay.style.color = '#f59e0b';
     planDisplay.style.fontWeight = '700';
