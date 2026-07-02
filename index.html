@@ -1089,6 +1089,56 @@ body {
     0%, 100% { opacity: 1; transform: scale(1); }
     50%       { opacity: 0.7; transform: scale(0.97); }
   }
+/* ============================================
+   PROFILE SELECTOR
+   ============================================ */
+.profile-selector-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #1a2f4e;
+  border: 1px solid #2a4a6e;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.profile-selector-inner:hover { border-color: #00EEFF; }
+.profile-emoji { font-size: 18px; }
+.profile-name { color: #fff; font-size: 13px; font-weight: 600; flex: 1; }
+.profile-chevron { color: #00EEFF; font-size: 12px; }
+.profile-dropdown {
+  position: absolute;
+  bottom: 52px;
+  left: 0; right: 0;
+  background: #0d1f3c;
+  border: 1px solid #2a4a6e;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+}
+.profile-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 13px;
+  transition: background 0.15s;
+}
+.profile-option:hover { background: #1a2f4e; color: #fff; }
+.profile-option.active { color: #00EEFF; font-weight: 600; }
+.profile-option.add-profile { border-top: 1px solid #2a4a6e; color: #00EEFF; }
+.profile-default-badge {
+  margin-left: auto;
+  font-size: 10px;
+  background: #00EEFF22;
+  color: #00EEFF;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
 </style>
 </head>
 <body style="padding-top: 52px;">
@@ -1519,6 +1569,9 @@ body {
       </div>
     </nav>
     <div class="sidebar-footer">
+      <!-- Profile Selector (Business only) -->
+      <div id="profile-selector" style="display:none; flex-direction:column; margin-bottom:12px; position:relative;">
+      </div>
       <div class="user-info">
         <div class="user-avatar" id="user-avatar">U</div>
         <div>
@@ -2705,5 +2758,39 @@ body {
 </div>
 
 <!-- billing handled in app.js -->
+  <!-- Profile Modal -->
+  <div id="profile-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#0d1f3c;border:1px solid #00EEFF33;border-radius:16px;padding:32px;width:100%;max-width:400px;margin:16px;">
+      <h3 style="color:#fff;margin:0 0 24px;font-size:20px;">➕ Nuevo Perfil</h3>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <label style="color:#aaa;font-size:13px;display:block;margin-bottom:6px;" data-i18n="profile_name">Nombre del perfil</label>
+          <input id="new-profile-name" type="text" placeholder="Ej: Personal, Negocio, Familia"
+            style="width:100%;padding:10px 14px;background:#1a2f4e;border:1px solid #2a4a6e;border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="color:#aaa;font-size:13px;display:block;margin-bottom:6px;" data-i18n="profile_emoji">Emoji</label>
+          <input id="new-profile-emoji" type="text" placeholder="👤" maxlength="2"
+            style="width:100%;padding:10px 14px;background:#1a2f4e;border:1px solid #2a4a6e;border-radius:8px;color:#fff;font-size:20px;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="color:#aaa;font-size:13px;display:block;margin-bottom:6px;" data-i18n="profile_color">Color</label>
+          <input id="new-profile-color" type="color" value="#6366f1"
+            style="width:100%;height:44px;padding:4px;background:#1a2f4e;border:1px solid #2a4a6e;border-radius:8px;cursor:pointer;box-sizing:border-box;">
+        </div>
+        <div style="display:flex;gap:12px;margin-top:8px;">
+          <button onclick="closeAddProfileModal()"
+            style="flex:1;padding:12px;background:#1a2f4e;border:1px solid #2a4a6e;border-radius:8px;color:#aaa;cursor:pointer;font-size:14px;" data-i18n="btn_cancel">
+            Cancelar
+          </button>
+          <button onclick="saveNewProfile()"
+            style="flex:1;padding:12px;background:#00EEFF;border:none;border-radius:8px;color:#050D1A;font-weight:700;cursor:pointer;font-size:14px;" data-i18n="btn_save">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

@@ -208,7 +208,9 @@ const STATE = {
   debts: [],
   subscriptions: [],
   currentDebtMethod: 'avalanche',
-  settings: { currency: 'USD', lang: 'es', plan: 'free' }
+  settings: { currency: 'USD', lang: 'es', plan: 'free' },
+  currentProfile: null,
+  profiles: []
 };
 
 function loadState() {
@@ -510,11 +512,15 @@ async function loadTransactions() {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) return;
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('transactions')
     .select('*')
     .eq('user_id', session.user.id)
     .order('date', { ascending: false });
+
+  if (STATE.currentProfile) query = query.eq('profile_id', STATE.currentProfile);
+
+  const { data, error } = await query;
 
   if (error) { console.error('Error cargando transacciones:', error); return; }
 
@@ -534,11 +540,15 @@ async function loadCards() {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) return;
 
-  const { data, error } = await supabase
+  let queryCards = supabase
     .from('cards')
     .select('*')
     .eq('user_id', session.user.id)
     .order('created_at', { ascending: false });
+
+  if (STATE.currentProfile) queryCards = queryCards.eq('profile_id', STATE.currentProfile);
+
+  const { data, error } = await queryCards;
 
   if (error) { console.error('Error cargando tarjetas:', error); return; }
 
@@ -562,11 +572,15 @@ async function loadDebts() {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) return;
 
-  const { data, error } = await supabase
+  let queryDebts = supabase
     .from('debts')
     .select('*')
     .eq('user_id', session.user.id)
     .order('created_at', { ascending: false });
+
+  if (STATE.currentProfile) queryDebts = queryDebts.eq('profile_id', STATE.currentProfile);
+
+  const { data, error } = await queryDebts;
 
   if (error) { console.error('Error cargando deudas:', error); return; }
 
@@ -587,11 +601,15 @@ async function loadSubscriptions() {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) return;
 
-  const { data, error } = await supabase
+  let querySubs = supabase
     .from('subscriptions')
     .select('*')
     .eq('user_id', session.user.id)
     .order('created_at', { ascending: false });
+
+  if (STATE.currentProfile) querySubs = querySubs.eq('profile_id', STATE.currentProfile);
+
+  const { data, error } = await querySubs;
 
   if (error) { console.error('Error cargando suscripciones:', error); return; }
 
@@ -633,6 +651,11 @@ async function initApp() {
           window.history.replaceState({}, '', '/');
         }
 
+        // Cargar perfil guardado
+        const savedProfile = localStorage.getItem('fai_current_profile');
+        if (savedProfile) STATE.currentProfile = savedProfile;
+
+        await loadUserProfiles();
         await loadTransactions();
         await loadCards();
         await loadDebts();
@@ -4395,4 +4418,398 @@ function checkProAccess(sectionId) {
     return false;
   }
   return true;
+}
+
+// ============================================
+// PERFILES DE USUARIO (Business)
+// ============================================
+
+async function loadUserProfiles() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return;
+
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('created_at', { ascending: true });
+
+  if (error) { console.error('Error cargando perfiles:', error); return; }
+
+  STATE.profiles = data || [];
+
+  // Si no hay perfil activo, usar el default o el primero
+  if (!STATE.currentProfile && STATE.profiles.length > 0) {
+    const def = STATE.profiles.find(p => p.is_default) || STATE.profiles[0];
+    STATE.currentProfile = def.id;
+    localStorage.setItem('fai_current_profile', def.id);
+  }
+
+  renderProfileSelector();
+}
+
+async function createUserProfile(name, emoji, color) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return null;
+
+  const plan = STATE.settings.plan || 'free';
+  if (plan !== 'business') {
+    showToast('Los perfiles múltiples requieren el plan Business', 'warning');
+    return null;
+  }
+
+  if (STATE.profiles.length >= 5) {
+    showToast('Máximo 5 perfiles por cuenta', 'warning');
+    return null;
+  }
+
+  const isFirst = STATE.profiles.length === 0;
+
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .insert([{
+      user_id: session.user.id,
+      name,
+      emoji: emoji || '👤',
+      color: color || '#6366f1',
+      is_default: isFirst
+    }])
+    .select()
+    .single();
+
+  if (error) { console.error('Error creando perfil:', error); return null; }
+
+  STATE.profiles.push(data);
+  if (isFirst || !STATE.currentProfile) {
+    STATE.currentProfile = data.id;
+    localStorage.setItem('fai_current_profile', data.id);
+  }
+
+  renderProfileSelector();
+  showToast(`Perfil "${name}" creado`, 'success');
+  return data;
+}
+
+async function deleteUserProfile(profileId) {
+  const profile = STATE.profiles.find(p => p.id === profileId);
+  if (!profile) return;
+  if (profile.is_default) {
+    showToast('No puedes eliminar el perfil principal', 'warning');
+    return;
+  }
+
+  const { error } = await supabase
+    .from('user_profiles')
+    .delete()
+    .eq('id', profileId);
+
+  if (error) { console.error('Error eliminando perfil:', error); return; }
+
+  STATE.profiles = STATE.profiles.filter(p => p.id !== profileId);
+
+  if (STATE.currentProfile === profileId) {
+    const def = STATE.profiles.find(p => p.is_default) || STATE.profiles[0];
+    STATE.currentProfile = def ? def.id : null;
+    localStorage.setItem('fai_current_profile', STATE.currentProfile || '');
+  }
+
+  renderProfileSelector();
+  await reloadAllData();
+  showToast(`Perfil "${profile.name}" eliminado`, 'success');
+}
+
+async function switchProfile(profileId) {
+  if (STATE.currentProfile === profileId) return;
+  STATE.currentProfile = profileId;
+  localStorage.setItem('fai_current_profile', profileId);
+  renderProfileSelector();
+  await reloadAllData();
+  const profile = STATE.profiles.find(p => p.id === profileId);
+  if (profile) showToast(`Perfil: ${profile.emoji} ${profile.name}`, 'success');
+}
+
+async function reloadAllData() {
+  await Promise.all([
+    loadTransactions(),
+    loadCards(),
+    loadDebts(),
+    loadSubscriptions()
+  ]);
+  // Re-render sección activa
+  const section = STATE.currentSection;
+  if (section === 'dashboard') renderDashboard();
+  else if (section === 'transactions') renderTransactions();
+  else if (section === 'cards') renderCards();
+  else if (section === 'debts') renderDebts();
+  else if (section === 'subscriptions') renderSubscriptions();
+  else if (section === 'reports') renderReports();
+}
+
+function renderProfileSelector() {
+  const plan = STATE.settings.plan || 'free';
+  const selector = document.getElementById('profile-selector');
+  if (!selector) return;
+
+  // Solo visible para Business
+  if (plan !== 'business' || STATE.profiles.length === 0) {
+    selector.style.display = 'none';
+    return;
+  }
+
+  selector.style.display = 'flex';
+  const current = STATE.profiles.find(p => p.id === STATE.currentProfile);
+
+  selector.innerHTML = `
+    <div class="profile-selector-inner" onclick="toggleProfileDropdown()">
+      <span class="profile-emoji">${current ? current.emoji : '👤'}</span>
+      <span class="profile-name">${current ? current.name : 'Perfil'}</span>
+      <span class="profile-chevron">▾</span>
+    </div>
+    <div class="profile-dropdown" id="profile-dropdown" style="display:none">
+      ${STATE.profiles.map(p => `
+        <div class="profile-option ${p.id === STATE.currentProfile ? 'active' : ''}"
+             onclick="switchProfile('${p.id}')">
+          <span>${p.emoji}</span>
+          <span>${p.name}</span>
+          ${p.is_default ? '<span class="profile-default-badge">principal</span>' : ''}
+        </div>
+      `).join('')}
+      ${STATE.profiles.length < 5 ? `
+        <div class="profile-option add-profile" onclick="openAddProfileModal()">
+          <span>➕</span>
+          <span>Añadir perfil</span>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function toggleProfileDropdown() {
+  const dd = document.getElementById('profile-dropdown');
+  if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+}
+
+function openAddProfileModal() {
+  const modal = document.getElementById('profile-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    document.getElementById('profile-dropdown').style.display = 'none';
+  }
+}
+
+function closeAddProfileModal() {
+  const modal = document.getElementById('profile-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function saveNewProfile() {
+  const name  = document.getElementById('new-profile-name')?.value?.trim();
+  const emoji = document.getElementById('new-profile-emoji')?.value?.trim() || '👤';
+  const color = document.getElementById('new-profile-color')?.value || '#6366f1';
+
+  if (!name) { showToast('El nombre es obligatorio', 'warning'); return; }
+
+  await createUserProfile(name, emoji, color);
+  closeAddProfileModal();
+
+  // Limpiar form
+  const nameEl = document.getElementById('new-profile-name');
+  if (nameEl) nameEl.value = '';
+}
+
+// ============================================
+// PERFILES DE USUARIO (Business)
+// ============================================
+
+async function loadUserProfiles() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return;
+
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('created_at', { ascending: true });
+
+  if (error) { console.error('Error cargando perfiles:', error); return; }
+
+  STATE.profiles = data || [];
+
+  // Si no hay perfil activo, usar el default o el primero
+  if (!STATE.currentProfile && STATE.profiles.length > 0) {
+    const def = STATE.profiles.find(p => p.is_default) || STATE.profiles[0];
+    STATE.currentProfile = def.id;
+    localStorage.setItem('fai_current_profile', def.id);
+  }
+
+  renderProfileSelector();
+}
+
+async function createUserProfile(name, emoji, color) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return null;
+
+  const plan = STATE.settings.plan || 'free';
+  if (plan !== 'business') {
+    showToast('Los perfiles múltiples requieren el plan Business', 'warning');
+    return null;
+  }
+
+  if (STATE.profiles.length >= 5) {
+    showToast('Máximo 5 perfiles por cuenta', 'warning');
+    return null;
+  }
+
+  const isFirst = STATE.profiles.length === 0;
+
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .insert([{
+      user_id: session.user.id,
+      name,
+      emoji: emoji || '👤',
+      color: color || '#6366f1',
+      is_default: isFirst
+    }])
+    .select()
+    .single();
+
+  if (error) { console.error('Error creando perfil:', error); return null; }
+
+  STATE.profiles.push(data);
+  if (isFirst || !STATE.currentProfile) {
+    STATE.currentProfile = data.id;
+    localStorage.setItem('fai_current_profile', data.id);
+  }
+
+  renderProfileSelector();
+  showToast(`Perfil "${name}" creado`, 'success');
+  return data;
+}
+
+async function deleteUserProfile(profileId) {
+  const profile = STATE.profiles.find(p => p.id === profileId);
+  if (!profile) return;
+  if (profile.is_default) {
+    showToast('No puedes eliminar el perfil principal', 'warning');
+    return;
+  }
+
+  const { error } = await supabase
+    .from('user_profiles')
+    .delete()
+    .eq('id', profileId);
+
+  if (error) { console.error('Error eliminando perfil:', error); return; }
+
+  STATE.profiles = STATE.profiles.filter(p => p.id !== profileId);
+
+  if (STATE.currentProfile === profileId) {
+    const def = STATE.profiles.find(p => p.is_default) || STATE.profiles[0];
+    STATE.currentProfile = def ? def.id : null;
+    localStorage.setItem('fai_current_profile', STATE.currentProfile || '');
+  }
+
+  renderProfileSelector();
+  await reloadAllData();
+  showToast(`Perfil "${profile.name}" eliminado`, 'success');
+}
+
+async function switchProfile(profileId) {
+  if (STATE.currentProfile === profileId) return;
+  STATE.currentProfile = profileId;
+  localStorage.setItem('fai_current_profile', profileId);
+  renderProfileSelector();
+  await reloadAllData();
+  const profile = STATE.profiles.find(p => p.id === profileId);
+  if (profile) showToast(`Perfil: ${profile.emoji} ${profile.name}`, 'success');
+}
+
+async function reloadAllData() {
+  await Promise.all([
+    loadTransactions(),
+    loadCards(),
+    loadDebts(),
+    loadSubscriptions()
+  ]);
+  // Re-render sección activa
+  const section = STATE.currentSection;
+  if (section === 'dashboard') renderDashboard();
+  else if (section === 'transactions') renderTransactions();
+  else if (section === 'cards') renderCards();
+  else if (section === 'debts') renderDebts();
+  else if (section === 'subscriptions') renderSubscriptions();
+  else if (section === 'reports') renderReports();
+}
+
+function renderProfileSelector() {
+  const plan = STATE.settings.plan || 'free';
+  const selector = document.getElementById('profile-selector');
+  if (!selector) return;
+
+  // Solo visible para Business
+  if (plan !== 'business' || STATE.profiles.length === 0) {
+    selector.style.display = 'none';
+    return;
+  }
+
+  selector.style.display = 'flex';
+  const current = STATE.profiles.find(p => p.id === STATE.currentProfile);
+
+  selector.innerHTML = `
+    <div class="profile-selector-inner" onclick="toggleProfileDropdown()">
+      <span class="profile-emoji">${current ? current.emoji : '👤'}</span>
+      <span class="profile-name">${current ? current.name : 'Perfil'}</span>
+      <span class="profile-chevron">▾</span>
+    </div>
+    <div class="profile-dropdown" id="profile-dropdown" style="display:none">
+      ${STATE.profiles.map(p => `
+        <div class="profile-option ${p.id === STATE.currentProfile ? 'active' : ''}"
+             onclick="switchProfile('${p.id}')">
+          <span>${p.emoji}</span>
+          <span>${p.name}</span>
+          ${p.is_default ? '<span class="profile-default-badge">principal</span>' : ''}
+        </div>
+      `).join('')}
+      ${STATE.profiles.length < 5 ? `
+        <div class="profile-option add-profile" onclick="openAddProfileModal()">
+          <span>➕</span>
+          <span>Añadir perfil</span>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function toggleProfileDropdown() {
+  const dd = document.getElementById('profile-dropdown');
+  if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+}
+
+function openAddProfileModal() {
+  const modal = document.getElementById('profile-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    document.getElementById('profile-dropdown').style.display = 'none';
+  }
+}
+
+function closeAddProfileModal() {
+  const modal = document.getElementById('profile-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function saveNewProfile() {
+  const name  = document.getElementById('new-profile-name')?.value?.trim();
+  const emoji = document.getElementById('new-profile-emoji')?.value?.trim() || '👤';
+  const color = document.getElementById('new-profile-color')?.value || '#6366f1';
+
+  if (!name) { showToast('El nombre es obligatorio', 'warning'); return; }
+
+  await createUserProfile(name, emoji, color);
+  closeAddProfileModal();
+
+  // Limpiar form
+  const nameEl = document.getElementById('new-profile-name');
+  if (nameEl) nameEl.value = '';
 }
