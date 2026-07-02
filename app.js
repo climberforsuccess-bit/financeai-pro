@@ -2632,19 +2632,37 @@ async function loadSubscriptionStatus() {
 }
 
 async function confirmCancelSubscription() {
-  // Confirmation modal
-  const confirmed = await showCancelConfirmModal();
-  if (!confirmed) return;
-
-  const btn = document.querySelector('[onclick="confirmCancelSubscription()"]');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = '⏳ Procesando...';
-  }
+  // Step 1: Show retention offer first
+  const lang = STATE.lang || 'en';
+  const reason = 'too_expensive'; // default reason, modal can override
 
   try {
     const { data: { session } } = await window.supabase.auth.getSession();
     if (!session) throw new Error('No session');
+
+    // Fetch retention offer
+    showToast('⏳ Cargando oferta especial...', 'info', 2000);
+    const retRes = await fetch('/api/retention-offer', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify({ reason, lang })
+    });
+
+    if (retRes.ok) {
+      const offer = await retRes.json();
+      const accepted = await showRetentionModal(offer, session);
+      if (accepted) return; // User accepted offer, don't cancel
+    }
+
+    // Step 2: If offer rejected or failed, show classic confirm
+    const confirmed = await showCancelConfirmModal();
+    if (!confirmed) return;
+
+    const btn = document.querySelector('[onclick="confirmCancelSubscription()"]');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Procesando...'; }
 
     const res = await fetch('/api/cancel-subscription', {
       method: 'POST',
@@ -2655,22 +2673,108 @@ async function confirmCancelSubscription() {
     });
 
     const data = await res.json();
-
     if (!res.ok) throw new Error(data.error || 'Error al cancelar');
 
     showToast('✅ Suscripción cancelada. Tu acceso continúa hasta ' + new Date(data.accessUntil).toLocaleDateString(), 'success', 6000);
-
-    // Reload status
     setTimeout(() => loadSubscriptionStatus(), 1500);
 
   } catch(e) {
     console.error('Cancel error:', e);
     showToast('❌ Error: ' + e.message, 'error');
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = '🚫 Cancelar Suscripción';
-    }
   }
+}
+
+function showRetentionModal(offer, session) {
+  return new Promise((resolve) => {
+    const existing = document.getElementById('retention-modal');
+    if (existing) existing.remove();
+
+    const lang = STATE.lang || 'en';
+    const isEs = lang === 'es';
+
+    const modal = document.createElement('div');
+    modal.id = 'retention-modal';
+    modal.style.cssText = `
+      position:fixed;inset:0;background:rgba(0,0,0,0.85);
+      display:flex;align-items:center;justify-content:center;
+      z-index:10000;padding:20px;
+    `;
+
+    const discountLabel = offer.offerType === 'discount_50'
+      ? (isEs ? '50% de descuento' : '50% off')
+      : offer.offerType === 'discount_30'
+        ? (isEs ? '30% de descuento' : '30% off')
+        : (isEs ? 'Pausa tu suscripción' : 'Pause subscription');
+
+    const priceHtml = offer.discountedPrice
+      ? `<div style="margin:16px 0;">
+          <span style="color:#94a3b8;font-size:14px;text-decoration:line-through;">$${offer.originalPrice}/mo</span>
+          <span style="color:#10b981;font-size:28px;font-weight:900;margin-left:8px;">$${offer.discountedPrice}/mo</span>
+        </div>`
+      : '';
+
+    const expiryNote = offer.expiryDate
+      ? `<p style="color:#f59e0b;font-size:11px;margin-top:8px;">⏰ ${isEs ? 'Oferta válida hasta' : 'Offer valid until'}: ${new Date(offer.expiryDate).toLocaleDateString()}</p>`
+      : '';
+
+    modal.innerHTML = `
+      <div style="background:linear-gradient(135deg,#1e293b,#0f172a);border:1px solid #6366f1;border-radius:20px;padding:32px;max-width:440px;width:100%;text-align:center;box-shadow:0 0 40px rgba(99,102,241,0.3);">
+        <div style="font-size:52px;margin-bottom:12px;">🎁</div>
+        <div style="background:linear-gradient(90deg,#6366f1,#8b5cf6);color:#fff;font-size:11px;font-weight:800;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:12px;letter-spacing:1px;">
+          ${isEs ? 'OFERTA EXCLUSIVA' : 'EXCLUSIVE OFFER'}
+        </div>
+        <h3 style="color:#fff;font-size:20px;font-weight:900;margin-bottom:8px;">
+          ${isEs ? '¡Espera! Tenemos algo para ti' : 'Wait! We have something for you'}
+        </h3>
+        ${priceHtml}
+        <p style="color:#94a3b8;font-size:13px;line-height:1.7;margin:12px 0 8px;">
+          ${offer.aiMessage || (isEs ? 'Queremos que te quedes.' : 'We want you to stay.')}
+        </p>
+        ${expiryNote}
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+          <button id="ret-accept-btn"
+            style="padding:14px;background:linear-gradient(90deg,#6366f1,#8b5cf6);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 4px 15px rgba(99,102,241,0.4);">
+            ✨ ${isEs ? `Sí, quiero ${discountLabel}` : `Yes, give me ${discountLabel}`}
+          </button>
+          <button id="ret-reject-btn"
+            style="padding:12px;background:transparent;border:1px solid #334155;border-radius:12px;color:#64748b;font-size:12px;cursor:pointer;">
+            ${isEs ? 'No gracias, cancelar de todas formas' : 'No thanks, cancel anyway'}
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    document.getElementById('ret-accept-btn').onclick = async () => {
+      modal.remove();
+      // Apply discount via API
+      try {
+        const applyRes = await fetch('/api/apply-retention-discount', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({ couponId: offer.couponId, retentionId: offer.retentionId })
+        });
+        const applyData = await applyRes.json();
+        if (applyData.success) {
+          showToast('🎉 ' + (isEs ? '¡Descuento aplicado! Gracias por quedarte.' : 'Discount applied! Thanks for staying.'), 'success', 5000);
+        } else {
+          showToast('⚠️ ' + (applyData.error || 'Error applying discount'), 'error');
+        }
+      } catch(e) {
+        showToast('⚠️ Could not apply discount: ' + e.message, 'error');
+      }
+      resolve(true);
+    };
+
+    document.getElementById('ret-reject-btn').onclick = () => {
+      modal.remove();
+      resolve(false);
+    };
+  });
 }
 
 function showCancelConfirmModal() {
