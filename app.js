@@ -482,7 +482,7 @@ function showSection(sectionId) {
   if (sectionId === 'debts')         Promise.all([loadCards(), loadDebts()]).then(() => renderDebts());
   if (sectionId === 'subscriptions') renderSubscriptions();
   if (sectionId === 'reports')       loadTransactions().then(() => renderReports());
-  if (sectionId === 'recommendations') loadCardRecommendations();
+  if (sectionId === 'recommendations') loadTransactions().then(() => loadCardRecommendations());
   if (sectionId === 'settings')      renderSettings();
   
   if (sectionId === 'admin')         adminLoadStats();
