@@ -3568,8 +3568,8 @@ function exportPDF(txs) {
       <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${tx.date || '—'}</td>
       <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${tx.description || '—'}</td>
       <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;">${tx.category || '—'}</td>
-      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;color:${tx.amount >= 0 ? '#10b981' : '#ef4444'};font-weight:600;">
-        ${tx.amount >= 0 ? '+' : ''}$${Math.abs(tx.amount).toFixed(2)}
+      <td style="padding:8px;border-bottom:1px solid #e2e8f0;font-size:12px;color:${tx.type === 'income' ? '#10b981' : '#ef4444'};font-weight:600;">
+        ${tx.type === 'income' ? '+' : '-'}$${Math.abs(tx.amount).toFixed(2)}
       </td>
     </tr>
   `).join('');
