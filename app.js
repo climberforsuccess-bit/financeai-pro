@@ -2600,30 +2600,40 @@ async function loadSubscriptionStatus() {
   inactive.style.display = 'none';
 
   try {
-    if (STATE.isVIP && STATE.vipExpiry) {
+    const plan    = STATE.settings.plan || STATE.userPlan || localStorage.getItem('fai_plan') || 'free';
+    const billing  = STATE.settings.billingPeriod || localStorage.getItem('fai_billing') || 'monthly';
+    const isPro    = ['pro', 'personal', 'business'].includes(plan);
+    const hasVIP   = STATE.isVIP && STATE.vipExpiry;
+
+    if (isPro || hasVIP) {
       // Has active subscription
       loading.style.display  = 'none';
       active.style.display   = 'block';
+      inactive.style.display = 'none';
 
-      const planName = document.getElementById('sub-mgmt-plan-name');
-      const renewal  = document.getElementById('sub-mgmt-renewal');
+      const planNames = { free: 'Free', personal: 'Personal ⭐', pro: 'Pro 💎', business: 'Business 🏢' };
+      const planName  = document.getElementById('sub-mgmt-plan-name');
+      const renewal   = document.getElementById('sub-mgmt-renewal');
+      const billingEl = document.getElementById('sub-mgmt-billing');
 
-      if (planName) planName.textContent = STATE.vipPlan
-        ? `Pro ${STATE.vipPlan.charAt(0).toUpperCase() + STATE.vipPlan.slice(1)}`
-        : 'Pro';
+      if (planName) planName.textContent = planNames[plan] || 'Pro 💎';
+      if (billingEl) billingEl.textContent = billing === 'annual' ? '📅 Anual' : '📅 Mensual';
 
-      if (renewal && STATE.vipExpiry) {
+      if (hasVIP && STATE.vipExpiry) {
         const expiry = new Date(STATE.vipExpiry);
         const days   = Math.ceil((expiry - new Date()) / (1000*60*60*24));
-        renewal.textContent = days > 0
+        if (renewal) renewal.textContent = days > 0
           ? `🔄 Renueva el ${expiry.toLocaleDateString()} (en ${days} días)`
           : `⚠️ Expiró el ${expiry.toLocaleDateString()}`;
+      } else if (renewal) {
+        renewal.textContent = '✅ Suscripción activa vía Stripe';
       }
 
     } else {
       // No active subscription
       loading.style.display   = 'none';
       inactive.style.display  = 'block';
+      active.style.display    = 'none';
     }
   } catch(e) {
     loading.style.display = 'none';
