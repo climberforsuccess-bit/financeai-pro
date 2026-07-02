@@ -3559,8 +3559,8 @@ function exportCSV(txs) {
 }
 
 function exportPDF(txs) {
-  const totalIncome  = txs.filter(tx => tx.amount > 0).reduce((s,tx) => s + tx.amount, 0);
-  const totalExpense = txs.filter(tx => tx.amount < 0).reduce((s,tx) => s + Math.abs(tx.amount), 0);
+  const totalIncome  = txs.filter(tx => tx.type === 'income').reduce((s,tx) => s + Math.abs(tx.amount), 0);
+  const totalExpense = txs.filter(tx => tx.type === 'expense').reduce((s,tx) => s + Math.abs(tx.amount), 0);
   const balance      = totalIncome - totalExpense;
 
   const rows = txs.slice(0, 50).map(tx => `
