@@ -4329,7 +4329,7 @@ function updateSubscriptionDisplay() {
 // PRO BADGE + SECTION LOCK
 // ============================================================
 
-const PRO_SECTIONS = ['reports', 'investments', 'ai-assistant'];
+const PRO_SECTIONS = ['reports', 'investments'];
 
 function applyProAccess() {
   const plan = STATE.settings.plan || 'free';
