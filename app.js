@@ -408,7 +408,8 @@ Respond ONLY with a JSON array. Zero explanation. Zero markdown:
         messages:[
           {role:'system', content:'You are a credit card expert. Respond ONLY with a valid JSON array. No markdown, no code blocks, no apostrophes in text, no special characters. Use only plain ASCII text in all string values. No explanations outside JSON.'},
           {role:'user', content: prompt}
-        ]
+        ],
+        plan: STATE.settings.plan || localStorage.getItem('fai_plan') || 'free'
       })
     });
     if (!res.ok) throw new Error('API ' + res.status);
@@ -2945,7 +2946,7 @@ ${context ? `\n${t('ctx_plan').replace('- Plan','Financial context')}:\n${contex
   const response = await fetch('/api/openai-proxy', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages, model: 'gpt-4o-mini' })
+    body: JSON.stringify({ messages, plan: STATE.settings.plan || localStorage.getItem('fai_plan') || 'free' })
   });
 
   if (!response.ok) throw new Error('Network error');
