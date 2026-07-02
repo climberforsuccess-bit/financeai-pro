@@ -18,25 +18,25 @@ export default async function handler(req, res) {
 
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('plan, plan_expiry, stripe_customer_id, stripe_subscription_id, trial_ends_at')
+      .select('vip_plan, vip_expiry, stripe_customer_id, stripe_subscription_id, subscription_status')
       .eq('id', user.id)
       .single();
 
     if (profileError) return res.status(500).json({ error: profileError.message });
 
     const now = new Date();
-    const expiry = profile.plan_expiry ? new Date(profile.plan_expiry) : null;
+    const expiry = profile.vip_expiry ? new Date(profile.vip_expiry) : null;
     const isActive = expiry ? expiry > now : false;
-    const isPro = profile.plan === 'pro' || profile.plan === 'Pro' || profile.plan === 'PRO';
+    const isPro = (profile.vip_plan === 'pro' || profile.vip_plan === 'Pro' || profile.vip_plan === 'PRO') && isActive;
 
     return res.status(200).json({
-      plan: profile.plan || 'free',
+      plan: isPro ? 'pro' : 'free',
       isActive,
-      isPro: isPro && isActive,
-      planExpiry: profile.plan_expiry,
+      isPro,
+      planExpiry: profile.vip_expiry,
       stripeSubscriptionId: profile.stripe_subscription_id,
       stripeCustomerId: profile.stripe_customer_id,
-      trialEndsAt: profile.trial_ends_at
+      subscriptionStatus: profile.subscription_status
     });
 
   } catch(e) {
