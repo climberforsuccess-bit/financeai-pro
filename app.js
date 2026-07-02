@@ -4300,7 +4300,7 @@ function updateSubscriptionDisplay() {
   });
 
   // 3) Botón upgrade — ocultar si ya es pro
-  const upgradeBtn = document.querySelector('[onclick*="startCheckout"], [onclick*="showSection('pricing')"], button[onclick*="pro"]');
+  const upgradeBtn = document.querySelector('[onclick*="startCheckout"]') || document.querySelector('[onclick*="pricing"]') || document.querySelector('.upgrade-btn');
   if (upgradeBtn && isPro) {
     upgradeBtn.style.display = 'none';
   }
