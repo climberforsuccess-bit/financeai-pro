@@ -20,24 +20,29 @@ export default async function handler(req, res) {
 
   try {
     // 1) Get profile
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('vip_plan, vip_expiry, created_at, ai_usage_count, retention_offer_used, stripe_customer_id, stripe_subscription_id')
+      .select('plan, billing_period, created_at, days_active, ai_usage_count, retention_offer_used, stripe_customer_id, stripe_subscription_id, subscription_ends_at, subscription_status')
       .eq('id', user.id)
       .single();
 
+    if (profileError) console.error('Profile fetch error:', profileError.message);
+
     // 2) Calculate real stats
-    const daysActive = profile?.created_at
-      ? Math.floor((Date.now() - new Date(profile.created_at)) / (1000 * 60 * 60 * 24))
-      : userStats?.daysActive || 0;
+    const daysActive = profile?.days_active
+      || (profile?.created_at
+        ? Math.floor((Date.now() - new Date(profile.created_at)) / (1000 * 60 * 60 * 24))
+        : userStats?.daysActive || 0);
 
-    const planPrice = profile?.vip_plan === 'annual' ? 99.99 : 9.99;
-    const planLabel = profile?.vip_plan === 'annual'
-      ? (lang === 'es' ? 'Pro Anual' : 'Pro Annual')
-      : (lang === 'es' ? 'Pro Mensual' : 'Pro Monthly');
+    const activePlan = profile?.billing_period || 'monthly';
+    const planPriceMap = { free: 0, personal: 7.99, pro: 15.99, business: 39.99 };
+    const planPrice = planPriceMap[profile?.plan] || (activePlan === 'annual' ? 15.99 : 9.99);
+    const planNames = { free: 'Free', personal: 'Personal', pro: 'Pro', business: 'Business' };
+    const planBase = planNames[profile?.plan] || 'Pro';
+    const planLabel = `${planBase} ${activePlan === 'annual' ? (lang === 'es' ? 'Anual' : 'Annual') : (lang === 'es' ? 'Mensual' : 'Monthly')}`;
 
-    const expiryDate = profile?.vip_expiry
-      ? new Date(profile.vip_expiry).toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US')
+    const expiryDate = profile?.subscription_ends_at
+      ? new Date(profile.subscription_ends_at).toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US')
       : null;
 
     const alreadyUsedOffer = profile?.retention_offer_used || false;
