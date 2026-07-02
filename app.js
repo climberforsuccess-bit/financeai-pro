@@ -4271,6 +4271,47 @@ window.addEventListener('langChanged', async () => {
   });
 });
 
+
+function updateSubscriptionDisplay() {
+  const plan    = STATE.settings.plan || 'free';
+  const billing = STATE.settings.billingPeriod || 'monthly';
+  const isPro   = ['pro', 'personal', 'business'].includes(plan);
+  const planNames = { free: 'Free', personal: 'Personal ⭐', pro: 'Pro 💎', business: 'Business 🏢' };
+  const planName  = planNames[plan] || 'Free';
+
+  // 1) current-plan-label en settings
+  const label = document.getElementById('current-plan-label');
+  if (label) {
+    label.textContent = isPro
+      ? `⚡ Tu plan actual: ${planName} · ${billing}`
+      : '✨ Tu plan actual: FREE';
+    label.style.color = isPro ? '#f59e0b' : '';
+  }
+
+  // 2) Texto "Estás en el plan X" en suscripción
+  const subsPlanEls = document.querySelectorAll('[data-subs-plan]');
+  subsPlanEls.forEach(el => el.textContent = planName);
+
+  // Buscar el div con "Estás en el plan"
+  document.querySelectorAll('div, p, span').forEach(el => {
+    if (el.children.length === 0 && el.textContent.includes('Estás en el plan')) {
+      el.innerHTML = `Estás en el plan <strong style="color:${isPro ? '#f59e0b' : '#94a3b8'}">${planName}</strong>`;
+    }
+  });
+
+  // 3) Botón upgrade — ocultar si ya es pro
+  const upgradeBtn = document.querySelector('[onclick*="startCheckout"], [onclick*="showSection('pricing')"], button[onclick*="pro"]');
+  if (upgradeBtn && isPro) {
+    upgradeBtn.style.display = 'none';
+  }
+
+  // 4) Ícono de plan en settings
+  const planIcon = document.querySelector('.plan-icon, #plan-icon, .subscription-icon');
+  if (planIcon && isPro) {
+    planIcon.textContent = '💎';
+  }
+}
+
 // ============================================================
 // PRO BADGE + SECTION LOCK
 // ============================================================
@@ -4304,6 +4345,8 @@ function applyProAccess() {
       userInfo.appendChild(badge);
     }
   }
+  updateSubscriptionDisplay();
+
   if (badge) {
     badge.textContent = isPro ? '⚡ PRO' : '🆓 FREE';
     badge.style.background = isPro
