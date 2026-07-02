@@ -473,6 +473,9 @@ function showSection(sectionId) {
 
   STATE.currentSection = sectionId;
 
+  // Block premium sections for free users
+  if (!checkProAccess(sectionId)) return;
+
   if (sectionId === 'dashboard')     renderDashboard();
   if (sectionId === 'transactions')  renderTransactions();
   if (sectionId === 'cards')         renderCards();
