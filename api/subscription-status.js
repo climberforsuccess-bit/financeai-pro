@@ -18,25 +18,27 @@ export default async function handler(req, res) {
 
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('vip_plan, vip_expiry, stripe_customer_id, stripe_subscription_id, subscription_status')
+      .select('plan, subscription_status, subscription_ends_at, stripe_customer_id, stripe_subscription_id')
       .eq('id', user.id)
       .single();
 
     if (profileError) return res.status(500).json({ error: profileError.message });
 
     const now = new Date();
-    const expiry = profile.vip_expiry ? new Date(profile.vip_expiry) : null;
-    const isActive = expiry ? expiry > now : false;
-    const isPro = (profile.vip_plan === 'pro' || profile.vip_plan === 'Pro' || profile.vip_plan === 'PRO') && isActive;
+    const endsAt = profile.subscription_ends_at ? new Date(profile.subscription_ends_at) : null;
+    const isPro = profile.plan === 'pro' || profile.plan === 'Pro' || profile.plan === 'PRO';
+    const isActive = isPro && profile.subscription_status === 'active';
+    const isCanceling = profile.subscription_status === 'canceling';
 
     return res.status(200).json({
-      plan: isPro ? 'pro' : 'free',
-      isActive,
+      plan: profile.plan || 'free',
       isPro,
-      planExpiry: profile.vip_expiry,
+      isActive,
+      isCanceling,
+      subscriptionStatus: profile.subscription_status,
+      subscriptionEndsAt: profile.subscription_ends_at,
       stripeSubscriptionId: profile.stripe_subscription_id,
-      stripeCustomerId: profile.stripe_customer_id,
-      subscriptionStatus: profile.subscription_status
+      stripeCustomerId: profile.stripe_customer_id
     });
 
   } catch(e) {
