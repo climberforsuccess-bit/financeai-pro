@@ -586,6 +586,9 @@ const TRANSLATIONS = {
     notif_label_3:       'Weekly summary',
     current_plan_label:   '✨ Current plan: FREE',
     pricing_tagline:      'Invest less than a coffee a day and recover hundreds a month',
+    pricing_launch_banner:   '🚀 LAUNCH PRICE — GOING UP SOON',
+pricing_social_proof:    '🌎 Used by people in America and Europe to recover control of their finances',
+
     plan_free_name:       '🆓 Free',
     plan_free_period:     '/mo',
     modal_free_f5:        '❌ No advanced reports',
@@ -1048,6 +1051,9 @@ const TRANSLATIONS = {
     vip_code_label:      '¿Tienes un código VIP?',
     notif_label_1:       'Alertas de suscripciones',
     notif_label_2:       'Gastos inusuales',
+    pricing_launch_banner:   '🚀 PRECIO DE LANZAMIENTO — SUBE PRONTO',
+pricing_social_proof:    '🌎 Usado por personas en America y Europa para recuperar control de sus finanzas',
+
     notif_label_3:       'Resumen semanal',
     current_plan_label:   '✨ Tu plan actual: FREE',
     pricing_tagline:      'Invierte menos que un café al día y recupera cientos al mes',

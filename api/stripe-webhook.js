@@ -293,3 +293,6 @@ if (event.type === 'customer.subscription.deleted') {
     }
   }
 }
+
+  return res.status(200).json({ received: true });
+}
