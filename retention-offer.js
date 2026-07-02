@@ -211,9 +211,10 @@ window.RetentionFlow = {
     const expense = txs.filter(t => t.type === 'expense').reduce((s, t) => s + parseFloat(t.amount || 0), 0);
     const saved = Math.max(0, income - expense);
 
-    const daysActive = STATE?.vipExpiry
-      ? Math.floor((Date.now() - new Date(STATE.vipExpiry - 30 * 24 * 60 * 60 * 1000)) / (1000 * 60 * 60 * 24))
-      : 0;
+    const daysActive = STATE?.daysActive
+      ?? (STATE?.user?.created_at
+        ? Math.floor((Date.now() - new Date(STATE.user.created_at)) / (1000 * 60 * 60 * 24))
+        : 0);
 
     const monthsActive = Math.max(1, Math.floor(daysActive / 30));
 

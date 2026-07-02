@@ -657,7 +657,7 @@ async function loadUserProfile() {
   try {
     const { data, error } = await supabase
       .from('profiles')
-      .select('plan, subscription_status, billing_period, trial_ends_at, subscription_ends_at')
+      .select('plan, subscription_status, billing_period, trial_ends_at, subscription_ends_at, created_at, ai_usage_count')
       .eq('id', STATE.user.id)
       .single();
 
@@ -667,6 +667,19 @@ async function loadUserProfile() {
       STATE.settings.billingPeriod  = data.billing_period || 'monthly';
       STATE.settings.trialEndsAt    = data.trial_ends_at || null;
       STATE.settings.subscriptionEnd = data.subscription_ends_at || null;
+
+      // vipPlan for retention flow
+      STATE.vipPlan = data.billing_period || 'monthly';
+
+      // days active since account creation
+      if (data.created_at) {
+        const msPerDay = 1000 * 60 * 60 * 24;
+        STATE.daysActive = Math.floor((Date.now() - new Date(data.created_at)) / msPerDay);
+      }
+
+      // ai usage count
+      STATE.aiUsageCount = data.ai_usage_count || 0;
+
       checkTrialStatus();
       localStorage.setItem('fai_plan', STATE.settings.plan);
       localStorage.setItem('fai_billing', STATE.settings.billingPeriod);
