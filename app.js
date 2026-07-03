@@ -2403,18 +2403,8 @@ function showUpgradePrompt() {
 }
 
 // ── VIP Code System ─────────────────────────────────────────
-const VIP_CODES = {
-  'VIP-GOLD-2024': { plan: 'Personal', months: 1 },
-  'VIP-GOLD-6MOS': { plan: 'Personal', months: 6 },
-  'VIP-GOLD-YEAR': { plan: 'Personal', months: 12 },
-  'VIP-FAM-2024':  { plan: 'Familia',  months: 1 },
-  'VIP-FAM-6MOS':  { plan: 'Familia',  months: 6 },
-  'VIP-FAM-YEAR':  { plan: 'Familia',  months: 12 },
-  'VIP-BETA-FREE': { plan: 'Personal', months: 3 },
-  'VIP-PROMO-50':  { plan: 'Personal', months: 1 },
-};
 
-function activateVIPCode() {
+async function activateVIPCode() {
   const input = document.getElementById('vip-code-input') || document.getElementById('admin-vip-code-input');
   const msg   = document.getElementById('vip-code-msg');
   if (!input || !msg) return;
@@ -2426,47 +2416,56 @@ function activateVIPCode() {
     return;
   }
 
-  // Verificar si ya fue usado
-  const usedCodes = JSON.parse(localStorage.getItem('fai_used_codes') || '[]');
-  if (usedCodes.includes(code)) {
+  msg.style.color = '#94a3b8';
+  msg.textContent = '⏳ Validating...';
+
+  try {
+    const session = await supabase.auth.getSession();
+    const token = session?.data?.session?.access_token;
+
+    const res = await fetch('/api/redeem-gift-code', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ code })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      const errMap = {
+        invalid_code:     t('vip_code_wrong'),
+        code_already_used: t('vip_code_used'),
+        code_expired:     t('vip_code_wrong'),
+      };
+      msg.style.color = '#ef4444';
+      msg.textContent = '❌ ' + (errMap[data.error] || data.error);
+      return;
+    }
+
+    STATE.plan = data.plan;
+    saveState();
+
+    input.value = '';
+    msg.style.color = '#22c55e';
+    msg.textContent = '✅ ' + t('vip_code_ok') + ' ' + data.plan;
+
+    applyProAccess();
+    updateVIPStatus();
+    showToast(`${t('vip_welcome')} ${data.plan}! ${t('enjoy_benefits')}`, 'success');
+
+    localStorage.removeItem('fai_ai_count');
+    localStorage.removeItem('fai_ai_date');
+    updateAICounter();
+
+  } catch (e) {
     msg.style.color = '#ef4444';
-    msg.textContent = '❌ ' + t('vip_code_used');
-    return;
+    msg.textContent = '❌ Error: ' + e.message;
   }
-
-  const vipData = VIP_CODES[code];
-  if (!vipData) {
-    msg.style.color = '#ef4444';
-    msg.textContent = '❌ ' + t('vip_code_wrong');
-    return;
-  }
-
-  // Activar VIP
-  const expiry = new Date();
-  expiry.setMonth(expiry.getMonth() + vipData.months);
-
-  STATE.isVIP    = true;
-  STATE.vipPlan  = vipData.plan;
-  STATE.vipExpiry = expiry.toISOString();
-  saveState();
-
-  // Marcar código como usado
-  usedCodes.push(code);
-  localStorage.setItem('fai_used_codes', JSON.stringify(usedCodes));
-
-  // Actualizar UI
-  input.value = '';
-  msg.style.color = '#22c55e';
-  msg.textContent = '✅ ' + t('vip_code_ok') + ' ' + vipData.plan + ' ' + t('vip_months') + ' ' + vipData.months;
-
-  updateVIPStatus();
-  showToast(`${t('vip_welcome')} ${vipData.plan}! ${t('enjoy_benefits')}`, 'success');
-
-  // Reset contador IA
-  localStorage.removeItem('fai_ai_count');
-  localStorage.removeItem('fai_ai_date');
-  updateAICounter();
 }
+
 
 function updateVIPStatus() {
   const icon  = document.getElementById('vip-status-icon');
