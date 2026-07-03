@@ -79,7 +79,7 @@ window.RetentionFlow = {
       },
 
       step4_title: 'Si cancelas hoy, perderás:',
-      step4_history: (months) => `📊 ${months} meses de historial financiero`,
+      step4_history: (months) => `📊 ${months} ${months === 1 ? 'mes' : 'meses'} de historial financiero`,
       step4_goals: (n) => `🎯 ${n} metas activas en progreso`,
       step4_ai: (n) => `🤖 ${n} análisis de IA guardados`,
       step4_price: (current, original) => `⚡ Precio fundador ($${current} → $${original} después)`,
