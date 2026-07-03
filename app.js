@@ -2844,11 +2844,11 @@ function showCancelConfirmModal() {
           </div>
         </div>
         <div style="display:flex;gap:12px;">
-          <button onclick="document.getElementById('cancel-confirm-modal').remove(); window._cancelResolve(false);"
+          <button id="cancel-keep-btn"
             style="flex:1;padding:12px;background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.4);border-radius:10px;color:#a5b4fc;font-size:13px;font-weight:700;cursor:pointer;">
             👈 Mantener Plan
           </button>
-          <button onclick="document.getElementById('cancel-confirm-modal').remove(); window._cancelResolve(true);"
+          <button id="cancel-confirm-btn"
             style="flex:1;padding:12px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:13px;font-weight:600;cursor:pointer;">
             Sí, cancelar
           </button>
@@ -2856,8 +2856,17 @@ function showCancelConfirmModal() {
       </div>
     `;
 
-    window._cancelResolve = resolve;
     document.body.appendChild(modal);
+
+    document.getElementById('cancel-keep-btn').onclick = () => {
+      modal.remove();
+      resolve(false);
+    };
+
+    document.getElementById('cancel-confirm-btn').onclick = () => {
+      modal.remove();
+      resolve(true);
+    };
   });
 }
 
