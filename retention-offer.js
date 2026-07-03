@@ -89,9 +89,9 @@ window.RetentionFlow = {
 
       step5_title: '🔥 Última oportunidad — Solo para ti',
       step5_badge: 'OFERTA FINAL',
-      step5_desc: (price) => `3 meses de Pro por solo <strong>$${price}</strong> total`,
+      step5_desc: (price) => `3 meses de Pro por solo <strong>$${price}/mes</strong>`,
       step5_timer: (s) => `⏱️ Esta oferta expira en ${s} segundos`,
-      step5_cta: (price) => `🎁 Acepto — 3 meses por $${price}`,
+      step5_cta: (price) => `🎁 Acepto — 3 meses por $${price}/mes`,
       step5_cancel: 'No, cancelar mi suscripción',
 
       canceling: 'Cancelando...',
@@ -178,9 +178,9 @@ window.RetentionFlow = {
 
       step5_title: '🔥 Last chance — Just for you',
       step5_badge: 'FINAL OFFER',
-      step5_desc: (price) => `3 months of Pro for only <strong>$${price}</strong> total`,
+      step5_desc: (price) => `3 months of Pro for only <strong>$${price}/mo</strong>`,
       step5_timer: (s) => `⏱️ This offer expires in ${s} seconds`,
-      step5_cta: (price) => `🎁 Accept — 3 months for $${price}`,
+      step5_cta: (price) => `🎁 Accept — 3 months for $${price}/mo`,
       step5_cancel: 'No, cancel my subscription',
 
       canceling: 'Cancelling...',
