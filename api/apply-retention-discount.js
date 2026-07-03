@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     // 5) Apply based on offer type
     let result = {};
 
-    if (offerType === 'discount_50' && offer.discount_coupon) {
+    if (offerType === 'discount_50' && offer.discount_coupon && offer.discount_coupon !== null) {
       // Apply coupon to subscription
       await stripe.subscriptions.update(profile.stripe_subscription_id, {
         coupon: offer.discount_coupon,
