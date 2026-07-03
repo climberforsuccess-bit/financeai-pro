@@ -536,7 +536,7 @@ window.RetentionFlow = {
     const modal = this.createModal();
     const s = this.s();
     const plan = STATE?.vipPlan || 'monthly';
-    const finalPrice = plan === 'annual' ? '24.99' : '2.99';
+    const finalPrice = plan === 'annual' ? '29.99' : '9.99';
     let timeLeft = 60;
 
     const renderTimer = () => {
