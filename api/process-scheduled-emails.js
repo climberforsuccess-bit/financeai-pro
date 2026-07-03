@@ -152,7 +152,8 @@ function getEmailContent(type, meta) {
             <p style="color:#94a3b8;margin:8px 0 0 0;">en tu primer mes al reactivar</p>
             <p style="font-size:11px;color:#64748b;margin:8px 0 0 0;">Válido por 48 horas</p>
           </div>
-          <a href="https://www.climberforsuccess.online/#pricing" 
+          <a href="https://www.climberforsuccess.online/#pricing?prefilled_promo_code=COMEBACK20
+" 
              style="display:inline-block;background:#10b981;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;width:100%;text-align:center;box-sizing:border-box;">
             Reclamar mi descuento →
           </a>
