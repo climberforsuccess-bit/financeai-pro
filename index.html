@@ -5,6 +5,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FinanceAI Pro</title>
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00EEFF">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FinanceAI">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png">
+<!-- OG / Social -->
+<meta name="description" content="Controla tus finanzas personales con inteligencia artificial">
+<meta property="og:title" content="FinanceAI Pro">
+<meta property="og:description" content="Controla tus finanzas personales con inteligencia artificial">
+<meta property="og:image" content="/icons/icon-512x512.png">
+<meta property="og:type" content="website">
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -1579,7 +1595,10 @@ body {
           <div class="user-plan" id="user-display-plan">Free</div>
         </div>
       </div>
-      <button class="btn btn-outline btn-sm" style="width:100%;" onclick="doLogout()" data-i18n="btn_logout">Cerrar Sesión</button>
+      <button id="pwa-install-btn" onclick="triggerPWAInstall()" style="display:none;width:100%;margin-bottom:8px;padding:10px;background:linear-gradient(135deg,#22c55e,#16a34a);border:none;border-radius:10px;color:white;font-weight:700;font-size:13px;cursor:pointer;align-items:center;justify-content:center;gap:8px;" >
+📲 Instalar App
+</button>
+<button class="btn btn-outline btn-sm" style="width:100%;" onclick="doLogout()" data-i18n="btn_logout">Cerrar Sesión</button>
     </div>
   </div>
 
