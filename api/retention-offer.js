@@ -35,7 +35,7 @@ export default async function handler(req, res) {
         : userStats?.daysActive || 0);
 
     const activePlan = profile?.billing_period || 'monthly';
-    const planPriceMap = { free: 0, personal: 7.99, pro: 15.99, business: 39.99 };
+    const planPriceMap = { free: 0, personal: 9.99, pro: 19.99, business: 49.99 };
     const planPrice = planPriceMap[profile?.plan] || (activePlan === 'annual' ? 15.99 : 9.99);
     const planNames = { free: 'Free', personal: 'Personal', pro: 'Pro', business: 'Business' };
     const planBase = planNames[profile?.plan] || 'Pro';
@@ -62,19 +62,24 @@ export default async function handler(req, res) {
     let couponId = null;
     let discountedPrice = null;
 
-    if (offerType === 'discount_50' && !alreadyUsedOffer && profile?.stripe_customer_id) {
-      try {
-        const coupon = await stripe.coupons.create({
-          percent_off: 50,
-          duration: 'repeating',
-          duration_in_months: 3,
-          max_redemptions: 1,
-          metadata: { user_id: user.id, reason }
-        });
-        couponId = coupon.id;
-        discountedPrice = (planPrice * 0.5).toFixed(2);
-      } catch (e) {
-        console.error('Coupon creation failed:', e.message);
+    if (offerType === 'discount_50' && !alreadyUsedOffer) {
+      // Always calculate discounted price for display
+      discountedPrice = (planPrice * 0.5).toFixed(2);
+
+      // Only create Stripe coupon if customer exists
+      if (profile?.stripe_customer_id) {
+        try {
+          const coupon = await stripe.coupons.create({
+            percent_off: 50,
+            duration: 'repeating',
+            duration_in_months: 3,
+            max_redemptions: 1,
+            metadata: { user_id: user.id, reason }
+          });
+          couponId = coupon.id;
+        } catch (e) {
+          console.error('Coupon creation failed:', e.message);
+        }
       }
     }
 
