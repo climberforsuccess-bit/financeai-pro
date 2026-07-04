@@ -3316,11 +3316,13 @@ async function processReceipt(event) {
     const base64 = await fileToBase64(file);
 
     // Llamar a OpenAI Vision via Supabase Edge Function
+    const { data: { session } } = await supabase.auth.getSession();
+    const userToken = session?.access_token || SUPABASE_ANON_KEY;
     const response = await fetch(SUPABASE_FUNCTION_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Authorization': `Bearer ${userToken}`,
         'apikey': SUPABASE_ANON_KEY
       },
       body: JSON.stringify({
@@ -3474,11 +3476,13 @@ async function processReceipt(event) {
   try {
     const base64 = await fileToBase64(file);
 
+    const { data: { session } } = await supabase.auth.getSession();
+    const userToken = session?.access_token || SUPABASE_ANON_KEY;
     const response = await fetch(SUPABASE_FUNCTION_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Authorization': `Bearer ${userToken}`,
         'apikey': SUPABASE_ANON_KEY
       },
       body: JSON.stringify({
