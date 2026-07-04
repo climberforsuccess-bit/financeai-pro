@@ -684,7 +684,7 @@ async function loadUserProfile() {
   try {
     const { data, error } = await supabase
       .from('profiles')
-      .select('plan, subscription_status, billing_period, trial_ends_at, subscription_ends_at, created_at, ai_usage_count')
+      .select('plan, subscription_status, billing_period, trial_ends_at, subscription_ends_at, created_at, ai_usage_count, country, currency, display_name')
       .eq('id', STATE.user.id)
       .single();
 
@@ -707,6 +707,13 @@ async function loadUserProfile() {
       // ai usage count
       STATE.aiUsageCount = data.ai_usage_count || 0;
 
+      // country, currency, display_name
+      STATE.settings.country = data.country || 'us';
+      STATE.settings.currency = data.currency || 'USD';
+      STATE.settings.displayName = data.display_name || '';
+      localStorage.setItem('fai_country', STATE.settings.country);
+      localStorage.setItem('fai_currency', STATE.settings.currency);
+
       checkTrialStatus();
       localStorage.setItem('fai_plan', STATE.settings.plan);
       localStorage.setItem('fai_billing', STATE.settings.billingPeriod);
@@ -714,6 +721,30 @@ async function loadUserProfile() {
   } catch(e) {
     console.warn('loadUserProfile error:', e);
   }
+}
+
+async function saveProfileSettings() {
+  if (!STATE.user) { showToast("Debes iniciar sesión", "error"); return; }
+  const name    = document.getElementById("set-name")?.value?.trim();
+  const country = document.getElementById("set-country")?.value;
+  const currency = document.getElementById("set-currency")?.value;
+
+  if (!name) { showToast("El nombre no puede estar vacío", "warning"); return; }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ display_name: name, country, currency })
+    .eq("id", STATE.user.id);
+
+  if (error) { showToast("Error al guardar perfil", "error"); console.error(error); return; }
+
+  STATE.settings.displayName = name;
+  STATE.settings.country = country;
+  STATE.settings.currency = currency;
+  localStorage.setItem("fai_country", country);
+  localStorage.setItem("fai_currency", currency);
+
+  showToast("✅ Perfil actualizado", "success");
 }
 
 
@@ -2895,6 +2926,14 @@ function renderSettings() {
 
   // Actualizar badge de plan en pricing
   updateCurrentPlanBadge();
+
+  // Cargar valores del perfil en el formulario
+  const nameEl = document.getElementById("set-name");
+  const countryEl = document.getElementById("set-country");
+  const currencyEl = document.getElementById("set-currency");
+  if (nameEl) nameEl.value = STATE.settings.displayName || STATE.user?.user_metadata?.full_name || "";
+  if (countryEl) countryEl.value = STATE.settings.country || localStorage.getItem("fai_country") || "us";
+  if (currencyEl) currencyEl.value = STATE.settings.currency || localStorage.getItem("fai_currency") || "USD";
 }
 
 // ── Render Reports ───────────────────────────────────────────
