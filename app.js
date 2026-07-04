@@ -2923,6 +2923,10 @@ function renderSettings() {
   const emailEl = document.getElementById('settings-user-email');
   if (emailEl && STATE.user) emailEl.textContent = STATE.user.email || '—';
 
+  // Cargar email real en el input
+  const emailInput = document.getElementById('set-email');
+  if (emailInput && STATE.user) emailInput.value = STATE.user.email || '';
+
   // Mostrar plan actual
   const planEl = document.getElementById('settings-plan-name');
   if (planEl) planEl.textContent = STATE.isVIP ? `VIP ${STATE.vipPlan}` : t('plan_free');
