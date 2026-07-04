@@ -3322,7 +3322,7 @@ async function processReceipt(event) {
         'apikey': SUPABASE_ANON_KEY
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',
         messages: [
           {
             role: 'user',
@@ -3341,7 +3341,7 @@ Only respond with the JSON, no additional text.`
               },
               {
                 type: 'image_url',
-                image_url: { url: base64 }
+                image_url: { url: base64, detail: 'low' }
               }
             ]
           }
