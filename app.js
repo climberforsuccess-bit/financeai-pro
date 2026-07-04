@@ -4739,8 +4739,11 @@ async function doLogout() {
     STATE.transactions = [];
     STATE.cards = [];
     localStorage.clear();
-    showSection('login');
+    sessionStorage.clear();
     showToast('Sesión cerrada correctamente', 'success');
+    setTimeout(() => {
+      window.location.href = window.location.origin + window.location.pathname;
+    }, 800);
   } catch (error) {
     console.error('Error al cerrar sesión:', error);
     showToast('Error al cerrar sesión', 'error');
