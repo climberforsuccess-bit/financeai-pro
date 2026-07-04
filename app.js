@@ -3240,6 +3240,168 @@ async function processReceipt(event) {
   const file = event.target.files[0];
   if (!file) return;
 
+  // Verificar que el usuario tiene acceso al scanner
+  const limits = getPlanLimits();
+  if (!limits.scanner) {
+    showToast(t('scan_requires_plan'), 'error');
+    showSection('subscriptions');
+    return;
+  }
+
+  // Mostrar loading
+  const uploadArea = document.querySelector('.upload-area');
+  if (uploadArea) {
+    uploadArea.innerHTML = `<div style="padding:40px;text-align:center;"><span style="font-size:40px;">⏳</span><div style="margin-top:12px;color:var(--gray);">${t('scanning_receipt')}</div></div>`;
+  }
+
+  try {
+    // Convertir imagen a base64
+    const base64 = await fileToBase64(file);
+
+    // Llamar a OpenAI Vision via Supabase Edge Function
+    const response = await fetch(SUPABASE_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: `Analyze this receipt and extract the information in exact JSON format:
+{
+  "merchant": "merchant name",
+  "amount": number_without_symbol,
+  "category": "category (${t('scan_prompt_categories')})",
+  "date": "YYYY-MM-DD",
+  "currency": "USD or detected currency"
+}
+Only respond with the JSON, no additional text.`
+              },
+              {
+                type: 'image_url',
+                image_url: { url: base64 }
+              }
+            ]
+          }
+        ],
+        max_tokens: 300
+      })
+    });
+
+    if (!response.ok) throw new Error(t('scan_error_image'));
+    const data = await response.json();
+    const text = data.choices[0].message.content.trim();
+
+    // Parsear JSON de la respuesta
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error(t('scan_error_extract'));
+    const result = JSON.parse(jsonMatch[0]);
+
+    // Mostrar resultado en la UI
+    const categoryEmojis = {
+      [t('scan_cat_supermarket')]: '🛒', [t('scan_cat_restaurant')]: '🍽️', [t('scan_cat_gas')]: '⛽',
+      [t('scan_cat_pharmacy')]: '💊', [t('scan_cat_clothing')]: '👕', [t('scan_cat_entertainment')]: '🎬',
+      [t('scan_cat_transport')]: '🚗', [t('scan_cat_services')]: '⚡', [t('scan_cat_other')]: '📦'
+    };
+    const emoji = categoryEmojis[result.category] || '📦';
+
+    document.getElementById('scan-merchant').textContent = result.merchant || t('scan_unknown');
+    document.getElementById('scan-amount').textContent = `$${parseFloat(result.amount).toFixed(2)}`;
+    document.getElementById('scan-category').textContent = `${emoji} ${result.category || t('scan_other')}`;
+    document.getElementById('scan-date').textContent = result.date || new Date().toISOString().split('T')[0];
+
+    // Guardar en STATE para usar en saveScannedTransaction
+    STATE.lastScan = result;
+
+    // Mostrar resultado
+    document.getElementById('scan-result').classList.add('show');
+
+    // Restaurar upload area
+    if (uploadArea) {
+      uploadArea.innerHTML = `
+        <input type="file" id="receipt-input" accept="image/*" style="display:none;" onchange="processReceipt(event)">
+        <div class="upload-icon">✅</div>
+        <div class="upload-title">${t('receipt_analyzed_ok')}</div>
+        <div class="upload-subtitle">${t('scan_again')}</div>`;
+      uploadArea.onclick = () => document.getElementById('receipt-input').click();
+    }
+
+  } catch(e) {
+    console.error('Scanner error:', e);
+    showToast(t('scan_error'), 'error');
+    // Restaurar upload area
+    if (uploadArea) {
+      uploadArea.innerHTML = `
+        <input type="file" id="receipt-input" accept="image/*" style="display:none;" onchange="processReceipt(event)">
+        <div class="upload-icon">📸</div>
+        <div class="upload-title">${t('upload_receipt_title')}</div>
+        <div class="upload-subtitle">${t('scan_upload_hint')}</div>`;
+      uploadArea.onclick = () => document.getElementById('receipt-input').click();
+    }
+  }
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function saveScannedTransaction() {
+  if (!STATE.lastScan) {
+    showToast(t('scan_no_data'), 'error');
+    return;
+  }
+
+  const scan = STATE.lastScan;
+  const type = document.getElementById('filter-category')?.value === 'Empresa' ? 'business' : 'personal';
+
+  try {
+    const transaction = {
+      user_id: STATE.user.id,
+      description: scan.merchant || t('receipt_scanned'),
+      amount: -Math.abs(parseFloat(scan.amount)),
+      category: scan.category || t('cat_other'),
+      date: scan.date || new Date().toISOString().split('T')[0],
+      type: type,
+      source: 'scanner'
+    };
+
+    const { data, error } = await supabase
+      .from('transactions')
+      .insert([transaction])
+      .select();
+
+    if (error) throw error;
+
+    STATE.transactions = [data[0], ...(STATE.transactions || [])];
+    document.getElementById('scan-result').classList.remove('show');
+    STATE.lastScan = null;
+    showToast(t('transaction_saved'));
+
+  } catch(e) {
+    console.error('Error guardando transacción:', e);
+    showToast(t('scan_save_error'), 'error');
+  }
+}
+
+// ============================================
+// SECCIÓN: SCANNER DE RECIBOS IA
+// ============================================
+async function processReceipt(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
   const limits = getPlanLimits();
   if (!limits.scanner) {
     showToast(t('scanner_unlock'), 'info');
@@ -4511,18 +4673,4 @@ function triggerPWAInstall() {
     }
     deferredInstallPrompt = null;
   });
-}
-async function doLogout() {
-  try {
-    await supabase.auth.signOut();
-    STATE.user = null;
-    STATE.transactions = [];
-    STATE.cards = [];
-    localStorage.clear();
-    showSection('login');
-    showToast('Sesión cerrada correctamente', 'success');
-  } catch (error) {
-    console.error('Error al cerrar sesión:', error);
-    showToast('Error al cerrar sesión', 'error');
-  }
 }
