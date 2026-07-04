@@ -420,12 +420,26 @@ Respond ONLY with a JSON array. Zero explanation. Zero markdown:
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) throw new Error('No JSON found');
     let jsonStr = match[0]
-      .replace(/[\u2018\u2019]/g, "'")
-      .replace(/[\u201C\u201D]/g, '"')
+      .replace(/[\u2018\u2019\u2032]/g, "\'")
+      .replace(/[\u201C\u201D\u201E]/g, '\"')
       .replace(/\n/g, ' ')
       .replace(/,\s*]/g, ']')
       .replace(/,\s*}/g, '}');
-    const cards = JSON.parse(jsonStr);
+
+    // Sanitize apostrophes inside JSON string values without breaking structure
+    jsonStr = jsonStr.replace(/"([^"]*)"/g, (match, inner) => {
+      const safe = inner.replace(/'/g, '\u0027').replace(/[\x00-\x1F]/g, ' ');
+      return `"${safe}"`;
+    });
+
+    let cards;
+    try {
+      cards = JSON.parse(jsonStr);
+    } catch(parseErr) {
+      // Last resort: strip all non-ASCII and retry
+      const ascii = jsonStr.replace(/[^\x20-\x7E,\[\]{}":]/g, '');
+      cards = JSON.parse(ascii);
+    }
     if (!Array.isArray(cards) || !cards.length) throw new Error('Empty');
 
     container.innerHTML = cards.map(card => `
