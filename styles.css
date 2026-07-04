@@ -837,6 +837,7 @@ input:checked + .slider:before {
 }
 
 .sidebar-nav {
+  max-height: calc(100vh - 180px);
   flex: 1;
   padding: 20px 12px;
   display: flex;

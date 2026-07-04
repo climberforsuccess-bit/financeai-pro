@@ -4674,3 +4674,18 @@ function triggerPWAInstall() {
     deferredInstallPrompt = null;
   });
 }
+
+async function doLogout() {
+  try {
+    await supabase.auth.signOut();
+    STATE.user = null;
+    STATE.transactions = [];
+    STATE.cards = [];
+    localStorage.clear();
+    showSection('login');
+    showToast('Sesión cerrada correctamente', 'success');
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+    showToast('Error al cerrar sesión', 'error');
+  }
+}
