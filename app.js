@@ -3432,13 +3432,30 @@ async function fileToBase64(file) {
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
   
   if (isHeic) {
-    // Send HEIC directly as base64 — OpenAI Vision accepts HEIC natively
-    console.log('Reading HEIC as base64 for OpenAI Vision...');
+    // Convert HEIC to JPEG in browser using canvas
+    console.log('Converting HEIC to JPEG via canvas...');
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        // Canvas failed — send raw base64 and hope server handles it
+        console.warn('Canvas HEIC failed, sending raw...');
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      };
+      img.src = url;
     });
   }
   return new Promise((resolve, reject) => {
