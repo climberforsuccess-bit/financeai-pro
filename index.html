@@ -1156,7 +1156,7 @@ body {
   border-radius: 4px;
 }
 </style>
-  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.3/dist/heic2any.min.js"></script>
 </head>
 <body style="padding-top: 52px;">
 
@@ -1745,15 +1745,19 @@ body {
             <span class="result-value" id="scan-date">Jun 5, 2025</span>
           </div>
           <div class="result-item">
-            <span class="result-label" data-i18n="lbl_card_rec">💳 Tarjeta Recomendada</span>
-            <span class="result-value" id="scan-card" style="color:var(--accent);">Chase Freedom · 5% cashback</span>
+            <span class="result-label">💳 Tarjeta Usada</span>
+            <span class="result-value">
+              <select id="scan-card-select" style="background:var(--bg-card);border:1px solid var(--border);color:var(--white);padding:4px 8px;border-radius:6px;font-size:13px;">
+                <option value="">— Sin tarjeta —</option>
+              </select>
+            </span>
           </div>
           <div class="result-item">
             <span class="result-label" data-i18n="lbl_type">🏷️ Tipo</span>
             <span class="result-value">
-              <select id="filter-category" name="filter-category" style="background:var(--bg-card);border:1px solid var(--border);color:var(--white);padding:4px 8px;border-radius:6px;font-size:13px;">
-                <option data-i18n="opt_personal">Personal</option>
-                <option data-i18n="opt_business">Empresa</option>
+              <select id="scan-type-select" style="background:var(--bg-card);border:1px solid var(--border);color:var(--white);padding:4px 8px;border-radius:6px;font-size:13px;">
+                <option value="personal" data-i18n="opt_personal">Personal</option>
+                <option value="business" data-i18n="opt_business">Empresa</option>
               </select>
             </span>
           </div>

@@ -3398,6 +3398,20 @@ Only respond with the JSON, no additional text.`
 
     STATE.lastScan = result;
     document.getElementById('scan-result').classList.add('show');
+
+    // Poblar selector de tarjetas
+    const cardSelect = document.getElementById('scan-card-select');
+    if (cardSelect) {
+      cardSelect.innerHTML = '<option value="">— Sin tarjeta —</option>';
+      const cards = STATE.cards || [];
+      cards.forEach(card => {
+        const opt = document.createElement('option');
+        opt.value = card.id;
+        opt.textContent = `${card.name || card.bank} ····${card.lastFour || ''}`;
+        cardSelect.appendChild(opt);
+      });
+    }
+
     showToast(t('receipt_detected'));
 
     if (uploadArea) {
@@ -3473,7 +3487,10 @@ async function saveScannedTransaction() {
   }
 
   const scan = STATE.lastScan;
-  const type = document.getElementById('filter-category')?.value === 'Empresa' ? 'business' : 'personal';
+  const typeEl = document.getElementById('scan-type-select');
+  const type = typeEl ? typeEl.value : 'personal';
+  const cardEl = document.getElementById('scan-card-select');
+  const card_id = cardEl && cardEl.value ? cardEl.value : null;
 
   try {
     const transaction = {
@@ -3483,7 +3500,8 @@ async function saveScannedTransaction() {
       category: scan.category || t('cat_other'),
       date: scan.date || new Date().toISOString().split('T')[0],
       type: type,
-      source: 'scanner'
+      source: 'scanner',
+      ...(card_id && { card_id })
     };
 
     const { data, error } = await supabase
