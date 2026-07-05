@@ -3398,11 +3398,12 @@ Only respond with the JSON, no additional text.`
 }
 
 async function fileToBase64(file) {
-  // Convert HEIC to JPEG if needed
-  if (file.type === 'image/heic' || file.type === 'image/heif' || file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif')) {
+  // Convert HEIC to JPEG if needed using window.heic2any loaded from CDN
+  const isHeic = file.type === 'image/heic' || file.type === 'image/heif' || 
+                 file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
+  if (isHeic && typeof window.heic2any === 'function') {
     try {
-      const heic2any = (await import('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js')).default;
-      const blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
+      const blob = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
       file = Array.isArray(blob) ? blob[0] : blob;
     } catch(e) {
       console.warn('heic2any failed, trying raw:', e);
