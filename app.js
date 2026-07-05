@@ -3435,7 +3435,7 @@ async function fileToBase64(file) {
     try {
       console.log('Converting HEIC to JPEG via server...');
       const arrayBuffer = await file.arrayBuffer();
-      const response = await fetch('/api/convert-heic', {
+      const response = await fetch('/api/openai-proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/octet-stream' },
         body: arrayBuffer

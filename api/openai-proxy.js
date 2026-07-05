@@ -1,16 +1,42 @@
 // ── OpenAI Proxy para Vercel ──────────────────────────────
+import sharp from 'sharp';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // ── HEIC conversion mode ──────────────────────────────
+  const contentType = req.headers['content-type'] || '';
+  if (contentType === 'application/octet-stream') {
+    try {
+      const chunks = [];
+      for await (const chunk of req) {
+        chunks.push(chunk);
+      }
+      const buffer = Buffer.concat(chunks);
+      const jpegBuffer = await sharp(buffer)
+        .rotate()
+        .jpeg({ quality: 85 })
+        .toBuffer();
+      const base64 = jpegBuffer.toString('base64');
+      return res.status(200).json({
+        success: true,
+        base64: `data:image/jpeg;base64,${base64}`
+      });
+    } catch (e) {
+      console.error('HEIC conversion error:', e);
+      return res.status(500).json({ error: e.message });
+    }
+  }
+
+  // ── OpenAI chat mode ──────────────────────────────────
   const { messages, plan } = req.body;
 
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'messages array required' });
   }
 
-  // Modelo según plan — gpt-4o-mini para Pro/Business, gpt-3.5-turbo para el resto
   const allowedGpt4Plans = ['pro', 'business'];
   const model = allowedGpt4Plans.includes(plan) ? 'gpt-4o-mini' : 'gpt-3.5-turbo';
 
@@ -35,7 +61,6 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    // Devolvemos también el modelo usado (útil para debug)
     return res.status(200).json({ ...data, _model: model });
 
   } catch (error) {
