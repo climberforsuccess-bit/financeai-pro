@@ -3397,22 +3397,22 @@ Only respond with the JSON, no additional text.`
   }
 }
 
-function fileToBase64(file) {
+async function fileToBase64(file) {
+  // Convert HEIC to JPEG if needed
+  if (file.type === 'image/heic' || file.type === 'image/heif' || file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif')) {
+    try {
+      const heic2any = (await import('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js')).default;
+      const blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
+      file = Array.isArray(blob) ? blob[0] : blob;
+    } catch(e) {
+      console.warn('heic2any failed, trying raw:', e);
+    }
+  }
   return new Promise((resolve, reject) => {
-    // Convert to JPEG via canvas (fixes HEIC and other unsupported formats)
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      URL.revokeObjectURL(url);
-      resolve(canvas.toDataURL('image/jpeg', 0.85));
-    };
-    img.onerror = reject;
-    img.src = url;
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
   });
 }
 
