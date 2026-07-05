@@ -3310,26 +3310,51 @@ async function processReceipt(event) {
   }
 
   try {
-    const base64 = await fileToBase64(file);
+    const base64OrFile = await fileToBase64(file);
 
     const { data: { session } } = await supabase.auth.getSession();
     const userToken = session?.access_token || SUPABASE_ANON_KEY;
-    const response = await fetch(SUPABASE_FUNCTION_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${userToken}`,
-        'apikey': SUPABASE_ANON_KEY
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: `Analyze this receipt and extract the information in exact JSON format:
+
+    let response;
+    if (base64OrFile && base64OrFile._useMultipart) {
+      // HEIC file: send as multipart/form-data
+      const formData = new FormData();
+      formData.append('image', base64OrFile);
+      formData.append('prompt', `Analyze this receipt and extract the information in exact JSON format:
+{
+  "merchant": "merchant name",
+  "amount": number_without_symbol,
+  "category": "category (${t('scan_prompt_categories')})",
+  "date": "YYYY-MM-DD",
+  "currency": "USD or detected currency"
+}
+Only respond with the JSON, no additional text.`);
+      response = await fetch(SUPABASE_FUNCTION_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${userToken}`,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: formData
+      });
+    } else {
+      // Normal image: send as JSON with base64
+      response = await fetch(SUPABASE_FUNCTION_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'text',
+                  text: `Analyze this receipt and extract the information in exact JSON format:
 {
   "merchant": "merchant name",
   "amount": number_without_symbol,
@@ -3338,17 +3363,18 @@ async function processReceipt(event) {
   "currency": "USD or detected currency"
 }
 Only respond with the JSON, no additional text.`
-              },
-              {
-                type: 'image_url',
-                image_url: { url: base64, detail: 'low' }
-              }
-            ]
-          }
-        ],
-        max_tokens: 300
-      })
-    });
+                },
+                {
+                  type: 'image_url',
+                  image_url: { url: base64OrFile, detail: 'low' }
+                }
+              ]
+            }
+          ],
+          max_tokens: 300
+        })
+      });
+    }
 
     if (!response.ok) throw new Error(t('scan_error_image'));
     const data = await response.json();
@@ -3406,7 +3432,7 @@ async function fileToBase64(file) {
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
   
   if (isHeic) {
-    // Try createImageBitmap + canvas (works in Chrome/Edge)
+    // Try createImageBitmap + canvas first
     try {
       const bitmap = await createImageBitmap(file);
       const canvas = document.createElement('canvas');
@@ -3417,18 +3443,11 @@ async function fileToBase64(file) {
       bitmap.close();
       return canvas.toDataURL('image/jpeg', 0.85);
     } catch(e) {
-      console.warn('createImageBitmap failed:', e);
+      console.warn('createImageBitmap failed, will use multipart upload:', e);
     }
-    // Try heic2any fallback
-    if (typeof window.heic2any === 'function') {
-      try {
-        const blob = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
-        file = Array.isArray(blob) ? blob[0] : blob;
-      } catch(e2) {
-        console.warn('heic2any also failed:', e2);
-        throw new Error('HEIC_NOT_SUPPORTED');
-      }
-    }
+    // Mark file as needing multipart upload
+    file._useMultipart = true;
+    return file;
   }
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
