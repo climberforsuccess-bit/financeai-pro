@@ -3432,25 +3432,14 @@ async function fileToBase64(file) {
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
   
   if (isHeic) {
-    try {
-      console.log('Converting HEIC to JPEG via server...');
-      const arrayBuffer = await file.arrayBuffer();
-      const response = await fetch('/api/openai-proxy', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/octet-stream' },
-        body: arrayBuffer
-      });
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || 'Conversion failed');
-      }
-      const data = await response.json();
-      return data.base64;
-    } catch(e) {
-      console.error('HEIC server conversion failed:', e);
-      showToast('Could not convert HEIC. Please try a JPG photo instead.', 'error');
-      throw new Error('HEIC_CONVERSION_FAILED');
-    }
+    // Send HEIC directly as base64 — OpenAI Vision accepts HEIC natively
+    console.log('Reading HEIC as base64 for OpenAI Vision...');
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
