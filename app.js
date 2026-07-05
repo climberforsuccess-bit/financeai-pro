@@ -3433,25 +3433,21 @@ async function fileToBase64(file) {
   
   if (isHeic) {
     try {
-      // Check heic2any is loaded
-      if (typeof window.heic2any !== 'function') {
-        throw new Error('heic2any not loaded');
+      console.log('Converting HEIC to JPEG via server...');
+      const arrayBuffer = await file.arrayBuffer();
+      const response = await fetch('/api/convert-heic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        body: arrayBuffer
+      });
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || 'Conversion failed');
       }
-      console.log('Converting HEIC to JPEG via heic2any...');
-      const converted = await window.heic2any({
-        blob: file,
-        toType: 'image/jpeg',
-        quality: 0.85
-      });
-      const jpegBlob = Array.isArray(converted) ? converted[0] : converted;
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(jpegBlob);
-      });
+      const data = await response.json();
+      return data.base64;
     } catch(e) {
-      console.error('heic2any conversion failed:', e);
+      console.error('HEIC server conversion failed:', e);
       showToast('Could not convert HEIC. Please try a JPG photo instead.', 'error');
       throw new Error('HEIC_CONVERSION_FAILED');
     }
