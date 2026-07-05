@@ -3432,22 +3432,29 @@ async function fileToBase64(file) {
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
   
   if (isHeic) {
-    // Try createImageBitmap + canvas first
     try {
-      const bitmap = await createImageBitmap(file);
-      const canvas = document.createElement('canvas');
-      canvas.width = bitmap.width;
-      canvas.height = bitmap.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(bitmap, 0, 0);
-      bitmap.close();
-      return canvas.toDataURL('image/jpeg', 0.85);
+      // Check heic2any is loaded
+      if (typeof window.heic2any !== 'function') {
+        throw new Error('heic2any not loaded');
+      }
+      console.log('Converting HEIC to JPEG via heic2any...');
+      const converted = await window.heic2any({
+        blob: file,
+        toType: 'image/jpeg',
+        quality: 0.85
+      });
+      const jpegBlob = Array.isArray(converted) ? converted[0] : converted;
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(jpegBlob);
+      });
     } catch(e) {
-      console.warn('createImageBitmap failed, will use multipart upload:', e);
+      console.error('heic2any conversion failed:', e);
+      showToast('Could not convert HEIC. Please try a JPG photo instead.', 'error');
+      throw new Error('HEIC_CONVERSION_FAILED');
     }
-    // Mark file as needing multipart upload
-    file._useMultipart = true;
-    return file;
   }
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
