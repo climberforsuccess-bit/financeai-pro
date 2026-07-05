@@ -3385,7 +3385,11 @@ Only respond with the JSON, no additional text.`
 
   } catch(e) {
     console.error('Scanner error:', e);
-    showToast(t('scan_read_error'), 'error');
+    if (e.message === 'HEIC_NOT_SUPPORTED') {
+      showToast('HEIC not supported. Open photo on iPhone → Edit → Done → Share → Save as JPG', 'error');
+    } else {
+      showToast(t('scan_read_error'), 'error');
+    }
     if (uploadArea) {
       uploadArea.innerHTML = `
         <input type="file" id="receipt-input" accept="image/*" style="display:none;" onchange="processReceipt(event)">
@@ -3398,15 +3402,32 @@ Only respond with the JSON, no additional text.`
 }
 
 async function fileToBase64(file) {
-  // Convert HEIC to JPEG if needed using window.heic2any loaded from CDN
   const isHeic = file.type === 'image/heic' || file.type === 'image/heif' || 
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
-  if (isHeic && typeof window.heic2any === 'function') {
+  
+  if (isHeic) {
+    // Try createImageBitmap + canvas (works in Chrome/Edge)
     try {
-      const blob = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
-      file = Array.isArray(blob) ? blob[0] : blob;
+      const bitmap = await createImageBitmap(file);
+      const canvas = document.createElement('canvas');
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(bitmap, 0, 0);
+      bitmap.close();
+      return canvas.toDataURL('image/jpeg', 0.85);
     } catch(e) {
-      console.warn('heic2any failed, trying raw:', e);
+      console.warn('createImageBitmap failed:', e);
+    }
+    // Try heic2any fallback
+    if (typeof window.heic2any === 'function') {
+      try {
+        const blob = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
+        file = Array.isArray(blob) ? blob[0] : blob;
+      } catch(e2) {
+        console.warn('heic2any also failed:', e2);
+        throw new Error('HEIC_NOT_SUPPORTED');
+      }
     }
   }
   return new Promise((resolve, reject) => {
