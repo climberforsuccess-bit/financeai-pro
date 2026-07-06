@@ -45,6 +45,26 @@ function getPlanLimits() {
   return PLAN_LIMITS[plan] || PLAN_LIMITS.free;
 }
 
+
+function updateAiMessagesLeft() {
+  const el = document.getElementById("aiMessagesLeft");
+  if (!el) return;
+  const limits = getPlanLimits();
+  if (limits.aiMessages === -1) {
+    el.textContent = "∞ mensajes hoy";
+    return;
+  }
+  const todayKey = "fai_ai_messages_today";
+  const dateKey  = "fai_ai_messages_date";
+  const today    = new Date().toDateString();
+  if (localStorage.getItem(dateKey) !== today) {
+    localStorage.setItem(dateKey, today);
+    localStorage.setItem(todayKey, "0");
+  }
+  const used = parseInt(localStorage.getItem(todayKey) || "0");
+  const remaining = limits.aiMessages - used;
+  el.textContent = remaining + "/" + limits.aiMessages + " mensajes hoy";
+}
 function canUseFeature(feature) {
   const limits = getPlanLimits();
   return limits[feature] === true || limits[feature] === -1 || (typeof limits[feature] === 'number' && limits[feature] > 0);
@@ -502,6 +522,7 @@ function showSection(sectionId) {
   if (sectionId === 'reports')       loadTransactions().then(() => renderReports());
   if (sectionId === 'recommendations') loadTransactions().then(() => loadCardRecommendations());
   if (sectionId === 'settings')      renderSettings();
+  if (sectionId === 'ai-assistant')   updateAiMessagesLeft();
   
   if (sectionId === 'admin')         adminLoadStats();
 
@@ -3077,6 +3098,7 @@ async function askOpenAI(userMessage, context = '') {
   }
   const used = parseInt(localStorage.getItem(todayKey) || '0');
   localStorage.setItem(todayKey, used + 1);
+  updateAiMessagesLeft();
 
   // Warning al 80% del límite
   const limits = getPlanLimits();
@@ -4578,6 +4600,7 @@ function applyProAccess() {
       lock.style.cssText = 'font-size:11px; opacity:0.7;';
       navItem.appendChild(lock);
     }
+  updateAiMessagesLeft();
   });
 }
 
