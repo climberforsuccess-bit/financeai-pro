@@ -956,7 +956,16 @@ function renderTransactions(filter = 'all') {
     supermercado: '🛒', restaurante: '🍕', transporte: '🚗', gasolina: '⛽',
     entretenimiento: '🎬', salud: '💊', educacion: '📚', ropa: '👕',
     tecnologia: '💻', freelance: '💼', salario: '💵', ingreso: '💵',
-    otros: '📦', other: '📦'
+    otros: '📦', other: '📦',
+salary: '💵', income: '💵', freelance: '💼',
+food: '🍕', 'food & dining': '🍕', dining: '🍕', restaurant: '🍕',
+transport: '🚗', transportation: '🚗', 'gas station': '⛽', gas: '⛽',
+entertainment: '🎬', shopping: '🛁', clothing: '👕',
+health: '💊', education: '📚', technology: '💻',
+groceries: '🛒', supermarket: '🛒',
+housing: '🏠', rent: '🏠', utilities: '💡',
+subscriptions: '📱', insurance: '🛡️'
+
   };
 
   container.innerHTML = `
