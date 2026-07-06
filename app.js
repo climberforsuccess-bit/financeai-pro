@@ -494,7 +494,8 @@ function showSection(sectionId) {
   if (!checkProAccess(sectionId)) return;
 
   if (sectionId === 'dashboard')     renderDashboard();
-  if (sectionId === 'transactions')  renderTransactions();
+  if (sectionId === 'transactions')  Promise.all([loadTransactions(), loadCards()]).then(() => renderTransactions());
+
   if (sectionId === 'cards')         renderCards();
   if (sectionId === 'debts')         Promise.all([loadCards(), loadDebts()]).then(() => renderDebts());
   if (sectionId === 'subscriptions') renderSubscriptions();
@@ -546,7 +547,9 @@ async function loadTransactions() {
     category: tx.category,
     expenseType: tx.expense_type,
     date: tx.date,
-    createdAt: tx.created_at
+   createdAt: tx.created_at,
+    cardId: tx.card_id,
+    merchant: tx.merchant
   }));
 }
 
@@ -980,9 +983,13 @@ function renderTransactions(filter = 'all') {
           const expType  = tx.expenseType || '';
           const expBadge = expType.toLowerCase() === 'business' ? 'badge-warning' : 'badge-cyan';
           const dateStr  = tx.date ? new Date(tx.date).toLocaleDateString() : '';
+          const card = (STATE.cards || []).find(c => c.id === tx.cardId);
+const cardBadge = card ? `<span class="badge badge-outline" style="font-size:11px;">💳 ····${card.lastFour || ''}</span>` : '';
+
           return `
             <tr>
-              <td style="color:#fff;font-weight:500;">${tx.description || t('no_description')}</td>
+              <td style="color:#fff;font-weight:500;">${tx.description || t('no_description')} ${cardBadge}</td>
+
               <td>${icon} ${tx.category || ''}</td>
               <td><span class="badge ${typeBadge}">${typeLabel}</span></td>
               <td style="color:#8892A4;">${dateStr}</td>
