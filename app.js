@@ -4309,6 +4309,10 @@ async function saveNewTransaction() {
 async function deleteTransaction(id) {
   if (!confirm(t('tx_confirm_delete'))) return;
 
+  // Guardar cardId antes de borrar
+  const tx = (STATE.transactions || []).find(t => t.id === id);
+  const cardId = tx?.cardId || null;
+
   const { error } = await supabase
     .from('transactions')
     .delete()
@@ -4323,6 +4327,7 @@ async function deleteTransaction(id) {
   STATE.transactions = STATE.transactions.filter(tx => tx.id !== id);
   renderTransactions();
   renderDashboard();
+  if (cardId) await recalcCardBalance(cardId);
   showToast(t('notif_tx_deleted'), 'success');
 }
 
