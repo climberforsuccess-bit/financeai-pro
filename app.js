@@ -999,7 +999,8 @@ const cardBadge = card ? `<span class="badge badge-outline" style="font-size:11p
             <tr>
               <td style="color:#fff;font-weight:500;">${tx.description || t('no_description')} ${cardBadge}</td>
 
-              <td>${icon} ${tx.category || ''}</td>
+              <td>${icon} ${tx.category || (isIncome ? 'Income' : 'Other')}</td>
+
               <td><span class="badge ${typeBadge}">${typeLabel}</span></td>
               <td style="color:#8892A4;">${dateStr}</td>
               <td style="color:${color};font-weight:700;">${sign}${formatCurrency(Math.abs(tx.amount))}</td>
