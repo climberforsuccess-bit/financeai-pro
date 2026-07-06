@@ -2152,6 +2152,13 @@ function renderSubscriptions() {
       }).join('');
     }
   }
+
+  // Actualizar totales en sección subscriptions
+  const totalAll = subs.reduce((s, sub) => s + (sub.amount || 0), 0);
+  const monthlyEl = gel('subs-monthly-total');
+  const annualEl  = gel('subs-annual-total');
+  if (monthlyEl) monthlyEl.textContent = formatCurrency(totalAll);
+  if (annualEl)  annualEl.textContent  = formatCurrency(totalAll * 12);
 }
 
 function openAddSubscription() {

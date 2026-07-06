@@ -1672,7 +1672,7 @@ body {
           <div class="ai-chat">
             <div class="chat-messages" id="dash-chat">
               <div class="chat-msg ai">
-                <span data-i18n="dash_chat_intro">👋 ¡Hola! Soy tu asistente financiero IA. Este mes has gastado <strong>$2,847.50</strong> y tu balance es positivo. ¿En qué te puedo ayudar?</span>
+                <span data-i18n="dash_chat_intro">👋 ¡Hola! Soy tu asistente financiero IA. ¿En qué te puedo ayudar hoy?</span>
               </div>
             </div>
             <div style="text-align:right; padding: 4px 8px;">
@@ -1730,15 +1730,15 @@ body {
           </div>
           <div class="result-item">
             <span class="result-label" data-i18n="lbl_merchant">🏪 Comercio</span>
-            <span class="result-value" id="scan-merchant">Walmart Supercenter</span>
+            <span class="result-value" id="scan-merchant">-</span>
           </div>
           <div class="result-item">
             <span class="result-label" data-i18n="lbl_amount">💵 Monto Total</span>
-            <span class="result-value" id="scan-amount">$47.83</span>
+            <span class="result-value" id="scan-amount">-</span>
           </div>
           <div class="result-item">
             <span class="result-label" data-i18n="lbl_category">📁 Categoría</span>
-            <span class="result-value" id="scan-category">🛒 Supermercado</span>
+            <span class="result-value" id="scan-category">-</span>
           </div>
           <div class="result-item">
             <span class="result-label" data-i18n="lbl_date">📅 Fecha</span>
@@ -1899,12 +1899,12 @@ body {
         <div class="stat-card">
           <div class="stat-card-icon">💸</div>
           <div class="stat-card-label" data-i18n="lbl_monthly_exp">Gasto Mensual</div>
-          <div class="stat-card-value red">$87.97</div>
+          <div class="stat-card-value red" id="subs-monthly-total">-</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-icon">📅</div>
           <div class="stat-card-label" data-i18n="lbl_annual_exp">Gasto Anual</div>
-          <div class="stat-card-value red">$1,055.64</div>
+          <div class="stat-card-value red" id="subs-annual-total">-</div>
         </div>
       </div>
 
@@ -2054,42 +2054,7 @@ body {
               </tr>
             </thead>
             <tbody id="report-monthly-tbody">
-              <tr>
-                <td data-i18n="month_jan">Enero</td>
-                <td style="color:var(--success)">$4,250</td>
-                <td style="color:var(--danger)">$3,100</td>
-                <td style="color:var(--accent)">$1,150</td>
-              </tr>
-              <tr>
-                <td data-i18n="month_feb">Febrero</td>
-                <td style="color:var(--success)">$4,250</td>
-                <td style="color:var(--danger)">$2,890</td>
-                <td style="color:var(--accent)">$1,360</td>
-              </tr>
-              <tr>
-                <td data-i18n="month_mar">Marzo</td>
-                <td style="color:var(--success)">$4,750</td>
-                <td style="color:var(--danger)">$3,200</td>
-                <td style="color:var(--accent)">$1,550</td>
-              </tr>
-              <tr>
-                <td data-i18n="month_apr">Abril</td>
-                <td style="color:var(--success)">$4,250</td>
-                <td style="color:var(--danger)">$2,750</td>
-                <td style="color:var(--accent)">$1,500</td>
-              </tr>
-              <tr>
-                <td data-i18n="month_may">Mayo</td>
-                <td style="color:var(--success)">$5,000</td>
-                <td style="color:var(--danger)">$2,980</td>
-                <td style="color:var(--accent)">$2,020</td>
-              </tr>
-              <tr>
-                <td data-i18n="month_jun"><strong>Junio</strong></td>
-                <td style="color:var(--success)"><strong>$4,250</strong></td>
-                <td style="color:var(--danger)"><strong>$2,848</strong></td>
-                <td style="color:var(--accent)"><strong>$1,402</strong></td>
-              </tr>
+              <tr><td colspan="4" style="color:#8892A4;text-align:center;padding:20px;" data-i18n="loading_txt">Loading...</td></tr>
             </tbody>
           </table>
         </div>
