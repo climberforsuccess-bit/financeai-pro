@@ -1446,6 +1446,32 @@ function editCard(id) {
   });
 }
 
+async function recalcCardBalance(cardId) {
+  if (!cardId) return;
+  const txs = (STATE.transactions || []).filter(t => t.cardId === cardId);
+  const spent = txs
+    .filter(t => t.type === 'expense')
+    .reduce((s, t) => s + Math.abs(parseFloat(t.amount) || 0), 0);
+  const income = txs
+    .filter(t => t.type === 'income')
+    .reduce((s, t) => s + Math.abs(parseFloat(t.amount) || 0), 0);
+  const newBalance = Math.max(0, spent - income);
+
+  // Actualizar en Supabase
+  const { error } = await supabase
+    .from('cards')
+    .update({ balance: newBalance })
+    .eq('id', cardId);
+
+  if (error) { console.error('recalcCardBalance error:', error); return; }
+
+  // Actualizar STATE
+  const idx = STATE.cards.findIndex(c => c.id === cardId);
+  if (idx !== -1) STATE.cards[idx].balance = newBalance;
+
+  renderCards();
+}
+
 async function saveEditCard(id) {
   const name     = document.getElementById('ec-name')?.value?.trim();
   const type     = document.getElementById('ec-type')?.value;
@@ -4278,6 +4304,7 @@ async function saveNewTransaction() {
   closeAddTransaction();
   await loadTransactions();
   renderTransactions();
+  if (cardId) await recalcCardBalance(cardId);
 }
 async function deleteTransaction(id) {
   if (!confirm(t('tx_confirm_delete'))) return;
