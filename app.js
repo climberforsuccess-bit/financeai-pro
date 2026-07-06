@@ -1173,7 +1173,7 @@ function renderDashboard() {
         const dateStr = d.toLocaleDateString();
         return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #ffffff11;">
           <div>
-            <div style="font-weight:600;color:#E8EBF0;">${tx.description || tx.category || '—'}</div>
+            <div style="font-weight:600;color:#E8EBF0;">${tx.description || tx.category || '—'} ${(() => { const card = (STATE.cards || []).find(c => c.id === tx.cardId); return card ? `<span style="font-size:11px;background:#ffffff15;padding:2px 6px;border-radius:4px;color:#8892A4;">💳 ····${card.lastFour || ''}</span>` : ''; })()}</div>
             <div style="font-size:12px;color:#8892A4;">${dateStr}</div>
           </div>
           <div style="font-weight:700;color:${isIncome ? '#00C851' : '#FF4757'};">${isIncome ? '+' : '-'}${fmt(tx.amount)}</div>
