@@ -983,7 +983,7 @@ subscriptions: '📱', insurance: '🛡️'
       <tbody>
         ${txs.map(tx => {
           const isIncome = tx.type === 'income';
-          const sign     = isIncome ? '+' : '-';
+          const sign     = isIncome ? '+' : '';
           const color    = isIncome ? '#22c55e' : '#ef4444';
           const catKey   = (tx.category || '').toLowerCase();
           const icon     = categoryIcons[catKey] || (isIncome ? '💵' : '📦');
@@ -1003,7 +1003,7 @@ const cardBadge = card ? `<span class="badge badge-outline" style="font-size:11p
 
               <td><span class="badge ${typeBadge}">${typeLabel}</span></td>
               <td style="color:#8892A4;">${dateStr}</td>
-              <td style="color:${color};font-weight:700;">${sign}${formatCurrency(Math.abs(tx.amount))}</td>
+              <td style="color:${color};font-weight:700;">${sign}${formatCurrency(Math.abs(parseFloat(tx.amount) || 0))}</td>
               <td>
                 <button class="btn btn-outline btn-sm" onclick="openEditTransaction('${tx.id}')" style="margin-right:4px;">✏️</button>
                 <button class="btn btn-outline btn-sm" onclick="deleteTransaction('${tx.id}')">🗑️</button>
@@ -1083,8 +1083,7 @@ function renderDashboard() {
   if (el('val-expense'))el('val-expense').textContent = fmt(expense);
   if (el('val-balance')) el('val-balance').textContent = fmt(balance);
 
-  const totalDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.amount) || 0), 0)
-                  + (STATE.cards || []).reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
+  const totalDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
   const netWorth = balance - totalDebt;
   if (el('val-balance-status')) {
     if (netWorth >= 0) {
@@ -1116,6 +1115,26 @@ function renderDashboard() {
 
   // --- Deuda total (tarjetas) ---
   if (el('val-debt')) el('val-debt').textContent = fmt(totalDebt);
+
+  // Debt change vs last month (basado en transacciones reales)
+  const lastMonthDebt = lastMonthTxs.filter(tx => tx.type === 'expense')
+    .reduce((s, tx) => s + Math.abs(parseFloat(tx.amount) || 0), 0);
+  const thisMonthDebt = thisMonthTxs.filter(tx => tx.type === 'expense')
+    .reduce((s, tx) => s + Math.abs(parseFloat(tx.amount) || 0), 0);
+  const debtDiff = thisMonthDebt - lastMonthDebt;
+  const debtChangeEl = el('val-debt-change');
+  if (debtChangeEl) {
+    if (debtDiff === 0 && thisMonthDebt === 0) {
+      debtChangeEl.textContent = '-';
+      debtChangeEl.style.color = 'var(--text-muted)';
+    } else if (debtDiff <= 0) {
+      debtChangeEl.textContent = '↓ ' + fmt(Math.abs(debtDiff)) + ' this month';
+      debtChangeEl.style.color = 'var(--success)';
+    } else {
+      debtChangeEl.textContent = '↑ ' + fmt(debtDiff) + ' this month';
+      debtChangeEl.style.color = '#ef4444';
+    }
+  }
 
   // --- Actualizar mensaje AI Assistant con datos reales ---
   const chatIntroEl = document.querySelector('[data-i18n="dash_chat_intro"]');
