@@ -439,17 +439,18 @@ Respond ONLY with a JSON array. Zero explanation. Zero markdown:
     const text  = data.choices?.[0]?.message?.content?.trim() || '';
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) throw new Error('No JSON found');
+    // Robust JSON cleanup
     let jsonStr = match[0]
-      .replace(/[\u2018\u2019\u2032]/g, "\'")
-      .replace(/[\u201C\u201D\u201E]/g, '\"')
-      .replace(/\n/g, ' ')
+      .replace(/[\u2018\u2019\u2032\u2019]/g, "'")
+      .replace(/[\u201C\u201D\u201E]/g, '"')
+      .replace(/\r?\n/g, ' ')
       .replace(/,\s*]/g, ']')
-      .replace(/,\s*}/g, '}');
+      .replace(/,\s*}/g, '}')
+      .replace(/[\x00-\x1F\x7F]/g, ' ');
 
-    // Sanitize apostrophes inside JSON string values without breaking structure
-    jsonStr = jsonStr.replace(/"([^"]*)"/g, (match, inner) => {
-      const safe = inner.replace(/'/g, '\u0027').replace(/[\x00-\x1F]/g, ' ');
-      return `"${safe}"`;
+    // Fix unescaped apostrophes inside string values
+    jsonStr = jsonStr.replace(/"((?:[^"\\]|\\.)*)"/g, (m, inner) => {
+      return '"' + inner.replace(/(?<!\\)'/g, '\u2019') + '"';
     });
 
     let cards;
@@ -2084,6 +2085,24 @@ function renderSubscriptions() {
     if (tbody && !tbody.id) tbody.id = 'subs-tbody';
   }
 
+  // Render dashboard widget SIEMPRE, independiente de la tabla
+  const dashList = gel('dashboard-subs-list');
+  if (dashList) {
+    const badgeEl = gel('dashboard-subs-badge');
+    if (badgeEl) badgeEl.textContent = formatCurrency(total) + t('per_month_short');
+    if (subs.length === 0) {
+      dashList.innerHTML = '<p style="color:#8892A4;text-align:center;padding:20px;">' + t('no_subscriptions') + '</p>';
+    } else {
+      const catIconsD = {streaming:'📺',music:'🎵',software:'💻',fitness:'💪',news:'📰',productivity:'🤖',storage:'☁️',shopping:'📦',gaming:'🎮',design:'🎨',other:'📌'};
+      dashList.innerHTML = subs.slice(0, 5).map(s => {
+        const icon = catIconsD[s.category] || '📌';
+        const today2 = new Date().getDate();
+        const daysUntil2 = s.billingDay >= today2 ? s.billingDay - today2 : (30 - today2) + s.billingDay;
+        return '<div class="sub-item"><div class="sub-icon">' + icon + '</div><div class="sub-info"><div class="sub-name">' + s.name + '</div><div class="sub-date">' + t('sub_renews') + ' ' + t('sub_day') + ' ' + (s.billingDay || '—') + '</div></div><div class="sub-amount">' + formatCurrency(s.amount) + '</div></div>';
+      }).join('');
+    }
+  }
+
   const tbody = gel('subs-tbody')
     || (section && section.querySelector('table tbody'));
   if (!tbody) return;
@@ -2126,33 +2145,7 @@ function renderSubscriptions() {
       </tr>`;
   }).join('');
 
-  // Render widget dashboard
-  const dashList = gel('dashboard-subs-list');
-  if (dashList) {
-    const total = subs.reduce((s, sub) => s + (sub.amount || 0), 0);
-    // Badge total en header
-    const badge = gel('dashboard-subs-badge');
-    if (badge) badge.textContent = formatCurrency(total) + t('per_month_short');
-
-    if (subs.length === 0) {
-      dashList.innerHTML = '<p style="color:#8892A4;text-align:center;padding:20px;">' + t('no_subscriptions') + '</p>';
-    } else {
-      dashList.innerHTML = subs.slice(0, 5).map(s => {
-        const icon = catIcons[s.category] || '📌';
-        const today = new Date().getDate();
-        const daysUntil = s.billingDay >= today ? s.billingDay - today : (30 - today) + s.billingDay;
-        return `
-          <div class="sub-item">
-            <div class="sub-icon">${icon}</div>
-            <div class="sub-info">
-              <div class="sub-name">${s.name}</div>
-              <div class="sub-date">${t('sub_renews')} ${t('sub_day')} ${s.billingDay || '—'}</div>
-            </div>
-            <div class="sub-amount">${formatCurrency(s.amount)}</div>
-          </div>`;
-      }).join('');
-    }
-  }
+  // dashboard widget rendered above
 
   // Actualizar totales en sección subscriptions
   const totalAll = subs.reduce((s, sub) => s + (sub.amount || 0), 0);
