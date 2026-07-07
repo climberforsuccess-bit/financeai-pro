@@ -1139,23 +1139,25 @@ function renderDashboard() {
   // --- Deuda total (tarjetas) ---
   if (el('val-debt')) el('val-debt').textContent = fmt(totalDebt);
 
-  // Debt change vs last month (basado en transacciones reales)
-  const lastMonthDebt = lastMonthTxs.filter(tx => tx.type === 'expense')
-    .reduce((s, tx) => s + Math.abs(parseFloat(tx.amount) || 0), 0);
-  const thisMonthDebt = thisMonthTxs.filter(tx => tx.type === 'expense')
-    .reduce((s, tx) => s + Math.abs(parseFloat(tx.amount) || 0), 0);
-  const debtDiff = thisMonthDebt - lastMonthDebt;
+  // Debt change vs last month (basado en STATE.debts reales)
   const debtChangeEl = el('val-debt-change');
   if (debtChangeEl) {
-    if (debtDiff === 0 && thisMonthDebt === 0) {
+    if (totalDebt === 0) {
       debtChangeEl.textContent = '-';
       debtChangeEl.style.color = 'var(--text-muted)';
-    } else if (debtDiff <= 0) {
-      debtChangeEl.textContent = '↓ ' + fmt(Math.abs(debtDiff)) + ' this month';
-      debtChangeEl.style.color = 'var(--success)';
     } else {
-      debtChangeEl.textContent = '↑ ' + fmt(debtDiff) + ' this month';
-      debtChangeEl.style.color = '#ef4444';
+      // Usar el cambio real de deuda si existe en STATE
+      const debtChange = STATE.debtChangeThisMonth || 0;
+      if (debtChange === 0) {
+        debtChangeEl.textContent = '-';
+        debtChangeEl.style.color = 'var(--text-muted)';
+      } else if (debtChange < 0) {
+        debtChangeEl.textContent = '↓ ' + fmt(Math.abs(debtChange)) + ' this month';
+        debtChangeEl.style.color = 'var(--success)';
+      } else {
+        debtChangeEl.textContent = '↑ ' + fmt(debtChange) + ' this month';
+        debtChangeEl.style.color = '#ef4444';
+      }
     }
   }
 
