@@ -662,6 +662,7 @@ async function loadSubscriptions() {
     status: s.status,
     createdAt: s.created_at
   }));
+  if (typeof renderSubscriptions === 'function') renderSubscriptions();
 }
 
 async function initApp() {
