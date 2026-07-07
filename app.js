@@ -51,7 +51,7 @@ function updateAiMessagesLeft() {
   if (!el) return;
   const limits = getPlanLimits();
   if (limits.aiMessages === -1) {
-    el.textContent = "∞ mensajes hoy";
+    el.textContent = t("ai_messages_left").replace("{n}", "∞").replace("/5", "");
     return;
   }
   const todayKey = "fai_ai_messages_today";
@@ -63,7 +63,7 @@ function updateAiMessagesLeft() {
   }
   const used = parseInt(localStorage.getItem(todayKey) || "0");
   const remaining = limits.aiMessages - used;
-  el.textContent = remaining + "/" + limits.aiMessages + " mensajes hoy";
+  el.textContent = t("ai_messages_left").replace("{n}", remaining).replace("5", limits.aiMessages);
 }
 function canUseFeature(feature) {
   const limits = getPlanLimits();
