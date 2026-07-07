@@ -125,7 +125,7 @@ const TRANSLATIONS = {
     dash_chat_help:     'How can I help you?',
     dash_balance_positive: 'positive.',
     dash_balance_negative: 'negative.',
-    ai_messages_left: '{n}/5 messages today',
+    ai_messages_left: '{n}/{total} messages today',
     ph_chat:         'Ask me something about your finances...',
 
     lbl_debts:       'Debt Plan',
@@ -1294,7 +1294,7 @@ pricing_social_proof:    '🌎 Usado por personas en America y Europa para recup
     dash_chat_help:     '¿En qué te puedo ayudar?',
     dash_balance_positive: 'positivo.',
     dash_balance_negative: 'negativo.',
-    ai_messages_left: '{n}/5 mensajes hoy',
+    ai_messages_left: '{n}/{total} mensajes hoy',
     ph_chat:         'Pregúntame algo sobre tus finanzas...',
 
     lbl_debts:       'Plan de Deudas',
