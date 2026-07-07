@@ -1087,13 +1087,13 @@ function renderDashboard() {
     return d.getMonth() === lastMonth && d.getFullYear() === lastYear;
   });
 
-  const income  = thisMonthTxs.filter(tx => tx.type === 'income').reduce((s, tx) => s + (parseFloat(tx.amount) || 0), 0);
-  const expense = thisMonthTxs.filter(tx => tx.type === 'expense').reduce((s, tx) => s + (parseFloat(tx.amount) || 0), 0);
+  const income  = thisMonthTxs.filter(tx => tx.type === 'income').reduce((s, tx) => s + Math.abs(parseFloat(tx.amount) || 0), 0);
+  const expense = thisMonthTxs.filter(tx => tx.type === 'expense').reduce((s, tx) => s + Math.abs(parseFloat(tx.amount) || 0), 0);
   const balance = income - expense;
   const savings = income > 0 ? ((balance / income) * 100).toFixed(1) : 0;
 
-  const lastIncome  = lastMonthTxs.filter(tx => tx.type === 'income').reduce((s, tx) => s + (parseFloat(tx.amount) || 0), 0);
-  const lastExpense = lastMonthTxs.filter(tx => tx.type === 'expense').reduce((s, tx) => s + (parseFloat(tx.amount) || 0), 0);
+  const lastIncome  = lastMonthTxs.filter(tx => tx.type === 'income').reduce((s, tx) => s + Math.abs(parseFloat(tx.amount) || 0), 0);
+  const lastExpense = lastMonthTxs.filter(tx => tx.type === 'expense').reduce((s, tx) => s + Math.abs(parseFloat(tx.amount) || 0), 0);
 
   const incomePct  = lastIncome  > 0 ? (((income  - lastIncome)  / lastIncome)  * 100).toFixed(1) : 0;
   const expensePct = lastExpense > 0 ? (((expense - lastExpense) / lastExpense) * 100).toFixed(1) : 0;
