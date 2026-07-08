@@ -1928,7 +1928,7 @@ const ID_KEY_MAP = {
   'lbl-balance':       'lbl_balance',
   'pf1':               'pf1',
   'pf2':               'pf2',
-  'aiMessagesLeft':    'ai_msgs_today',
+  // 'aiMessagesLeft': handled by updateAiMessagesLeft() in app.js
   'debt-tip-text':      'debt_tip_text',
   'credit-score-warn':  'credit_score_warn',
   'badge-vence-pronto': 'badge_vence_pronto',
