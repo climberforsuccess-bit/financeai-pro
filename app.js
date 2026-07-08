@@ -3382,7 +3382,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================
 // SECCIÓN: SCANNER DE RECIBOS IA
 // ============================================
-async function processReceipt(event) {
+async async async function processReceipt(event) {
   const file = event.target.files[0];
   if (!file) return;
 
@@ -3569,7 +3569,7 @@ async function fileToBase64(file) {
   });
 }
 
-async function saveScannedTransaction() {
+async async async function saveScannedTransaction() {
   if (!STATE.lastScan) {
     showToast(t('scan_first'), 'error');
     return;
