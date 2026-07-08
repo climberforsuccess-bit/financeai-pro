@@ -4855,7 +4855,7 @@ function checkIOSInstall() {
     if (btn) {
       btn.style.display = 'flex';
       btn.onclick = () => {
-        showToast('📲 Toca el botón Compartir (⬆️) y luego "Añadir a pantalla de inicio"', 'info', 5000);
+        showToast('📲 Para instalar: abre en Safari → toca ⬆️ Compartir → "Añadir a pantalla de inicio"', 'info', 6000);
       };
     }
   }
