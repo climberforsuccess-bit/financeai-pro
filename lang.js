@@ -694,7 +694,7 @@ pricing_social_proof:    '🌎 Used by people in America and Europe to recover c
     upgrade_li_scanner: '✅ Receipt Scanner',
     pf1:             'Up to 50 transactions/month',
     pf2:             '1 credit card',
-    ai_msgs_today:   '5/5 messages today',
+    ai_msgs_today:   '{n}/{total} messages today',
 
     // APP.HTML data-key mappings
     dash_dashboard:      'Dashboard',
@@ -1598,7 +1598,7 @@ pricing_social_proof:    '🌎 Usado por personas en America y Europa para recup
     upgrade_li_scanner: '✅ Scanner de recibos',
     pf1:             'Hasta 50 transacciones/mes',
     pf2:             '1 tarjeta de crédito',
-    ai_msgs_today:   '5/5 mensajes hoy',
+    ai_msgs_today:   '{n}/{total} mensajes hoy',
 
     // APP.HTML data-key mappings
     dash_dashboard:      'Dashboard',

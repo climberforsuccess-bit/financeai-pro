@@ -51,7 +51,9 @@ function updateAICounter() {
     counterEl.textContent = t('messages_vip');
     counterEl.style.color = '#f59e0b';
   } else {
-    counterEl.textContent = `${remaining}/5${t('messages_today')}`;
+    const usedCount = OPENAI_CONFIG.dailyLimit_free - remaining;
+    const total = OPENAI_CONFIG.dailyLimit_free;
+    counterEl.textContent = `${usedCount}/${total} ${t('messages_today')}`;
     counterEl.style.color = remaining <= 1 ? '#ef4444' : '#94a3b8';
   }
 }
