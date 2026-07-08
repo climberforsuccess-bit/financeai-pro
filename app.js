@@ -2426,7 +2426,7 @@ async function quickChat(msg) {
 }
 
 function checkAdminAccess() {
-  const adminEmails = ['orledisoliveros@gmail.com', 'orledisyuma@gmail.com'];
+  const adminEmails = ['orledis.oliveros@gmail.com', 'orledisyuma@gmail.com', 'yula87ramos@gmail.com'];
   const userEmail = STATE.user?.email || '';
   STATE.isAdmin = adminEmails.includes(userEmail);
   const adminNav = document.getElementById('admin-nav-item');
