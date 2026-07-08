@@ -4850,17 +4850,25 @@ window.addEventListener('beforeinstallprompt', e => {
 function checkIOSInstall() {
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const isStandalone = window.navigator.standalone === true;
-  if (isIOS && !isStandalone) {
+  if (!isIOS || isStandalone) return;
+  const applyBtn = () => {
     const btn = document.getElementById('pwa-install-btn');
     if (btn) {
       btn.style.display = 'flex';
       btn.onclick = () => {
         showToast('📲 Para instalar: abre en Safari → toca ⬆️ Compartir → "Añadir a pantalla de inicio"', 'info', 6000);
       };
+      return true;
     }
+    return false;
+  };
+  if (!applyBtn()) {
+    // fallback si el DOM no está listo aún
+    setTimeout(applyBtn, 1000);
+    setTimeout(applyBtn, 3000);
   }
 }
-document.addEventListener('DOMContentLoaded', checkIOSInstall);
+window.addEventListener('load', checkIOSInstall);
 
 window.addEventListener('appinstalled', () => {
   deferredInstallPrompt = null;
