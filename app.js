@@ -4842,10 +4842,25 @@ let deferredInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredInstallPrompt = e;
-  // Mostrar botón de instalar si existe en el DOM
   const btn = document.getElementById('pwa-install-btn');
   if (btn) btn.style.display = 'flex';
 });
+
+// iOS: Apple bloquea beforeinstallprompt en todos los browsers
+function checkIOSInstall() {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone === true;
+  if (isIOS && !isStandalone) {
+    const btn = document.getElementById('pwa-install-btn');
+    if (btn) {
+      btn.style.display = 'flex';
+      btn.onclick = () => {
+        showToast('📲 Toca el botón Compartir (⬆️) y luego "Añadir a pantalla de inicio"', 'info', 5000);
+      };
+    }
+  }
+}
+document.addEventListener('DOMContentLoaded', checkIOSInstall);
 
 window.addEventListener('appinstalled', () => {
   deferredInstallPrompt = null;
