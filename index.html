@@ -1169,7 +1169,7 @@ body {
   align-items:center;justify-content:center;
   transition:opacity 0.5s ease;">
 
-  <svg id="splash-svg" viewBox="0 0 300 220" width="280" height="210" xmlns="http://www.w3.org/2000/svg">
+  <svg id="splash-svg" viewBox="0 0 300 240" width="280" height="224" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="bar1g" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="#00EEFF"/>
@@ -1178,61 +1178,76 @@ body {
     </defs>
 
     <!-- Barra 1 -->
-    <rect id="sp-bar1" x="40" y="160" width="40" height="0" rx="6" fill="url(#bar1g)" opacity="0.7">
+    <rect x="40" y="160" width="40" height="0" rx="6" fill="url(#bar1g)" opacity="0.7">
       <animate attributeName="height" from="0" to="60" begin="0.2s" dur="0.5s" fill="freeze"/>
       <animate attributeName="y" from="160" to="100" begin="0.2s" dur="0.5s" fill="freeze"/>
     </rect>
 
     <!-- Barra 2 -->
-    <rect id="sp-bar2" x="110" y="160" width="40" height="0" rx="6" fill="url(#bar1g)" opacity="0.85">
+    <rect x="110" y="160" width="40" height="0" rx="6" fill="url(#bar1g)" opacity="0.85">
       <animate attributeName="height" from="0" to="100" begin="0.5s" dur="0.5s" fill="freeze"/>
       <animate attributeName="y" from="160" to="60" begin="0.5s" dur="0.5s" fill="freeze"/>
     </rect>
 
     <!-- Barra 3 -->
-    <rect id="sp-bar3" x="180" y="160" width="40" height="0" rx="6" fill="url(#bar1g)">
+    <rect x="180" y="160" width="40" height="0" rx="6" fill="url(#bar1g)">
       <animate attributeName="height" from="0" to="140" begin="0.8s" dur="0.5s" fill="freeze"/>
       <animate attributeName="y" from="160" to="20" begin="0.8s" dur="0.5s" fill="freeze"/>
     </rect>
 
     <!-- Línea de tendencia -->
-    <polyline id="sp-line" points="60,100 130,60 200,20"
+    <polyline points="60,100 130,60 200,20"
       stroke="#00EEFF" stroke-width="4" fill="none"
       stroke-linecap="round" stroke-linejoin="round"
       stroke-dasharray="300" stroke-dashoffset="300">
       <animate attributeName="stroke-dashoffset" from="300" to="0" begin="1.3s" dur="0.7s" fill="freeze"/>
     </polyline>
 
-    <!-- Punto final -->
-    <circle cx="200" cy="20" r="0" fill="#00EEFF">
-      <animate attributeName="r" from="0" to="8" begin="1.9s" dur="0.2s" fill="freeze"/>
+    <!-- Anillo exterior grande -->
+    <circle cx="200" cy="20" r="0" fill="none" stroke="#00EEFF" stroke-width="2" opacity="0.25">
+      <animate attributeName="r" from="0" to="36" begin="1.9s" dur="0.4s" fill="freeze"/>
     </circle>
+    <!-- Anillo medio -->
     <circle cx="200" cy="20" r="0" fill="none" stroke="#00EEFF" stroke-width="3" opacity="0.5">
-      <animate attributeName="r" from="0" to="18" begin="1.9s" dur="0.3s" fill="freeze"/>
+      <animate attributeName="r" from="0" to="24" begin="1.9s" dur="0.3s" fill="freeze"/>
+    </circle>
+    <!-- Punto central -->
+    <circle cx="200" cy="20" r="0" fill="#00EEFF">
+      <animate attributeName="r" from="0" to="10" begin="1.9s" dur="0.2s" fill="freeze"/>
     </circle>
 
-    <!-- Texto Finance -->
-    <text x="150" y="200"
+    <!-- Finance -->
+    <text x="80" y="210"
       font-family="Arial Black, sans-serif"
-      font-size="32" font-weight="900"
+      font-size="34" font-weight="900"
       text-anchor="middle"
       fill="#FFFFFF" opacity="0">
       Finance
-      <animate attributeName="opacity" from="0" to="1" begin="2.1s" dur="0.4s" fill="freeze"/>
+      <animate attributeName="opacity" from="0" to="1" begin="2.2s" dur="0.4s" fill="freeze"/>
     </text>
 
-    <!-- Texto AI -->
-    <text x="230" y="200"
+    <!-- AI -->
+    <text x="194" y="210"
       font-family="Arial Black, sans-serif"
-      font-size="32" font-weight="900"
+      font-size="34" font-weight="900"
       text-anchor="middle"
       fill="#00EEFF" opacity="0">
       AI
-      <animate attributeName="opacity" from="0" to="1" begin="2.4s" dur="0.4s" fill="freeze"/>
+      <animate attributeName="opacity" from="0" to="1" begin="2.5s" dur="0.3s" fill="freeze"/>
+    </text>
+
+    <!-- Pro -->
+    <text x="252" y="210"
+      font-family="Arial Black, sans-serif"
+      font-size="22" font-weight="900"
+      text-anchor="middle"
+      fill="#FFD700" opacity="0">
+      Pro
+      <animate attributeName="opacity" from="0" to="1" begin="2.7s" dur="0.3s" fill="freeze"/>
     </text>
   </svg>
 
-  <p style="color:#4A5568;font-size:12px;margin-top:16px;letter-spacing:2px;">SMART FINANCIAL MANAGEMENT</p>
+  <p style="color:#4A5568;font-size:11px;margin-top:12px;letter-spacing:2px;">SMART FINANCIAL MANAGEMENT</p>
 </div>
 
 <!-- FOUNDER PRICING BANNER -->
@@ -2842,8 +2857,8 @@ body {
 
 
 <script>
-  // Splash screen - ocultar después de animación
-  window.addEventListener('load', function() {
+  // Splash screen - compatible móvil y desktop
+  function hideSplash() {
     setTimeout(function() {
       var splash = document.getElementById('splash-screen');
       if (splash) {
@@ -2852,8 +2867,16 @@ body {
           splash.style.display = 'none';
         }, 500);
       }
-    }, 3000); // 3s = animación completa + pequeña pausa
-  });
+    }, 3200);
+  }
+
+  if (document.readyState === 'complete') {
+    hideSplash();
+  } else {
+    window.addEventListener('load', hideSplash);
+    // Fallback por si load no dispara en móvil
+    setTimeout(hideSplash, 4000);
+  }
 </script>
 </body>
 </html>
