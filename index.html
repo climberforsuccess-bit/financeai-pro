@@ -1190,13 +1190,13 @@ body {
     #splash-burst { animation: flashBurst 0.5s ease-out both; animation-delay: 2.0s; }
   </style>
 
-  <svg id="splash-svg" viewBox="0 0 260 240" width="90vw" height="auto" style="max-width:320px;" xmlns="http://www.w3.org/2000/svg">
+  <svg id="splash-svg" viewBox="0 0 260 240" style="width:90vw;max-width:320px;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <linearGradient id="bgrad" x1="0" y1="0" x2="0" y2="1">
+      <linearGradient id="splash-bgrad" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="#00EEFF"/>
         <stop offset="100%" stop-color="#006688"/>
       </linearGradient>
-      <filter id="glow">
+      <filter id="splash-glow">
         <feGaussianBlur stdDeviation="4" result="blur"/>
         <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
@@ -1208,19 +1208,19 @@ body {
     </defs>
 
     <!-- Barra 1 -->
-    <rect x="20" y="170" width="42" height="0" rx="7" fill="url(#bgrad)" opacity="0.65">
+    <rect x="20" y="170" width="42" height="0" rx="7" fill="url(#splash-bgrad)" opacity="0.65">
       <animate attributeName="height" from="0" to="60" begin="0.2s" dur="0.45s" fill="freeze"/>
       <animate attributeName="y" from="170" to="110" begin="0.2s" dur="0.45s" fill="freeze"/>
     </rect>
 
     <!-- Barra 2 -->
-    <rect x="89" y="170" width="42" height="0" rx="7" fill="url(#bgrad)" opacity="0.82">
+    <rect x="89" y="170" width="42" height="0" rx="7" fill="url(#splash-bgrad)" opacity="0.82">
       <animate attributeName="height" from="0" to="100" begin="0.5s" dur="0.45s" fill="freeze"/>
       <animate attributeName="y" from="170" to="70" begin="0.5s" dur="0.45s" fill="freeze"/>
     </rect>
 
     <!-- Barra 3 -->
-    <rect x="158" y="170" width="42" height="0" rx="7" fill="url(#bgrad)">
+    <rect x="158" y="170" width="42" height="0" rx="7" fill="url(#splash-bgrad)">
       <animate attributeName="height" from="0" to="140" begin="0.8s" dur="0.45s" fill="freeze"/>
       <animate attributeName="y" from="170" to="30" begin="0.8s" dur="0.45s" fill="freeze"/>
     </rect>
@@ -1244,7 +1244,7 @@ body {
       <animate attributeName="r" from="0" to="18" begin="2.0s" dur="0.3s" fill="freeze"/>
     </circle>
     <!-- Punto central -->
-    <circle cx="179" cy="30" r="0" fill="#FFFFFF" filter="url(#glow)">
+    <circle cx="179" cy="30" r="0" fill="#FFFFFF" filter="url(#splash-glow)">
       <animate attributeName="r" from="0" to="9" begin="2.0s" dur="0.2s" fill="freeze"/>
     </circle>
 
