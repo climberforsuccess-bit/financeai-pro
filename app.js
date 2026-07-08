@@ -63,7 +63,7 @@ function updateAiMessagesLeft() {
   }
   const used = parseInt(localStorage.getItem(todayKey) || "0");
   const remaining = limits.aiMessages - used;
-  el.textContent = t("ai_messages_left").replace("{n}", remaining).replace("{total}", limits.aiMessages);
+  el.textContent = t("ai_messages_left").replace("{n}", used).replace("{total}", limits.aiMessages);
 }
 function canUseFeature(feature) {
   const limits = getPlanLimits();
