@@ -1164,103 +1164,154 @@ body {
 <body style="padding-top: 52px;">
 <div id="splash-screen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0A1628;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s ease;">
 
-  <style>
-    @keyframes glowPulse {
-      0%,100% { filter: drop-shadow(0 0 6px #00EEFF); }
-      50%      { filter: drop-shadow(0 0 22px #00EEFF) drop-shadow(0 0 40px #00EEFF); }
-    }
-    #splash-svg { animation: glowPulse 1.5s ease-in-out infinite; animation-delay: 2.1s; }
-  </style>
+<style>
+  #splash-wrap {
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    width: min(85vw, 280px);
+  }
+  /* Barras */
+  @keyframes sp-bar-up {
+    from { height:0; transform:translateY(0); }
+    to   { height:var(--h); transform:translateY(calc(-1 * var(--h))); }
+  }
+  .sp-bar {
+    position:absolute;
+    bottom:0;
+    width:40px;
+    border-radius:6px;
+    background: linear-gradient(to bottom, #00EEFF, #006688);
+    height:0;
+    transform-origin: bottom;
+  }
+  #sp-b1 { left:0px;   --h:55px;  animation: sp-growb 0.45s 0.2s ease forwards; }
+  #sp-b2 { left:60px;  --h:90px;  animation: sp-growb 0.45s 0.5s ease forwards; }
+  #sp-b3 { left:120px; --h:130px; animation: sp-growb 0.45s 0.8s ease forwards; }
 
-  <svg id="splash-svg"
-    viewBox="0 0 280 230"
-    width="280" height="230"
-    style="width:min(85vw,280px);height:auto;"
-    xmlns="http://www.w3.org/2000/svg">
+  @keyframes sp-growb {
+    from { height:0; }
+    to   { height:var(--h); }
+  }
 
-    <defs>
-      <linearGradient id="sp-bgrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#00EEFF"/>
-        <stop offset="100%" stop-color="#006688"/>
-      </linearGradient>
-      <filter id="sp-glow">
-        <feGaussianBlur stdDeviation="3" result="blur"/>
-        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-      <radialGradient id="sp-burst" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
-        <stop offset="40%" stop-color="#00EEFF" stop-opacity="0.8"/>
-        <stop offset="100%" stop-color="#00EEFF" stop-opacity="0"/>
-      </radialGradient>
-    </defs>
+  /* Canvas barras */
+  #sp-bars {
+    position:relative;
+    width:200px;
+    height:165px;
+    margin-bottom:8px;
+  }
 
-    <!-- Barra 1 -->
-    <rect x="20" y="165" width="40" height="0" rx="6" fill="url(#sp-bgrad)" opacity="0.65">
-      <animate attributeName="height" from="0" to="55" begin="0.2s" dur="0.45s" fill="freeze"/>
-      <animate attributeName="y" from="165" to="110" begin="0.2s" dur="0.45s" fill="freeze"/>
-    </rect>
+  /* Línea tendencia */
+  #sp-line {
+    position:absolute;
+    top:0; left:0;
+    width:200px;
+    height:165px;
+    overflow:visible;
+  }
+  #sp-polyline {
+    stroke-dasharray:250;
+    stroke-dashoffset:250;
+    animation: sp-draw 0.65s 1.3s ease forwards;
+  }
+  @keyframes sp-draw {
+    to { stroke-dashoffset:0; }
+  }
 
-    <!-- Barra 2 -->
-    <rect x="80" y="165" width="40" height="0" rx="6" fill="url(#sp-bgrad)" opacity="0.82">
-      <animate attributeName="height" from="0" to="90" begin="0.5s" dur="0.45s" fill="freeze"/>
-      <animate attributeName="y" from="165" to="75" begin="0.5s" dur="0.45s" fill="freeze"/>
-    </rect>
+  /* Punto y anillos */
+  #sp-dot-wrap {
+    position:absolute;
+    top: 35px;
+    left: 160px;
+    width:0; height:0;
+    overflow:visible;
+  }
+  .sp-ring {
+    position:absolute;
+    border-radius:50%;
+    border: 2px solid #00EEFF;
+    transform:translate(-50%,-50%) scale(0);
+    animation: sp-ring-out 0.4s 2.0s ease forwards;
+  }
+  #sp-r1 { width:80px; height:80px; opacity:0.2; }
+  #sp-r2 { width:52px; height:52px; opacity:0.45; }
+  #sp-r3 { width:30px; height:30px; opacity:0.7; }
+  @keyframes sp-ring-out {
+    to { transform:translate(-50%,-50%) scale(1); }
+  }
+  #sp-dot {
+    position:absolute;
+    width:16px; height:16px;
+    background:#fff;
+    border-radius:50%;
+    transform:translate(-50%,-50%) scale(0);
+    box-shadow: 0 0 12px #00EEFF, 0 0 24px #00EEFF;
+    animation: sp-dot-in 0.2s 2.0s ease forwards;
+  }
+  @keyframes sp-dot-in {
+    to { transform:translate(-50%,-50%) scale(1); }
+  }
 
-    <!-- Barra 3 -->
-    <rect x="140" y="165" width="40" height="0" rx="6" fill="url(#sp-bgrad)">
-      <animate attributeName="height" from="0" to="130" begin="0.8s" dur="0.45s" fill="freeze"/>
-      <animate attributeName="y" from="165" to="35" begin="0.8s" dur="0.45s" fill="freeze"/>
-    </rect>
+  /* Texto */
+  #sp-title {
+    font-family: Arial Black, Arial, sans-serif;
+    font-size: clamp(20px, 7vw, 26px);
+    font-weight: 900;
+    white-space: nowrap;
+    opacity:0;
+    animation: sp-fadein 0.4s 2.2s ease forwards;
+    margin-top: 12px;
+  }
+  #sp-title .sp-white { color:#FFFFFF; }
+  #sp-title .sp-cyan  { color:#00EEFF; }
+  #sp-title .sp-gold  { color:#FFD700; }
 
-    <!-- Línea tendencia -->
-    <polyline points="40,110 100,75 160,35"
-      stroke="#00EEFF" stroke-width="3.5" fill="none"
-      stroke-linecap="round" stroke-linejoin="round"
-      stroke-dasharray="250" stroke-dashoffset="250">
-      <animate attributeName="stroke-dashoffset" from="250" to="0" begin="1.3s" dur="0.65s" fill="freeze"/>
-    </polyline>
+  #sp-sub {
+    font-family: Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: #3A4558;
+    text-transform: uppercase;
+    opacity:0;
+    margin-top:6px;
+    animation: sp-fadein 0.4s 2.6s ease forwards;
+  }
+  @keyframes sp-fadein {
+    to { opacity:1; }
+  }
+</style>
 
-    <!-- Anillos en punto final (160,35) -->
-    <circle cx="160" cy="35" r="0" fill="none" stroke="#00EEFF" stroke-width="1.5" opacity="0.2">
-      <animate attributeName="r" from="0" to="40" begin="2.0s" dur="0.4s" fill="freeze"/>
-    </circle>
-    <circle cx="160" cy="35" r="0" fill="none" stroke="#00EEFF" stroke-width="2.5" opacity="0.45">
-      <animate attributeName="r" from="0" to="26" begin="2.0s" dur="0.35s" fill="freeze"/>
-    </circle>
-    <circle cx="160" cy="35" r="0" fill="none" stroke="#00EEFF" stroke-width="3" opacity="0.7">
-      <animate attributeName="r" from="0" to="15" begin="2.0s" dur="0.3s" fill="freeze"/>
-    </circle>
-    <!-- Punto -->
-    <circle cx="160" cy="35" r="0" fill="#FFFFFF" filter="url(#sp-glow)">
-      <animate attributeName="r" from="0" to="8" begin="2.0s" dur="0.2s" fill="freeze"/>
-    </circle>
-    <!-- Burst -->
-    <circle cx="160" cy="35" r="0" fill="url(#sp-burst)" opacity="0">
-      <animate attributeName="r" from="0" to="55" begin="2.0s" dur="0.5s" fill="freeze"/>
-      <animate attributeName="opacity" from="0.9" to="0" begin="2.0s" dur="0.5s" fill="freeze"/>
-    </circle>
+<div id="splash-wrap">
+  <div id="sp-bars">
+    <!-- Barras CSS -->
+    <div id="sp-b1" class="sp-bar"></div>
+    <div id="sp-b2" class="sp-bar"></div>
+    <div id="sp-b3" class="sp-bar"></div>
 
-    <!-- Texto: Finance AI Pro -->
-    <text x="20" y="205"
-      font-family="Arial Black, Arial, sans-serif"
-      font-size="26" font-weight="900"
-      text-anchor="start"
-      fill="#FFFFFF" opacity="0">
-      <tspan fill="#FFFFFF">Finance</tspan><tspan fill="#00EEFF"> AI</tspan><tspan fill="#FFD700"> Pro</tspan>
-      <animate attributeName="opacity" from="0" to="1" begin="2.2s" dur="0.4s" fill="freeze"/>
-    </text>
+    <!-- Línea SVG -->
+    <svg id="sp-line" viewBox="0 0 200 165" xmlns="http://www.w3.org/2000/svg">
+      <polyline id="sp-polyline"
+        points="20,110 80,75 140,35"
+        stroke="#00EEFF" stroke-width="3.5" fill="none"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
 
-    <!-- Subtítulo -->
-    <text x="140" y="224"
-      font-family="Arial, sans-serif"
-      font-size="9" letter-spacing="3"
-      text-anchor="middle"
-      fill="#3A4558" opacity="0">
-      SMART FINANCIAL MANAGEMENT
-      <animate attributeName="opacity" from="0" to="1" begin="2.6s" dur="0.4s" fill="freeze"/>
-    </text>
+    <!-- Punto y anillos -->
+    <div id="sp-dot-wrap">
+      <div class="sp-ring" id="sp-r1"></div>
+      <div class="sp-ring" id="sp-r2"></div>
+      <div class="sp-ring" id="sp-r3"></div>
+      <div id="sp-dot"></div>
+    </div>
+  </div>
 
-  </svg>
+  <div id="sp-title">
+    <span class="sp-white">Finance</span><span class="sp-cyan"> AI</span><span class="sp-gold"> Pro</span>
+  </div>
+  <div id="sp-sub">Smart Financial Management</div>
+</div>
+
 </div>
 
 <!-- FOUNDER PRICING BANNER -->
