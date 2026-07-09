@@ -3388,8 +3388,7 @@ async function processReceipt(event) {
 
   const limits = getPlanLimits();
   if (!limits.scanner) {
-    showToast(t('scanner_unlock'), 'info');
-    setTimeout(() => showSection('subscriptions'), 1200);
+    showUpgradeModal('scanner');
     return;
   }
 
