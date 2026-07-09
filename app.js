@@ -3535,10 +3535,26 @@ async function fileToBase64(file) {
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
   
   if (isHeic) {
-    console.log('HEIC detected - sending raw to Edge Function...');
-    // Mark file object so processReceipt knows to send as multipart with isHeic flag
-    file._isHeic = true;
-    return file;
+    console.log('HEIC detected - converting to JPEG via heic2any...');
+    try {
+      const convertedBlob = await heic2any({
+        blob: file,
+        toType: 'image/jpeg',
+        quality: 0.85
+      });
+      const jpegBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(jpegBlob);
+      });
+    } catch (err) {
+      console.error('HEIC conversion failed:', err);
+      file._isHeic = true;
+      file._useMultipart = true;
+      return file;
+    }
   }
 
   return new Promise((resolve, reject) => {
