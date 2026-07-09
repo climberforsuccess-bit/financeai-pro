@@ -3535,13 +3535,24 @@ async function fileToBase64(file) {
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
   
   if (isHeic) {
-    console.log('HEIC detected - converting to JPEG via heic2any...');
+    console.log('HEIC detected - trying native browser decode...');
+    // Method 1: Try native browser HEIC support (Safari/Chrome on Mac)
     try {
-      const convertedBlob = await heic2any({
-        blob: file,
-        toType: 'image/jpeg',
-        quality: 0.85
-      });
+      const jpegBlob = await convertHeicNative(file);
+      if (jpegBlob) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(jpegBlob);
+        });
+      }
+    } catch (e) {
+      console.warn('Native HEIC decode failed, trying heic2any...', e);
+    }
+    // Method 2: heic2any fallback
+    try {
+      const convertedBlob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
       const jpegBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -3550,7 +3561,8 @@ async function fileToBase64(file) {
         reader.readAsDataURL(jpegBlob);
       });
     } catch (err) {
-      console.error('HEIC conversion failed:', err);
+      console.error('heic2any also failed:', err);
+      // Method 3: send raw multipart - Edge Function declares as jpeg
       file._isHeic = true;
       file._useMultipart = true;
       return file;
