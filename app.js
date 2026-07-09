@@ -3464,7 +3464,11 @@ Only respond with the JSON, no additional text.`
       });
     }
 
-    if (!response.ok) throw new Error(t('scan_error_image'));
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      console.error('Scanner 400 detail:', JSON.stringify(errData));
+      throw new Error(t('scan_error_image'));
+    }
     const data = await response.json();
     const text = data.choices[0].message.content.trim();
 
