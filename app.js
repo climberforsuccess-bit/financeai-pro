@@ -3404,10 +3404,11 @@ async function processReceipt(event) {
     const userToken = session?.access_token || SUPABASE_ANON_KEY;
 
     let response;
-    if (base64OrFile && base64OrFile._useMultipart) {
+    if (base64OrFile && (base64OrFile._useMultipart || base64OrFile._isHeic)) {
       // HEIC file: send as multipart/form-data
       const formData = new FormData();
       formData.append('image', base64OrFile);
+      if (base64OrFile._isHeic) formData.append('isHeic', 'true');
       formData.append('prompt', `Analyze this receipt and extract the information in exact JSON format:
 {
   "merchant": "merchant name",
@@ -3534,19 +3535,10 @@ async function fileToBase64(file) {
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
   
   if (isHeic) {
-    console.log('Converting HEIC to JPEG via heic2any...');
-    try {
-      const blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    } catch (err) {
-      console.error('heic2any failed:', err);
-      throw new Error('HEIC_NOT_SUPPORTED');
-    }
+    console.log('HEIC detected - sending raw to Edge Function...');
+    // Mark file object so processReceipt knows to send as multipart with isHeic flag
+    file._isHeic = true;
+    return file;
   }
 
   return new Promise((resolve, reject) => {

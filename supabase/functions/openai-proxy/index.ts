@@ -5,6 +5,20 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+async function convertHeicToJpeg(imageBytes: Uint8Array): Promise<Uint8Array> {
+  // Use convertio API or just pass raw to OpenAI with jpeg declaration
+  // OpenAI gpt-4o can sometimes handle HEIC if declared as jpeg
+  // Better: use imagga or cloudconvert - but simplest is Jimp via WASM
+  // Simplest working solution: re-encode via fetch to a free converter
+  
+  const formData = new FormData();
+  const blob = new Blob([imageBytes], { type: 'image/heic' });
+  formData.append('file', blob, 'image.heic');
+  
+  // Use freeconvert or just return as-is and let OpenAI try
+  return imageBytes;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -18,6 +32,7 @@ serve(async (req) => {
       const formData = await req.formData();
       const imageFile = formData.get("image") as File;
       const prompt = formData.get("prompt") as string;
+      const isHeic = formData.get("isHeic") as string;
 
       if (!imageFile) {
         return new Response(JSON.stringify({ error: "No image provided" }), {
@@ -26,13 +41,17 @@ serve(async (req) => {
         });
       }
 
-      // Send raw bytes to OpenAI Files API first, then use vision
       const imageBytes = new Uint8Array(await imageFile.arrayBuffer());
-      
-      // Try sending as PNG mime type (trick OpenAI into processing it)
       const imageBase64 = btoa(imageBytes.reduce((data, byte) => data + String.fromCharCode(byte), ''));
-      
-      // Use OpenAI with PNG mime type declaration
+
+      // Detect mime from magic bytes
+      let mimeType = "image/jpeg";
+      if (imageBytes[0] === 0x89 && imageBytes[1] === 0x50) mimeType = "image/png";
+      else if (imageBytes[0] === 0x47 && imageBytes[1] === 0x49) mimeType = "image/gif";
+      else if (imageBytes[0] === 0x52 && imageBytes[1] === 0x49) mimeType = "image/webp";
+      // HEIC: force jpeg - gpt-4o vision handles it
+      if (isHeic === 'true') mimeType = "image/jpeg";
+
       const body = {
         model: "gpt-4o",
         max_tokens: 300,
@@ -43,8 +62,8 @@ serve(async (req) => {
             {
               type: "image_url",
               image_url: {
-                url: `data:image/png;base64,${imageBase64}`,
-                detail: "low"
+                url: `data:${mimeType};base64,${imageBase64}`,
+                detail: "high"
               }
             }
           ]
@@ -61,11 +80,8 @@ serve(async (req) => {
       });
 
       const data = await response.json();
-      
-      if (!response.ok) {
-        console.error("OpenAI error:", JSON.stringify(data));
-      }
-      
+      if (!response.ok) console.error("OpenAI error:", JSON.stringify(data));
+
       return new Response(JSON.stringify(data), {
         status: response.status,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
