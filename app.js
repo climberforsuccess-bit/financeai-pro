@@ -1184,7 +1184,10 @@ function renderDashboard() {
   // --- Debt Plan widget (datos reales) ---
   const debtListEl = el('dashboard-debt-list');
   if (debtListEl) {
-    const allDebts = STATE.debts || [];
+    const allCardDebts2 = (STATE.cards || [])
+      .filter(c => (c.type === 'Crédito' || c.type === 'credit') && parseFloat(c.balance) > 0)
+      .map(c => ({ balance: parseFloat(c.balance) || 0, minPayment: Math.max(25, c.balance * 0.02) }));
+    const allDebts = [...(STATE.debts || []), ...allCardDebts2];
     const allCards = STATE.cards || [];
 
     // Combinar deudas y tarjetas con balance
@@ -1633,7 +1636,8 @@ function renderDebts() {
 
   const manualDebts = (STATE.debts || []).map(d => ({
     ...d,
-    ownerType: d.ownerType || 'personal'
+    ownerType:   d.ownerType || 'personal',
+    minPayment:  parseFloat(d.minPayment || d.minimum_payment) || Math.max(25, (d.balance || d.amount || 0) * 0.02)
   }));
 
   let allDebts = [...allCardDebts, ...manualDebts];
