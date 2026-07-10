@@ -1107,7 +1107,7 @@ function renderDashboard() {
   if (el('val-expense'))el('val-expense').textContent = fmt(expense);
   if (el('val-balance')) el('val-balance').textContent = fmt(balance);
 
-  const totalDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
+  const totalDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance || d.amount) || 0), 0);
   const netWorth = balance - totalDebt;
   if (el('val-balance-status')) {
     if (netWorth >= 0) {
@@ -3590,7 +3590,13 @@ async function saveScannedTransaction() {
       description: scan.merchant || t('receipt_scanned'),
       amount: -Math.abs(parseFloat(scan.amount)),
       category: scan.category || t('cat_other'),
-      date: scan.date || new Date().toISOString().split('T')[0],
+      date: (() => {
+        const today = new Date();
+        const receiptDate = scan.date ? new Date(scan.date) : null;
+        const diffDays = receiptDate ? (today - receiptDate) / (1000*60*60*24) : 999;
+        // If receipt date is older than 60 days, use today
+        return (diffDays > 60) ? today.toISOString().split('T')[0] : (scan.date || today.toISOString().split('T')[0]);
+      })(),
       type: type,
       ...(card_id && { card_id })
     };
