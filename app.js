@@ -3590,7 +3590,6 @@ async function saveScannedTransaction() {
       category: scan.category || t('cat_other'),
       date: scan.date || new Date().toISOString().split('T')[0],
       type: type,
-      source: 'scanner',
       ...(card_id && { card_id })
     };
 
@@ -3608,10 +3607,7 @@ async function saveScannedTransaction() {
 
   } catch(e) {
     console.error('Error guardando transacción:', e);
-    console.error('Error details:', JSON.stringify(e, null, 2));
-    console.error('Error message:', e.message);
-    console.error('Error code:', e.code);
-    showToast(t('scan_save_error2') + ' | ' + (e.message || e.code || 'unknown'), 'error');
+    showToast(t('scan_save_error2'), 'error');
   }
 }
 
