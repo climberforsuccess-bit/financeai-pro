@@ -3560,7 +3560,19 @@ async function fileToBase64(file) {
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
   
   if (isHeic) {
-    throw new Error('HEIC_FORMAT');
+    if (typeof heic2any === 'undefined') throw new Error('HEIC_FORMAT');
+    try {
+      const converted = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
+      const jpeg = Array.isArray(converted) ? converted[0] : converted;
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(jpeg);
+      });
+    } catch(e) {
+      throw new Error('HEIC_FORMAT');
+    }
   }
 
   return new Promise((resolve, reject) => {
