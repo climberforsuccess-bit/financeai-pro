@@ -3560,17 +3560,25 @@ async function fileToBase64(file) {
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
   
   if (isHeic) {
-    if (typeof heic2any === 'undefined') throw new Error('HEIC_FORMAT');
     try {
-      const converted = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
-      const jpeg = Array.isArray(converted) ? converted[0] : converted;
-      return new Promise((resolve, reject) => {
+      // Read raw file as base64
+      const rawBase64 = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
-        reader.readAsDataURL(jpeg);
+        reader.readAsDataURL(file);
       });
+      // Send to server for conversion
+      const resp = await fetch('/api/convert-heic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ base64: rawBase64 })
+      });
+      if (!resp.ok) throw new Error('Server conversion failed');
+      const { base64: jpegBase64 } = await resp.json();
+      return jpegBase64;
     } catch(e) {
+      console.error('HEIC conversion error:', e);
       throw new Error('HEIC_FORMAT');
     }
   }
