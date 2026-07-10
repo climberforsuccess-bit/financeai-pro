@@ -3607,7 +3607,7 @@ async function saveScannedTransaction() {
 
   } catch(e) {
     console.error('Error guardando transacción:', e);
-    showToast(t('scan_save_error2'), 'error');
+    showToast(t('scan_save_error2') + ' | ' + (e.message || e.code || JSON.stringify(e)), 'error');
   }
 }
 
