@@ -514,7 +514,7 @@ function showSection(sectionId) {
   // Block premium sections for free users
   if (!checkProAccess(sectionId)) return;
 
-  if (sectionId === 'dashboard')     renderDashboard();
+  if (sectionId === 'dashboard')     Promise.all([loadCards(), loadDebts()]).then(() => renderDashboard());
   if (sectionId === 'transactions')  Promise.all([loadTransactions(), loadCards()]).then(() => renderTransactions());
 
   if (sectionId === 'cards')         renderCards();
@@ -1652,9 +1652,12 @@ function renderDebts() {
 
   const total = allDebts.reduce((s, d) => s + (d.balance || 0), 0);
 
+  const totalMinPay = allDebts.reduce((s, d) => s + (d.minPayment || 0), 0);
+
   const statVals = document.querySelectorAll('#section-debts .stat-card-value');
   if (statVals[0]) statVals[0].textContent = formatCurrency(total);
   if (statVals[1]) statVals[1].textContent = calcPayoffTime(allDebts);
+  if (statVals[2]) statVals[2].textContent = formatCurrency(totalMinPay);
 
   let container = gel('debt-items-list');
   if (!container) {
