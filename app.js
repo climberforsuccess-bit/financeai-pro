@@ -3605,6 +3605,14 @@ async function saveScannedTransaction() {
     STATE.transactions = [data[0], ...(STATE.transactions || [])];
     document.getElementById('scan-result').classList.remove('show');
     STATE.lastScan = null;
+
+    // Recalc card balance if a card was used
+    if (card_id) await recalcCardBalance(card_id);
+
+    // Refresh dashboard and transactions
+    renderDashboard();
+    renderTransactions();
+
     showToast(t('saved_history'));
 
   } catch(e) {
