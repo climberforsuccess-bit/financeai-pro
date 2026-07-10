@@ -3382,6 +3382,18 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================
 // SECCIÓN: SCANNER DE RECIBOS IA
 // ============================================
+function resetScanner() {
+  const uploadArea = document.querySelector('.upload-area');
+  if (uploadArea) {
+    uploadArea.innerHTML = `
+      <span style="font-size:48px;">📸</span>
+      <div style="margin-top:12px;font-weight:600;color:var(--text);">${t('scanner_upload_title')}</div>
+      <div style="color:var(--gray);font-size:14px;margin-top:4px;">${t('scanner_upload_subtitle')}</div>
+      <input type="file" id="receipt-input" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none;" onchange="processReceipt(event)">`;
+    uploadArea.querySelector('input') && uploadArea.addEventListener('click', () => uploadArea.querySelector('#receipt-input').click());
+  }
+}
+
 async function processReceipt(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -3514,18 +3526,31 @@ Only respond with the JSON, no additional text.`
 
   } catch(e) {
     console.error('Scanner error:', e);
-    if (e.message === 'HEIC_NOT_SUPPORTED') {
-      showToast('HEIC not supported. Open photo on iPhone → Edit → Done → Share → Save as JPG', 'error');
+    if (e.message === 'HEIC_FORMAT') {
+      if (uploadArea) {
+        uploadArea.innerHTML = `
+          <div style="padding:32px;text-align:center;">
+            <span style="font-size:48px;">📱</span>
+            <div style="margin-top:16px;font-weight:700;font-size:16px;color:var(--text);">Formato HEIC no compatible</div>
+            <div style="margin-top:8px;color:var(--gray);font-size:14px;line-height:1.6;">
+              Tu iPhone guarda fotos en formato HEIC.<br>
+              Para usar el scanner, cambia a JPG en:<br><br>
+              <strong style="color:var(--text);">⚙️ Ajustes → Cámara → Formato<br>→ "Más compatible" (JPG)</strong><br><br>
+              O toma la foto directamente desde aquí con la cámara.
+            </div>
+            <button onclick="resetScanner()" style="margin-top:20px;padding:10px 24px;background:var(--primary);color:white;border:none;border-radius:12px;cursor:pointer;font-weight:600;">Intentar de nuevo</button>
+          </div>`;
+      }
     } else {
       showToast(t('scan_read_error'), 'error');
-    }
-    if (uploadArea) {
-      uploadArea.innerHTML = `
-        <input type="file" id="receipt-input" accept="image/*" style="display:none;" onchange="processReceipt(event)">
-        <div class="upload-icon">📸</div>
-        <div class="upload-title">${t('upload_receipt_title')}</div>
-        <div class="upload-subtitle">${t('scan_upload_hint')}</div>`;
-      uploadArea.onclick = () => document.getElementById('receipt-input').click();
+      if (uploadArea) {
+        uploadArea.innerHTML = `
+          <input type="file" id="receipt-input" accept="image/*" style="display:none;" onchange="processReceipt(event)">
+          <div class="upload-icon">📸</div>
+          <div class="upload-title">${t('upload_receipt_title')}</div>
+          <div class="upload-subtitle">${t('scan_upload_hint')}</div>`;
+        uploadArea.onclick = () => document.getElementById('receipt-input').click();
+      }
     }
   }
 }
@@ -3535,20 +3560,7 @@ async function fileToBase64(file) {
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
   
   if (isHeic) {
-    console.log('HEIC detected - converting with heic2any...');
-    try {
-      const jpegBlob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
-      const blob = Array.isArray(jpegBlob) ? jpegBlob[0] : jpegBlob;
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    } catch (err) {
-      console.error('heic2any failed:', err);
-      throw new Error('No se pudo convertir la imagen HEIC. Intenta con JPG o PNG.');
-    }
+    throw new Error('HEIC_FORMAT');
   }
 
   return new Promise((resolve, reject) => {
