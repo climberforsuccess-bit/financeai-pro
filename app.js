@@ -3539,10 +3539,20 @@ async function fileToBase64(file) {
                  file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
   
   if (isHeic) {
-    console.log('HEIC detected - sending raw to Edge Function with correct mime...');
-    file._isHeic = true;
-    file._useMultipart = true;
-    return file;
+    console.log('HEIC detected - converting with heic2any...');
+    try {
+      const jpegBlob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
+      const blob = Array.isArray(jpegBlob) ? jpegBlob[0] : jpegBlob;
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (err) {
+      console.error('heic2any failed:', err);
+      throw new Error('No se pudo convertir la imagen HEIC. Intenta con JPG o PNG.');
+    }
   }
 
   return new Promise((resolve, reject) => {
@@ -3552,7 +3562,6 @@ async function fileToBase64(file) {
     reader.readAsDataURL(file);
   });
 }
-
 async function saveScannedTransaction() {
   if (!STATE.lastScan) {
     showToast(t('scan_first'), 'error');
