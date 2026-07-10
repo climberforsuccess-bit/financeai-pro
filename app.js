@@ -1107,7 +1107,17 @@ function renderDashboard() {
   if (el('val-expense'))el('val-expense').textContent = fmt(expense);
   if (el('val-balance')) el('val-balance').textContent = fmt(balance);
 
-  const totalDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance || d.amount) || 0), 0);
+  const cardDebt = (STATE.cards || [])
+    .filter(c => (c.type === 'Crédito' || c.type === 'credit') && parseFloat(c.balance) > 0)
+    .reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
+  const manualDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance || d.amount) || 0), 0);
+  const totalDebt = manualDebt + cardDebt;
+  // Calcular cambio real: totalDebt vs snapshot del mes anterior guardado
+  const prevTotalDebt = parseFloat(localStorage.getItem('fai_prev_month_debt') || '0');
+  if (prevTotalDebt === 0 && totalDebt > 0) {
+    localStorage.setItem('fai_prev_month_debt', totalDebt.toString());
+  }
+  STATE.debtChangeThisMonth = prevTotalDebt > 0 ? (totalDebt - prevTotalDebt) : 0;
   const netWorth = balance - totalDebt;
   if (el('val-balance-status')) {
     if (netWorth >= 0) {
