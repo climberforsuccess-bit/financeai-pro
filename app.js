@@ -3608,7 +3608,10 @@ async function saveScannedTransaction() {
 
   } catch(e) {
     console.error('Error guardando transacción:', e);
-    showToast(t('scan_save_error2'), 'error');
+    console.error('Error details:', JSON.stringify(e, null, 2));
+    console.error('Error message:', e.message);
+    console.error('Error code:', e.code);
+    showToast(t('scan_save_error2') + ' | ' + (e.message || e.code || 'unknown'), 'error');
   }
 }
 
