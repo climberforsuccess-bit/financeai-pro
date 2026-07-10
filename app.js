@@ -701,6 +701,7 @@ async function initApp() {
         await loadDebts();
         await loadSubscriptions();
         showPage('app');
+        renderDashboard();
         showSection('dashboard');
         if (typeof applyLanguage === 'function') {
           const lang = localStorage.getItem('financeai_lang') || 'en';
@@ -1654,10 +1655,12 @@ function renderDebts() {
 
   const totalMinPay = allDebts.reduce((s, d) => s + (d.minPayment || 0), 0);
 
-  const statVals = document.querySelectorAll('#section-debts .stat-card-value');
-  if (statVals[0]) statVals[0].textContent = formatCurrency(total);
-  if (statVals[1]) statVals[1].textContent = calcPayoffTime(allDebts);
-  if (statVals[2]) statVals[2].textContent = formatCurrency(totalMinPay);
+  const elDebtTotal   = document.getElementById('debt-stat-total');
+  const elDebtTime    = document.getElementById('debt-stat-time');
+  const elDebtMinPay  = document.getElementById('debt-stat-saving');
+  if (elDebtTotal)  elDebtTotal.textContent  = formatCurrency(total);
+  if (elDebtTime)   elDebtTime.textContent   = calcPayoffTime(allDebts);
+  if (elDebtMinPay) elDebtMinPay.textContent = formatCurrency(totalMinPay);
 
   let container = gel('debt-items-list');
   if (!container) {
