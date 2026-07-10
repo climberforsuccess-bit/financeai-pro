@@ -3578,7 +3578,9 @@ async function saveScannedTransaction() {
 
   const scan = STATE.lastScan;
   const typeEl = document.getElementById('scan-type-select');
-  const type = typeEl ? typeEl.value : 'personal';
+  const typeRaw = typeEl ? typeEl.value : 'expense';
+  // Normalize to valid Supabase constraint values
+  const type = (typeRaw === 'income') ? 'income' : 'expense';
   const cardEl = document.getElementById('scan-card-select');
   const card_id = cardEl && cardEl.value ? cardEl.value : null;
 
