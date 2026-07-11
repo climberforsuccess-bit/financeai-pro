@@ -1042,7 +1042,9 @@ function renderDashboard() {
   clearTimeout(_rdTimer);
   _rdTimer = setTimeout(() => _renderDashboardCore(), 80);
 }
-function _renderDashboardCore() {
+async function _renderDashboardCore() {
+  await loadDebts();
+  await loadCards();
   updateAiMessagesLeft();
   // Banner de límite de transacciones
   const limits = getPlanLimits();
