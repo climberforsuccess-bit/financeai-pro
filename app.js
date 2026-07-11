@@ -1037,7 +1037,12 @@ const cardBadge = card ? `<span class="badge badge-outline" style="font-size:11p
       </tbody>
     </table>`;
 }
+let _rdTimer = null;
 function renderDashboard() {
+  clearTimeout(_rdTimer);
+  _rdTimer = setTimeout(() => _renderDashboardCore(), 80);
+}
+function _renderDashboardCore() {
   updateAiMessagesLeft();
   // Banner de límite de transacciones
   const limits = getPlanLimits();
