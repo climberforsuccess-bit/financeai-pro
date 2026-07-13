@@ -1116,10 +1116,10 @@ async function _renderDashboardCore() {
   if (el('val-balance')) el('val-balance').textContent = fmt(balance);
 
   const cardDebt = (STATE.cards || [])
-    .filter(c => parseFloat(c.balance) > 0)
+    .filter(c => (c.type === 'Crédito' || c.type === 'credit' || c.type === 'Credito') && parseFloat(c.balance) > 0)
     .reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
   const manualDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance || d.amount) || 0), 0);
-  const totalDebt = manualDebt + cardDebt;
+  const totalDebt = STATE.totalDebtCache !== undefined ? STATE.totalDebtCache : (manualDebt + cardDebt);
   // Calcular cambio real: totalDebt vs snapshot del mes anterior guardado
   const prevTotalDebt = parseFloat(localStorage.getItem('fai_prev_month_debt') || '0');
   if (prevTotalDebt === 0 && totalDebt > 0) {
@@ -1648,6 +1648,7 @@ function renderDebts() {
   }));
 
   let allDebts = [...allCardDebts, ...manualDebts];
+  STATE.totalDebtCache = allDebts.reduce((s, d) => s + (d.balance || 0), 0);
 
   // Sort based on active method
   const method = STATE.currentDebtMethod || 'avalanche';
