@@ -1113,7 +1113,9 @@ async function _renderDashboardCore() {
   if (el('val-expense'))el('val-expense').textContent = fmt(expense);
   if (el('val-balance')) el('val-balance').textContent = fmt(balance);
 
-  const totalDebt = STATE.totalDebtCache || 0;
+  const cardDebt = (STATE.cards || []).reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
+  const manualDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance || d.amount) || 0), 0);
+  const totalDebt = cardDebt + manualDebt;
   // Calcular cambio real: totalDebt vs snapshot del mes anterior guardado
   const prevTotalDebt = parseFloat(localStorage.getItem('fai_prev_month_debt') || '0');
   if (prevTotalDebt === 0 && totalDebt > 0) {
