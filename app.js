@@ -701,7 +701,6 @@ async function initApp() {
         await loadDebts();
         await loadSubscriptions();
         showPage('app');
-        renderDashboard();
         showSection('dashboard');
         if (typeof applyLanguage === 'function') {
           const lang = localStorage.getItem('financeai_lang') || 'en';
