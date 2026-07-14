@@ -1114,6 +1114,9 @@ async function _renderDashboardCore() {
   if (el('val-expense'))el('val-expense').textContent = fmt(expense);
   if (el('val-balance')) el('val-balance').textContent = fmt(balance);
 
+  // Asegurar datos frescos de cards y debts
+  if (!STATE.cards || STATE.cards.length === 0) await loadCards();
+  if (!STATE.debts || STATE.debts.length === 0) await loadDebts();
   const cardDebt = (STATE.cards || []).reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
   const manualDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance || d.amount) || 0), 0);
   const totalDebt = cardDebt + manualDebt;
