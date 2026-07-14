@@ -1041,7 +1041,6 @@ let _rdTimer = null;
 function renderDashboard() {
   clearTimeout(_rdTimer);
   _rdTimer = setTimeout(async () => {
-    await Promise.all([loadCards(), loadDebts()]);
     await _renderDashboardCore();
   }, 0);
 }
