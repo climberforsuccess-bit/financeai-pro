@@ -1120,7 +1120,10 @@ async function _renderDashboardCore() {
   // Asegurar datos frescos de cards y debts
   if (!STATE.cards || STATE.cards.length === 0) await loadCards();
   if (!STATE.debts || STATE.debts.length === 0) await loadDebts();
-  const totalDebt = STATE.totalDebtCache || 0;
+  const cardDebt = (STATE.cards || []).reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
+  const manualDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance) || 0), 0);
+  const totalDebt = cardDebt + manualDebt;
+  STATE.totalDebtCache = totalDebt;
   // Calcular cambio real: totalDebt vs snapshot del mes anterior guardado
   const prevTotalDebt = parseFloat(localStorage.getItem('fai_prev_month_debt') || '0');
   if (prevTotalDebt === 0 && totalDebt > 0) {
