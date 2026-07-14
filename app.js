@@ -634,6 +634,7 @@ async function loadDebts() {
     debtType: d.debt_type,
     createdAt: d.created_at
   }));
+  STATE.totalDebtCache = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance) || 0), 0);
 }
 
 async function loadSubscriptions() {
