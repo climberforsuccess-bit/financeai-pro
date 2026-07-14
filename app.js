@@ -1042,8 +1042,8 @@ function renderDashboard() {
   clearTimeout(_rdTimer);
   _rdTimer = setTimeout(async () => {
     await Promise.all([loadCards(), loadDebts()]);
-    _renderDashboardCore();
-  }, 80);
+    await _renderDashboardCore();
+  }, 0);
 }
 async function _renderDashboardCore() {
   updateAiMessagesLeft();
