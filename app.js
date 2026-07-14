@@ -1040,7 +1040,10 @@ const cardBadge = card ? `<span class="badge badge-outline" style="font-size:11p
 let _rdTimer = null;
 function renderDashboard() {
   clearTimeout(_rdTimer);
-  _rdTimer = setTimeout(() => _renderDashboardCore(), 80);
+  _rdTimer = setTimeout(async () => {
+    await Promise.all([loadCards(), loadDebts()]);
+    _renderDashboardCore();
+  }, 80);
 }
 async function _renderDashboardCore() {
   updateAiMessagesLeft();
