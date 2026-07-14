@@ -457,9 +457,14 @@ Respond ONLY with a JSON array. Zero explanation. Zero markdown:
     try {
       cards = JSON.parse(jsonStr);
     } catch(parseErr) {
-      // Last resort: strip all non-ASCII and retry
-      const ascii = jsonStr.replace(/[^\x20-\x7E,\[\]{}":]/g, '');
-      cards = JSON.parse(ascii);
+      try {
+        // Last resort: strip all non-ASCII and retry
+        const ascii = jsonStr.replace(/[^\x20-\x7E,\[\]{}":]/g, '');
+        cards = JSON.parse(ascii);
+      } catch(e2) {
+        console.warn('loadCardRecommendations: JSON inválido, skipping', e2);
+        return;
+      }
     }
     if (!Array.isArray(cards) || !cards.length) throw new Error('Empty');
 
