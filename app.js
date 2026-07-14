@@ -634,7 +634,9 @@ async function loadDebts() {
     debtType: d.debt_type,
     createdAt: d.created_at
   }));
-  STATE.totalDebtCache = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance) || 0), 0);
+  const cardDebt = (STATE.cards || []).reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
+  const manualDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance) || 0), 0);
+  STATE.totalDebtCache = cardDebt + manualDebt;
 }
 
 async function loadSubscriptions() {
