@@ -1123,9 +1123,10 @@ async function _renderDashboardCore() {
   if (el('val-balance')) el('val-balance').textContent = fmt(balance);
 
   // Asegurar datos frescos de cards y debts
-  if (!STATE.cards || STATE.cards.length === 0) await loadCards();
-  if (!STATE.debts || STATE.debts.length === 0) await loadDebts();
+  await loadCards();
+  await loadDebts();
   const cardDebt = (STATE.cards || []).reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
+  console.log('DEBUG cardDebt:', cardDebt, 'cards count:', STATE.cards?.length);
   const manualDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance) || 0), 0);
   const totalDebt = cardDebt + manualDebt;
   STATE.totalDebtCache = totalDebt;
