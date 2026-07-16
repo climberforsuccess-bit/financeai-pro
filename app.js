@@ -499,6 +499,7 @@ Respond ONLY with a JSON array. Zero explanation. Zero markdown:
 }
 
 function showSection(sectionId) {
+  if (window.innerWidth <= 900) closeSidebar();
   showPage('app');
   document.querySelectorAll('[id^="section-"]').forEach(s => {
     s.style.display = 'none';
