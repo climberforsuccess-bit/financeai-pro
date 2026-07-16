@@ -1126,7 +1126,6 @@ async function _renderDashboardCore() {
   await loadCards();
   await loadDebts();
   const cardDebt = (STATE.cards || []).reduce((s, c) => s + (parseFloat(c.balance) || 0), 0);
-  console.log('DEBUG cardDebt:', cardDebt, 'cards count:', STATE.cards?.length);
   const manualDebt = (STATE.debts || []).reduce((s, d) => s + (parseFloat(d.balance) || 0), 0);
   const totalDebt = cardDebt + manualDebt;
   STATE.totalDebtCache = totalDebt;
