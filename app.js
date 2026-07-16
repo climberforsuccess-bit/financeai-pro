@@ -2849,7 +2849,7 @@ async function confirmCancelSubscription() {
 
     // Fetch retention offer
     showToast('⏳ Cargando oferta especial...', 'info', 2000);
-    const retRes = await fetch('/api/retention-offer', {
+    const retRes = await fetch('/api/retention', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -2957,7 +2957,7 @@ function showRetentionModal(offer, session) {
       modal.remove();
       // Apply discount via API
       try {
-        const applyRes = await fetch('/api/apply-retention-discount', {
+        const applyRes = await fetch('/api/retention', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

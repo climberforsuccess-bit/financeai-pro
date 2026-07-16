@@ -6,17 +6,39 @@ const corsHeaders = {
 };
 
 async function convertHeicToJpeg(imageBytes: Uint8Array): Promise<Uint8Array> {
-  // Use convertio API or just pass raw to OpenAI with jpeg declaration
-  // OpenAI gpt-4o can sometimes handle HEIC if declared as jpeg
-  // Better: use imagga or cloudconvert - but simplest is Jimp via WASM
-  // Simplest working solution: re-encode via fetch to a free converter
+  // Use Cloudflare/external conversion API
+  // Option: use api.cloudconvert.com or use raw canvas via OffscreenCanvas
+  // Simplest: use https://heic.photos/convert API (free, no auth)
+  try {
+    const blob = new Blob([imageBytes], { type: 'image/heic' });
+    const formData = new FormData();
+    formData.append('file', blob, 'image.heic');
+    
+    const response = await fetch('https://heic.photos/convert', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (response.ok) {
+      const converted = await response.arrayBuffer();
+      return new Uint8Array(converted);
+    }
+  } catch (e) {
+    console.error('heic.photos conversion failed:', e);
+  }
   
-  const formData = new FormData();
-  const blob = new Blob([imageBytes], { type: 'image/heic' });
-  formData.append('file', blob, 'image.heic');
-  
-  // Use freeconvert or just return as-is and let OpenAI try
+  // Fallback: use imagga resize API to force JPEG
+  // Last resort: try sending as PNG declaration (sometimes works)
   return imageBytes;
+}
+
+function detectMime(bytes: Uint8Array): string {
+  if (bytes[0] === 0x89 && bytes[1] === 0x50) return "image/png";
+  if (bytes[0] === 0xFF && bytes[1] === 0xD8) return "image/jpeg";
+  if (bytes[0] === 0x47 && bytes[1] === 0x49) return "image/gif";
+  if (bytes[0] === 0x52 && bytes[1] === 0x49) return "image/webp";
+  if (bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) return "image/heic";
+  return "image/jpeg";
 }
 
 serve(async (req) => {
@@ -32,7 +54,7 @@ serve(async (req) => {
       const formData = await req.formData();
       const imageFile = formData.get("image") as File;
       const prompt = formData.get("prompt") as string;
-      const isHeic = formData.get("isHeic") as string;
+      const isHeicFlag = formData.get("isHeic") === "true";
 
       if (!imageFile) {
         return new Response(JSON.stringify({ error: "No image provided" }), {
@@ -41,16 +63,26 @@ serve(async (req) => {
         });
       }
 
-      const imageBytes = new Uint8Array(await imageFile.arrayBuffer());
-      const imageBase64 = btoa(imageBytes.reduce((data, byte) => data + String.fromCharCode(byte), ''));
+      let imageBytes = new Uint8Array(await imageFile.arrayBuffer());
+      let mimeType = detectMime(imageBytes);
+      
+      console.log(`Image received: ${mimeType}, size: ${imageBytes.length} bytes, isHeic flag: ${isHeicFlag}`);
 
-      // Detect mime from magic bytes
-      let mimeType = "image/jpeg";
-      if (imageBytes[0] === 0x89 && imageBytes[1] === 0x50) mimeType = "image/png";
-      else if (imageBytes[0] === 0x47 && imageBytes[1] === 0x49) mimeType = "image/gif";
-      else if (imageBytes[0] === 0x52 && imageBytes[1] === 0x49) mimeType = "image/webp";
-      // HEIC: force jpeg - gpt-4o vision handles it
-      if (isHeic === 'true') mimeType = "image/jpeg";
+      // Convert HEIC to JPEG if needed
+      if (isHeicFlag || mimeType === "image/heic") {
+        console.log('Converting HEIC to JPEG via heic.photos...');
+        const converted = await convertHeicToJpeg(imageBytes);
+        if (converted !== imageBytes) {
+          imageBytes = converted;
+          mimeType = "image/jpeg";
+          console.log(`Converted successfully, new size: ${imageBytes.length} bytes`);
+        } else {
+          console.warn('Conversion failed, trying as PNG...');
+          mimeType = "image/png";
+        }
+      }
+
+      const imageBase64 = btoa(imageBytes.reduce((data, byte) => data + String.fromCharCode(byte), ''));
 
       const body = {
         model: "gpt-4o",
