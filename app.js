@@ -3464,7 +3464,7 @@ async function processReceipt(event) {
   "merchant": "merchant name",
   "amount": number_without_symbol,
   "category": "category (${t('scan_prompt_categories')})",
-  "date": "YYYY-MM-DD",
+  "date": "date found on receipt converted to YYYY-MM-DD format, no matter the original format (e.g. June 17 2026 = 2026-06-17)",
   "currency": "USD or detected currency"
 }
 Only respond with the JSON, no additional text.`);
@@ -3498,7 +3498,7 @@ Only respond with the JSON, no additional text.`);
   "merchant": "merchant name",
   "amount": number_without_symbol,
   "category": "category (${t('scan_prompt_categories')})",
-  "date": "YYYY-MM-DD",
+  "date": "date found on receipt converted to YYYY-MM-DD format, no matter the original format (e.g. June 17 2026 = 2026-06-17)",
   "currency": "USD or detected currency"
 }
 Only respond with the JSON, no additional text.`
