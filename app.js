@@ -3505,7 +3505,7 @@ Only respond with the JSON, no additional text.`
                 },
                 {
                   type: 'image_url',
-                  image_url: { url: base64OrFile, detail: 'low' }
+                  image_url: { url: base64OrFile, detail: 'high' }
                 }
               ]
             }
