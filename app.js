@@ -3467,7 +3467,7 @@ async function processReceipt(event) {
   "date": "IMPORTANT: read the EXACT date printed on this receipt and convert to YYYY-MM-DD. Do NOT guess or use todays date. Example: June 17 2026 = 2026-06-17",
   "currency": "USD or detected currency"
 }
-Only respond with the JSON, no additional text.`);
+Today's date is '${new Date().toISOString().split('T')[0]}'. The receipt date should be close to this. Only respond with the JSON, no additional text.`);
       response = await fetch(SUPABASE_FUNCTION_URL, {
         method: 'POST',
         headers: {
@@ -3501,7 +3501,7 @@ Only respond with the JSON, no additional text.`);
   "date": "IMPORTANT: read the EXACT date printed on this receipt and convert to YYYY-MM-DD. Do NOT guess or use todays date. Example: June 17 2026 = 2026-06-17",
   "currency": "USD or detected currency"
 }
-Only respond with the JSON, no additional text.`
+Today's date is '${new Date().toISOString().split('T')[0]}'. The receipt date should be close to this. Only respond with the JSON, no additional text.`
                 },
                 {
                   type: 'image_url',
@@ -3652,8 +3652,8 @@ async function saveScannedTransaction() {
         const today = new Date();
         const receiptDate = scan.date ? new Date(scan.date) : null;
         const diffDays = receiptDate ? (today - receiptDate) / (1000*60*60*24) : 999;
-        // If receipt date is older than 60 days, use today
-        return (diffDays > 60) ? today.toISOString().split('T')[0] : (scan.date || today.toISOString().split('T')[0]);
+        // Use receipt date as-is, user can edit if wrong
+        return scan.date || today.toISOString().split('T')[0];
       })(),
       type: type,
       ...(card_id && { card_id })
