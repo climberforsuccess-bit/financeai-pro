@@ -3678,6 +3678,7 @@ async function saveScannedTransaction() {
     renderTransactions();
 
     showToast(t('saved_history'));
+    resetScanner();
 
   } catch(e) {
     console.error('Error guardando transacción:', e);

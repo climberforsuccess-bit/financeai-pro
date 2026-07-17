@@ -1921,7 +1921,7 @@ body {
           </div>
           <div style="margin-top:20px;display:flex;gap:12px;">
             <button class="btn btn-primary" onclick="saveScannedTransaction()" data-i18n="btn_save_tx">✓ Guardar Transacción</button>
-            <button class="btn btn-outline" onclick="document.getElementById('scan-result').classList.remove('show')" data-i18n="btn_discard">× Descartar</button>
+            <button class="btn btn-outline" onclick="document.getElementById('scan-result').classList.remove('show'); resetScanner()" data-i18n="btn_discard">× Descartar</button>
           </div>
         </div>
 
