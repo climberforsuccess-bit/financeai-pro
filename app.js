@@ -3579,6 +3579,7 @@ Today's date is '${new Date().toISOString().split('T')[0]}'. The receipt date sh
             <button onclick="resetScanner()" style="margin-top:20px;padding:10px 24px;background:var(--primary);color:white;border:none;border-radius:12px;cursor:pointer;font-weight:600;">Intentar de nuevo</button>
           </div>`;
       }
+      setTimeout(() => resetScanner(), 12000);
     } else {
       showToast(t('scan_read_error'), 'error');
       if (uploadArea) {
