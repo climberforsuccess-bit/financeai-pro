@@ -1158,6 +1158,193 @@ body {
   padding: 2px 6px;
   border-radius: 4px;
 }
+
+/* ===== DEBT STRATEGIES MODAL ===== */
+.modal-strategies {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-strategies.active {
+  display: flex;
+}
+
+.modal-strategies-content {
+  background: linear-gradient(135deg, #0F172A, #1a2847);
+  border: 2px solid rgba(0, 238, 255, 0.2);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 900px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 238, 255, 0.2);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-strategies-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid rgba(0, 238, 255, 0.1);
+  padding-bottom: 20px;
+}
+
+.modal-strategies-header h2 {
+  font-size: 1.8rem;
+  color: #00EEFF;
+  margin: 0;
+}
+
+.modal-strategies-close {
+  background: transparent;
+  border: none;
+  color: #A0B0C0;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal-strategies-close:hover {
+  color: #00EEFF;
+}
+
+.strategies-grid-modal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.strategy-card-modal {
+  background: rgba(30, 41, 59, 0.8);
+  border: 2px solid rgba(0, 238, 255, 0.15);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.strategy-card-modal:hover {
+  border-color: rgba(0, 238, 255, 0.4);
+  background: rgba(30, 41, 59, 0.95);
+}
+
+.strategy-card-modal-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.strategy-card-modal-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #00EEFF;
+  margin-bottom: 6px;
+}
+
+.strategy-card-modal-desc {
+  font-size: 0.9rem;
+  color: #CBD5E1;
+  line-height: 1.5;
+}
+
+.strategies-comparison-modal {
+  background: rgba(30, 41, 59, 0.8);
+  border: 2px solid rgba(0, 238, 255, 0.15);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  overflow-x: auto;
+}
+
+.strategies-comparison-modal table {
+  width: 100%;
+  font-size: 0.85rem;
+}
+
+.strategies-comparison-modal th {
+  background: rgba(0, 238, 255, 0.05);
+  color: #00EEFF;
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0, 238, 255, 0.1);
+}
+
+.strategies-comparison-modal td {
+  padding: 10px;
+  border-bottom: 1px solid rgba(0, 238, 255, 0.05);
+  color: #CBD5E1;
+}
+
+.modal-strategies-cta {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.modal-strategies-cta button {
+  padding: 12px 28px;
+  border-radius: 50px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-strategies-primary {
+  background: linear-gradient(135deg, #00EEFF, #0099FF);
+  color: #0F172A;
+}
+
+.btn-strategies-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(0, 238, 255, 0.4);
+}
+
+.btn-strategies-secondary {
+  background: transparent;
+  color: #A0B0C0;
+  border: 2px solid rgba(0, 238, 255, 0.2);
+}
+
+.btn-strategies-secondary:hover {
+  border-color: #00EEFF;
+  color: #00EEFF;
+}
+
+@media (max-width: 768px) {
+  .strategies-grid-modal {
+    grid-template-columns: 1fr;
+  }
+  .modal-strategies-content {
+    padding: 24px;
+    width: 95%;
+  }
+  .modal-strategies-header h2 {
+    font-size: 1.4rem;
+  }
+}
 </style>
   <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
 </head>
@@ -2939,6 +3126,115 @@ body {
   setTimeout(hideSplash, 5500);
   window.addEventListener('load', function() { setTimeout(hideSplash, 5500); });
   document.addEventListener('DOMContentLoaded', function() { setTimeout(hideSplash, 5500); });
+</script>
+
+<!-- MODAL: Debt Strategies Guide -->
+<div id="modalStrategies" class="modal-strategies">
+  <div class="modal-strategies-content">
+    <div class="modal-strategies-header">
+      <h2>🎯 4 Estrategias de Pago de Deuda</h2>
+      <button class="modal-strategies-close" onclick="closeStrategiesModal()">&times;</button>
+    </div>
+
+    <div class="strategies-grid-modal">
+      <div class="strategy-card-modal">
+        <div class="strategy-card-modal-icon">🏔️</div>
+        <div class="strategy-card-modal-title">Avalanche</div>
+        <div class="strategy-card-modal-desc">Paga primero las deudas con mayor interés. Ahorras máximo dinero.</div>
+      </div>
+      <div class="strategy-card-modal">
+        <div class="strategy-card-modal-icon">⛄</div>
+        <div class="strategy-card-modal-title">Snowball</div>
+        <div class="strategy-card-modal-desc">Paga primero las deudas más pequeñas. Mantiene tu motivación alta.</div>
+      </div>
+      <div class="strategy-card-modal">
+        <div class="strategy-card-modal-icon">💼</div>
+        <div class="strategy-card-modal-title">Consolidación</div>
+        <div class="strategy-card-modal-desc">Combina todas tus deudas en una. Simplicidad máxima.</div>
+      </div>
+      <div class="strategy-card-modal">
+        <div class="strategy-card-modal-icon">⚖️</div>
+        <div class="strategy-card-modal-title">Híbrido</div>
+        <div class="strategy-card-modal-desc">Mezcla 50% interés + 50% balance. Lo mejor de ambos mundos.</div>
+      </div>
+    </div>
+
+    <div class="strategies-comparison-modal">
+      <table>
+        <thead>
+          <tr>
+            <th>Método</th>
+            <th>Ahorro</th>
+            <th>Motivación</th>
+            <th>Mejor para</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🏔️ Avalanche</strong></td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐</td>
+            <td>Deudas alto interés</td>
+          </tr>
+          <tr>
+            <td><strong>⛄ Snowball</strong></td>
+            <td>⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>Motivación psicológica</td>
+          </tr>
+          <tr>
+            <td><strong>💼 Consolidación</strong></td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>Muchas deudas pequeñas</td>
+          </tr>
+          <tr>
+            <td><strong>⚖️ Híbrido</strong></td>
+            <td>⭐⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+            <td>Balance perfecto (recomendado)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-strategies-cta">
+      <button class="btn-strategies-primary" onclick="startFreeAndGoToDebts()">
+        🚀 Prueba FinanceAI Gratis
+      </button>
+      <button class="btn-strategies-secondary" onclick="closeStrategiesModal()">
+        Más información
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openStrategiesModal() {
+  const modal = document.getElementById('modalStrategies');
+  if (modal) modal.classList.add('active');
+}
+
+function closeStrategiesModal() {
+  const modal = document.getElementById('modalStrategies');
+  if (modal) modal.classList.remove('active');
+}
+
+function startFreeAndGoToDebts() {
+  closeStrategiesModal();
+  // Redirige a la app o abre sign-up
+  window.location.href = '/app.html#debts' || '/';
+}
+
+// Cerrar modal si clickea fuera
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('modalStrategies');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeStrategiesModal();
+    });
+  }
+});
 </script>
 </body>
 </html>

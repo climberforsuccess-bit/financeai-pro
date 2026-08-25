@@ -739,6 +739,14 @@ async function loadUserProfile() {
 
     if (data && !error) {
       STATE.settings.plan           = data.plan || 'free';
+      
+      // AUTO-ASSIGN PRO TO ADMINS
+      const adminEmails = ['orledis.oliveros@gmail.com', 'orledisyuma@gmail.com', 'yula87ramos@gmail.com'];
+      if (STATE.user && adminEmails.includes(STATE.user.email)) {
+        STATE.settings.plan = 'pro';
+        STATE.isAdmin = true;
+        console.log('✅ Admin detected - assigned Pro plan');
+      }
       STATE.settings.subscriptionStatus = data.subscription_status || 'inactive';
       STATE.settings.billingPeriod  = data.billing_period || 'monthly';
       STATE.settings.trialEndsAt    = data.trial_ends_at || null;
@@ -1623,8 +1631,12 @@ function renderDebts() {
   methodBtns.forEach(b => {
     const isAvalanche = b.getAttribute('onclick')?.includes('avalanche');
     const isSnowball  = b.getAttribute('onclick')?.includes('snowball');
+    const isConsolidation = b.getAttribute('onclick')?.includes('consolidation');
+    const isHybrid = b.getAttribute('onclick')?.includes('hybrid');
     if (isAvalanche && STATE.currentDebtMethod === 'avalanche') b.classList.add('active');
     else if (isSnowball && STATE.currentDebtMethod === 'snowball') b.classList.add('active');
+    else if (isConsolidation && STATE.currentDebtMethod === 'consolidation') b.classList.add('active');
+    else if (isHybrid && STATE.currentDebtMethod === 'hybrid') b.classList.add('active');
     else b.classList.remove('active');
   });
 
@@ -1632,9 +1644,15 @@ function renderDebts() {
   if (STATE.currentDebtMethod === 'avalanche') {
     setTxt('debt-method-title', t('method_avalanche'));
     setTxt('debt-method-desc', t('debt_method_avalanche_desc'));
-  } else {
+  } else if (STATE.currentDebtMethod === 'snowball') {
     setTxt('debt-method-title', t('method_snowball'));
     setTxt('debt-method-desc', t('debt_method_snowball_desc'));
+  } else if (STATE.currentDebtMethod === 'consolidation') {
+    setTxt('debt-method-title', t('method_consolidation'));
+    setTxt('debt-method-desc', t('debt_method_consolidation_desc'));
+  } else if (STATE.currentDebtMethod === 'hybrid') {
+    setTxt('debt-method-title', t('method_hybrid'));
+    setTxt('debt-method-desc', t('debt_method_hybrid_desc'));
   }
 
   const allCardDebts = (STATE.cards || [])
@@ -1665,9 +1683,19 @@ function renderDebts() {
   if (method === 'avalanche') {
     // Highest APR first
     allDebts.sort((a, b) => (b.apr || 0) - (a.apr || 0));
-  } else {
+  } else if (method === 'snowball') {
     // Snowball: lowest balance first
     allDebts.sort((a, b) => (a.balance || 0) - (b.balance || 0));
+  } else if (method === 'consolidation') {
+    // Consolidation: highest balance first (easiest to combine)
+    allDebts.sort((a, b) => (b.balance || 0) - (a.balance || 0));
+  } else if (method === 'hybrid') {
+    // Hybrid: 50% APR + 50% balance priority
+    allDebts.sort((a, b) => {
+      const scoreA = (b.apr || 0) * 0.5 + (b.balance || 0) * 0.5;
+      const scoreB = (a.apr || 0) * 0.5 + (a.balance || 0) * 0.5;
+      return scoreB - scoreA;
+    });
   }
 
   const personalDebts = allDebts.filter(d => d.ownerType === 'personal');
@@ -1976,10 +2004,18 @@ function switchDebtMethod(method, btn) {
     setTxt('debt-method-title', t('method_avalanche'));
     setTxt('debt-method-desc', t('debt_method_avalanche_desc'));
     showToast(t('toast_avalanche'));
-  } else {
+  } else if (method === 'snowball') {
     setTxt('debt-method-title', t('method_snowball'));
     setTxt('debt-method-desc', t('debt_method_snowball_desc'));
     showToast(t('toast_snowball'));
+  } else if (method === 'consolidation') {
+    setTxt('debt-method-title', t('method_consolidation'));
+    setTxt('debt-method-desc', t('debt_method_consolidation_desc'));
+    showToast(t('toast_consolidation'));
+  } else if (method === 'hybrid') {
+    setTxt('debt-method-title', t('method_hybrid'));
+    setTxt('debt-method-desc', t('debt_method_hybrid_desc'));
+    showToast(t('toast_hybrid'));
   }
   saveState();
   renderDebts();
@@ -2026,6 +2062,17 @@ function openAddDebt() {
         <label>${t('debt_min_label')}</label>
         <input type="number" id="d-min"
           placeholder="25" style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label>${t('debt_type_label')}</label>
+        <select id="d-type" style="width:100%;">
+          <option value="credit_card">${t('debt_type_credit_card')}</option>
+          <option value="auto_loan">${t('debt_type_auto_loan')}</option>
+          <option value="mortgage">${t('debt_type_mortgage')}</option>
+          <option value="student_loan">${t('debt_type_student_loan')}</option>
+          <option value="personal_loan">${t('debt_type_personal_loan')}</option>
+          <option value="other">${t('debt_type_other')}</option>
+        </select>
       </div>
       <button onclick="saveDebt()" class="btn btn-primary"
         style="width:100%;margin-top:8px;">

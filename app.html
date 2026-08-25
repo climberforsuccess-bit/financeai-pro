@@ -986,5 +986,21 @@
 <script src="lang.js"></script>
 <script src="app.js"></script>
 
+
+<script>
+function switchStrategyTab(strategy) {
+  // Desactivar todos los tabs
+  document.querySelectorAll('.strategy-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  document.querySelectorAll('.strategy-tab-content').forEach(content => {
+    content.classList.remove('active');
+  });
+  
+  // Activar el tab seleccionado
+  event.target.closest('.strategy-tab').classList.add('active');
+  document.getElementById('strategy-' + strategy).classList.add('active');
+}
+</script>
 </body>
 </html>
