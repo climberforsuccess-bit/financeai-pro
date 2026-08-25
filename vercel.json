@@ -1,10 +1,15 @@
 {
   "version": 2,
+  "public": ".",
   "functions": {
     "api/stripe-webhook.js": {
       "memory": 1024
     }
   },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/app", "destination": "/app.html" }
+  ],
   "crons": [
     {
       "path": "/api/process-scheduled-emails",
