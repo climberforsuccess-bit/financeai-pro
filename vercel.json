@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "functions": {
+    "api/stripe-webhook.js": {
+      "memory": 1024
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/process-scheduled-emails",
+      "schedule": "0 9 * * *"
+    }
+  ]
+}
