@@ -6,9 +6,38 @@
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/app", "destination": "/app.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/app",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/app.html",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/(.*)\\.html$",
+      "destination": "/$1.html"
+    },
+    {
+      "source": "/(.*)\\.css$",
+      "destination": "/$1.css"
+    },
+    {
+      "source": "/(.*)\\.js$",
+      "destination": "/$1.js"
+    },
+    {
+      "source": "/(.*)\\.json$",
+      "destination": "/$1.json"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ],
   "crons": [
     {
