@@ -989,6 +989,7 @@
 
 <script>
 function switchStrategyTab(strategy) {
+  logGuideViewEvent(strategy);
   // Desactivar todos los tabs
   document.querySelectorAll('.strategy-tab').forEach(tab => {
     tab.classList.remove('active');
@@ -1001,6 +1002,159 @@ function switchStrategyTab(strategy) {
   event.target.closest('.strategy-tab').classList.add('active');
   document.getElementById('strategy-' + strategy).classList.add('active');
 }
+</script>
+
+<!-- Google Analytics with Event Tracking -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YOUR_GA_ID"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YOUR_GA_ID', {
+    'page_path': window.location.pathname,
+    'allow_google_signals': true,
+    'allow_ad_personalization_signals': true
+  });
+  
+  // Track debt strategy selection
+  function trackStrategySelection(strategy) {
+    gtag('event', 'select_debt_strategy', {
+      'strategy_name': strategy,
+      'strategy_type': getStrategyType(strategy),
+      'timestamp': new Date().toISOString()
+    });
+  }
+  
+  // Track debt method change
+  function trackMethodChange(method) {
+    gtag('event', 'change_payoff_method', {
+      'method': method,
+      'timestamp': new Date().toISOString()
+    });
+  }
+  
+  // Track strategy guide view
+  function trackGuideView(tab) {
+    gtag('event', 'view_strategy_guide', {
+      'guide_section': tab,
+      'timestamp': new Date().toISOString()
+    });
+  }
+</script>
+
+<script>
+// ===== CUSTOM ANALYTICS =====
+const analyticsEvents = {
+  strategies: [],
+  methods: [],
+  guideViews: [],
+  startTime: new Date(),
+};
+
+function logStrategyEvent(strategy, action = 'view') {
+  const event = {
+    strategy,
+    action,
+    timestamp: new Date().toISOString(),
+    userSession: sessionStorage.getItem('userSession') || 'anonymous'
+  };
+  
+  analyticsEvents.strategies.push(event);
+  
+  // Enviar a backend si está disponible
+  if (window.location.hostname !== 'localhost') {
+    fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventType: 'strategy_' + action,
+        data: event
+      })
+    }).catch(err => console.log('Analytics: ', err));
+  }
+  
+  console.log('📊 Event tracked:', event);
+}
+
+function logMethodEvent(method, action = 'select') {
+  const event = {
+    method,
+    action,
+    timestamp: new Date().toISOString(),
+    userSession: sessionStorage.getItem('userSession') || 'anonymous',
+    debtsCount: document.querySelectorAll('[data-debt-id]')?.length || 0
+  };
+  
+  analyticsEvents.methods.push(event);
+  
+  // Enviar a backend
+  if (window.location.hostname !== 'localhost') {
+    fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventType: 'method_' + action,
+        data: event
+      })
+    }).catch(err => console.log('Analytics: ', err));
+  }
+  
+  console.log('📊 Event tracked:', event);
+}
+
+function logGuideViewEvent(section) {
+  const event = {
+    section,
+    timestamp: new Date().toISOString(),
+    timeOnGuide: new Date() - analyticsEvents.startTime
+  };
+  
+  analyticsEvents.guideViews.push(event);
+  
+  if (window.location.hostname !== 'localhost') {
+    fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventType: 'guide_view',
+        data: event
+      })
+    }).catch(err => console.log('Analytics: ', err));
+  }
+  
+  console.log('📊 Guide view tracked:', event);
+}
+
+// Helper function
+function getStrategyType(strategy) {
+  const types = {
+    'avalanche': 'high_interest_first',
+    'snowball': 'smallest_balance_first',
+    'consolidation': 'single_payment',
+    'hybrid': 'balanced'
+  };
+  return types[strategy] || 'unknown';
+}
+
+// Interceptar clicks en strategy tabs
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.strategy-tab').forEach(tab => {
+    tab.addEventListener('click', function(e) {
+      const strategy = e.currentTarget.textContent.toLowerCase();
+      logGuideViewEvent(strategy);
+    });
+  });
+  
+  // Interceptar selección de método de deuda
+  ['avalanche', 'snowball', 'consolidation', 'hybrid'].forEach(method => {
+    const btn = document.getElementById('btn' + method.charAt(0).toUpperCase() + method.slice(1));
+    if (btn) {
+      btn.addEventListener('click', function() {
+        logMethodEvent(method, 'select');
+      });
+    }
+  });
+});
 </script>
 </body>
 </html>

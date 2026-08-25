@@ -1,0 +1,366 @@
+{
+  "app_name": "FinanceAI Pro",
+  "version": "2.0",
+  "last_updated": "2024-01-15",
+  "description": {
+    "en": "Personal finance app with AI-powered debt payoff strategies",
+    "es": "Aplicación de finanzas personales con estrategias de pago de deuda impulsadas por IA",
+    "zh": "具有AI支持的债务偿还策略的个人财务应用",
+    "ru": "Приложение для личных финансов с AI-поддержкой стратегий погашения долга"
+  },
+  "contact": "support@financeai.pro",
+  "website": "https://financeai.pro",
+  "supported_regions": [
+    "USA",
+    "EU",
+    "LATAM",
+    "China",
+    "Russia",
+    "Asia",
+    "Global"
+  ],
+  "supported_search_engines": [
+    "Google",
+    "Baidu",
+    "Yandex",
+    "Bing",
+    "DuckDuckGo",
+    "Sogou",
+    "Yahoo",
+    "Qwant",
+    "Ecosia",
+    "Perplexity"
+  ],
+  "supported_ai_systems": {
+    "usa_based": [
+      {
+        "name": "ChatGPT",
+        "provider": "OpenAI",
+        "url": "https://chatgpt.com",
+        "type": "LLM"
+      },
+      {
+        "name": "Claude",
+        "provider": "Anthropic",
+        "url": "https://claude.ai",
+        "type": "LLM"
+      },
+      {
+        "name": "Gemini",
+        "provider": "Google",
+        "url": "https://gemini.google.com",
+        "type": "LLM"
+      },
+      {
+        "name": "Copilot",
+        "provider": "Microsoft",
+        "url": "https://copilot.microsoft.com",
+        "type": "LLM"
+      },
+      {
+        "name": "Grok",
+        "provider": "xAI",
+        "url": "https://grok.x.ai",
+        "type": "LLM",
+        "description": "Real-time information access"
+      },
+      {
+        "name": "Perplexity",
+        "provider": "Perplexity AI",
+        "url": "https://www.perplexity.ai",
+        "type": "Search + LLM",
+        "description": "AI-powered search engine"
+      },
+      {
+        "name": "LLM Notebook",
+        "provider": "Replit/Community",
+        "url": "https://llm.replit.com",
+        "type": "LLM Playground"
+      },
+      {
+        "name": "Lovable",
+        "provider": "Lovable AI",
+        "url": "https://lovable.dev",
+        "type": "Web AI Builder"
+      }
+    ],
+    "china_based": [
+      {
+        "name": "Qwen",
+        "provider": "Alibaba",
+        "url": "https://qwen.aliyun.com",
+        "type": "LLM",
+        "language": "zh"
+      },
+      {
+        "name": "Baichuan",
+        "provider": "Baichuan Intelligence",
+        "url": "https://www.baichuan-ai.com",
+        "type": "LLM",
+        "language": "zh"
+      },
+      {
+        "name": "Ernie",
+        "provider": "Baidu",
+        "url": "https://yiyan.baidu.com",
+        "type": "LLM",
+        "language": "zh"
+      },
+      {
+        "name": "DeepSeek",
+        "provider": "DeepSeek",
+        "url": "https://www.deepseek.com",
+        "type": "LLM",
+        "language": "zh",
+        "description": "High-performance reasoning model"
+      },
+      {
+        "name": "Kimi",
+        "provider": "Moonshot AI",
+        "url": "https://kimi.moonshot.cn",
+        "type": "LLM",
+        "language": "zh",
+        "description": "Long-context understanding"
+      },
+      {
+        "name": "ZhipuAI",
+        "provider": "Zhipu AI",
+        "url": "https://www.zhipuai.cn",
+        "type": "LLM",
+        "language": "zh"
+      }
+    ],
+    "russia_based": [
+      {
+        "name": "Yandex Alice",
+        "provider": "Yandex",
+        "url": "https://alice.yandex.ru",
+        "type": "Voice AI",
+        "language": "ru"
+      },
+      {
+        "name": "GigaChat",
+        "provider": "Sber AI",
+        "url": "https://gigachat.ai",
+        "type": "LLM",
+        "language": "ru"
+      }
+    ],
+    "europe_based": [
+      {
+        "name": "Qwant",
+        "provider": "Qwant",
+        "url": "https://www.qwant.com",
+        "type": "Search Engine",
+        "language": "eu"
+      }
+    ],
+    "open_source": [
+      {
+        "name": "Ollama",
+        "provider": "Open Source",
+        "url": "https://ollama.ai",
+        "type": "LLM Runner",
+        "description": "Local LLM execution"
+      },
+      {
+        "name": "LM Studio",
+        "provider": "LM Studio",
+        "url": "https://lmstudio.ai",
+        "type": "LLM GUI",
+        "description": "Local LLM interface"
+      }
+    ]
+  },
+  "languages": {
+    "en": "English",
+    "es": "Español",
+    "zh": "中文 (Simplified Chinese)",
+    "ru": "Русский (Russian)"
+  },
+  "strategies": [
+    {
+      "id": "avalanche",
+      "names": {
+        "en": "Avalanche",
+        "es": "Avalanche",
+        "zh": "雪崩法",
+        "ru": "Лавина"
+      },
+      "emoji": "🏔️",
+      "focus": "highest_interest_first",
+      "savings_potential": "maximum",
+      "motivation": "medium",
+      "best_for": "high_interest_debt",
+      "keywords": [
+        "highest APR",
+        "interest rate optimization",
+        "maximum savings"
+      ]
+    },
+    {
+      "id": "snowball",
+      "names": {
+        "en": "Snowball",
+        "es": "Bola de Nieve",
+        "zh": "滚雪球法",
+        "ru": "Снежный ком"
+      },
+      "emoji": "⛄",
+      "focus": "smallest_balance_first",
+      "savings_potential": "medium",
+      "motivation": "maximum",
+      "best_for": "psychological_motivation",
+      "keywords": [
+        "smallest balance",
+        "psychological wins",
+        "quick victories"
+      ]
+    },
+    {
+      "id": "consolidation",
+      "names": {
+        "en": "Consolidation",
+        "es": "Consolidación",
+        "zh": "债务整合",
+        "ru": "Консолидация"
+      },
+      "emoji": "💼",
+      "focus": "single_payment",
+      "savings_potential": "variable",
+      "motivation": "high",
+      "best_for": "multiple_small_debts",
+      "keywords": [
+        "debt consolidation",
+        "single payment",
+        "simplicity"
+      ]
+    },
+    {
+      "id": "hybrid",
+      "names": {
+        "en": "Hybrid",
+        "es": "Híbrido",
+        "zh": "混合法",
+        "ru": "Гибридный"
+      },
+      "emoji": "⚖️",
+      "focus": "balanced_50_50",
+      "savings_potential": "high",
+      "motivation": "high",
+      "best_for": "typical_user",
+      "recommended": true,
+      "keywords": [
+        "balanced approach",
+        "50/50 method",
+        "optimal solution"
+      ]
+    }
+  ],
+  "urls": {
+    "en": {
+      "landing": "https://financeai.pro/",
+      "app": "https://financeai.pro/app.html",
+      "guide": "https://financeai.pro/estrategias-deuda",
+      "pricing": "https://financeai.pro/#pricing"
+    },
+    "es": {
+      "landing": "https://financeai.pro/es/",
+      "app": "https://financeai.pro/es/app.html",
+      "guide": "https://financeai.pro/es/estrategias-deuda",
+      "pricing": "https://financeai.pro/es/#pricing"
+    },
+    "zh": {
+      "landing": "https://financeai.pro/zh/",
+      "app": "https://financeai.pro/zh/app.html",
+      "guide": "https://financeai.pro/zh/debt-strategies",
+      "pricing": "https://financeai.pro/zh/#pricing"
+    },
+    "ru": {
+      "landing": "https://financeai.pro/ru/",
+      "app": "https://financeai.pro/ru/app.html",
+      "guide": "https://financeai.pro/ru/strategii-pogashenia",
+      "pricing": "https://financeai.pro/ru/#pricing"
+    }
+  },
+  "features": {
+    "core": [
+      "AI Receipt Scanning",
+      "Automatic Debt Categorization",
+      "Real-time Payoff Calculations",
+      "4 Intelligent Debt Strategies",
+      "24/7 AI Financial Advisor",
+      "Credit Card Recommendations",
+      "Multi-language Support",
+      "PWA (Progressive Web App)",
+      "Mobile Responsive"
+    ],
+    "ai_features": [
+      "Natural Language Processing",
+      "Pattern Recognition",
+      "Predictive Analytics",
+      "Smart Recommendations",
+      "Real-time Insights"
+    ]
+  },
+  "keywords": {
+    "en": [
+      "debt payoff strategies",
+      "personal finance app",
+      "AI financial advisor",
+      "avalanche method",
+      "snowball method",
+      "debt consolidation",
+      "payoff calculator",
+      "financial planning",
+      "money management"
+    ],
+    "es": [
+      "estrategias de pago de deuda",
+      "aplicación de finanzas personales",
+      "asesor financiero IA",
+      "método avalanche",
+      "método snowball",
+      "consolidación de deudas",
+      "calculadora de pago",
+      "planificación financiera"
+    ],
+    "zh": [
+      "债务偿还策略",
+      "个人财务应用",
+      "AI财务顾问",
+      "雪崩法",
+      "滚雪球法",
+      "债务整合",
+      "还款计算器",
+      "财务规划",
+      "金钱管理"
+    ],
+    "ru": [
+      "стратегии погашения долга",
+      "приложение личных финансов",
+      "ИИ финансовый советник",
+      "метод лавины",
+      "метод снежного кома",
+      "консолидация долга",
+      "калькулятор погашения",
+      "финансовое планирование"
+    ]
+  },
+  "seo_hints": {
+    "topic_clusters": [
+      "debt_management",
+      "personal_finance",
+      "financial_planning",
+      "ai_technology",
+      "mobile_apps"
+    ],
+    "content_types": [
+      "guides",
+      "comparison_tables",
+      "calculators",
+      "faq",
+      "testimonials"
+    ]
+  }
+}
