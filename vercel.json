@@ -15,7 +15,7 @@
       "destination": "/app.html"
     },
     {
-      "source": "/((?!\\.).*)",
+      "source": "/((?!\\.(?:html|css|js|json|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)).)*$",
       "destination": "/index.html"
     }
   ],
