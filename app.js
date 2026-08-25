@@ -1,3 +1,47 @@
+
+// ===== DEBT METHOD SELECTION =====
+let debtPayoffMethod = 'avalanche'; // default
+
+function setDebtMethod(method) {
+  debtPayoffMethod = method;
+  console.log('💰 Debt method set to:', method);
+  
+  // Log event for analytics
+  if (typeof logMethodEvent === 'function') {
+    logMethodEvent(method, 'select');
+  }
+  
+  // Update active button
+  document.querySelectorAll('[data-method-btn]').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const activeBtn = document.querySelector(`[data-method-btn="${method}"]`);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+  }
+  
+  // Show toast notification
+  const methodNames = {
+    'avalanche': '🏔️ Avalanche (Highest APR First)',
+    'snowball': '⛄ Snowball (Smallest Balance First)',
+    'consolidation': '💼 Consolidation (Single Payment)',
+    'hybrid': '⚖️ Hybrid (50/50 Balanced)'
+  };
+  
+  if (typeof showToast === 'function') {
+    showToast(methodNames[method] || method + ' selected');
+  }
+  
+  // Recalculate if debts exist
+  if (typeof calculatePayoffPlan === 'function' && window.debts && window.debts.length > 0) {
+    calculatePayoffPlan();
+    if (typeof displayDebts === 'function') {
+      displayDebts();
+    }
+  }
+}
+
+
 // FINANCEAI PRO — app.js v3.1 LIMPIO
 // Climberforsuccess LLC
 // ============================================
@@ -5028,3 +5072,160 @@ async function doLogout() {
     showToast('Error al cerrar sesión', 'error');
   }
 }
+
+
+// ===== CALCULATE PAYOFF PLAN =====
+function calculatePayoffPlan() {
+  if (!window.debts || window.debts.length === 0) {
+    console.log('⚠️ No debts to calculate');
+    return;
+  }
+  
+  console.log('📊 Calculating payoff plan with method:', debtPayoffMethod);
+  
+  let sortedDebts = [...window.debts];
+  
+  // Sort based on selected method
+  switch(debtPayoffMethod) {
+    case 'avalanche':
+      // Highest APR first (maximum savings)
+      sortedDebts.sort((a, b) => parseFloat(b.apr) - parseFloat(a.apr));
+      console.log('🏔️ Strategy: AVALANCHE - Highest APR first');
+      break;
+    
+    case 'snowball':
+      // Smallest balance first (maximum motivation)
+      sortedDebts.sort((a, b) => parseFloat(a.balance) - parseFloat(b.balance));
+      console.log('⛄ Strategy: SNOWBALL - Smallest balance first');
+      break;
+    
+    case 'consolidation':
+      // Combine all debts into one (simplicity)
+      sortedDebts.sort((a, b) => parseFloat(b.balance) - parseFloat(a.balance));
+      console.log('💼 Strategy: CONSOLIDATION - Combine into single payment');
+      break;
+    
+    case 'hybrid':
+      // 50% highest APR + 50% smallest balance (balanced approach)
+      const byAPR = [...window.debts].sort((a, b) => parseFloat(b.apr) - parseFloat(a.apr));
+      const byBalance = [...window.debts].sort((a, b) => parseFloat(a.balance) - parseFloat(b.balance));
+      const half = Math.ceil(window.debts.length / 2);
+      sortedDebts = [
+        ...byAPR.slice(0, Math.ceil(half / 2)),
+        ...byBalance.slice(0, Math.floor(half / 2))
+      ];
+      console.log('⚖️ Strategy: HYBRID - 50% APR + 50% Balance (RECOMMENDED)');
+      break;
+    
+    default:
+      console.log('⚠️ Unknown strategy, using Avalanche');
+      sortedDebts.sort((a, b) => parseFloat(b.apr) - parseFloat(a.apr));
+  }
+  
+  // Store sorted debts
+  window.sortedDebts = sortedDebts;
+  
+  // Calculate payoff timelines
+  calculatePayoffTimeline(sortedDebts);
+  
+  return sortedDebts;
+}
+
+// ===== CALCULATE PAYOFF TIMELINE =====
+function calculatePayoffTimeline(debts) {
+  if (!debts || debts.length === 0) return;
+  
+  let monthlyPayment = 500; // Default monthly payment (should be configurable)
+  let totalInterest = 0;
+  let payoffMonths = 0;
+  
+  // Simple calculation
+  debts.forEach(debt => {
+    const balance = parseFloat(debt.balance);
+    const apr = parseFloat(debt.apr) / 100 / 12; // monthly rate
+    
+    let months = 0;
+    let remaining = balance;
+    let interest = 0;
+    
+    while (remaining > 0 && months < 360) { // max 30 years
+      interest = remaining * apr;
+      remaining -= (monthlyPayment - interest);
+      totalInterest += interest;
+      months++;
+    }
+    
+    payoffMonths = Math.max(payoffMonths, months);
+  });
+  
+  // Store results
+  window.payoffData = {
+    monthlyPayment: monthlyPayment,
+    totalInterest: totalInterest,
+    payoffMonths: payoffMonths,
+    payoffDate: new Date(Date.now() + payoffMonths * 30 * 24 * 60 * 60 * 1000)
+  };
+  
+  console.log('📈 Payoff Plan:', window.payoffData);
+  
+  return window.payoffData;
+}
+
+// ===== DISPLAY DEBTS WITH SORTED ORDER =====
+function displayDebts() {
+  console.log('📋 Displaying debts...');
+  
+  const debtsList = document.getElementById('debts-list');
+  if (!debtsList || !window.debts || window.debts.length === 0) {
+    return;
+  }
+  
+  // Calculate payoff plan first
+  const sortedDebts = calculatePayoffPlan();
+  
+  // Clear list
+  debtsList.innerHTML = '';
+  
+  // Display sorted debts
+  sortedDebts.forEach((debt, index) => {
+    const debtEl = document.createElement('div');
+    debtEl.className = 'debt-item';
+    debtEl.style.cssText = \`
+      background: #0f172a;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      border-left: 4px solid #3b82f6;
+      cursor: pointer;
+    \`;
+    
+    const priorityEmoji = getPriorityEmoji(index, debtPayoffMethod);
+    
+    debtEl.innerHTML = \`
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <p style="margin: 0; font-weight: 600;">
+            \${priorityEmoji} \${debt.name}
+          </p>
+          <p style="margin: 5px 0 0 0; font-size: 12px; color: #94a3b8;">
+            APR: \${parseFloat(debt.apr).toFixed(2)}% | Balance: \$\${parseFloat(debt.balance).toFixed(2)}
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <p style="margin: 0; font-weight: 600; color: #ef4444;">\$\${parseFloat(debt.balance).toFixed(2)}</p>
+        </div>
+      </div>
+    \`;
+    
+    debtsList.appendChild(debtEl);
+  });
+}
+
+// ===== GET PRIORITY EMOJI =====
+function getPriorityEmoji(index, method) {
+  if (index === 0) return '🎯'; // First priority
+  if (index === 1) return '🔥'; // Second priority
+  if (index === 2) return '⚡'; // Third priority
+  return '📍'; // Others
+}
+

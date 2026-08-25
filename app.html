@@ -11,6 +11,50 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 
+
+<style>
+.method-btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 2px solid;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.method-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.method-btn.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.method-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .method-selector {
+    gap: 8px;
+  }
+  
+  .method-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+</style>
+
 </head>
 <body>
    <script>
@@ -31,6 +75,49 @@
         }, 300);
     });
 })();
+
+
+// ===== DEBT METHOD SELECTION =====
+let debtPayoffMethod = 'avalanche'; // default
+
+function setDebtMethod(method) {
+  debtPayoffMethod = method;
+  console.log('💰 Debt method set to:', method);
+  
+  // Log event for analytics
+  if (typeof logMethodEvent === 'function') {
+    logMethodEvent(method, 'select');
+  }
+  
+  // Update active button
+  document.querySelectorAll('[data-method-btn]').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const activeBtn = document.querySelector(`[data-method-btn="${method}"]`);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+  }
+  
+  // Show toast notification
+  const methodNames = {
+    'avalanche': '🏔️ Avalanche (Highest APR First)',
+    'snowball': '⛄ Snowball (Smallest Balance First)',
+    'consolidation': '💼 Consolidation (Single Payment)',
+    'hybrid': '⚖️ Hybrid (50/50 Balanced)'
+  };
+  
+  if (typeof showToast === 'function') {
+    showToast(methodNames[method] || method + ' selected');
+  }
+  
+  // Recalculate if debts exist
+  if (typeof calculatePayoffPlan === 'function' && window.debts && window.debts.length > 0) {
+    calculatePayoffPlan();
+    if (typeof displayDebts === 'function') {
+      displayDebts();
+    }
+  }
+}
 
 </script>
 
@@ -1156,5 +1243,59 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+
+
+<!-- Strategy Modal (Landing Page) -->
+<div id="strategyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
+  <div style="background: #1a1f2e; border-radius: 12px; padding: 40px; max-width: 900px; width: 90%; max-height: 80vh; overflow-y: auto; color: white;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+      <h2>4 Debt Payoff Strategies</h2>
+      <button onclick="document.getElementById('strategyModal').style.display='none'" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">✕</button>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <!-- Avalanche -->
+      <div style="background: #0f172a; padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+        <h3>🏔️ Avalanche</h3>
+        <p><strong>Focus:</strong> Highest APR First</p>
+        <p><strong>Advantage:</strong> Maximum savings (5-7% more)</p>
+        <p><strong>Best for:</strong> High-interest debt (credit cards)</p>
+        <p><strong>Psychology:</strong> Less motivating initially</p>
+      </div>
+      
+      <!-- Snowball -->
+      <div style="background: #0f172a; padding: 20px; border-radius: 8px; border-left: 4px solid #06b6d4;">
+        <h3>⛄ Snowball</h3>
+        <p><strong>Focus:</strong> Smallest Balance First</p>
+        <p><strong>Advantage:</strong> Quick wins & motivation</p>
+        <p><strong>Best for:</strong> Psychological motivation</p>
+        <p><strong>Psychology:</strong> Highly motivating</p>
+      </div>
+      
+      <!-- Consolidation -->
+      <div style="background: #0f172a; padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+        <h3>💼 Consolidation</h3>
+        <p><strong>Focus:</strong> Single Payment</p>
+        <p><strong>Advantage:</strong> Simplified administration</p>
+        <p><strong>Best for:</strong> 5+ small debts</p>
+        <p><strong>Psychology:</strong> Reduces mental load</p>
+      </div>
+      
+      <!-- Hybrid -->
+      <div style="background: #0f172a; padding: 20px; border-radius: 8px; border-left: 4px solid #10b981;">
+        <h3>⚖️ Hybrid (RECOMMENDED)</h3>
+        <p><strong>Focus:</strong> 50% APR + 50% Balance</p>
+        <p><strong>Advantage:</strong> Best of both worlds</p>
+        <p><strong>Best for:</strong> Most users</p>
+        <p><strong>Psychology:</strong> Regular wins + savings</p>
+      </div>
+    </div>
+    
+    <button onclick="document.getElementById('strategyModal').style.display='none'; document.getElementById('app').style.display='block';" style="margin-top: 30px; padding: 12px 24px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%;">
+      Get Started →
+    </button>
+  </div>
+</div>
+
 </body>
 </html>
