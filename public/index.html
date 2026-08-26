@@ -5,22 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinanceAI Pro | Toma el Control de tus Finanzas con IA</title>
     
-    <!-- Meta Pixel Code -->
+    <!-- Meta Pixel Code - Solo en producción -->
     <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1923669741639803');
-    fbq('track', 'PageView');
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            (function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)})(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '1923669741639803');
+            fbq('track', 'PageView');
+        }
     </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=1923669741639803&ev=PageView&noscript=1"
-    /></noscript>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1923669741639803&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -159,6 +152,14 @@
             .stats { gap: 40px; }
         }
     </style>
+  <meta name="theme-color" content="#0b121e"/>
+  <meta name="description" content="FinanceAI Pro - Gestiona tus finanzas con IA"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="FinanceAI Pro"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%2300EEFF'/><stop offset='100%' style='stop-color:%230088FF'/></linearGradient></defs><rect width='192' height='192' fill='%230b121e'/><circle cx='96' cy='96' r='90' fill='url(%23g)' opacity='0.15'/><circle cx='96' cy='96' r='90' fill='none' stroke='url(%23g)' stroke-width='3'/><text x='96' y='115' font-family='Arial,sans-serif' font-weight='800' font-size='70' fill='url(%23g)' text-anchor='middle'>F</text></svg>"/>
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%2300EEFF'/><stop offset='100%' style='stop-color:%230088FF'/></linearGradient></defs><rect width='180' height='180' rx='40' fill='%230b121e'/><circle cx='90' cy='90' r='85' fill='url(%23g)' opacity='0.15'/><circle cx='90' cy='90' r='85' fill='none' stroke='url(%23g)' stroke-width='2.5'/><text x='90' y='108' font-family='Arial,sans-serif' font-weight='800' font-size='62' fill='url(%23g)' text-anchor='middle'>F</text></svg>"/>
 </head>
 <body>
 
@@ -167,7 +168,7 @@
     </div>
 
     <nav>
-        <a href="/app.html" class="logo-container">
+        <a href="/auth.html" class="logo-container">
             <div class="logo-icon"></div>
             <div>
                 <div class="logo-text">FinanceAI Pro</div>
@@ -175,14 +176,14 @@
             </div>
         </a>
         <div class="nav-actions">
-            <a href="/app.html" class="btn-outline">Empezar Gratis</a>
+            <a href="/auth.html" class="btn-outline">Empezar Gratis</a>
         </div>
     </nav>
 
     <header>
         <h1>Toma el Control de tus <span>Finanzas con IA</span></h1>
         <p>Escanea recibos, gestiona deudas y recibe recomendaciones personalizadas. Todo en un solo lugar bajo tecnología avanzada.</p>
-        <a href="/app.html" class="btn-primary">🚀 Empezar Gratis Ahora</a>
+        <a href="/auth.html" class="btn-primary">🚀 Empezar Gratis Ahora</a>
 
         <div class="stats">
             <div class="stat-item"><h3>10K+</h3><p>Usuarios Activos</p></div>
@@ -214,5 +215,14 @@
         <p>&copy; 2024 Climberforsuccess. Todos los derechos reservados.</p>
     </footer>
 
+
+  <script>
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(err => {
+        console.log('SW registration failed:', err);
+      });
+    }
+  </script>
 </body>
 </html>

@@ -20,6 +20,7 @@
   "homepage": "https://github.com/climberforsuccess-bit/financeai-pro#readme",
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
+    "live-server": "^1.2.2",
     "micro": "^10.0.1",
     "openai": "^6.45.0",
     "sharp": "^0.35.3",

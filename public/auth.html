@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0b121e"/>
+  <meta name="description" content="FinanceAI Pro - Gestiona tus finanzas con IA"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="FinanceAI Pro"/>
+  
+  <title>FinanceAI Pro — Inicia Sesión</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%2300EEFF'/><stop offset='100%' style='stop-color:%230088FF'/></linearGradient></defs><rect width='192' height='192' fill='%230b121e'/><circle cx='96' cy='96' r='90' fill='url(%23g)' opacity='0.15'/><circle cx='96' cy='96' r='90' fill='none' stroke='url(%23g)' stroke-width='3'/><text x='96' y='115' font-family='Arial,sans-serif' font-weight='800' font-size='70' fill='url(%23g)' text-anchor='middle'>F</text></svg>"/>
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%2300EEFF'/><stop offset='100%' style='stop-color:%230088FF'/></linearGradient></defs><rect width='180' height='180' rx='40' fill='%230b121e'/><circle cx='90' cy='90' r='85' fill='url(%23g)' opacity='0.15'/><circle cx='90' cy='90' r='85' fill='none' stroke='url(%23g)' stroke-width='2.5'/><text x='90' y='108' font-family='Arial,sans-serif' font-weight='800' font-size='62' fill='url(%23g)' text-anchor='middle'>F</text></svg>"/>
+  
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #0b121e 0%, #1a2332 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: 'Inter', sans-serif;
+      color: #e2e8f0;
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 420px;
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .auth-logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #00EEFF 0%, #0088FF 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 800;
+      color: #0b121e;
+      box-shadow: 0 8px 32px rgba(0, 238, 255, 0.2);
+    }
+
+    .auth-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      background: linear-gradient(135deg, #00EEFF, #0088FF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-header p {
+      font-size: 14px;
+      color: #94a3b8;
+      margin: 0;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      border-bottom: 1px solid rgba(0, 238, 255, 0.1);
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+
+    .auth-tab.active {
+      color: #00EEFF;
+      border-bottom-color: #00EEFF;
+    }
+
+    .auth-tab:hover {
+      color: #cbd5e1;
+    }
+
+    .auth-box {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(0, 238, 255, 0.1);
+      border-radius: 16px;
+      padding: 28px;
+      backdrop-filter: blur(10px);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(0, 238, 255, 0.15);
+      border-radius: 10px;
+      color: #e2e8f0;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #00EEFF;
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: 0 0 0 3px rgba(0, 238, 255, 0.1);
+    }
+
+    .form-group input::placeholder {
+      color: #64748b;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #00EEFF 0%, #0088FF 100%);
+      border: none;
+      border-radius: 10px;
+      color: #0b121e;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 238, 255, 0.3);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: #00EEFF;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 0;
+      text-decoration: underline;
+      transition: color 0.3s ease;
+    }
+
+    .btn-link:hover {
+      color: #0088FF;
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .auth-footer a {
+      color: #00EEFF;
+      text-decoration: none;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .form-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .form-divider::before,
+    .form-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(0, 238, 255, 0.1);
+    }
+
+    .auth-error,
+    .auth-success {
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      text-align: center;
+      display: none;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .auth-error {
+      background: rgba(255, 50, 50, 0.1);
+      border: 1px solid rgba(255, 50, 50, 0.3);
+      color: #FF6B6B;
+    }
+
+    .auth-success {
+      background: rgba(0, 238, 255, 0.1);
+      border: 1px solid rgba(0, 238, 255, 0.3);
+      color: #00EEFF;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(0, 238, 255, 0.2);
+      border-top-color: #00EEFF;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 480px) {
+      .auth-container {
+        max-width: 100%;
+      }
+
+      .auth-header h1 {
+        font-size: 24px;
+      }
+
+      .auth-box {
+        padding: 20px;
+      }
+
+      .form-group input,
+      .form-group select {
+        padding: 11px 12px;
+        font-size: 16px; /* Previene zoom en iOS */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-header">
+      <div class="auth-logo">F</div>
+      <h1>FinanceAI Pro</h1>
+      <p>Gestiona tus finanzas con IA</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">
+        <i class="fas fa-sign-in-alt"></i> Inicia Sesión
+      </button>
+      <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">
+        <i class="fas fa-user-plus"></i> Registro
+      </button>
+    </div>
+
+    <div class="auth-box">
+      <!-- LOGIN FORM -->
+      <div id="login-form" style="display: block;">
+        <div id="auth-error"></div>
+        <div id="auth-success"></div>
+
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" placeholder="tu@email.com" autocomplete="email"/>
+        </div>
+
+        <div class="form-group">
+          <label for="login-pass">Contraseña</label>
+          <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+
+        <button class="btn-primary" onclick="doLogin()">Inicia Sesión</button>
+
+        <div style="text-align: center; margin-top: 16px;">
+          <button class="btn-link" onclick="switchToForgotPassword()">¿Olvidaste tu contraseña?</button>
+        </div>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="register-form" style="display: none;">
+        <div id="auth-error"></div>
+        <div id="auth-success"></div>
+
+        <div class="form-group">
+          <label for="reg-name">Nombre Completo</label>
+          <input type="text" id="reg-name" placeholder="Tu nombre" autocomplete="name"/>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-email">Email</label>
+          <input type="email" id="reg-email" placeholder="tu@email.com" autocomplete="email"/>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-pass">Contraseña</label>
+          <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password"/>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-country">País</label>
+          <select id="reg-country">
+            <option value="">Selecciona un país</option>
+            <option value="AR">Argentina</option>
+            <option value="MX">México</option>
+            <option value="CO">Colombia</option>
+            <option value="ES">España</option>
+            <option value="US">Estados Unidos</option>
+            <option value="CL">Chile</option>
+            <option value="PE">Perú</option>
+            <option value="VE">Venezuela</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-plan">Plan Inicial</label>
+          <select id="reg-plan">
+            <option value="free">Gratis (Recomendado)</option>
+            <option value="pro">Pro</option>
+            <option value="enterprise">Enterprise</option>
+          </select>
+        </div>
+
+        <button class="btn-primary" onclick="doRegister()">Crear Cuenta</button>
+
+        <div style="text-align: center; margin-top: 16px; font-size: 12px; color: #64748b;">
+          Al registrarte aceptas nuestros <a href="#" style="color: #00EEFF;">Términos</a> y <a href="#" style="color: #00EEFF;">Privacidad</a>
+        </div>
+      </div>
+
+      <!-- FORGOT PASSWORD FORM -->
+      <div id="forgot-form" style="display: none;">
+        <div id="auth-error"></div>
+        <div id="auth-success"></div>
+
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 20px;">
+          Ingresa tu email y te enviaremos un enlace para resetear tu contraseña.
+        </p>
+
+        <div class="form-group">
+          <label for="forgot-email">Email</label>
+          <input type="email" id="forgot-email" placeholder="tu@email.com" autocomplete="email"/>
+        </div>
+
+        <button class="btn-primary" onclick="doForgotPassword()">Enviar Enlace</button>
+
+        <div style="text-align: center; margin-top: 16px;">
+          <button class="btn-link" onclick="switchAuthTab('login')">Volver a Inicia Sesión</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-footer">
+      <p>&copy; 2024 Climberforsuccess LLC. Todos los derechos reservados.</p>
+    </div>
+  </div>
+
+  <script>
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(err => {
+        console.log('SW registration failed:', err);
+      });
+    }
+
+    // Check if already logged in
+    (async function() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.href = 'app.html';
+      }
+    })();
+
+    // Auth Tab Switching
+    function switchAuthTab(tab) {
+      document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+      document.getElementById('forgot-form').style.display = 'none';
+      
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+
+      // Clear errors when switching tabs
+      const errorEl = document.getElementById('auth-error');
+      if (errorEl) errorEl.style.display = 'none';
+    }
+
+    function switchToForgotPassword() {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('register-form').style.display = 'none';
+      document.getElementById('forgot-form').style.display = 'block';
+    }
+
+    // ===== AUTH FUNCTIONS =====
+    
+    function showError(message) {
+      const errorEl = document.getElementById('auth-error');
+      if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.style.display = 'block';
+      }
+    }
+
+    function showSuccess(message) {
+      const successEl = document.getElementById('auth-success');
+      if (successEl) {
+        successEl.textContent = message;
+        successEl.style.display = 'block';
+      }
+    }
+
+    async function doLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-pass').value.trim();
+
+      if (!email || !password) {
+        showError('Por favor completa todos los campos');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          showError(error.message || 'Error al iniciar sesión');
+          return;
+        }
+
+        if (data.session) {
+          showSuccess('¡Bienvenido! Redirigiendo...');
+          setTimeout(() => {
+            window.location.href = 'app.html';
+          }, 1000);
+        }
+      } catch (err) {
+        showError('Error: ' + err.message);
+      }
+    }
+
+    async function doRegister() {
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-pass').value.trim();
+      const country = document.getElementById('reg-country').value;
+      const plan = document.getElementById('reg-plan').value;
+
+      if (!name || !email || !password || !country) {
+        showError('Por favor completa todos los campos');
+        return;
+      }
+
+      if (password.length < 6) {
+        showError('La contraseña debe tener al menos 6 caracteres');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: name,
+              country: country,
+              plan: plan || 'free'
+            }
+          }
+        });
+
+        if (error) {
+          showError(error.message || 'Error al registrarse');
+          return;
+        }
+
+        if (data.user) {
+          showSuccess('¡Registro exitoso! Redirigiendo...');
+          setTimeout(() => {
+            window.location.href = 'app.html';
+          }, 1500);
+        }
+      } catch (err) {
+        showError('Error: ' + err.message);
+      }
+    }
+
+    async function doForgotPassword() {
+      const email = document.getElementById('forgot-email').value.trim();
+
+      if (!email) {
+        showError('Por favor ingresa tu email');
+        return;
+      }
+
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + '/reset-password.html'
+        });
+
+        if (error) {
+          showError(error.message || 'Error al enviar enlace');
+          return;
+        }
+
+        showSuccess('¡Enlace enviado! Revisa tu email.');
+        document.getElementById('forgot-email').value = '';
+      } catch (err) {
+        showError('Error: ' + err.message);
+      }
+    }
+
+
+  </script>
+</body>
+</html>

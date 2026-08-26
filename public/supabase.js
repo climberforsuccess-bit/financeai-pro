@@ -4,6 +4,15 @@
 const SUPABASE_URL = 'https://rqrpazkkwolxtpiqtdfu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxcnBhemtrd29seHRwaXF0ZGZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MTM3MjYsImV4cCI6MjA5NjM4OTcyNn0.InLqCdNMOesXm0_WQXypJBFt5bTJrodlfendlu_YT5Q';
 
+// Helper para detectar si estamos en local o producción
+function getRedirectUrl(path) {
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (isLocal) {
+        return `http://${window.location.host}/${path}`;
+    }
+    return `${window.location.origin}/${path}`;
+}
+
 var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ============================================
@@ -39,7 +48,7 @@ localStorage.setItem('fai_just_logged_in', 'true');
 localStorage.setItem('financeai_user', JSON.stringify(data.user));
 localStorage.setItem('fai_just_logged_in', 'true');
 setTimeout(() => {
-  window.location.replace('index.html');
+  window.location.replace(getRedirectUrl('app.html'));
 }, 500);
 
 }
@@ -96,7 +105,7 @@ async function doForgotPassword() {
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://climberforsuccess.online/index.html'
+        redirectTo: `${window.location.origin}/index.html`
     });
 
     if (error) {
@@ -111,7 +120,7 @@ async function doForgotPassword() {
 async function doLogout() {
     await supabase.auth.signOut();
     localStorage.removeItem('financeai_user');
-    window.location.href = 'index.html';
+    window.location.href = getRedirectUrl('index.html');
 }
 
 // CHECK SESSION
@@ -124,7 +133,7 @@ async function checkSession() {
 async function protectPage() {
     const session = await checkSession();
     if (!session) {
-        window.location.href = 'index.html';
+        window.location.href = getRedirectUrl('index.html');
     }
     return session;
 }

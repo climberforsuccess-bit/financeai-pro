@@ -55,6 +55,14 @@
 }
 </style>
 
+  <meta name="theme-color" content="#0b121e"/>
+  <meta name="description" content="FinanceAI Pro - Gestiona tus finanzas con IA"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="FinanceAI Pro"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%2300EEFF'/><stop offset='100%' style='stop-color:%230088FF'/></linearGradient></defs><rect width='192' height='192' fill='%230b121e'/><circle cx='96' cy='96' r='90' fill='url(%23g)' opacity='0.15'/><circle cx='96' cy='96' r='90' fill='none' stroke='url(%23g)' stroke-width='3'/><text x='96' y='115' font-family='Arial,sans-serif' font-weight='800' font-size='70' fill='url(%23g)' text-anchor='middle'>F</text></svg>"/>
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%2300EEFF'/><stop offset='100%' style='stop-color:%230088FF'/></linearGradient></defs><rect width='180' height='180' rx='40' fill='%230b121e'/><circle cx='90' cy='90' r='85' fill='url(%23g)' opacity='0.15'/><circle cx='90' cy='90' r='85' fill='none' stroke='url(%23g)' stroke-width='2.5'/><text x='90' y='108' font-family='Arial,sans-serif' font-weight='800' font-size='62' fill='url(%23g)' text-anchor='middle'>F</text></svg>"/>
 </head>
 <body>
    <script>
@@ -253,8 +261,8 @@ function setDebtMethod(method) {
     <div id="page-dashboard" class="page active">
       <div class="page-header">
         <div>
-          <div style="font-size:0.85rem; color:#A0B0C0;" data-key="dash_welcome">Welcome back</div>
-          <h1 class="page-title">👋 <span id="userName">User</span></h1>
+          <div class="page-header-subtitle" data-key="dash_welcome">Welcome back</div>
+          <h1 class="page-title">👋 <span id="userName">User</span><br><span class="accent">Gestiona tus Finanzas</span></h1>
         </div>
         <div style="display:flex; gap:12px; align-items:center;">
           <button class="btn-lang" onclick="toggleLang()">🌐 ES</button>
