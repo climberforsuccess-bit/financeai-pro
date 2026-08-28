@@ -53,184 +53,444 @@ const mockDebts: Debt[] = [
   },
 ];
 
+interface StrategyInfo {
+  id: string;
+  label: string;
+  description: string;
+  advantage: string;
+  disadvantage: string;
+  timeToPayoff: string;
+  totalInterest: string;
+  icon: string;
+}
+
+const strategies: StrategyInfo[] = [
+  {
+    id: 'avalanche',
+    label: 'Avalanche',
+    description: 'Pagar deudas con mayor tasa de interés primero',
+    advantage: 'Menor interés total pagado',
+    disadvantage: 'Menos motivación inicial',
+    timeToPayoff: '4.2 años',
+    totalInterest: '$12,450',
+    icon: '⛏️',
+  },
+  {
+    id: 'snowball',
+    label: 'Snowball',
+    description: 'Pagar deudas con menor balance primero',
+    advantage: 'Motivación rápida con victorias pequeñas',
+    disadvantage: 'Más interés total',
+    timeToPayoff: '4.8 años',
+    totalInterest: '$14,200',
+    icon: '⛄',
+  },
+  {
+    id: 'consolidation',
+    label: 'Consolidation',
+    description: 'Consolidar todas las deudas en una',
+    advantage: 'Un único pago mensual',
+    disadvantage: 'Puede aumentar interés',
+    timeToPayoff: '5.1 años',
+    totalInterest: '$15,800',
+    icon: '🔗',
+  },
+  {
+    id: 'hybrid',
+    label: 'Hybrid',
+    description: 'Combinación óptima de estrategias',
+    advantage: 'Balance entre velocidad y motivación',
+    disadvantage: 'Requiere más disciplina',
+    timeToPayoff: '4.5 años',
+    totalInterest: '$13,100',
+    icon: '⚡',
+  },
+];
+
 export default function DebtPlanPage() {
   const { t } = useLanguage();
   const [selectedStrategy, setSelectedStrategy] = useState<'avalanche' | 'snowball' | 'consolidation' | 'hybrid'>('avalanche');
 
   const totalDebt = mockDebts.reduce((sum, d) => sum + d.balance, 0);
   const totalMonthlyPayment = mockDebts.reduce((sum, d) => sum + d.minimumPayment, 0);
-  const highestRate = Math.max(...mockDebts.map(d => d.interestRate));
+  const highestRate = Math.max(...mockDebts.map((d) => d.interestRate));
 
-  const strategies = [
-    { id: 'avalanche', label: t('avalanche'), description: 'Pagar deudas con mayor tasa de interés primero' },
-    { id: 'snowball', label: t('snowball'), description: 'Pagar deudas con menor balance primero' },
-    { id: 'consolidation', label: t('consolidation'), description: 'Consolidar todas las deudas en una' },
-    { id: 'hybrid', label: t('hybrid'), description: 'Combinación de estrategias' },
-  ];
+  const currentStrategy = strategies.find((s) => s.id === selectedStrategy)!;
+
+  // Sort debts based on strategy
+  const sortedDebts = [...mockDebts].sort((a, b) => {
+    if (selectedStrategy === 'avalanche') {
+      return b.interestRate - a.interestRate;
+    } else if (selectedStrategy === 'snowball') {
+      return a.balance - b.balance;
+    }
+    return 0;
+  });
 
   return (
-    <div style={{ padding: '40px', maxWidth: '1400px' }}>
-      {/* Header */}
-      <div style={{ marginBottom: '40px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-          <h1 style={{ fontSize: '32px', color: '#0ea5e9' }}>
-            {t('debtPlan')}
-          </h1>
-          <button style={{
-            padding: '10px 20px',
-            background: '#0ea5e9',
-            border: 'none',
-            borderRadius: '6px',
-            color: '#fff',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-          }}>
+    <div style={styles.container}>
+      {/* HEADER */}
+      <div style={styles.headerSection}>
+        <div style={styles.headerTop}>
+          <div>
+            <h1 style={styles.title}>{t('debtPlan')}</h1>
+            <p style={styles.subtitle}>{mockDebts.length} deudas activas</p>
+          </div>
+          <button style={styles.addDebtButton}>
             + {t('addDebt')}
           </button>
         </div>
-        <p style={{ color: '#94a3b8', fontSize: '14px' }}>
-          {mockDebts.length} deudas activas
-        </p>
       </div>
 
-      {/* Overview Stats */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '20px',
-        marginBottom: '40px',
-      }}>
-        <Card 
+      {/* OVERVIEW STATS */}
+      <div style={styles.statsGrid}>
+        <Card
           title={t('totalDebtAmount')}
           value={`$${totalDebt.toLocaleString('en-US', { maximumFractionDigits: 2 })}`}
           icon="💰"
           textColor="#ef4444"
           bgColor="rgba(239, 68, 68, 0.1)"
         />
-        <Card 
+        <Card
           title={t('monthlyPayment')}
           value={`$${totalMonthlyPayment.toFixed(2)}`}
           icon="📈"
           textColor="#f59e0b"
           bgColor="rgba(245, 158, 11, 0.1)"
         />
-        <Card 
+        <Card
           title="Highest Interest Rate"
           value={`${highestRate}%`}
           icon="📊"
           textColor="#ef4444"
           bgColor="rgba(239, 68, 68, 0.1)"
         />
-        <Card 
+        <Card
           title={t('estimatedPayoffTime')}
-          value="4.5 años"
+          value={currentStrategy.timeToPayoff}
           icon="⏱️"
           textColor="#3b82f6"
           bgColor="rgba(59, 130, 246, 0.1)"
         />
       </div>
 
-      {/* Strategy Selection */}
-      <div style={{ marginBottom: '40px' }}>
-        <h2 style={{ color: '#0ea5e9', fontSize: '20px', marginBottom: '16px', fontWeight: 'bold' }}>
-          {t('debtStrategy')}
-        </h2>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '16px',
-        }}>
+      {/* STRATEGY SELECTION */}
+      <div style={styles.strategySection}>
+        <h2 style={styles.sectionTitle}>Elige tu Estrategia</h2>
+        <div style={styles.strategyGrid}>
           {strategies.map((strategy) => (
             <button
               key={strategy.id}
               onClick={() => setSelectedStrategy(strategy.id as any)}
               style={{
-                padding: '16px',
-                background: selectedStrategy === strategy.id ? '#0ea5e9' : '#1e293b',
-                border: selectedStrategy === strategy.id ? 'none' : '1px solid #334155',
-                borderRadius: '8px',
-                color: selectedStrategy === strategy.id ? '#fff' : '#94a3b8',
-                textAlign: 'left',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                if (selectedStrategy !== strategy.id) {
-                  e.currentTarget.style.background = '#334155';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (selectedStrategy !== strategy.id) {
-                  e.currentTarget.style.background = '#1e293b';
-                }
+                ...styles.strategyButton,
+                ...(selectedStrategy === strategy.id && styles.strategyButtonActive),
               }}
             >
-              <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-                {strategy.label}
-              </div>
-              <div style={{ fontSize: '12px', opacity: 0.8 }}>
-                {strategy.description}
-              </div>
+              <div style={styles.strategyIcon}>{strategy.icon}</div>
+              <div style={styles.strategyLabel}>{strategy.label}</div>
+              <div style={styles.strategyDesc}>{strategy.description}</div>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Debts List */}
-      <div style={{
-        background: '#1e293b',
-        borderRadius: '12px',
-        border: '1px solid #334155',
-        overflow: 'hidden',
-      }}>
-        <table style={{
-          width: '100%',
-          borderCollapse: 'collapse',
-          fontSize: '14px',
-        }}>
-          <thead>
-            <tr style={{ background: '#0f172a', borderBottom: '1px solid #334155' }}>
-              <th style={{ padding: '16px', textAlign: 'left', color: '#94a3b8', fontWeight: '600' }}>
-                {t('debtType')}
-              </th>
-              <th style={{ padding: '16px', textAlign: 'right', color: '#94a3b8', fontWeight: '600' }}>
-                {t('balance')}
-              </th>
-              <th style={{ padding: '16px', textAlign: 'right', color: '#94a3b8', fontWeight: '600' }}>
-                {t('interestRate')}
-              </th>
-              <th style={{ padding: '16px', textAlign: 'right', color: '#94a3b8', fontWeight: '600' }}>
-                {t('monthlyPayment')}
-              </th>
-              <th style={{ padding: '16px', textAlign: 'center', color: '#94a3b8', fontWeight: '600' }}>
-                Payoff Time
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {mockDebts.map((debt) => (
-              <tr key={debt.id} style={{ borderBottom: '1px solid #334155' }}>
-                <td style={{ padding: '16px', color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span>{debt.icon}</span> {debt.name}
-                </td>
-                <td style={{ padding: '16px', color: '#ef4444', textAlign: 'right', fontWeight: 'bold' }}>
-                  ${debt.balance.toLocaleString('en-US', { maximumFractionDigits: 2 })}
-                </td>
-                <td style={{ padding: '16px', color: '#f59e0b', textAlign: 'right' }}>
-                  {debt.interestRate}%
-                </td>
-                <td style={{ padding: '16px', color: '#3b82f6', textAlign: 'right' }}>
-                  ${debt.minimumPayment.toFixed(2)}
-                </td>
-                <td style={{ padding: '16px', color: '#64748b', textAlign: 'center' }}>
-                  {Math.ceil(debt.balance / debt.minimumPayment / 12)} años
-                </td>
+      {/* STRATEGY DETAILS */}
+      <div style={styles.strategyDetailsSection}>
+        <h2 style={styles.sectionTitle}>Detalles de {currentStrategy.label}</h2>
+        <div style={styles.strategyDetailsGrid}>
+          <StrategyDetailCard
+            icon="✨"
+            title="Ventaja"
+            content={currentStrategy.advantage}
+            color="#10b981"
+          />
+          <StrategyDetailCard
+            icon="⚠️"
+            title="Desventaja"
+            content={currentStrategy.disadvantage}
+            color="#f59e0b"
+          />
+          <StrategyDetailCard
+            icon="⏱️"
+            title="Tiempo para Pagar"
+            content={currentStrategy.timeToPayoff}
+            color="#06b6d4"
+          />
+          <StrategyDetailCard
+            icon="💸"
+            title="Interés Total Estimado"
+            content={currentStrategy.totalInterest}
+            color="#ef4444"
+          />
+        </div>
+      </div>
+
+      {/* DEBTS TABLE - SORTED BY STRATEGY */}
+      <div style={styles.debtsTableSection}>
+        <h2 style={styles.sectionTitle}>
+          Orden de Pago ({currentStrategy.label})
+        </h2>
+        <div style={styles.tableWrapper}>
+          <table style={styles.table}>
+            <thead>
+              <tr style={styles.tableHeader}>
+                <th style={{ ...styles.headerCell, textAlign: 'left' }}>Orden</th>
+                <th style={{ ...styles.headerCell, textAlign: 'left' }}>Deuda</th>
+                <th style={{ ...styles.headerCell, textAlign: 'right' }}>Balance</th>
+                <th style={{ ...styles.headerCell, textAlign: 'right' }}>Tasa</th>
+                <th style={{ ...styles.headerCell, textAlign: 'right' }}>Pago Mensual</th>
+                <th style={{ ...styles.headerCell, textAlign: 'center' }}>Tiempo</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {sortedDebts.map((debt, index) => (
+                <tr key={debt.id} style={styles.tableRow}>
+                  <td style={{ ...styles.cell, color: '#06b6d4', fontWeight: '700' }}>
+                    #{index + 1}
+                  </td>
+                  <td style={styles.cell}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span>{debt.icon}</span>
+                      <span style={{ fontWeight: '600' }}>{debt.name}</span>
+                    </div>
+                  </td>
+                  <td
+                    style={{
+                      ...styles.cell,
+                      textAlign: 'right',
+                      color: '#ef4444',
+                      fontWeight: '700',
+                    }}
+                  >
+                    ${debt.balance.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                  </td>
+                  <td style={{ ...styles.cell, textAlign: 'right', color: '#f59e0b' }}>
+                    {debt.interestRate}%
+                  </td>
+                  <td style={{ ...styles.cell, textAlign: 'right', color: '#3b82f6' }}>
+                    ${debt.minimumPayment.toFixed(2)}
+                  </td>
+                  <td
+                    style={{
+                      ...styles.cell,
+                      textAlign: 'center',
+                      color: '#94a3b8',
+                      fontSize: '13px',
+                    }}
+                  >
+                    ~{Math.ceil(debt.balance / debt.minimumPayment / 12)} años
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 }
+
+function StrategyDetailCard({
+  icon,
+  title,
+  content,
+  color,
+}: {
+  icon: string;
+  title: string;
+  content: string;
+  color: string;
+}) {
+  return (
+    <div style={{ ...styles.detailCard, borderTopColor: color }}>
+      <div style={styles.detailIcon}>{icon}</div>
+      <div style={styles.detailTitle}>{title}</div>
+      <div style={styles.detailContent}>{content}</div>
+    </div>
+  );
+}
+
+const styles = {
+  container: {
+    padding: '32px',
+    maxWidth: '1600px',
+    margin: '0 auto',
+  } as React.CSSProperties,
+
+  headerSection: {
+    marginBottom: '40px',
+  } as React.CSSProperties,
+
+  headerTop: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  } as React.CSSProperties,
+
+  title: {
+    fontSize: '28px',
+    fontWeight: '700',
+    color: '#f1f5f9',
+    marginBottom: '4px',
+    letterSpacing: '-0.5px',
+  } as React.CSSProperties,
+
+  subtitle: {
+    fontSize: '13px',
+    color: '#94a3b8',
+    fontWeight: '500',
+  } as React.CSSProperties,
+
+  addDebtButton: {
+    padding: '10px 20px',
+    background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+    border: 'none',
+    borderRadius: '8px',
+    color: '#fff',
+    fontSize: '14px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+  } as React.CSSProperties,
+
+  statsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gap: '16px',
+    marginBottom: '40px',
+  } as React.CSSProperties,
+
+  strategySection: {
+    marginBottom: '40px',
+  } as React.CSSProperties,
+
+  sectionTitle: {
+    fontSize: '16px',
+    fontWeight: '700',
+    color: '#f1f5f9',
+    marginBottom: '20px',
+    letterSpacing: '-0.3px',
+  } as React.CSSProperties,
+
+  strategyGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+    gap: '16px',
+  } as React.CSSProperties,
+
+  strategyButton: {
+    padding: '20px',
+    background: '#1e293b',
+    border: '2px solid #334155',
+    borderRadius: '10px',
+    color: '#94a3b8',
+    textAlign: 'left',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+  } as React.CSSProperties,
+
+  strategyButtonActive: {
+    background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1))',
+    borderColor: '#06b6d4',
+    color: '#06b6d4',
+  } as React.CSSProperties,
+
+  strategyIcon: {
+    fontSize: '28px',
+    marginBottom: '8px',
+  } as React.CSSProperties,
+
+  strategyLabel: {
+    fontSize: '14px',
+    fontWeight: '700',
+    color: '#f1f5f9',
+    marginBottom: '4px',
+  } as React.CSSProperties,
+
+  strategyDesc: {
+    fontSize: '12px',
+    color: '#94a3b8',
+    lineHeight: '1.4',
+  } as React.CSSProperties,
+
+  strategyDetailsSection: {
+    marginBottom: '40px',
+  } as React.CSSProperties,
+
+  strategyDetailsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    gap: '16px',
+  } as React.CSSProperties,
+
+  detailCard: {
+    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+    border: '1px solid #334155',
+    borderTop: '3px solid',
+    borderRadius: '10px',
+    padding: '16px',
+  } as React.CSSProperties,
+
+  detailIcon: {
+    fontSize: '24px',
+    marginBottom: '8px',
+  } as React.CSSProperties,
+
+  detailTitle: {
+    fontSize: '12px',
+    fontWeight: '700',
+    color: '#94a3b8',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+    marginBottom: '8px',
+  } as React.CSSProperties,
+
+  detailContent: {
+    fontSize: '14px',
+    color: '#e2e8f0',
+    fontWeight: '600',
+  } as React.CSSProperties,
+
+  debtsTableSection: {
+    marginBottom: '20px',
+  } as React.CSSProperties,
+
+  tableWrapper: {
+    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+    border: '1px solid #334155',
+    borderRadius: '12px',
+    overflow: 'hidden',
+  } as React.CSSProperties,
+
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    fontSize: '14px',
+  } as React.CSSProperties,
+
+  tableHeader: {
+    background: '#0f172a',
+    borderBottom: '1px solid #334155',
+  } as React.CSSProperties,
+
+  headerCell: {
+    padding: '16px',
+    color: '#94a3b8',
+    fontWeight: '600',
+    textAlign: 'left',
+    textTransform: 'uppercase',
+    fontSize: '12px',
+    letterSpacing: '0.5px',
+  } as React.CSSProperties,
+
+  tableRow: {
+    borderBottom: '1px solid #334155',
+    transition: 'background 0.2s ease',
+  } as React.CSSProperties,
+
+  cell: {
+    padding: '14px 16px',
+    color: '#e2e8f0',
+  } as React.CSSProperties,
+};
