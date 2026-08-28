@@ -1,16 +1,173 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function RecommendationsPage() {
   const { language } = useLanguage();
+  const [country, setCountry] = useState<string>('US');
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Get country from localStorage (set in Settings)
+    const savedCountry = localStorage.getItem('selectedCountry') || 'US';
+    setCountry(savedCountry);
+  }, []);
+
+  // COUNTRY-SPECIFIC DATA
+  const countryData = {
+    US: {
+      cards: [
+        {
+          nombre: 'Chase Sapphire Preferred',
+          tipo: 'Premium Travel',
+          beneficio: '3x points restaurants & travel',
+          uso: 'Dining & flights',
+          estimado: '$75-100/month',
+          emisor: 'Chase',
+        },
+        {
+          nombre: 'American Express Gold',
+          tipo: 'Premium Dining',
+          beneficio: '4x points restaurants & groceries',
+          uso: 'Food & grocery',
+          estimado: '$60-80/month',
+          emisor: 'Amex',
+        },
+        {
+          nombre: 'Capital One Venture X',
+          tipo: 'General Travel',
+          beneficio: '2x miles all purchases',
+          uso: 'Everything else',
+          estimado: '$40-60/month',
+          emisor: 'Capital One',
+        },
+      ],
+      banks: ['Chase', 'Bank of America', 'Wells Fargo', 'US Bank', 'American Express', 'Capital One', 'Discover'],
+    },
+    MX: {
+      cards: [
+        {
+          nombre: 'Scotiabank Inverlat Oro',
+          tipo: 'Premium General',
+          beneficio: '5% cashback restaurants, 3% viajes',
+          uso: 'Comida y viajes',
+          estimado: '$80-120/month',
+          emisor: 'Scotiabank',
+        },
+        {
+          nombre: 'BBVA Bancomer Infinita',
+          tipo: 'Premium Elite',
+          beneficio: 'Puntos en todo, 1.5x premium',
+          uso: 'Todos los gastos',
+          estimado: '$100-150/month',
+          emisor: 'BBVA',
+        },
+        {
+          nombre: 'Santander Actinver',
+          tipo: 'General',
+          beneficio: '2% en supermercados, 1% general',
+          uso: 'Compras diarias',
+          estimado: '$30-50/month',
+          emisor: 'Santander',
+        },
+      ],
+      banks: ['BBVA Bancomer', 'Scotiabank', 'Santander', 'Citibanamex', 'HSBC', 'Banorte', 'Inbursa'],
+    },
+    ES: {
+      cards: [
+        {
+          nombre: 'Caixabank Visa Oro',
+          tipo: 'Premium General',
+          beneficio: '1% cashback, seguros incluidos',
+          uso: 'Gastos generales',
+          estimado: '$40-60/month',
+          emisor: 'CaixaBank',
+        },
+        {
+          nombre: 'BBVA Visa Oro',
+          tipo: 'Premium Travel',
+          beneficio: '1.5x puntos viajes, 1% cashback',
+          uso: 'Viajes y ocio',
+          estimado: '$50-80/month',
+          emisor: 'BBVA',
+        },
+        {
+          nombre: 'Santander Preferente',
+          tipo: 'General',
+          beneficio: 'Puntos flexibles en todo',
+          uso: 'Compras cotidianas',
+          estimado: '$25-40/month',
+          emisor: 'Santander',
+        },
+      ],
+      banks: ['CaixaBank', 'BBVA', 'Santander', 'ING Direct', 'Openbank', 'Revolut', 'N26'],
+    },
+    AR: {
+      cards: [
+        {
+          nombre: 'ICBC Visa Signature',
+          tipo: 'Premium General',
+          beneficio: 'Puntos en todo, 1.5x especiales',
+          uso: 'Gastos en general',
+          estimado: '400-600 ARS/month',
+          emisor: 'ICBC',
+        },
+        {
+          nombre: 'Banco Galicia Elegance',
+          tipo: 'Premium Travel',
+          beneficio: 'Millas aeroméxico, seguros viaje',
+          uso: 'Viajes y premium',
+          estimado: '500-750 ARS/month',
+          emisor: 'Galicia',
+        },
+        {
+          nombre: 'Banco Santander Activa',
+          tipo: 'General',
+          beneficio: '2% en supermercados locales',
+          uso: 'Compras locales',
+          estimado: '200-350 ARS/month',
+          emisor: 'Santander',
+        },
+      ],
+      banks: ['ICBC', 'Banco Galicia', 'Santander', 'Banco Nación', 'HSBC', 'Scotiabank', 'Brubank'],
+    },
+    CO: {
+      cards: [
+        {
+          nombre: 'Banco de Bogotá Visa Platinum',
+          tipo: 'Premium General',
+          beneficio: 'Puntos en todo, viajes asegurados',
+          uso: 'Gastos generales',
+          estimado: '80,000-120,000 COP/month',
+          emisor: 'Banco de Bogotá',
+        },
+        {
+          nombre: 'BBVA Visa Oro',
+          tipo: 'Premium Elite',
+          beneficio: '1.5x puntos restaurantes y viajes',
+          uso: 'Comida y viajes',
+          estimado: '100,000-150,000 COP/month',
+          emisor: 'BBVA',
+        },
+        {
+          nombre: 'Scotiabank Inverlat',
+          tipo: 'General',
+          beneficio: 'Puntos en compras, seguros básicos',
+          uso: 'Uso general',
+          estimado: '50,000-80,000 COP/month',
+          emisor: 'Scotiabank',
+        },
+      ],
+      banks: ['Banco de Bogotá', 'BBVA Colombia', 'Scotiabank Colpatria', 'Banco Popular', 'Bancolombia', 'HSBC', 'Citibank'],
+    },
+  };
 
   const content = {
     es: {
       title: 'Recomendaciones Inteligentes',
-      subtitle: 'Basadas en tu análisis de gastos y patrones de consumo',
+      subtitle: 'Basadas en tu país y patrones de consumo',
+      countryLabel: 'País Seleccionado:',
       ahorroTotal: 'Ahorro Potencial Total',
       recomendaciones: [
         {
@@ -19,27 +176,27 @@ export default function RecommendationsPage() {
           titulo: 'Auditoría de Suscripciones',
           descripcion: 'Encontramos 4 suscripciones que podrías cancelar',
           ahorro: '$47.99',
-          detalle: 'Netflix ($15.99), Disney+ ($10.99), HBO Max ($9.99), Spotify Premium ($11.99 - considera el plan familiar)',
+          detalle: 'Netflix, Disney+, HBO Max, Spotify Premium - considera planes familiares',
           accion: 'Revisar Suscripciones',
           prioridad: 'alta',
         },
         {
           id: 'dining',
           icon: '🍔',
-          titulo: 'Reducir Gastos de Comida',
+          titulo: 'Optimizar Gastos de Comida',
           descripcion: 'Tu gasto en restaurantes es 3x más que el promedio',
           ahorro: '$320/mes',
-          detalle: 'Promedio de $1,280/mes en dining. Considera cocinar en casa 2 veces más por semana.',
+          detalle: 'Usa tarjetas con cashback premium en restaurantes para maximizar retorno',
           accion: 'Ver Detalles',
           prioridad: 'alta',
         },
         {
           id: 'grocery',
           icon: '🛒',
-          titulo: 'Optimizar Compras de Supermercado',
-          descripcion: 'Usa cashback en tarjetas de crédito específicas',
+          titulo: 'Supermercados con Cashback',
+          descripcion: 'Usa tarjetas con beneficios en supermercados',
           ahorro: '$45-80/mes',
-          detalle: 'Usa tu tarjeta con 3% cashback en supermercados. Gasto mensual: $600-800.',
+          detalle: 'Asigna tarjeta con cashback en supermercados para tus compras de alimentos',
           accion: 'Tarjetas Optimizadas',
           prioridad: 'media',
         },
@@ -47,19 +204,19 @@ export default function RecommendationsPage() {
           id: 'utilities',
           icon: '⚡',
           titulo: 'Reducir Servicios Básicos',
-          descripcion: 'Tu consumo de energía está por encima del promedio',
+          descripcion: 'Revisa tu consumo de energía y servicios',
           ahorro: '$30-50/mes',
-          detalle: 'Considera cambiar a energía verde o ajustar termostato. Consumo actual: $180/mes.',
+          detalle: 'Consumo actual por encima del promedio - ajusta y ahorra',
           accion: 'Consejos de Ahorro',
           prioridad: 'media',
         },
         {
           id: 'cashback',
           icon: '💰',
-          titulo: 'Maximizar Cashback',
-          descripcion: 'Reorganiza tus tarjetas según categoría de gasto',
+          titulo: 'Estrategia de Cashback',
+          descripcion: 'Reorganiza tarjetas según categoría de gasto',
           ahorro: '$120-180/mes',
-          detalle: 'Usa tarjeta A (5% dining), Tarjeta B (3% grocery), Tarjeta C (2% todo lo demás).',
+          detalle: 'Cada tarjeta para su categoría específica: máximo retorno garantizado',
           accion: 'Ver Estrategia',
           prioridad: 'media',
         },
@@ -67,46 +224,28 @@ export default function RecommendationsPage() {
           id: 'insurance',
           icon: '🛡️',
           titulo: 'Revisar Seguros',
-          descripcion: 'Posible consolidación de pólizas',
+          descripcion: 'Consolidación de pólizas disponible',
           ahorro: '$50-100/mes',
-          detalle: 'Contacta a tu aseguradora para paquetes bundle o descuentos por cliente leal.',
-          accion: 'Comparar Opciones',
+          detalle: 'Muchas tarjetas premium incluyen seguros - verifica beneficios incluidos',
+          accion: 'Comparar',
           prioridad: 'baja',
-        },
-      ],
-      cardStrategies: [
-        {
-          nombre: 'Tarjeta A',
-          tipo: 'Premium Dining',
-          beneficio: '5% en restaurantes',
-          uso: 'Comida y bebida',
-          estimado: '$64/mes',
-        },
-        {
-          nombre: 'Tarjeta B',
-          tipo: 'Grocery Master',
-          beneficio: '3% supermercados',
-          uso: 'Compras de alimentos',
-          estimado: '$18-24/mes',
-        },
-        {
-          nombre: 'Tarjeta C',
-          tipo: 'General',
-          beneficio: '2% todo lo demás',
-          uso: 'Otros gastos',
-          estimado: '$20-30/mes',
         },
       ],
       stats: [
         { label: 'Gastos Totales Este Mes', value: '$4,250' },
         { label: 'Potencial de Ahorro', value: '$612-658' },
         { label: 'Oportunidades de Optimización', value: '6' },
-        { label: 'Cashback Estimado Mensual', value: '$102-118' },
+        { label: 'Retorno Estimado Mensual', value: '$102-118' },
       ],
+      sectionCardStrategy: 'Estrategia de Tarjetas Recomendada',
+      sectionBanks: 'Bancos Disponibles en',
+      cardStrategyNote: 'Estas tarjetas están optimizadas para tu país y ofrecen los mejores beneficios disponibles.',
+      viewMore: 'Ver más tarjetas en Comparador',
     },
     en: {
       title: 'Smart Recommendations',
-      subtitle: 'Based on your spending analysis and consumption patterns',
+      subtitle: 'Based on your country and spending patterns',
+      countryLabel: 'Selected Country:',
       ahorroTotal: 'Total Potential Savings',
       recomendaciones: [
         {
@@ -115,27 +254,27 @@ export default function RecommendationsPage() {
           titulo: 'Subscription Audit',
           descripcion: 'We found 4 subscriptions you could cancel',
           ahorro: '$47.99',
-          detalle: 'Netflix ($15.99), Disney+ ($10.99), HBO Max ($9.99), Spotify Premium ($11.99 - consider family plan)',
+          detalle: 'Netflix, Disney+, HBO Max, Spotify Premium - consider family plans',
           accion: 'Review Subscriptions',
           prioridad: 'alta',
         },
         {
           id: 'dining',
           icon: '🍔',
-          titulo: 'Reduce Dining Expenses',
+          titulo: 'Optimize Dining Expenses',
           descripcion: 'Your dining spending is 3x above average',
           ahorro: '$320/month',
-          detalle: 'Average $1,280/month dining out. Try cooking at home 2x more per week.',
+          detalle: 'Use premium cashback cards at restaurants to maximize rewards',
           accion: 'See Details',
           prioridad: 'alta',
         },
         {
           id: 'grocery',
           icon: '🛒',
-          titulo: 'Optimize Grocery Shopping',
-          descripcion: 'Use cashback on specific credit cards',
+          titulo: 'Grocery Shopping Rewards',
+          descripcion: 'Use cards with grocery benefits',
           ahorro: '$45-80/month',
-          detalle: 'Use your 3% cashback card at grocery stores. Monthly spend: $600-800.',
+          detalle: 'Assign cashback card for grocery shopping to earn on essentials',
           accion: 'Optimized Cards',
           prioridad: 'media',
         },
@@ -143,19 +282,19 @@ export default function RecommendationsPage() {
           id: 'utilities',
           icon: '⚡',
           titulo: 'Reduce Utilities',
-          descripcion: 'Your energy consumption is above average',
+          descripcion: 'Review your energy consumption',
           ahorro: '$30-50/month',
-          detalle: 'Switch to green energy or adjust thermostat. Current: $180/month.',
+          detalle: 'Current usage above average - adjust and save',
           accion: 'Savings Tips',
           prioridad: 'media',
         },
         {
           id: 'cashback',
           icon: '💰',
-          titulo: 'Maximize Cashback',
-          descripcion: 'Reorganize cards by spending category',
+          titulo: 'Cashback Strategy',
+          descripcion: 'Organize cards by spending category',
           ahorro: '$120-180/month',
-          detalle: 'Card A (5% dining), Card B (3% grocery), Card C (2% everything else).',
+          detalle: 'Each card for its specific category: maximum returns guaranteed',
           accion: 'View Strategy',
           prioridad: 'media',
         },
@@ -163,46 +302,30 @@ export default function RecommendationsPage() {
           id: 'insurance',
           icon: '🛡️',
           titulo: 'Review Insurance',
-          descripcion: 'Possible policy consolidation',
+          descripcion: 'Policy consolidation available',
           ahorro: '$50-100/month',
-          detalle: 'Contact insurer for bundle packages or loyalty discounts.',
-          accion: 'Compare Options',
+          detalle: 'Many premium cards include insurance - check your benefits',
+          accion: 'Compare',
           prioridad: 'baja',
-        },
-      ],
-      cardStrategies: [
-        {
-          nombre: 'Card A',
-          tipo: 'Premium Dining',
-          beneficio: '5% restaurants',
-          uso: 'Food & Beverage',
-          estimado: '$64/month',
-        },
-        {
-          nombre: 'Card B',
-          tipo: 'Grocery Master',
-          beneficio: '3% groceries',
-          uso: 'Food Shopping',
-          estimado: '$18-24/month',
-        },
-        {
-          nombre: 'Card C',
-          tipo: 'General',
-          beneficio: '2% everything else',
-          uso: 'Other spending',
-          estimado: '$20-30/month',
         },
       ],
       stats: [
         { label: 'Total Spending This Month', value: '$4,250' },
         { label: 'Savings Potential', value: '$612-658' },
         { label: 'Optimization Opportunities', value: '6' },
-        { label: 'Estimated Monthly Cashback', value: '$102-118' },
+        { label: 'Estimated Monthly Return', value: '$102-118' },
       ],
+      sectionCardStrategy: 'Recommended Card Strategy',
+      sectionBanks: 'Available Banks in',
+      cardStrategyNote: 'These cards are optimized for your country and offer the best available benefits.',
+      viewMore: 'View more cards in Comparator',
     },
   };
 
   const curr = content[language as keyof typeof content];
+  const cards = (countryData[country as keyof typeof countryData] || countryData.US).cards;
+  const banks = (countryData[country as keyof typeof countryData] || countryData.US).banks;
+
   const getPriorityColor = (prioridad: string) => {
     switch (prioridad) {
       case 'alta':
@@ -220,7 +343,12 @@ export default function RecommendationsPage() {
     <div style={styles.root}>
       {/* HEADER */}
       <div style={styles.header}>
-        <h1 style={styles.title}>{curr.title}</h1>
+        <div style={styles.headerTop}>
+          <h1 style={styles.title}>{curr.title}</h1>
+          <div style={styles.countryBadge}>
+            {curr.countryLabel} <strong>{country}</strong>
+          </div>
+        </div>
         <p style={styles.subtitle}>{curr.subtitle}</p>
       </div>
 
@@ -269,9 +397,10 @@ export default function RecommendationsPage() {
 
       {/* CARD STRATEGIES */}
       <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>💳 {language === 'es' ? 'Estrategia de Tarjetas' : 'Card Strategy'}</h2>
+        <h2 style={styles.sectionTitle}>💳 {curr.sectionCardStrategy}</h2>
+        <p style={styles.cardStrategyNote}>{curr.cardStrategyNote}</p>
         <div style={styles.strategiesGrid}>
-          {curr.cardStrategies.map((strategy, idx) => (
+          {cards.map((strategy, idx) => (
             <div key={idx} style={styles.strategyCard}>
               <div style={styles.strategyHeader}>
                 <h4 style={styles.strategyName}>{strategy.nombre}</h4>
@@ -285,11 +414,27 @@ export default function RecommendationsPage() {
                 <span style={styles.usoLabel}>{language === 'es' ? 'Usar en' : 'Use for'}:</span>
                 <span>{strategy.uso}</span>
               </div>
+              <div style={styles.emisor}>
+                <span style={styles.emisorLabel}>{language === 'es' ? 'Emisor' : 'Issuer'}:</span>
+                <strong>{strategy.emisor}</strong>
+              </div>
               <div style={styles.estimatedReturn}>
                 {language === 'es' ? 'Retorno Estimado' : 'Estimated Return'}:
                 <strong> {strategy.estimado}</strong>
               </div>
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* AVAILABLE BANKS */}
+      <div style={styles.section}>
+        <h2 style={styles.sectionTitle}>🏦 {curr.sectionBanks} {country}</h2>
+        <div style={styles.banksContainer}>
+          {banks.map((bank, idx) => (
+            <span key={idx} style={styles.bankBadge}>
+              {bank}
+            </span>
           ))}
         </div>
       </div>
@@ -303,8 +448,8 @@ export default function RecommendationsPage() {
         </h3>
         <p style={styles.ctaDesc}>
           {language === 'es'
-            ? 'Implementa estas recomendaciones y comienza a ahorrar hoy.'
-            : 'Implement these recommendations and start saving today.'}
+            ? 'Las tarjetas recomendadas están disponibles en tu país. Implementa la estrategia hoy.'
+            : 'The recommended cards are available in your country. Implement the strategy today.'}
         </p>
         <button style={styles.ctaButton}>
           {language === 'es' ? 'Empezar Ahora' : 'Get Started'} →
@@ -327,16 +472,34 @@ const styles = {
     marginBottom: '48px',
   } as React.CSSProperties,
 
+  headerTop: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '12px',
+  } as React.CSSProperties,
+
   title: {
     fontSize: '32px',
     fontWeight: '800',
-    marginBottom: '8px',
+    margin: 0,
     letterSpacing: '-0.5px',
+  } as React.CSSProperties,
+
+  countryBadge: {
+    background: 'rgba(6, 182, 212, 0.1)',
+    border: '1px solid #06b6d4',
+    borderRadius: '6px',
+    padding: '8px 16px',
+    fontSize: '12px',
+    color: '#06b6d4',
+    fontWeight: '600',
   } as React.CSSProperties,
 
   subtitle: {
     fontSize: '16px',
     color: '#94a3b8',
+    margin: 0,
   } as React.CSSProperties,
 
   statsGrid: {
@@ -381,6 +544,13 @@ const styles = {
     letterSpacing: '-0.3px',
   } as React.CSSProperties,
 
+  cardStrategyNote: {
+    fontSize: '13px',
+    color: '#94a3b8',
+    marginBottom: '20px',
+    fontStyle: 'italic',
+  } as React.CSSProperties,
+
   cardsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
@@ -416,11 +586,13 @@ const styles = {
     fontSize: '16px',
     fontWeight: '700',
     marginBottom: '4px',
+    margin: 0,
   } as React.CSSProperties,
 
   cardDesc: {
     fontSize: '13px',
     color: '#94a3b8',
+    margin: 0,
   } as React.CSSProperties,
 
   cardAhorro: {
@@ -442,6 +614,7 @@ const styles = {
     color: '#cbd5e1',
     marginBottom: '12px',
     lineHeight: '1.6',
+    margin: 0,
   } as React.CSSProperties,
 
   actionButton: {
@@ -515,9 +688,23 @@ const styles = {
     padding: '12px 0',
     fontSize: '13px',
     color: '#cbd5e1',
+    borderBottom: '1px solid #334155',
   } as React.CSSProperties,
 
   usoLabel: {
+    color: '#94a3b8',
+  } as React.CSSProperties,
+
+  emisor: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '12px 0',
+    fontSize: '13px',
+    color: '#cbd5e1',
+    borderBottom: '1px solid #334155',
+  } as React.CSSProperties,
+
+  emisorLabel: {
     color: '#94a3b8',
   } as React.CSSProperties,
 
@@ -525,6 +712,22 @@ const styles = {
     marginTop: '12px',
     fontSize: '12px',
     color: '#94a3b8',
+  } as React.CSSProperties,
+
+  banksContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '12px',
+  } as React.CSSProperties,
+
+  bankBadge: {
+    background: '#1e293b',
+    border: '1px solid #334155',
+    borderRadius: '6px',
+    padding: '8px 12px',
+    fontSize: '12px',
+    fontWeight: '600',
+    color: '#cbd5e1',
   } as React.CSSProperties,
 
   ctaSection: {
@@ -539,6 +742,7 @@ const styles = {
     fontSize: '28px',
     fontWeight: '800',
     marginBottom: '12px',
+    margin: 0,
   } as React.CSSProperties,
 
   ctaDesc: {
