@@ -1,19 +1,28 @@
 'use client';
 
+import { useLanguage } from '@/context/LanguageContext';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const data = [
-  { month: 'Ene', income: 4200, expenses: 2100 },
-  { month: 'Feb', income: 4200, expenses: 2350 },
-  { month: 'Mar', income: 4200, expenses: 1950 },
-  { month: 'Abr', income: 4200, expenses: 2800 },
-  { month: 'May', income: 4200, expenses: 2200 },
-  { month: 'Jun', income: 4200, expenses: 2500 },
-  { month: 'Jul', income: 4200, expenses: 2100 },
-  { month: 'Ago', income: 4200, expenses: 2800 },
-];
-
 export function IncomeExpenseChart() {
+  const { t, language } = useLanguage();
+
+  // Meses traducidos
+  const monthLabels = {
+    es: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago'],
+    en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+  };
+
+  const data = [
+    { month: monthLabels[language][0], income: 4200, expenses: 2100 },
+    { month: monthLabels[language][1], income: 4200, expenses: 2350 },
+    { month: monthLabels[language][2], income: 4200, expenses: 1950 },
+    { month: monthLabels[language][3], income: 4200, expenses: 2800 },
+    { month: monthLabels[language][4], income: 4200, expenses: 2200 },
+    { month: monthLabels[language][5], income: 4200, expenses: 2500 },
+    { month: monthLabels[language][6], income: 4200, expenses: 2100 },
+    { month: monthLabels[language][7], income: 4200, expenses: 2800 },
+  ];
+
   return (
     <div style={{
       background: '#1e293b',
@@ -23,7 +32,7 @@ export function IncomeExpenseChart() {
       marginBottom: '40px',
     }}>
       <h2 style={{ color: '#0ea5e9', fontSize: '18px', fontWeight: 'bold', marginBottom: '20px' }}>
-        Ingresos vs Gastos
+        {t('incomeVsExpenses')}
       </h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data}>
@@ -39,8 +48,8 @@ export function IncomeExpenseChart() {
             }}
           />
           <Legend wrapperStyle={{ paddingTop: '20px' }} />
-          <Bar dataKey="income" fill="#10b981" name="Ingresos" radius={[8, 8, 0, 0]} />
-          <Bar dataKey="expenses" fill="#ef4444" name="Gastos" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="income" fill="#10b981" name={t('income')} radius={[8, 8, 0, 0]} />
+          <Bar dataKey="expenses" fill="#ef4444" name={t('expenses')} radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

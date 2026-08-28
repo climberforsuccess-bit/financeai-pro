@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { IncomeExpenseChart } from '@/components/charts/IncomeExpenseChart';
 
 export default function DashboardPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const stats = {
     balance: '$12,450.50',
@@ -15,21 +15,40 @@ export default function DashboardPage() {
     savings: '$3,150.50',
   };
 
+  // Función para traducir fechas
+  const getTranslatedDate = (spanishDate: string) => {
+    if (language === 'en') {
+      return spanishDate.replace('Ago', 'Aug');
+    }
+    return spanishDate;
+  };
+
   const transactions = [
-    { category: '🍔 Alimentos', description: 'Whole Foods Market', date: '28 Ago', amount: '-$45.32', type: 'negative' },
-    { category: '🚗 Transporte', description: 'Uber', date: '28 Ago', amount: '-$18.50', type: 'negative' },
-    { category: '💼 Ingresos', description: 'Pago de Salario', date: '25 Ago', amount: '+$4,200.00', type: 'positive' },
-    { category: '🎬 Entretenimiento', description: 'Netflix', date: '20 Ago', amount: '-$12.99', type: 'negative' },
-    { category: '🏥 Salud', description: 'Farmacia CVS', date: '18 Ago', amount: '-$32.15', type: 'negative' },
+    { category: `🍔 ${t('food')}`, description: t('wholeFoodsMarket'), date: getTranslatedDate('28 Ago'), amount: '-$45.32', type: 'negative' },
+    { category: `🚗 ${t('transport')}`, description: t('uber'), date: getTranslatedDate('28 Ago'), amount: '-$18.50', type: 'negative' },
+    { category: `💼 ${t('income')}`, description: t('salaryPayment'), date: getTranslatedDate('25 Ago'), amount: '+$4,200.00', type: 'positive' },
+    { category: `🎬 ${t('entertainment')}`, description: t('netflix'), date: getTranslatedDate('20 Ago'), amount: '-$12.99', type: 'negative' },
+    { category: `🏥 ${t('health')}`, description: t('pharmacyCVS'), date: getTranslatedDate('18 Ago'), amount: '-$32.15', type: 'negative' },
   ];
 
   const today = new Date();
-  const dateStr = today.toLocaleDateString('es-ES', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  const monthNames = {
+    es: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'],
+    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  };
+
+  const dayNames = {
+    es: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+    en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  };
+
+  const day = today.getDate();
+  const month = monthNames[language][today.getMonth()];
+  const year = today.getFullYear();
+  const dayName = dayNames[language][today.getDay()];
+
+  const dateStr = `${dayName}, ${day} ${t('may')} ${year}`;
+  const monthLabel = language === 'es' ? monthNames.es[today.getMonth()].charAt(0).toUpperCase() + monthNames.es[today.getMonth()].slice(1) : monthNames.en[today.getMonth()];
 
   return (
     <div style={styles.container}>
@@ -38,13 +57,13 @@ export default function DashboardPage() {
         <div>
           <h1 style={styles.title}>{t('dashboard')}</h1>
           <p style={styles.dateText}>
-            {dateStr.charAt(0).toUpperCase() + dateStr.slice(1)}
+            {dayName.charAt(0).toUpperCase() + dayName.slice(1)}, {day} de {month} de {year}
           </p>
         </div>
-        <div style={styles.badge}>📊 Agosto 2024</div>
+        <div style={styles.badge}>📊 {monthLabel} 2024</div>
       </div>
 
-      {/* STATS GRID - Mantiene Cards existentes */}
+      {/* STATS GRID */}
       <div style={styles.statsGrid}>
         <Card 
           title={t('totalBalance')}
@@ -93,103 +112,64 @@ export default function DashboardPage() {
         {/* Sidebar Widgets */}
         <div style={styles.sidebar}>
           <SidebarWidget
-            title="📊 Este Mes"
+            title={`📊 ${t('thisMonth')}`}
             items={[
-              { label: 'Ahorrado', value: '$1,400.00' },
-              { label: 'Variación', value: '+22%', highlighted: true },
+              { label: t('saved'), value: '$1,400.00' },
+              { label: t('variation'), value: '+22%', highlighted: true },
             ]}
           />
           <SidebarWidget
-            title="💳 Deuda Activa"
+            title={`💳 ${t('activeDebt')}`}
             items={[
-              { label: 'Tarjetas', value: '3' },
-              { label: 'Interés Promedio', value: '18.5%' },
+              { label: t('cards'), value: '3' },
+              { label: t('averageInterest'), value: '18.5%' },
             ]}
           />
           <SidebarWidget
-            title="🎯 Objetivo Deuda"
+            title={`🎯 ${t('debtObjective')}`}
             items={[
-              { label: 'Método', value: 'Avalanche' },
-              { label: 'Tiempo', value: '24 meses' },
+              { label: t('method'), value: 'Avalanche' },
+              { label: t('timeline'), value: `24 ${t('months')}` },
             ]}
           />
         </div>
       </div>
 
       {/* RECENT TRANSACTIONS */}
-      <div style={styles.transactionsCard}>
-        <div style={styles.txHeader}>
-          <div>
-            <h2 style={styles.txTitle}>{t('recentTransactions')}</h2>
-            <p style={styles.txSubtitle}>Últimas 5 transacciones</p>
-          </div>
-          <a href="/transactions" style={styles.viewAllLink}>
-            {t('viewAll')} →
-          </a>
+      <div style={styles.transactionsSection}>
+        <div style={styles.sectionHeader}>
+          <h2 style={styles.sectionTitle}>{t('recentTransactions')}</h2>
+          <a href="/transactions" style={styles.viewAllLink}>{t('viewAll')}</a>
         </div>
-
-        <table style={styles.table}>
-          <thead>
-            <tr style={styles.tableHeader}>
-              <th style={{ ...styles.headerCell, textAlign: 'left' }}>Categoría</th>
-              <th style={{ ...styles.headerCell, textAlign: 'left' }}>Descripción</th>
-              <th style={{ ...styles.headerCell, textAlign: 'left' }}>Fecha</th>
-              <th style={{ ...styles.headerCell, textAlign: 'right' }}>Monto</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((tx, idx) => (
-              <tr key={idx} style={styles.tableRow}>
-                <td style={{ ...styles.cell, color: '#06b6d4', fontWeight: '600' }}>
-                  {tx.category}
-                </td>
-                <td style={styles.cell}>{tx.description}</td>
-                <td style={{ ...styles.cell, color: '#94a3b8', fontSize: '13px' }}>
-                  {tx.date}
-                </td>
-                <td
-                  style={{
-                    ...styles.cell,
-                    textAlign: 'right',
-                    color: tx.type === 'positive' ? '#10b981' : '#ef4444',
-                    fontWeight: '700',
-                  }}
-                >
+        <div style={styles.transactionsList}>
+          {transactions.map((tx, idx) => (
+            <div key={idx} style={styles.transactionItem}>
+              <div style={styles.transactionLeft}>
+                <div style={styles.categoryText}>{tx.category}</div>
+                <div style={styles.descriptionText}>{tx.description}</div>
+              </div>
+              <div style={styles.transactionRight}>
+                <div style={{ ...styles.amountText, color: tx.type === 'positive' ? '#10b981' : '#ef4444' }}>
                   {tx.amount}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <div style={styles.txActions}>
-          <button style={styles.btnPrimary}>{t('viewAll')} →</button>
-          <button style={styles.btnSecondary}>📥 Descargar PDF</button>
+                </div>
+                <div style={styles.dateText}>{tx.date}</div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-function SidebarWidget({
-  title,
-  items,
-}: {
-  title: string;
-  items: Array<{ label: string; value: string; highlighted?: boolean }>;
-}) {
+function SidebarWidget({ title, items }: { title: string; items: Array<{ label: string; value: string; highlighted?: boolean }> }) {
   return (
-    <div style={styles.sidebarCard}>
-      <h3 style={styles.sidebarTitle}>{title}</h3>
+    <div style={styles.sidebarWidget}>
+      <h3 style={styles.widgetTitle}>{title}</h3>
       {items.map((item, idx) => (
-        <div key={idx} style={styles.quickStat}>
-          <span style={styles.quickLabel}>{item.label}</span>
-          <span
-            style={{
-              ...styles.quickValue,
-              color: item.highlighted ? '#10b981' : '#f1f5f9',
-            }}
-          >
+        <div key={idx} style={styles.widgetItem}>
+          <span style={styles.widgetLabel}>{item.label}</span>
+          <span style={{ ...styles.widgetValue, fontWeight: item.highlighted ? '700' : '600', color: item.highlighted ? '#0ea5e9' : '#f1f5f9' }}>
             {item.value}
           </span>
         </div>
@@ -200,196 +180,147 @@ function SidebarWidget({
 
 const styles = {
   container: {
-    padding: '32px',
-    maxWidth: '1600px',
+    padding: '24px',
+    maxWidth: '1400px',
     margin: '0 auto',
   } as React.CSSProperties,
-
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: '40px',
+    marginBottom: '32px',
   } as React.CSSProperties,
-
   title: {
-    fontSize: '28px',
-    fontWeight: '700',
+    fontSize: '32px',
+    fontWeight: 'bold',
     color: '#f1f5f9',
-    marginBottom: '4px',
-    letterSpacing: '-0.5px',
+    marginBottom: '8px',
   } as React.CSSProperties,
-
   dateText: {
-    fontSize: '13px',
+    fontSize: '14px',
     color: '#94a3b8',
-    fontWeight: '500',
   } as React.CSSProperties,
-
   badge: {
-    background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1))',
-    border: '1px solid rgba(6, 182, 212, 0.2)',
     padding: '8px 16px',
-    borderRadius: '20px',
+    backgroundColor: 'rgba(15, 165, 233, 0.1)',
+    border: '1px solid rgba(15, 165, 233, 0.3)',
+    borderRadius: '8px',
+    color: '#0ea5e9',
     fontSize: '12px',
-    color: '#06b6d4',
     fontWeight: '600',
   } as React.CSSProperties,
-
   statsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '20px',
-    marginBottom: '40px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    gap: '16px',
+    marginBottom: '32px',
   } as React.CSSProperties,
-
   mainGrid: {
     display: 'grid',
-    gridTemplateColumns: '2fr 1fr',
+    gridTemplateColumns: '1fr 320px',
     gap: '24px',
     marginBottom: '32px',
   } as React.CSSProperties,
-
   chartContainer: {
-    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-    border: '1px solid #334155',
     borderRadius: '12px',
+    border: '1px solid rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
     padding: '24px',
+    backdropFilter: 'blur(10px)',
   } as React.CSSProperties,
-
   sidebar: {
     display: 'flex',
-    flexDirection: 'column' as const,
+    flexDirection: 'column',
     gap: '16px',
-  },
-
-  sidebarCard: {
-    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-    border: '1px solid #334155',
-    borderRadius: '12px',
-    padding: '20px',
   } as React.CSSProperties,
-
-  sidebarTitle: {
-    fontSize: '13px',
-    fontWeight: '700',
-    color: '#94a3b8',
+  sidebarWidget: {
+    borderRadius: '12px',
+    border: '1px solid rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    padding: '16px',
+    backdropFilter: 'blur(10px)',
+  } as React.CSSProperties,
+  widgetTitle: {
+    fontSize: '12px',
+    fontWeight: '600',
+    color: '#cbd5e1',
+    marginBottom: '12px',
     textTransform: 'uppercase',
     letterSpacing: '0.5px',
-    marginBottom: '16px',
   } as React.CSSProperties,
-
-  quickStat: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '12px 0',
-    borderBottom: '1px solid #1e293b',
-  } as React.CSSProperties,
-
-  quickLabel: {
-    fontSize: '13px',
-    color: '#94a3b8',
-    fontWeight: '500',
-  } as React.CSSProperties,
-
-  quickValue: {
-    fontSize: '14px',
-    fontWeight: '700',
-    color: '#f1f5f9',
-  } as React.CSSProperties,
-
-  transactionsCard: {
-    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-    border: '1px solid #334155',
-    borderRadius: '12px',
-    padding: '24px',
-  } as React.CSSProperties,
-
-  txHeader: {
+  widgetItem: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '20px',
+    paddingBottom: '8px',
   } as React.CSSProperties,
-
-  txTitle: {
-    fontSize: '16px',
-    fontWeight: '700',
+  widgetLabel: {
+    fontSize: '12px',
+    color: '#94a3b8',
+  } as React.CSSProperties,
+  widgetValue: {
+    fontSize: '13px',
     color: '#f1f5f9',
-    marginBottom: '4px',
   } as React.CSSProperties,
-
-  txSubtitle: {
-    fontSize: '12px',
-    color: '#94a3b8',
-    fontWeight: '500',
+  transactionsSection: {
+    borderRadius: '12px',
+    border: '1px solid rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    padding: '24px',
+    backdropFilter: 'blur(10px)',
   } as React.CSSProperties,
-
-  viewAllLink: {
-    fontSize: '14px',
-    color: '#06b6d4',
-    textDecoration: 'none',
-    fontWeight: '600',
-    cursor: 'pointer',
-  } as React.CSSProperties,
-
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginBottom: '20px',
-  } as React.CSSProperties,
-
-  tableHeader: {
-    borderBottom: '1px solid #334155',
-  } as React.CSSProperties,
-
-  headerCell: {
-    fontSize: '12px',
-    fontWeight: '700',
-    color: '#94a3b8',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    padding: '12px 0',
-  } as React.CSSProperties,
-
-  tableRow: {
-    borderBottom: '1px solid #1e293b',
-    transition: 'background 0.2s ease',
-  } as React.CSSProperties,
-
-  cell: {
-    padding: '12px 0',
-    fontSize: '14px',
-    color: '#e2e8f0',
-  } as React.CSSProperties,
-
-  txActions: {
+  sectionHeader: {
     display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '16px',
+  } as React.CSSProperties,
+  sectionTitle: {
+    fontSize: '18px',
+    fontWeight: '600',
+    color: '#f1f5f9',
+  } as React.CSSProperties,
+  viewAllLink: {
+    fontSize: '12px',
+    color: '#0ea5e9',
+    textDecoration: 'none',
+    cursor: 'pointer',
+    transition: 'color 0.2s',
+  } as React.CSSProperties,
+  transactionsList: {
+    display: 'flex',
+    flexDirection: 'column',
     gap: '12px',
-    flexWrap: 'wrap',
   } as React.CSSProperties,
-
-  btnPrimary: {
-    padding: '10px 20px',
-    borderRadius: '8px',
-    border: 'none',
-    fontSize: '14px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
-    color: 'white',
-    transition: 'all 0.3s ease',
+  transactionItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '12px 0',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
   } as React.CSSProperties,
-
-  btnSecondary: {
-    padding: '10px 20px',
-    borderRadius: '8px',
-    border: '1px solid #334155',
-    fontSize: '14px',
+  transactionLeft: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  } as React.CSSProperties,
+  transactionRight: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    gap: '4px',
+  } as React.CSSProperties,
+  categoryText: {
+    fontSize: '13px',
     fontWeight: '600',
-    cursor: 'pointer',
-    background: 'transparent',
+    color: '#f1f5f9',
+  } as React.CSSProperties,
+  descriptionText: {
+    fontSize: '12px',
     color: '#94a3b8',
-    transition: 'all 0.3s ease',
+  } as React.CSSProperties,
+  amountText: {
+    fontSize: '13px',
+    fontWeight: '600',
   } as React.CSSProperties,
 };

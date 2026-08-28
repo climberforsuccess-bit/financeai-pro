@@ -781,7 +781,34 @@ const translations = {
         snowball: 'Snowball',
         consolidation: 'Consolidación',
         hybrid: 'Híbrido',
-        addDebt: 'Agregar Deuda'
+        addDebt: 'Agregar Deuda',
+        thisMonth: 'Este Mes',
+        saved: 'Ahorrado',
+        variation: 'Variación',
+        food: 'Alimentos',
+        transport: 'Transporte',
+        income: 'Ingresos',
+        entertainment: 'Entretenimiento',
+        health: 'Salud',
+        salaryPayment: 'Pago de Salario',
+        wholeFoodsMarket: 'Whole Foods Market',
+        uber: 'Uber',
+        netflix: 'Netflix',
+        pharmacyCVS: 'Farmacia CVS',
+        incomeVsExpenses: 'Ingresos vs Gastos',
+        january: 'Ene',
+        february: 'Feb',
+        march: 'Mar',
+        april: 'Abr',
+        may: 'May',
+        expenses: 'Gastos',
+        activeDebt: 'Deuda Activa',
+        cards: 'Tarjetas',
+        averageInterest: 'Interés Promedio',
+        debtObjective: 'Objetivo de Deuda',
+        method: 'Método',
+        timeline: 'Tiempo',
+        months: 'meses'
     },
     en: {
         dashboard: 'Dashboard',
@@ -841,7 +868,34 @@ const translations = {
         snowball: 'Snowball',
         consolidation: 'Consolidation',
         hybrid: 'Hybrid',
-        addDebt: 'Add Debt'
+        addDebt: 'Add Debt',
+        thisMonth: 'This Month',
+        saved: 'Saved',
+        variation: 'Variation',
+        food: 'Food',
+        transport: 'Transport',
+        income: 'Income',
+        entertainment: 'Entertainment',
+        health: 'Health',
+        salaryPayment: 'Salary Payment',
+        wholeFoodsMarket: 'Whole Foods Market',
+        uber: 'Uber',
+        netflix: 'Netflix',
+        pharmacyCVS: 'Pharmacy CVS',
+        incomeVsExpenses: 'Income vs Expenses',
+        january: 'Jan',
+        february: 'Feb',
+        march: 'Mar',
+        april: 'Apr',
+        may: 'May',
+        expenses: 'Expenses',
+        activeDebt: 'Active Debt',
+        cards: 'Cards',
+        averageInterest: 'Average Interest',
+        debtObjective: 'Debt Objective',
+        method: 'Method',
+        timeline: 'Timeline',
+        months: 'months'
     }
 };
 const LanguageContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createContext"])(undefined);
@@ -876,7 +930,7 @@ const LanguageProvider = ({ children })=>{
         children: children
     }, void 0, false, {
         fileName: "[project]/context/LanguageContext.tsx",
-        lineNumber: 163,
+        lineNumber: 217,
         columnNumber: 24
     }, ("TURBOPACK compile-time value", void 0));
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LanguageContext.Provider, {
@@ -888,7 +942,7 @@ const LanguageProvider = ({ children })=>{
         children: children
     }, void 0, false, {
         fileName: "[project]/context/LanguageContext.tsx",
-        lineNumber: 166,
+        lineNumber: 220,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
