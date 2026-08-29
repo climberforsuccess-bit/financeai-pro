@@ -786,6 +786,10 @@ const translations = {
         en: 'Success',
         es: 'Éxito'
     },
+    reload: {
+        en: 'Reload',
+        es: 'Recargar'
+    },
     // Dashboard
     welcome: {
         en: 'Welcome',
@@ -810,6 +814,30 @@ const translations = {
     manage_your_finances: {
         en: 'Manage your finances',
         es: 'Gestiona tus finanzas'
+    },
+    total_cards: {
+        en: 'Total Cards',
+        es: 'Total de Tarjetas'
+    },
+    debts_count: {
+        en: 'Debts',
+        es: 'Deudas'
+    },
+    view_plan: {
+        en: 'View Plan',
+        es: 'Ver Plan'
+    },
+    this_month: {
+        en: 'This Month',
+        es: 'Este Mes'
+    },
+    avg_daily: {
+        en: 'Daily Average',
+        es: 'Promedio Diario'
+    },
+    view_all: {
+        en: 'View All',
+        es: 'Ver Todo'
     },
     // Transactions
     amount: {
@@ -951,10 +979,6 @@ const translations = {
         es: 'Cancelado'
     },
     // Debt Plan
-    debt_plan: {
-        en: 'Debt Plan',
-        es: 'Plan de Deudas'
-    },
     manage_your_debts: {
         en: 'Manage your debts',
         es: 'Gestiona tus deudas'
@@ -1175,7 +1199,7 @@ function LanguageProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/context/LanguageContext.tsx",
-        lineNumber: 175,
+        lineNumber: 181,
         columnNumber: 24
     }, this);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(LanguageContext.Provider, {
@@ -1187,7 +1211,7 @@ function LanguageProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/context/LanguageContext.tsx",
-        lineNumber: 178,
+        lineNumber: 184,
         columnNumber: 5
     }, this);
 }

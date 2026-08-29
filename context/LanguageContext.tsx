@@ -32,6 +32,7 @@ const translations: Translations = {
   loading: { en: 'Loading...', es: 'Cargando...' },
   error: { en: 'Error', es: 'Error' },
   success: { en: 'Success', es: 'Éxito' },
+  reload: { en: 'Reload', es: 'Recargar' },
 
   // Dashboard
   welcome: { en: 'Welcome', es: 'Bienvenido' },
@@ -40,6 +41,12 @@ const translations: Translations = {
   upcoming_bills: { en: 'Upcoming Bills', es: 'Próximas Facturas' },
   financial_overview: { en: 'Financial Overview', es: 'Descripción Financiera' },
   manage_your_finances: { en: 'Manage your finances', es: 'Gestiona tus finanzas' },
+  total_cards: { en: 'Total Cards', es: 'Total de Tarjetas' },
+  debts_count: { en: 'Debts', es: 'Deudas' },
+  view_plan: { en: 'View Plan', es: 'Ver Plan' },
+  this_month: { en: 'This Month', es: 'Este Mes' },
+  avg_daily: { en: 'Daily Average', es: 'Promedio Diario' },
+  view_all: { en: 'View All', es: 'Ver Todo' },
 
   // Transactions
   amount: { en: 'Amount', es: 'Monto' },
@@ -82,7 +89,6 @@ const translations: Translations = {
   cancelled: { en: 'Cancelled', es: 'Cancelado' },
 
   // Debt Plan
-  debt_plan: { en: 'Debt Plan', es: 'Plan de Deudas' },
   manage_your_debts: { en: 'Manage your debts', es: 'Gestiona tus deudas' },
   total_debt: { en: 'Total Debt', es: 'Deuda Total' },
   avg_interest_rate: { en: 'Avg Interest Rate', es: 'Tasa Promedio' },

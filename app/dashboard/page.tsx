@@ -1,326 +1,204 @@
-'use client';
+'use client'
 
-import { useLanguage } from '@/context/LanguageContext';
-import { Card } from '@/components/ui/Card';
-import { IncomeExpenseChart } from '@/components/charts/IncomeExpenseChart';
+import { useDashboardSummary } from '@/hooks/useDashboardSummary'
+import { useLanguage } from '@/context/LanguageContext'
+import { useEffect, useState } from 'react'
 
 export default function DashboardPage() {
-  const { t, language } = useLanguage();
+  const { summary, loading, error, refetch } = useDashboardSummary()
+  const { t, language } = useLanguage()
+  const [mounted, setMounted] = useState(false)
 
-  const stats = {
-    balance: '$12,450.50',
-    monthlyIncome: '$4,200.00',
-    monthlyExpenses: '$2,800.00',
-    totalDebt: '$8,500.00',
-    savings: '$3,150.50',
-  };
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
-  // Función para traducir fechas
-  const getTranslatedDate = (spanishDate: string) => {
-    if (language === 'en') {
-      return spanishDate.replace('Ago', 'Aug');
-    }
-    return spanishDate;
-  };
+  if (!mounted || loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+            <p className="text-slate-400 mt-4">{t('loading')}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
-  const transactions = [
-    { category: `🍔 ${t('food')}`, description: t('wholeFoodsMarket'), date: getTranslatedDate('28 Ago'), amount: '-$45.32', type: 'negative' },
-    { category: `🚗 ${t('transport')}`, description: t('uber'), date: getTranslatedDate('28 Ago'), amount: '-$18.50', type: 'negative' },
-    { category: `💼 ${t('income')}`, description: t('salaryPayment'), date: getTranslatedDate('25 Ago'), amount: '+$4,200.00', type: 'positive' },
-    { category: `🎬 ${t('entertainment')}`, description: t('netflix'), date: getTranslatedDate('20 Ago'), amount: '-$12.99', type: 'negative' },
-    { category: `🏥 ${t('health')}`, description: t('pharmacyCVS'), date: getTranslatedDate('18 Ago'), amount: '-$32.15', type: 'negative' },
-  ];
-
-  const today = new Date();
-  const monthNames = {
-    es: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'],
-    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  };
-
-  const dayNames = {
-    es: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
-    en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  };
-
-  const day = today.getDate();
-  const month = monthNames[language][today.getMonth()];
-  const year = today.getFullYear();
-  const dayName = dayNames[language][today.getDay()];
-
-  const dateStr = `${dayName}, ${day} ${t('may')} ${year}`;
-  const monthLabel = language === 'es' ? monthNames.es[today.getMonth()].charAt(0).toUpperCase() + monthNames.es[today.getMonth()].slice(1) : monthNames.en[today.getMonth()];
+  if (error || !summary) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-12">
+            <p className="text-red-400">{t('error')}: {error}</p>
+            <button
+              onClick={refetch}
+              className="mt-4 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+            >
+              {t('reload')}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div style={styles.container}>
-      {/* HEADER */}
-      <div style={styles.header}>
-        <div>
-          <h1 style={styles.title}>{t('dashboard')}</h1>
-          <p style={styles.dateText}>
-            {dayName.charAt(0).toUpperCase() + dayName.slice(1)}, {day} de {month} de {year}
-          </p>
-        </div>
-        <div style={styles.badge}>📊 {monthLabel} 2024</div>
-      </div>
-
-      {/* STATS GRID */}
-      <div style={styles.statsGrid}>
-        <Card 
-          title={t('totalBalance')}
-          value={stats.balance}
-          icon="💰"
-          textColor="#10b981"
-          bgColor="rgba(16, 185, 129, 0.1)"
-        />
-        <Card 
-          title={t('monthlyIncome')}
-          value={stats.monthlyIncome}
-          icon="📈"
-          textColor="#3b82f6"
-          bgColor="rgba(59, 130, 246, 0.1)"
-        />
-        <Card 
-          title={t('monthlyExpenses')}
-          value={stats.monthlyExpenses}
-          icon="📉"
-          textColor="#f59e0b"
-          bgColor="rgba(245, 158, 11, 0.1)"
-        />
-        <Card 
-          title={t('totalDebt')}
-          value={stats.totalDebt}
-          icon="💳"
-          textColor="#ef4444"
-          bgColor="rgba(239, 68, 68, 0.1)"
-        />
-        <Card 
-          title={t('savings')}
-          value={stats.savings}
-          icon="🏦"
-          textColor="#8b5cf6"
-          bgColor="rgba(139, 92, 246, 0.1)"
-        />
-      </div>
-
-      {/* MAIN GRID: Chart + Sidebar */}
-      <div style={styles.mainGrid}>
-        {/* Chart Section */}
-        <div style={styles.chartContainer}>
-          <IncomeExpenseChart />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">{t('dashboard')}</h1>
+          <p className="text-slate-400">{t('financial_overview')}</p>
         </div>
 
-        {/* Sidebar Widgets */}
-        <div style={styles.sidebar}>
-          <SidebarWidget
-            title={`📊 ${t('thisMonth')}`}
-            items={[
-              { label: t('saved'), value: '$1,400.00' },
-              { label: t('variation'), value: '+22%', highlighted: true },
-            ]}
-          />
-          <SidebarWidget
-            title={`💳 ${t('activeDebt')}`}
-            items={[
-              { label: t('cards'), value: '3' },
-              { label: t('averageInterest'), value: '18.5%' },
-            ]}
-          />
-          <SidebarWidget
-            title={`🎯 ${t('debtObjective')}`}
-            items={[
-              { label: t('method'), value: 'Avalanche' },
-              { label: t('timeline'), value: `24 ${t('months')}` },
-            ]}
-          />
-        </div>
-      </div>
-
-      {/* RECENT TRANSACTIONS */}
-      <div style={styles.transactionsSection}>
-        <div style={styles.sectionHeader}>
-          <h2 style={styles.sectionTitle}>{t('recentTransactions')}</h2>
-          <a href="/transactions" style={styles.viewAllLink}>{t('viewAll')}</a>
-        </div>
-        <div style={styles.transactionsList}>
-          {transactions.map((tx, idx) => (
-            <div key={idx} style={styles.transactionItem}>
-              <div style={styles.transactionLeft}>
-                <div style={styles.categoryText}>{tx.category}</div>
-                <div style={styles.descriptionText}>{tx.description}</div>
+        {/* Main Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Balance Card */}
+          <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 rounded-lg p-6 backdrop-blur-sm hover:border-blue-500/40 transition-all">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <p className="text-blue-400 text-sm font-medium">{t('balance')}</p>
               </div>
-              <div style={styles.transactionRight}>
-                <div style={{ ...styles.amountText, color: tx.type === 'positive' ? '#10b981' : '#ef4444' }}>
-                  {tx.amount}
+              <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" />
+              </svg>
+            </div>
+            <p className="text-3xl font-bold text-white">${summary.balance.toFixed(2)}</p>
+            <p className="text-xs text-blue-300 mt-2">{summary.month}</p>
+          </div>
+
+          {/* Income Card */}
+          <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 border border-emerald-500/20 rounded-lg p-6 backdrop-blur-sm hover:border-emerald-500/40 transition-all">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <p className="text-emerald-400 text-sm font-medium">{t('income')}</p>
+              </div>
+              <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <p className="text-3xl font-bold text-emerald-400">${summary.income.toFixed(2)}</p>
+            <p className="text-xs text-emerald-300 mt-2">+{((summary.income / (summary.income + summary.expenses)) * 100).toFixed(1)}%</p>
+          </div>
+
+          {/* Expenses Card */}
+          <div className="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/20 rounded-lg p-6 backdrop-blur-sm hover:border-red-500/40 transition-all">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <p className="text-red-400 text-sm font-medium">{t('expenses')}</p>
+              </div>
+              <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15h-2v-2h2v2zm0-4h-2V7h2v6z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <p className="text-3xl font-bold text-red-400">${summary.expenses.toFixed(2)}</p>
+            <p className="text-xs text-red-300 mt-2">-{((summary.expenses / (summary.income + summary.expenses)) * 100).toFixed(1)}%</p>
+          </div>
+
+          {/* Subscriptions Card */}
+          <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/20 rounded-lg p-6 backdrop-blur-sm hover:border-purple-500/40 transition-all">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <p className="text-purple-400 text-sm font-medium">{t('subscriptions')}</p>
+              </div>
+              <svg className="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM15 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2zM5 13a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM15 13a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z" />
+              </svg>
+            </div>
+            <p className="text-3xl font-bold text-purple-400">${summary.subscriptions.monthlyTotal.toFixed(2)}</p>
+            <p className="text-xs text-purple-300 mt-2">{summary.subscriptions.active} {t('active')}</p>
+          </div>
+        </div>
+
+        {/* Secondary Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Cards Overview */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 backdrop-blur-sm">
+            <h2 className="text-lg font-semibold text-white mb-4">{t('credit_cards')}</h2>
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-slate-400 text-sm">{t('total_cards')}</span>
+                  <span className="text-white font-semibold">{summary.cards.total}</span>
                 </div>
-                <div style={styles.dateText}>{tx.date}</div>
+              </div>
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-slate-400 text-sm">{t('utilization')}</span>
+                  <span className="text-white font-semibold">{summary.cards.utilization.toFixed(1)}%</span>
+                </div>
+                <div className="w-full bg-slate-700/50 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all ${
+                      summary.cards.utilization > 80 ? 'bg-red-500' :
+                      summary.cards.utilization > 50 ? 'bg-orange-500' :
+                      'bg-emerald-500'
+                    }`}
+                    style={{ width: `${Math.min(summary.cards.utilization, 100)}%` }}
+                  />
+                </div>
+              </div>
+              <div className="pt-2 border-t border-slate-700">
+                <p className="text-xs text-slate-400">
+                  ${summary.cards.used.toFixed(2)} / ${summary.cards.limit.toFixed(2)}
+                </p>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Debts Overview */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 backdrop-blur-sm">
+            <h2 className="text-lg font-semibold text-white mb-4">{t('debt_plan')}</h2>
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-slate-400 text-sm">{t('total_debt')}</span>
+                  <span className="text-red-400 font-semibold">${summary.debts.amount.toFixed(2)}</span>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-slate-400 text-sm">{t('debts_count')}</span>
+                  <span className="text-white font-semibold">{summary.debts.total}</span>
+                </div>
+              </div>
+              <div className="pt-2 border-t border-slate-700">
+                <button className="w-full text-xs text-blue-400 hover:text-blue-300 font-semibold transition-colors">
+                  {t('view_plan')} →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Transactions Overview */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 backdrop-blur-sm">
+            <h2 className="text-lg font-semibold text-white mb-4">{t('transactions')}</h2>
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-slate-400 text-sm">{t('this_month')}</span>
+                  <span className="text-white font-semibold">{summary.transactions}</span>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-slate-400 text-sm">{t('avg_daily')}</span>
+                  <span className="text-white font-semibold">
+                    ${(summary.expenses / 30).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+              <div className="pt-2 border-t border-slate-700">
+                <button className="w-full text-xs text-blue-400 hover:text-blue-300 font-semibold transition-colors">
+                  {t('view_all')} →
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
-
-function SidebarWidget({ title, items }: { title: string; items: Array<{ label: string; value: string; highlighted?: boolean }> }) {
-  return (
-    <div style={styles.sidebarWidget}>
-      <h3 style={styles.widgetTitle}>{title}</h3>
-      {items.map((item, idx) => (
-        <div key={idx} style={styles.widgetItem}>
-          <span style={styles.widgetLabel}>{item.label}</span>
-          <span style={{ ...styles.widgetValue, fontWeight: item.highlighted ? '700' : '600', color: item.highlighted ? '#0ea5e9' : '#f1f5f9' }}>
-            {item.value}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-const styles = {
-  container: {
-    padding: '24px',
-    maxWidth: '1400px',
-    margin: '0 auto',
-  } as React.CSSProperties,
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: '32px',
-  } as React.CSSProperties,
-  title: {
-    fontSize: '32px',
-    fontWeight: 'bold',
-    color: '#f1f5f9',
-    marginBottom: '8px',
-  } as React.CSSProperties,
-  dateText: {
-    fontSize: '14px',
-    color: '#94a3b8',
-  } as React.CSSProperties,
-  badge: {
-    padding: '8px 16px',
-    backgroundColor: 'rgba(15, 165, 233, 0.1)',
-    border: '1px solid rgba(15, 165, 233, 0.3)',
-    borderRadius: '8px',
-    color: '#0ea5e9',
-    fontSize: '12px',
-    fontWeight: '600',
-  } as React.CSSProperties,
-  statsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '16px',
-    marginBottom: '32px',
-  } as React.CSSProperties,
-  mainGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 320px',
-    gap: '24px',
-    marginBottom: '32px',
-  } as React.CSSProperties,
-  chartContainer: {
-    borderRadius: '12px',
-    border: '1px solid rgba(255, 255, 255, 0.05)',
-    backgroundColor: 'rgba(255, 255, 255, 0.02)',
-    padding: '24px',
-    backdropFilter: 'blur(10px)',
-  } as React.CSSProperties,
-  sidebar: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-  } as React.CSSProperties,
-  sidebarWidget: {
-    borderRadius: '12px',
-    border: '1px solid rgba(255, 255, 255, 0.05)',
-    backgroundColor: 'rgba(255, 255, 255, 0.02)',
-    padding: '16px',
-    backdropFilter: 'blur(10px)',
-  } as React.CSSProperties,
-  widgetTitle: {
-    fontSize: '12px',
-    fontWeight: '600',
-    color: '#cbd5e1',
-    marginBottom: '12px',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-  } as React.CSSProperties,
-  widgetItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingBottom: '8px',
-  } as React.CSSProperties,
-  widgetLabel: {
-    fontSize: '12px',
-    color: '#94a3b8',
-  } as React.CSSProperties,
-  widgetValue: {
-    fontSize: '13px',
-    color: '#f1f5f9',
-  } as React.CSSProperties,
-  transactionsSection: {
-    borderRadius: '12px',
-    border: '1px solid rgba(255, 255, 255, 0.05)',
-    backgroundColor: 'rgba(255, 255, 255, 0.02)',
-    padding: '24px',
-    backdropFilter: 'blur(10px)',
-  } as React.CSSProperties,
-  sectionHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '16px',
-  } as React.CSSProperties,
-  sectionTitle: {
-    fontSize: '18px',
-    fontWeight: '600',
-    color: '#f1f5f9',
-  } as React.CSSProperties,
-  viewAllLink: {
-    fontSize: '12px',
-    color: '#0ea5e9',
-    textDecoration: 'none',
-    cursor: 'pointer',
-    transition: 'color 0.2s',
-  } as React.CSSProperties,
-  transactionsList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-  } as React.CSSProperties,
-  transactionItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '12px 0',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-  } as React.CSSProperties,
-  transactionLeft: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-  } as React.CSSProperties,
-  transactionRight: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    gap: '4px',
-  } as React.CSSProperties,
-  categoryText: {
-    fontSize: '13px',
-    fontWeight: '600',
-    color: '#f1f5f9',
-  } as React.CSSProperties,
-  descriptionText: {
-    fontSize: '12px',
-    color: '#94a3b8',
-  } as React.CSSProperties,
-  amountText: {
-    fontSize: '13px',
-    fontWeight: '600',
-  } as React.CSSProperties,
-};
