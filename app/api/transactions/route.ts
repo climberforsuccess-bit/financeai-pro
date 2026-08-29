@@ -12,15 +12,22 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url)
-    const limit = searchParams.get('limit') || '50'
-    const offset = searchParams.get('offset') || '0'
+    const limit = parseInt(searchParams.get('limit') || '50')
+    const offset = parseInt(searchParams.get('offset') || '0')
+    const type = searchParams.get('type')
+    const category = searchParams.get('category')
 
-    const { data, error, count } = await supabase
+    let query = supabase
       .from('transactions')
-      .select('*', { count: 'exact' })
+      .select('*')
       .eq('user_id', user.id)
+
+    if (type) query = query.eq('type', type)
+    if (category) query = query.eq('category', category)
+
+    const { data, error, count } = await query
       .order('date', { ascending: false })
-      .range(parseInt(offset), parseInt(offset) + parseInt(limit) - 1)
+      .range(offset, offset + limit - 1)
 
     if (error) throw error
 
@@ -40,7 +47,14 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { amount, type, category, description, date } = body
+    const { amount, type, category, description, date, notes } = body
+
+    if (!amount || !type || !date) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      )
+    }
 
     const { data, error } = await supabase
       .from('transactions')
@@ -51,7 +65,8 @@ export async function POST(request: Request) {
           type,
           category,
           description,
-          date: date || new Date().toISOString(),
+          date,
+          notes,
         },
       ])
       .select()
@@ -59,6 +74,72 @@ export async function POST(request: Request) {
     if (error) throw error
 
     return NextResponse.json(data[0], { status: 201 })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies })
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 })
+    }
+
+    const body = await request.json()
+
+    const { data, error } = await supabase
+      .from('transactions')
+      .update(body)
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+
+    if (error) throw error
+    if (!data?.length) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+
+    return NextResponse.json(data[0], { status: 200 })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies })
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 })
+    }
+
+    const { error } = await supabase
+      .from('transactions')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) throw error
+
+    return NextResponse.json({ success: true }, { status: 200 })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
