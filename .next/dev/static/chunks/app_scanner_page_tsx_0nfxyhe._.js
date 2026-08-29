@@ -76,7 +76,7 @@ function ScannerPage() {
                             color: '#94a3b8',
                             fontSize: '14px'
                         },
-                        children: "Escanea recibos para agregar transacciones automáticamente"
+                        children: t('scanReceiptSubtitle')
                     }, void 0, false, {
                         fileName: "[project]/app/scanner/page.tsx",
                         lineNumber: 58,
@@ -142,7 +142,7 @@ function ScannerPage() {
                                     fontWeight: 'bold',
                                     marginBottom: '8px'
                                 },
-                                children: "Procesando recibo..."
+                                children: t('processing')
                             }, void 0, false, {
                                 fileName: "[project]/app/scanner/page.tsx",
                                 lineNumber: 96,
@@ -153,7 +153,7 @@ function ScannerPage() {
                                     color: '#94a3b8',
                                     fontSize: '14px'
                                 },
-                                children: "Analizando imagen con OCR"
+                                children: t('analyzingOCR')
                             }, void 0, false, {
                                 fileName: "[project]/app/scanner/page.tsx",
                                 lineNumber: 99,
@@ -184,7 +184,7 @@ function ScannerPage() {
                                     fontWeight: 'bold',
                                     marginBottom: '8px'
                                 },
-                                children: "Haz clic para cargar un recibo"
+                                children: t('clickToUpload')
                             }, void 0, false, {
                                 fileName: "[project]/app/scanner/page.tsx",
                                 lineNumber: 106,
@@ -195,7 +195,7 @@ function ScannerPage() {
                                     color: '#94a3b8',
                                     fontSize: '14px'
                                 },
-                                children: "O arrastra una imagen aquí (JPG, PNG, HEIC)"
+                                children: t('dragOrUpload')
                             }, void 0, false, {
                                 fileName: "[project]/app/scanner/page.tsx",
                                 lineNumber: 109,
@@ -223,7 +223,8 @@ function ScannerPage() {
                             marginBottom: '20px'
                         },
                         children: [
-                            "Recibos Escaneados (",
+                            t('scannedReceipts'),
+                            " (",
                             scannedReceipts.length,
                             ")"
                         ]
@@ -301,7 +302,9 @@ function ScannerPage() {
                                                         },
                                                         children: [
                                                             receipt.date,
-                                                            " a las ",
+                                                            " ",
+                                                            t('at'),
+                                                            " ",
                                                             receipt.time
                                                         ]
                                                     }, void 0, true, {
@@ -331,7 +334,7 @@ function ScannerPage() {
                                                                     fontSize: '11px',
                                                                     marginBottom: '4px'
                                                                 },
-                                                                children: "Monto"
+                                                                children: t('receiptAmount')
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/scanner/page.tsx",
                                                                 lineNumber: 171,
@@ -366,7 +369,7 @@ function ScannerPage() {
                                                                     fontSize: '11px',
                                                                     marginBottom: '4px'
                                                                 },
-                                                                children: "Tarjeta"
+                                                                children: t('receiptCard')
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/scanner/page.tsx",
                                                                 lineNumber: 179,
@@ -417,7 +420,7 @@ function ScannerPage() {
                                                             fontWeight: 'bold',
                                                             cursor: 'pointer'
                                                         },
-                                                        children: "Agregar"
+                                                        children: t('add')
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/scanner/page.tsx",
                                                         lineNumber: 189,
@@ -435,7 +438,7 @@ function ScannerPage() {
                                                             fontWeight: 'bold',
                                                             cursor: 'pointer'
                                                         },
-                                                        children: "Descartar"
+                                                        children: t('discard')
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/scanner/page.tsx",
                                                         lineNumber: 203,
@@ -485,8 +488,11 @@ function ScannerPage() {
                             fontWeight: 'bold',
                             marginBottom: '12px'
                         },
-                        children: "ℹ️ Información"
-                    }, void 0, false, {
+                        children: [
+                            "ℹ️ ",
+                            t('info')
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/app/scanner/page.tsx",
                         lineNumber: 234,
                         columnNumber: 11
@@ -501,36 +507,51 @@ function ScannerPage() {
                         },
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                children: "✅ Soportamos JPG, PNG, HEIC y otros formatos de imagen"
-                            }, void 0, false, {
+                                children: [
+                                    "✅ ",
+                                    t('supportsFormats')
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/app/scanner/page.tsx",
                                 lineNumber: 238,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                children: "✅ Extrae automáticamente: comercio, monto, fecha y hora"
-                            }, void 0, false, {
+                                children: [
+                                    "✅ ",
+                                    t('extractsAutomatically')
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/app/scanner/page.tsx",
                                 lineNumber: 239,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                children: "✅ Detecta el último dígito de tu tarjeta"
-                            }, void 0, false, {
+                                children: [
+                                    "✅ ",
+                                    t('detectsCardDigits')
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/app/scanner/page.tsx",
                                 lineNumber: 240,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                children: "✅ Asigna categoría automáticamente"
-                            }, void 0, false, {
+                                children: [
+                                    "✅ ",
+                                    t('assignsCategory')
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/app/scanner/page.tsx",
                                 lineNumber: 241,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                children: "✅ Agregará la transacción a tu historial"
-                            }, void 0, false, {
+                                children: [
+                                    "✅ ",
+                                    t('addsTransaction')
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/app/scanner/page.tsx",
                                 lineNumber: 242,
                                 columnNumber: 13

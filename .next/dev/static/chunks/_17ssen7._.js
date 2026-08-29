@@ -121,7 +121,7 @@ function SubscriptionsPage() {
                             children: [
                                 subscriptions.length,
                                 " ",
-                                subscriptions.length === 1 ? 'suscripción activa' : 'suscripciones activas'
+                                subscriptions.length === 1 ? t('subscription_singular') : t('subscription_plural')
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/subscriptions/page.tsx",
@@ -143,9 +143,9 @@ function SubscriptionsPage() {
                 style: styles.statsGrid,
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
-                        title: "Costo Mensual",
+                        title: t('monthlyCost'),
                         value: `$${totalMonthly.toFixed(2)}`,
-                        subtitle: `$${totalYearly.toFixed(2)}/año`,
+                        subtitle: `$${totalYearly.toFixed(2)}${t('yearlyTotal')}`,
                         icon: "📅",
                         textColor: "#0ea5e9",
                         bgColor: "rgba(14, 165, 233, 0.1)"
@@ -155,9 +155,9 @@ function SubscriptionsPage() {
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
-                        title: "Suscripciones Activas",
+                        title: t('activeSubscriptions'),
                         value: subscriptions.length.toString(),
-                        subtitle: `${filtered.length} en ${selectedCategory}`,
+                        subtitle: `${filtered.length} ${t('inCategory')} ${selectedCategory}`,
                         icon: "📊",
                         textColor: "#10b981",
                         bgColor: "rgba(16, 185, 129, 0.1)"
@@ -167,9 +167,9 @@ function SubscriptionsPage() {
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
-                        title: "Ahorro Potencial",
+                        title: t('potentialSavings'),
                         value: `$${potentialSavings.toFixed(2)}`,
-                        subtitle: "Si cancelas entretenimiento",
+                        subtitle: t('cancelEntertainment'),
                         icon: "💰",
                         textColor: "#f59e0b",
                         bgColor: "rgba(245, 158, 11, 0.1)"
@@ -189,7 +189,7 @@ function SubscriptionsPage() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                         style: styles.filterTitle,
-                        children: "Filtrar por categoría"
+                        children: t('filterByCategory')
                     }, void 0, false, {
                         fileName: "[project]/app/subscriptions/page.tsx",
                         lineNumber: 164,
@@ -203,7 +203,7 @@ function SubscriptionsPage() {
                                     ...styles.filterButton,
                                     ...selectedCategory === cat && styles.filterButtonActive
                                 },
-                                children: cat
+                                children: cat === 'All' ? t('all') : cat
                             }, cat, false, {
                                 fileName: "[project]/app/subscriptions/page.tsx",
                                 lineNumber: 167,
@@ -225,7 +225,7 @@ function SubscriptionsPage() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                         style: styles.sectionTitle,
-                        children: "Tus Suscripciones"
+                        children: t('yourSubscriptions')
                     }, void 0, false, {
                         fileName: "[project]/app/subscriptions/page.tsx",
                         lineNumber: 183,
@@ -270,7 +270,7 @@ function SubscriptionsPage() {
                                                             color: sub.billingCycle === 'monthly' ? '#0ea5e9' : '#8b5cf6',
                                                             background: sub.billingCycle === 'monthly' ? 'rgba(14, 165, 233, 0.2)' : 'rgba(139, 92, 246, 0.2)'
                                                         },
-                                                        children: sub.billingCycle === 'monthly' ? 'Mensual' : 'Anual'
+                                                        children: sub.billingCycle === 'monthly' ? t('monthly') : t('yearly')
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/subscriptions/page.tsx",
                                                         lineNumber: 194,
@@ -324,7 +324,7 @@ function SubscriptionsPage() {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         style: styles.nextBillingLabel,
-                                                        children: "Próximo pago"
+                                                        children: t('nextPayment')
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/subscriptions/page.tsx",
                                                         lineNumber: 219,
@@ -350,7 +350,7 @@ function SubscriptionsPage() {
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                 onClick: ()=>handleCancel(sub.id),
                                                 style: styles.cancelButton,
-                                                children: "Cancelar"
+                                                children: t('cancel')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/subscriptions/page.tsx",
                                                 lineNumber: 227,
@@ -369,7 +369,7 @@ function SubscriptionsPage() {
                                 columnNumber: 15
                             }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             style: styles.emptyState,
-                            children: "No hay suscripciones en esta categoría"
+                            children: t('noSubscriptionsCategory')
                         }, void 0, false, {
                             fileName: "[project]/app/subscriptions/page.tsx",
                             lineNumber: 237,
@@ -391,7 +391,7 @@ function SubscriptionsPage() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                         style: styles.sectionTitle,
-                        children: "Próximos Pagos"
+                        children: t('upcomingPayments')
                     }, void 0, false, {
                         fileName: "[project]/app/subscriptions/page.tsx",
                         lineNumber: 246,
@@ -411,7 +411,7 @@ function SubscriptionsPage() {
                                                     ...styles.headerCell,
                                                     textAlign: 'left'
                                                 },
-                                                children: "Suscripción"
+                                                children: t('subscription')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/subscriptions/page.tsx",
                                                 lineNumber: 251,
@@ -422,7 +422,7 @@ function SubscriptionsPage() {
                                                     ...styles.headerCell,
                                                     textAlign: 'left'
                                                 },
-                                                children: "Categoría"
+                                                children: t('category')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/subscriptions/page.tsx",
                                                 lineNumber: 254,
@@ -433,7 +433,7 @@ function SubscriptionsPage() {
                                                     ...styles.headerCell,
                                                     textAlign: 'right'
                                                 },
-                                                children: "Monto"
+                                                children: t('amount')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/subscriptions/page.tsx",
                                                 lineNumber: 257,
@@ -444,7 +444,7 @@ function SubscriptionsPage() {
                                                     ...styles.headerCell,
                                                     textAlign: 'right'
                                                 },
-                                                children: "Próximo Pago"
+                                                children: t('nextBillingDate')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/subscriptions/page.tsx",
                                                 lineNumber: 260,
@@ -455,7 +455,7 @@ function SubscriptionsPage() {
                                                     ...styles.headerCell,
                                                     textAlign: 'center'
                                                 },
-                                                children: "Acción"
+                                                children: t('action')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/subscriptions/page.tsx",
                                                 lineNumber: 263,
@@ -549,9 +549,11 @@ function SubscriptionsPage() {
                                                         color: daysUntilBilling <= 5 ? '#ef4444' : daysUntilBilling <= 15 ? '#f59e0b' : '#94a3b8'
                                                     },
                                                     children: [
-                                                        "En ",
+                                                        t('in'),
+                                                        " ",
                                                         daysUntilBilling,
-                                                        " días"
+                                                        " ",
+                                                        t('days')
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/subscriptions/page.tsx",
@@ -611,8 +613,11 @@ function SubscriptionsPage() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                         style: styles.sectionTitle,
-                        children: "💡 Recomendaciones de IA"
-                    }, void 0, false, {
+                        children: [
+                            "💡 ",
+                            t('aiRecommendations')
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/app/subscriptions/page.tsx",
                         lineNumber: 327,
                         columnNumber: 9
@@ -622,8 +627,8 @@ function SubscriptionsPage() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(RecommendationCard, {
                                 icon: "🎬",
-                                title: "Consolidar Streaming",
-                                description: "Detectamos que tienes 2 servicios de streaming. Considera usar solo uno para ahorrar $20/mes.",
+                                title: t('consolidateStreaming'),
+                                description: t('consolidateStreamingDesc'),
                                 savings: "$240/año",
                                 color: "#ef4444"
                             }, void 0, false, {
@@ -633,8 +638,8 @@ function SubscriptionsPage() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(RecommendationCard, {
                                 icon: "🎨",
-                                title: "Adobe Creative Cloud",
-                                description: "Es tu suscripción más cara. Considera alternativas como Figma o Canva.",
+                                title: t('adobeAlternative'),
+                                description: t('adobeAlternativeDesc'),
                                 savings: "$660/año",
                                 color: "#f59e0b"
                             }, void 0, false, {
@@ -644,9 +649,9 @@ function SubscriptionsPage() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(RecommendationCard, {
                                 icon: "📊",
-                                title: "Gasto Óptimo",
-                                description: `Tu gasto total es $${totalMonthly.toFixed(2)}/mes (${(totalMonthly / 4200 * 100).toFixed(1)}% de ingresos)`,
-                                savings: "Está bajo control",
+                                title: t('optimalSpending'),
+                                description: t('optimalSpendingDesc').replace('{monthly}', `$${totalMonthly.toFixed(2)}`).replace('{percentage}', (totalMonthly / 4200 * 100).toFixed(1)),
+                                savings: t('underControl'),
                                 color: "#10b981"
                             }, void 0, false, {
                                 fileName: "[project]/app/subscriptions/page.tsx",

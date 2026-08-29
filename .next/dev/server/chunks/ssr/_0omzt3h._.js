@@ -78,7 +78,7 @@ function MyCardsPage() {
                                     children: [
                                         mockCards.length,
                                         " ",
-                                        mockCards.length === 1 ? 'tarjeta' : 'tarjetas'
+                                        mockCards.length === 1 ? t('cards_singular') : t('cards_plural')
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/cards/page.tsx",
@@ -118,7 +118,7 @@ function MyCardsPage() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StatCard, {
                         icon: "💳",
-                        label: "Deuda Total (Crédito)",
+                        label: t('totalCreditDebt'),
                         value: `$${totalCreditDebt.toFixed(2)}`,
                         color: "#ef4444"
                     }, void 0, false, {
@@ -128,7 +128,7 @@ function MyCardsPage() {
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StatCard, {
                         icon: "📊",
-                        label: "Límite Total",
+                        label: t('totalLimit'),
                         value: `$${totalCreditLimit.toFixed(2)}`,
                         color: "#94a3b8"
                     }, void 0, false, {
@@ -138,7 +138,7 @@ function MyCardsPage() {
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StatCard, {
                         icon: "⚠️",
-                        label: "Utilización",
+                        label: t('utilization'),
                         value: `${utilizationRate.toFixed(1)}%`,
                         color: utilizationRate > 70 ? '#ef4444' : utilizationRate > 50 ? '#f59e0b' : '#10b981'
                     }, void 0, false, {
@@ -157,7 +157,7 @@ function MyCardsPage() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                         style: styles.sectionTitle,
-                        children: "Tus Tarjetas"
+                        children: t('yourCards')
                     }, void 0, false, {
                         fileName: "[project]/app/cards/page.tsx",
                         lineNumber: 105,
@@ -186,7 +186,7 @@ function MyCardsPage() {
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                 style: styles.actionButton,
-                                                children: "Editar"
+                                                children: t('edit')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/cards/page.tsx",
                                                 lineNumber: 119,
@@ -197,7 +197,7 @@ function MyCardsPage() {
                                                     ...styles.actionButton,
                                                     ...styles.actionButtonDanger
                                                 },
-                                                children: "Eliminar"
+                                                children: t('delete')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/cards/page.tsx",
                                                 lineNumber: 120,
@@ -231,7 +231,7 @@ function MyCardsPage() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                         style: styles.sectionTitle,
-                        children: "Detalles de Tarjetas"
+                        children: t('cardDetails')
                     }, void 0, false, {
                         fileName: "[project]/app/cards/page.tsx",
                         lineNumber: 131,
@@ -306,7 +306,7 @@ function MyCardsPage() {
                                                     ...styles.headerCell,
                                                     textAlign: 'right'
                                                 },
-                                                children: "Utilización"
+                                                children: t('utilizationHeader')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/cards/page.tsx",
                                                 lineNumber: 151,

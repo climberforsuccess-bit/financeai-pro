@@ -1,482 +1,157 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { useLanguage } from '@/context/LanguageContext';
-
-interface Transaction {
-  id: string;
-  date: string;
-  merchant: string;
-  category: string;
-  amount: number;
-  card: string;
-  icon: string;
-}
-
-const mockTransactions: Transaction[] = [
-  {
-    id: '1',
-    date: '2026-08-28',
-    merchant: 'amazon',
-    category: 'shopping',
-    amount: -45.99,
-    card: '•••• 4242',
-    icon: '🛍️',
-  },
-  {
-    id: '2',
-    date: '2026-08-27',
-    merchant: 'starbucks',
-    category: 'foodDrink',
-    amount: -5.50,
-    card: '•••• 1234',
-    icon: '☕',
-  },
-  {
-    id: '3',
-    date: '2026-08-26',
-    merchant: 'salaryDeposit',
-    category: 'income',
-    amount: 4200.00,
-    card: '•••• 5678',
-    icon: '💰',
-  },
-  {
-    id: '4',
-    date: '2026-08-25',
-    merchant: 'netflix',
-    category: 'subscriptions',
-    amount: -14.99,
-    card: '•••• 4242',
-    icon: '📺',
-  },
-  {
-    id: '5',
-    date: '2026-08-24',
-    merchant: 'wholefiles',
-    category: 'groceries',
-    amount: -87.32,
-    card: '•••• 1234',
-    icon: '🛒',
-  },
-  {
-    id: '6',
-    date: '2026-08-23',
-    merchant: 'uber',
-    category: 'transportation',
-    amount: -18.50,
-    card: '•••• 4242',
-    icon: '🚗',
-  },
-  {
-    id: '7',
-    date: '2026-08-22',
-    merchant: 'gymMembership',
-    category: 'health',
-    amount: -49.99,
-    card: '•••• 1234',
-    icon: '💪',
-  },
-  {
-    id: '8',
-    date: '2026-08-21',
-    merchant: 'restaurant',
-    category: 'dining',
-    amount: -65.80,
-    card: '•••• 5678',
-    icon: '🍽️',
-  },
-];
+import { useTransactions } from '@/hooks/useTransactions'
+import { useState } from 'react'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function TransactionsPage() {
-  const { t, language } = useLanguage();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedMonth, setSelectedMonth] = useState('08');
-  const [selectedYear, setSelectedYear] = useState('2026');
-  const [mounted, setMounted] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const { transactions, loading, error, addTransaction } = useTransactions()
+  const { t, language } = useLanguage()
+  const [formData, setFormData] = useState({
+    amount: '',
+    type: 'expense',
+    category: 'food',
+    description: '',
+  })
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Función para formatear fecha según idioma
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString + 'T00:00:00');
-    return date.toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-  };
-
-  // Meses traducidos
-  const monthNames = {
-    es: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  };
-
-  const filteredTransactions = mockTransactions.filter((tx) => {
-    const merchantName = t(tx.merchant);
-    const categoryName = t(tx.category);
-    return (
-      (merchantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        categoryName.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      tx.date.includes(`${selectedYear}-${selectedMonth}`)
-    );
-  });
-
-  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
-  const paginatedTransactions = filteredTransactions.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const monthlyIncome = filteredTransactions
-    .filter((tx) => tx.amount > 0)
-    .reduce((sum, tx) => sum + tx.amount, 0);
-
-  const monthlyExpenses = filteredTransactions
-    .filter((tx) => tx.amount < 0)
-    .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
-
-  if (!mounted) {
-    return <div style={styles.loadingContainer}>Loading...</div>;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      await addTransaction({
+        amount: parseFloat(formData.amount),
+        type: formData.type as 'income' | 'expense' | 'transfer',
+        category: formData.category,
+        description: formData.description,
+        date: new Date().toISOString(),
+      })
+      setFormData({ amount: '', type: 'expense', category: 'food', description: '' })
+    } catch (err) {
+      console.error(err)
+    }
   }
 
-  const selectedMonthName = monthNames[language][parseInt(selectedMonth) - 1];
+  if (loading) return <div className="p-6 text-center">{t('loading')}</div>
+  if (error) return <div className="p-6 text-center text-red-500">{error}</div>
+
+  const totalIncome = transactions
+    .filter(t => t.type === 'income')
+    .reduce((sum, t) => sum + t.amount, 0)
+
+  const totalExpense = transactions
+    .filter(t => t.type === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0)
 
   return (
-    <div style={styles.container}>
-      {/* Header */}
-      <div style={styles.headerSection}>
-        <div>
-          <h1 style={styles.title}>{t('transactions')}</h1>
-          <p style={styles.subtitle}>
-            {t('month')}: {selectedMonthName} {selectedYear}
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">{t('transactions')}</h1>
+          <p className="text-slate-400">{t('manage_your_finances')}</p>
         </div>
-      </div>
 
-      {/* Summary Cards */}
-      <div style={styles.summaryGrid}>
-        <SummaryCard
-          icon="📈"
-          label={t('incomeLabel')}
-          value={`$${monthlyIncome.toFixed(2)}`}
-          color="#10b981"
-        />
-        <SummaryCard
-          icon="📉"
-          label={t('expensesLabel')}
-          value={`$${monthlyExpenses.toFixed(2)}`}
-          color="#ef4444"
-        />
-        <SummaryCard
-          icon="💰"
-          label={t('balanceLabel')}
-          value={`$${(monthlyIncome - monthlyExpenses).toFixed(2)}`}
-          color="#06b6d4"
-        />
-      </div>
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 border border-emerald-500/20 rounded-lg p-6">
+            <p className="text-emerald-400 text-sm font-medium mb-2">{t('income')}</p>
+            <p className="text-3xl font-bold text-white">${totalIncome.toFixed(2)}</p>
+          </div>
+          <div className="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/20 rounded-lg p-6">
+            <p className="text-red-400 text-sm font-medium mb-2">{t('expenses')}</p>
+            <p className="text-3xl font-bold text-white">${totalExpense.toFixed(2)}</p>
+          </div>
+          <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 rounded-lg p-6">
+            <p className="text-blue-400 text-sm font-medium mb-2">{t('balance')}</p>
+            <p className="text-3xl font-bold text-white">${(totalIncome - totalExpense).toFixed(2)}</p>
+          </div>
+        </div>
 
-      {/* Filters */}
-      <div style={styles.filtersSection}>
-        <input
-          type="text"
-          placeholder={t('search')}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={styles.searchInput}
-        />
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          style={styles.selectInput}
-        >
-          {['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].map((m) => (
-            <option key={m} value={m}>
-              {monthNames[language][parseInt(m) - 1]}
-            </option>
-          ))}
-        </select>
-        <select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(e.target.value)}
-          style={styles.selectInput}
-        >
-          {['2024', '2025', '2026'].map((y) => (
-            <option key={y} value={y}>
-              {y}
-            </option>
-          ))}
-        </select>
-        <button style={{ ...styles.button, background: 'linear-gradient(135deg, #06b6d4, #0891b2)', color: '#fff' }}>
-          📥 {t('exportPDF')}
-        </button>
-        <button style={{ ...styles.button, background: '#10b981', color: '#fff' }}>
-          📊 {t('exportCSV')}
-        </button>
-      </div>
+        {/* Add Transaction Form */}
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 mb-8 backdrop-blur-sm">
+          <h2 className="text-xl font-semibold text-white mb-4">{t('add_transaction')}</h2>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <input
+              type="number"
+              step="0.01"
+              placeholder={t('amount')}
+              value={formData.amount}
+              onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+              className="bg-slate-700/50 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400"
+              required
+            />
+            <select
+              value={formData.type}
+              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+              className="bg-slate-700/50 border border-slate-600 rounded px-4 py-2 text-white"
+            >
+              <option value="expense">{t('expense')}</option>
+              <option value="income">{t('income')}</option>
+              <option value="transfer">{t('transfer')}</option>
+            </select>
+            <input
+              type="text"
+              placeholder={t('category')}
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="bg-slate-700/50 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400"
+            />
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded px-6 py-2 transition-all"
+            >
+              {t('add')}
+            </button>
+          </form>
+        </div>
 
-      {/* Table */}
-      <div style={styles.tableWrapper}>
-        <table style={styles.table}>
-          <thead>
-            <tr style={styles.tableHeader}>
-              <th style={{ ...styles.headerCell, textAlign: 'left' }}>{t('date')}</th>
-              <th style={{ ...styles.headerCell, textAlign: 'left' }}>{t('merchant')}</th>
-              <th style={{ ...styles.headerCell, textAlign: 'left' }}>{t('category')}</th>
-              <th style={{ ...styles.headerCell, textAlign: 'left' }}>{t('card')}</th>
-              <th style={{ ...styles.headerCell, textAlign: 'right' }}>{t('amount')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedTransactions.length > 0 ? (
-              paginatedTransactions.map((tx) => (
-                <tr key={tx.id} style={styles.tableRow}>
-                  <td style={styles.cell}>{formatDate(tx.date)}</td>
-                  <td style={{ ...styles.cell, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span>{tx.icon}</span> {t(tx.merchant)}
-                  </td>
-                  <td style={{ ...styles.cell, color: '#94a3b8' }}>{t(tx.category)}</td>
-                  <td style={{ ...styles.cell, color: '#94a3b8', fontSize: '13px' }}>{tx.card}</td>
-                  <td
-                    style={{
-                      ...styles.cell,
-                      textAlign: 'right',
-                      color: tx.amount > 0 ? '#10b981' : '#ef4444',
-                      fontWeight: '700',
-                    }}
-                  >
-                    {tx.amount > 0 ? '+' : ''}{tx.amount.toFixed(2)}
-                  </td>
+        {/* Transactions List */}
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg overflow-hidden backdrop-blur-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-700/50 border-b border-slate-600">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-200">{t('date')}</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-200">{t('description')}</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-200">{t('category')}</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-200">{t('type')}</th>
+                  <th className="px-6 py-3 text-right text-sm font-semibold text-slate-200">{t('amount')}</th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={5} style={{ ...styles.cell, textAlign: 'center', color: '#94a3b8' }}>
-                  {t('noTransactions')}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div style={styles.paginationContainer}>
-          <button
-            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-            style={{ ...styles.paginationButton, opacity: currentPage === 1 ? 0.5 : 1 }}
-          >
-            ← {t('previous')}
-          </button>
-          <span style={styles.pageInfo}>
-            {t('page')} {currentPage} {t('of')} {totalPages}
-          </span>
-          <button
-            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-            disabled={currentPage === totalPages}
-            style={{ ...styles.paginationButton, opacity: currentPage === totalPages ? 0.5 : 1 }}
-          >
-            {t('next')} →
-          </button>
+              </thead>
+              <tbody className="divide-y divide-slate-700">
+                {transactions.map((tx) => (
+                  <tr key={tx.id} className="hover:bg-slate-700/30 transition-colors">
+                    <td className="px-6 py-3 text-sm text-slate-300">
+                      {new Date(tx.date).toLocaleDateString(language)}
+                    </td>
+                    <td className="px-6 py-3 text-sm text-slate-300">{tx.description || '-'}</td>
+                    <td className="px-6 py-3 text-sm">
+                      <span className="px-3 py-1 rounded-full bg-slate-700/50 text-slate-200 text-xs">
+                        {tx.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-3 text-sm">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        tx.type === 'income' ? 'bg-emerald-500/20 text-emerald-400' :
+                        tx.type === 'expense' ? 'bg-red-500/20 text-red-400' :
+                        'bg-blue-500/20 text-blue-400'
+                      }`}>
+                        {t(tx.type)}
+                      </span>
+                    </td>
+                    <td className={`px-6 py-3 text-sm font-semibold text-right ${
+                      tx.type === 'income' ? 'text-emerald-400' :
+                      tx.type === 'expense' ? 'text-red-400' :
+                      'text-blue-400'
+                    }`}>
+                      {tx.type === 'income' ? '+' : '-'}${Math.abs(tx.amount).toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      )}
+      </div>
     </div>
-  );
+  )
 }
-
-function SummaryCard({
-  icon,
-  label,
-  value,
-  color,
-}: {
-  icon: string;
-  label: string;
-  value: string;
-  color: string;
-}) {
-  return (
-    <div style={{ ...styles.summaryCard, borderTopColor: color }}>
-      <div style={styles.summaryIcon}>{icon}</div>
-      <div style={styles.summaryLabel}>{label}</div>
-      <div style={{ ...styles.summaryValue, color }}>{value}</div>
-    </div>
-  );
-}
-
-const styles = {
-  loadingContainer: {
-    padding: '40px',
-    textAlign: 'center' as const,
-    color: '#94a3b8',
-  },
-
-  container: {
-    padding: '32px',
-    maxWidth: '1400px',
-    margin: '0 auto',
-  } as React.CSSProperties,
-
-  headerSection: {
-    marginBottom: '32px',
-  } as React.CSSProperties,
-
-  title: {
-    fontSize: '28px',
-    fontWeight: '700',
-    color: '#f1f5f9',
-    marginBottom: '4px',
-    letterSpacing: '-0.5px',
-  } as React.CSSProperties,
-
-  subtitle: {
-    fontSize: '13px',
-    color: '#94a3b8',
-    fontWeight: '500',
-  } as React.CSSProperties,
-
-  summaryGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '16px',
-    marginBottom: '32px',
-  } as React.CSSProperties,
-
-  summaryCard: {
-    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-    border: '1px solid #334155',
-    borderTop: '3px solid',
-    borderRadius: '12px',
-    padding: '20px',
-  } as React.CSSProperties,
-
-  summaryIcon: {
-    fontSize: '24px',
-    marginBottom: '8px',
-  } as React.CSSProperties,
-
-  summaryLabel: {
-    fontSize: '12px',
-    color: '#94a3b8',
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    marginBottom: '8px',
-  } as React.CSSProperties,
-
-  summaryValue: {
-    fontSize: '24px',
-    fontWeight: '700',
-    letterSpacing: '-0.5px',
-  } as React.CSSProperties,
-
-  filtersSection: {
-    display: 'flex',
-    gap: '12px',
-    marginBottom: '24px',
-    flexWrap: 'wrap',
-  } as React.CSSProperties,
-
-  searchInput: {
-    flex: 1,
-    minWidth: '250px',
-    padding: '10px 14px',
-    background: '#1e293b',
-    border: '1px solid #334155',
-    borderRadius: '8px',
-    color: '#e2e8f0',
-    fontSize: '14px',
-  } as React.CSSProperties,
-
-  selectInput: {
-    padding: '10px 14px',
-    background: '#1e293b',
-    border: '1px solid #334155',
-    borderRadius: '8px',
-    color: '#e2e8f0',
-    fontSize: '14px',
-    cursor: 'pointer',
-  } as React.CSSProperties,
-
-  button: {
-    padding: '10px 16px',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '14px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-  } as React.CSSProperties,
-
-  tableWrapper: {
-    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-    border: '1px solid #334155',
-    borderRadius: '12px',
-    overflow: 'hidden',
-    marginBottom: '24px',
-  } as React.CSSProperties,
-
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    fontSize: '14px',
-  } as React.CSSProperties,
-
-  tableHeader: {
-    background: '#0f172a',
-    borderBottom: '1px solid #334155',
-  } as React.CSSProperties,
-
-  headerCell: {
-    padding: '16px',
-    color: '#94a3b8',
-    fontWeight: '600',
-    textAlign: 'left',
-    textTransform: 'uppercase',
-    fontSize: '12px',
-    letterSpacing: '0.5px',
-  } as React.CSSProperties,
-
-  tableRow: {
-    borderBottom: '1px solid #334155',
-    transition: 'background 0.2s ease',
-  } as React.CSSProperties,
-
-  cell: {
-    padding: '14px 16px',
-    color: '#e2e8f0',
-  } as React.CSSProperties,
-
-  paginationContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '16px',
-    marginTop: '24px',
-  } as React.CSSProperties,
-
-  paginationButton: {
-    padding: '8px 16px',
-    background: '#1e293b',
-    border: '1px solid #334155',
-    borderRadius: '6px',
-    color: '#e2e8f0',
-    fontSize: '14px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-  } as React.CSSProperties,
-
-  pageInfo: {
-    color: '#94a3b8',
-    fontSize: '14px',
-    fontWeight: '600',
-  } as React.CSSProperties,
-};

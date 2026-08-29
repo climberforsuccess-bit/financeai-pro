@@ -18,8 +18,8 @@ const mockTransactions = [
     {
         id: '1',
         date: '2026-08-28',
-        merchant: 'Amazon',
-        category: 'Shopping',
+        merchant: 'amazon',
+        category: 'shopping',
         amount: -45.99,
         card: '•••• 4242',
         icon: '🛍️'
@@ -27,8 +27,8 @@ const mockTransactions = [
     {
         id: '2',
         date: '2026-08-27',
-        merchant: 'Starbucks',
-        category: 'Food & Drink',
+        merchant: 'starbucks',
+        category: 'foodDrink',
         amount: -5.50,
         card: '•••• 1234',
         icon: '☕'
@@ -36,8 +36,8 @@ const mockTransactions = [
     {
         id: '3',
         date: '2026-08-26',
-        merchant: 'Salary Deposit',
-        category: 'Income',
+        merchant: 'salaryDeposit',
+        category: 'income',
         amount: 4200.00,
         card: '•••• 5678',
         icon: '💰'
@@ -45,8 +45,8 @@ const mockTransactions = [
     {
         id: '4',
         date: '2026-08-25',
-        merchant: 'Netflix',
-        category: 'Subscriptions',
+        merchant: 'netflix',
+        category: 'subscriptions',
         amount: -14.99,
         card: '•••• 4242',
         icon: '📺'
@@ -54,8 +54,8 @@ const mockTransactions = [
     {
         id: '5',
         date: '2026-08-24',
-        merchant: 'Whole Foods',
-        category: 'Groceries',
+        merchant: 'wholefiles',
+        category: 'groceries',
         amount: -87.32,
         card: '•••• 1234',
         icon: '🛒'
@@ -63,8 +63,8 @@ const mockTransactions = [
     {
         id: '6',
         date: '2026-08-23',
-        merchant: 'Uber',
-        category: 'Transportation',
+        merchant: 'uber',
+        category: 'transportation',
         amount: -18.50,
         card: '•••• 4242',
         icon: '🚗'
@@ -72,8 +72,8 @@ const mockTransactions = [
     {
         id: '7',
         date: '2026-08-22',
-        merchant: 'Gym Membership',
-        category: 'Health',
+        merchant: 'gymMembership',
+        category: 'health',
         amount: -49.99,
         card: '•••• 1234',
         icon: '💪'
@@ -81,24 +81,16 @@ const mockTransactions = [
     {
         id: '8',
         date: '2026-08-21',
-        merchant: 'Restaurant',
-        category: 'Dining',
+        merchant: 'restaurant',
+        category: 'dining',
         amount: -65.80,
         card: '•••• 5678',
         icon: '🍽️'
     }
 ];
-function formatDate(dateString) {
-    const date = new Date(dateString + 'T00:00:00');
-    return date.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    });
-}
 function TransactionsPage() {
     _s();
-    const { t } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$context$2f$LanguageContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLanguage"])();
+    const { t, language } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$context$2f$LanguageContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLanguage"])();
     const [searchTerm, setSearchTerm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [selectedMonth, setSelectedMonth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('08');
     const [selectedYear, setSelectedYear] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('2026');
@@ -110,7 +102,51 @@ function TransactionsPage() {
             setMounted(true);
         }
     }["TransactionsPage.useEffect"], []);
-    const filteredTransactions = mockTransactions.filter((tx)=>(tx.merchant.toLowerCase().includes(searchTerm.toLowerCase()) || tx.category.toLowerCase().includes(searchTerm.toLowerCase())) && tx.date.includes(`${selectedYear}-${selectedMonth}`));
+    // Función para formatear fecha según idioma
+    const formatDate = (dateString)=>{
+        const date = new Date(dateString + 'T00:00:00');
+        return date.toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+    };
+    // Meses traducidos
+    const monthNames = {
+        es: [
+            'Enero',
+            'Febrero',
+            'Marzo',
+            'Abril',
+            'Mayo',
+            'Junio',
+            'Julio',
+            'Agosto',
+            'Septiembre',
+            'Octubre',
+            'Noviembre',
+            'Diciembre'
+        ],
+        en: [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
+        ]
+    };
+    const filteredTransactions = mockTransactions.filter((tx)=>{
+        const merchantName = t(tx.merchant);
+        const categoryName = t(tx.category);
+        return (merchantName.toLowerCase().includes(searchTerm.toLowerCase()) || categoryName.toLowerCase().includes(searchTerm.toLowerCase())) && tx.date.includes(`${selectedYear}-${selectedMonth}`);
+    });
     const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
     const paginatedTransactions = filteredTransactions.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const monthlyIncome = filteredTransactions.filter((tx)=>tx.amount > 0).reduce((sum, tx)=>sum + tx.amount, 0);
@@ -121,10 +157,11 @@ function TransactionsPage() {
             children: "Loading..."
         }, void 0, false, {
             fileName: "[project]/app/transactions/page.tsx",
-            lineNumber: 134,
+            lineNumber: 145,
             columnNumber: 12
         }, this);
     }
+    const selectedMonthName = monthNames[language][parseInt(selectedMonth) - 1];
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         style: styles.container,
         children: [
@@ -137,30 +174,32 @@ function TransactionsPage() {
                             children: t('transactions')
                         }, void 0, false, {
                             fileName: "[project]/app/transactions/page.tsx",
-                            lineNumber: 142,
+                            lineNumber: 155,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                             style: styles.subtitle,
                             children: [
                                 t('month'),
-                                ": August ",
+                                ": ",
+                                selectedMonthName,
+                                " ",
                                 selectedYear
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/transactions/page.tsx",
-                            lineNumber: 143,
+                            lineNumber: 156,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/transactions/page.tsx",
-                    lineNumber: 141,
+                    lineNumber: 154,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/transactions/page.tsx",
-                lineNumber: 140,
+                lineNumber: 153,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -168,38 +207,38 @@ function TransactionsPage() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SummaryCard, {
                         icon: "📈",
-                        label: "Ingresos",
+                        label: t('incomeLabel'),
                         value: `$${monthlyIncome.toFixed(2)}`,
                         color: "#10b981"
                     }, void 0, false, {
                         fileName: "[project]/app/transactions/page.tsx",
-                        lineNumber: 151,
+                        lineNumber: 164,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SummaryCard, {
                         icon: "📉",
-                        label: "Gastos",
+                        label: t('expensesLabel'),
                         value: `$${monthlyExpenses.toFixed(2)}`,
                         color: "#ef4444"
                     }, void 0, false, {
                         fileName: "[project]/app/transactions/page.tsx",
-                        lineNumber: 157,
+                        lineNumber: 170,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SummaryCard, {
                         icon: "💰",
-                        label: "Balance",
+                        label: t('balanceLabel'),
                         value: `$${(monthlyIncome - monthlyExpenses).toFixed(2)}`,
                         color: "#06b6d4"
                     }, void 0, false, {
                         fileName: "[project]/app/transactions/page.tsx",
-                        lineNumber: 163,
+                        lineNumber: 176,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/transactions/page.tsx",
-                lineNumber: 150,
+                lineNumber: 163,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -213,7 +252,7 @@ function TransactionsPage() {
                         style: styles.searchInput
                     }, void 0, false, {
                         fileName: "[project]/app/transactions/page.tsx",
-                        lineNumber: 173,
+                        lineNumber: 186,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -235,17 +274,15 @@ function TransactionsPage() {
                             '12'
                         ].map((m)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                 value: m,
-                                children: new Date(`2026-${m}-01`).toLocaleDateString('es-ES', {
-                                    month: 'long'
-                                })
+                                children: monthNames[language][parseInt(m) - 1]
                             }, m, false, {
                                 fileName: "[project]/app/transactions/page.tsx",
-                                lineNumber: 186,
+                                lineNumber: 199,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/transactions/page.tsx",
-                        lineNumber: 180,
+                        lineNumber: 193,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -261,12 +298,12 @@ function TransactionsPage() {
                                 children: y
                             }, y, false, {
                                 fileName: "[project]/app/transactions/page.tsx",
-                                lineNumber: 197,
+                                lineNumber: 210,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/transactions/page.tsx",
-                        lineNumber: 191,
+                        lineNumber: 204,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -281,7 +318,7 @@ function TransactionsPage() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/transactions/page.tsx",
-                        lineNumber: 202,
+                        lineNumber: 215,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -296,13 +333,13 @@ function TransactionsPage() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/transactions/page.tsx",
-                        lineNumber: 205,
+                        lineNumber: 218,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/transactions/page.tsx",
-                lineNumber: 172,
+                lineNumber: 185,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -322,7 +359,7 @@ function TransactionsPage() {
                                         children: t('date')
                                     }, void 0, false, {
                                         fileName: "[project]/app/transactions/page.tsx",
-                                        lineNumber: 215,
+                                        lineNumber: 228,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -333,7 +370,7 @@ function TransactionsPage() {
                                         children: t('merchant')
                                     }, void 0, false, {
                                         fileName: "[project]/app/transactions/page.tsx",
-                                        lineNumber: 216,
+                                        lineNumber: 229,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -344,7 +381,7 @@ function TransactionsPage() {
                                         children: t('category')
                                     }, void 0, false, {
                                         fileName: "[project]/app/transactions/page.tsx",
-                                        lineNumber: 217,
+                                        lineNumber: 230,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -355,7 +392,7 @@ function TransactionsPage() {
                                         children: t('card')
                                     }, void 0, false, {
                                         fileName: "[project]/app/transactions/page.tsx",
-                                        lineNumber: 218,
+                                        lineNumber: 231,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -366,18 +403,18 @@ function TransactionsPage() {
                                         children: t('amount')
                                     }, void 0, false, {
                                         fileName: "[project]/app/transactions/page.tsx",
-                                        lineNumber: 219,
+                                        lineNumber: 232,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/transactions/page.tsx",
-                                lineNumber: 214,
+                                lineNumber: 227,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/transactions/page.tsx",
-                            lineNumber: 213,
+                            lineNumber: 226,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -389,7 +426,7 @@ function TransactionsPage() {
                                             children: formatDate(tx.date)
                                         }, void 0, false, {
                                             fileName: "[project]/app/transactions/page.tsx",
-                                            lineNumber: 226,
+                                            lineNumber: 239,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -404,15 +441,15 @@ function TransactionsPage() {
                                                     children: tx.icon
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/transactions/page.tsx",
-                                                    lineNumber: 228,
+                                                    lineNumber: 241,
                                                     columnNumber: 21
                                                 }, this),
                                                 " ",
-                                                tx.merchant
+                                                t(tx.merchant)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/transactions/page.tsx",
-                                            lineNumber: 227,
+                                            lineNumber: 240,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -420,10 +457,10 @@ function TransactionsPage() {
                                                 ...styles.cell,
                                                 color: '#94a3b8'
                                             },
-                                            children: tx.category
+                                            children: t(tx.category)
                                         }, void 0, false, {
                                             fileName: "[project]/app/transactions/page.tsx",
-                                            lineNumber: 230,
+                                            lineNumber: 243,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -435,7 +472,7 @@ function TransactionsPage() {
                                             children: tx.card
                                         }, void 0, false, {
                                             fileName: "[project]/app/transactions/page.tsx",
-                                            lineNumber: 231,
+                                            lineNumber: 244,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -451,13 +488,13 @@ function TransactionsPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/transactions/page.tsx",
-                                            lineNumber: 232,
+                                            lineNumber: 245,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, tx.id, true, {
                                     fileName: "[project]/app/transactions/page.tsx",
-                                    lineNumber: 225,
+                                    lineNumber: 238,
                                     columnNumber: 17
                                 }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -470,28 +507,28 @@ function TransactionsPage() {
                                     children: t('noTransactions')
                                 }, void 0, false, {
                                     fileName: "[project]/app/transactions/page.tsx",
-                                    lineNumber: 246,
+                                    lineNumber: 259,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/transactions/page.tsx",
-                                lineNumber: 245,
+                                lineNumber: 258,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/transactions/page.tsx",
-                            lineNumber: 222,
+                            lineNumber: 235,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/transactions/page.tsx",
-                    lineNumber: 212,
+                    lineNumber: 225,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/transactions/page.tsx",
-                lineNumber: 211,
+                lineNumber: 224,
                 columnNumber: 7
             }, this),
             totalPages > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -504,23 +541,29 @@ function TransactionsPage() {
                             ...styles.paginationButton,
                             opacity: currentPage === 1 ? 0.5 : 1
                         },
-                        children: "← Anterior"
-                    }, void 0, false, {
+                        children: [
+                            "← ",
+                            t('previous')
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/app/transactions/page.tsx",
-                        lineNumber: 258,
+                        lineNumber: 271,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                         style: styles.pageInfo,
                         children: [
-                            "Página ",
+                            t('page'),
+                            " ",
                             currentPage,
-                            " de ",
+                            " ",
+                            t('of'),
+                            " ",
                             totalPages
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/transactions/page.tsx",
-                        lineNumber: 265,
+                        lineNumber: 278,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -530,26 +573,29 @@ function TransactionsPage() {
                             ...styles.paginationButton,
                             opacity: currentPage === totalPages ? 0.5 : 1
                         },
-                        children: "Siguiente →"
-                    }, void 0, false, {
+                        children: [
+                            t('next'),
+                            " →"
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/app/transactions/page.tsx",
-                        lineNumber: 268,
+                        lineNumber: 281,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/transactions/page.tsx",
-                lineNumber: 257,
+                lineNumber: 270,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/transactions/page.tsx",
-        lineNumber: 138,
+        lineNumber: 151,
         columnNumber: 5
     }, this);
 }
-_s(TransactionsPage, "nl2Gcxzfb06cwF6/0Zk4Oov7vwI=", false, function() {
+_s(TransactionsPage, "rrYmhIhdmydxzrf1dcrHt9wMQAQ=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$context$2f$LanguageContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLanguage"]
     ];
@@ -567,7 +613,7 @@ function SummaryCard({ icon, label, value, color }) {
                 children: icon
             }, void 0, false, {
                 fileName: "[project]/app/transactions/page.tsx",
-                lineNumber: 294,
+                lineNumber: 307,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -575,7 +621,7 @@ function SummaryCard({ icon, label, value, color }) {
                 children: label
             }, void 0, false, {
                 fileName: "[project]/app/transactions/page.tsx",
-                lineNumber: 295,
+                lineNumber: 308,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -586,13 +632,13 @@ function SummaryCard({ icon, label, value, color }) {
                 children: value
             }, void 0, false, {
                 fileName: "[project]/app/transactions/page.tsx",
-                lineNumber: 296,
+                lineNumber: 309,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/transactions/page.tsx",
-        lineNumber: 293,
+        lineNumber: 306,
         columnNumber: 5
     }, this);
 }

@@ -19,53 +19,48 @@ function SettingsPage() {
     const { language, setLanguage, t } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$context$2f$LanguageContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLanguage"])();
     const [currentPlan, setCurrentPlan] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('pro');
     const [email, setEmail] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('juan.perez@example.com');
-    const [notifications, setNotifications] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
-        email: true,
-        push: false,
-        sms: false
-    });
     const plans = [
         {
             id: 'free',
-            name: 'Free',
+            name: t('planFree'),
             price: '$0',
             features: [
-                'Dashboard básico',
-                '5 transacciones/mes',
-                'Sin IA'
+                t('featureBasicDashboard'),
+                t('featureLimitedTx'),
+                t('featureNoAI')
             ]
         },
         {
             id: 'personal',
-            name: 'Personal',
+            name: t('planPersonal'),
             price: '$9.99',
             features: [
-                'Dashboard completo',
-                'Transacciones ilimitadas',
-                'Asistente IA básico',
-                'Scanner de recibos'
+                t('featureCompleteDashboard'),
+                t('featureUnlimitedTx'),
+                t('featureBasicAI'),
+                t('featureScanReceipts')
             ]
         },
         {
             id: 'pro',
-            name: 'Pro',
+            name: t('planPro'),
             price: '$19.99',
             features: [
-                'Todo de Personal',
-                'IA avanzada',
-                'Análisis de gastos',
-                'Exportación PDF/CSV'
+                t('featureEverythingPersonal'),
+                t('featureAdvancedAI'),
+                t('featureExpenseAnalysis'),
+                t('featureExportPDF')
             ]
         },
         {
             id: 'business',
-            name: 'Business',
+            name: t('planBusiness'),
             price: '$49.99',
             features: [
-                'Todo de Pro',
-                '5 perfiles',
-                'Soporte prioritario',
-                'API access'
+                t('featureEverythingPro'),
+                t('featureMultiProfiles'),
+                t('featurePrioritySupport'),
+                t('featureAPIAccess')
             ]
         }
     ];
@@ -86,10 +81,10 @@ function SettingsPage() {
                             color: '#0ea5e9',
                             marginBottom: '8px'
                         },
-                        children: "Configuración"
+                        children: t('settingsTitle')
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 47,
+                        lineNumber: 42,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -97,16 +92,16 @@ function SettingsPage() {
                             color: '#94a3b8',
                             fontSize: '14px'
                         },
-                        children: "Administra tu cuenta y preferencias"
+                        children: t('manageAccount')
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 50,
+                        lineNumber: 45,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/settings/page.tsx",
-                lineNumber: 46,
+                lineNumber: 41,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -129,10 +124,10 @@ function SettingsPage() {
                             cursor: 'pointer',
                             borderBottom: '2px solid #0ea5e9'
                         },
-                        children: "Cuenta"
+                        children: t('accountTab')
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 63,
+                        lineNumber: 58,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -145,10 +140,10 @@ function SettingsPage() {
                             fontWeight: 'bold',
                             cursor: 'pointer'
                         },
-                        children: "Notificaciones"
+                        children: t('notificationsTab')
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 75,
+                        lineNumber: 70,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -161,16 +156,16 @@ function SettingsPage() {
                             fontWeight: 'bold',
                             cursor: 'pointer'
                         },
-                        children: "Privacidad"
+                        children: t('privacyTab')
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 86,
+                        lineNumber: 81,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/settings/page.tsx",
-                lineNumber: 56,
+                lineNumber: 51,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -185,10 +180,10 @@ function SettingsPage() {
                             fontWeight: 'bold',
                             marginBottom: '20px'
                         },
-                        children: "Plan Actual"
+                        children: t('currentPlan')
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 101,
+                        lineNumber: 96,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -210,10 +205,10 @@ function SettingsPage() {
                                             fontSize: '14px',
                                             marginBottom: '4px'
                                         },
-                                        children: "Tu plan actual"
+                                        children: t('yourCurrentPlan')
                                     }, void 0, false, {
                                         fileName: "[project]/app/settings/page.tsx",
-                                        lineNumber: 114,
+                                        lineNumber: 109,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -222,10 +217,10 @@ function SettingsPage() {
                                             fontSize: '28px',
                                             fontWeight: 'bold'
                                         },
-                                        children: "FinanceAI Pro"
+                                        children: t('financeAIProPlan')
                                     }, void 0, false, {
                                         fileName: "[project]/app/settings/page.tsx",
-                                        lineNumber: 117,
+                                        lineNumber: 112,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -234,16 +229,16 @@ function SettingsPage() {
                                             fontSize: '12px',
                                             marginTop: '8px'
                                         },
-                                        children: "Renovación el 15 de septiembre, 2026"
+                                        children: t('renewalDate')
                                     }, void 0, false, {
                                         fileName: "[project]/app/settings/page.tsx",
-                                        lineNumber: 120,
+                                        lineNumber: 115,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/settings/page.tsx",
-                                lineNumber: 113,
+                                lineNumber: 108,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -257,22 +252,22 @@ function SettingsPage() {
                                     fontWeight: 'bold',
                                     cursor: 'pointer'
                                 },
-                                children: "Cancelar Suscripción"
+                                children: t('cancelSubscription')
                             }, void 0, false, {
                                 fileName: "[project]/app/settings/page.tsx",
-                                lineNumber: 124,
+                                lineNumber: 119,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 104,
+                        lineNumber: 99,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/settings/page.tsx",
-                lineNumber: 100,
+                lineNumber: 95,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -287,10 +282,10 @@ function SettingsPage() {
                             fontWeight: 'bold',
                             marginBottom: '20px'
                         },
-                        children: "Cambiar Plan"
+                        children: t('changePlan')
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 141,
+                        lineNumber: 136,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -335,7 +330,7 @@ function SettingsPage() {
                                                 children: plan.name
                                             }, void 0, false, {
                                                 fileName: "[project]/app/settings/page.tsx",
-                                                lineNumber: 173,
+                                                lineNumber: 168,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -347,7 +342,7 @@ function SettingsPage() {
                                                 children: plan.price
                                             }, void 0, false, {
                                                 fileName: "[project]/app/settings/page.tsx",
-                                                lineNumber: 176,
+                                                lineNumber: 171,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -356,16 +351,16 @@ function SettingsPage() {
                                                     fontSize: '12px',
                                                     marginTop: '4px'
                                                 },
-                                                children: "/mes"
+                                                children: t('perMonth')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/settings/page.tsx",
-                                                lineNumber: 179,
+                                                lineNumber: 174,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/settings/page.tsx",
-                                        lineNumber: 172,
+                                        lineNumber: 167,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -387,7 +382,7 @@ function SettingsPage() {
                                                         children: "✓"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/settings/page.tsx",
-                                                        lineNumber: 186,
+                                                        lineNumber: 181,
                                                         columnNumber: 21
                                                     }, this),
                                                     " ",
@@ -395,12 +390,12 @@ function SettingsPage() {
                                                 ]
                                             }, idx, true, {
                                                 fileName: "[project]/app/settings/page.tsx",
-                                                lineNumber: 185,
+                                                lineNumber: 180,
                                                 columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/app/settings/page.tsx",
-                                        lineNumber: 183,
+                                        lineNumber: 178,
                                         columnNumber: 15
                                     }, this),
                                     currentPlan === plan.id && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -416,27 +411,27 @@ function SettingsPage() {
                                             fontWeight: 'bold',
                                             cursor: 'pointer'
                                         },
-                                        children: "Plan Actual"
+                                        children: t('currentPlanButton')
                                     }, void 0, false, {
                                         fileName: "[project]/app/settings/page.tsx",
-                                        lineNumber: 191,
+                                        lineNumber: 186,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, plan.id, true, {
                                 fileName: "[project]/app/settings/page.tsx",
-                                lineNumber: 150,
+                                lineNumber: 145,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 144,
+                        lineNumber: 139,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/settings/page.tsx",
-                lineNumber: 140,
+                lineNumber: 135,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -451,10 +446,10 @@ function SettingsPage() {
                             fontWeight: 'bold',
                             marginBottom: '20px'
                         },
-                        children: "Idioma"
+                        children: t('language')
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 215,
+                        lineNumber: 210,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -482,18 +477,18 @@ function SettingsPage() {
                                 children: lang === 'es' ? '🇪🇸 Español' : '🇺🇸 English'
                             }, lang, false, {
                                 fileName: "[project]/app/settings/page.tsx",
-                                lineNumber: 224,
+                                lineNumber: 219,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 218,
+                        lineNumber: 213,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/settings/page.tsx",
-                lineNumber: 214,
+                lineNumber: 209,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -508,10 +503,10 @@ function SettingsPage() {
                             fontWeight: 'bold',
                             marginBottom: '20px'
                         },
-                        children: "Cuenta"
+                        children: t('accountSection')
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 247,
+                        lineNumber: 242,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -535,10 +530,10 @@ function SettingsPage() {
                                             marginBottom: '8px',
                                             display: 'block'
                                         },
-                                        children: "Email"
+                                        children: t('emailLabel')
                                     }, void 0, false, {
                                         fileName: "[project]/app/settings/page.tsx",
-                                        lineNumber: 260,
+                                        lineNumber: 255,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -556,13 +551,13 @@ function SettingsPage() {
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/app/settings/page.tsx",
-                                        lineNumber: 263,
+                                        lineNumber: 258,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/settings/page.tsx",
-                                lineNumber: 259,
+                                lineNumber: 254,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -577,22 +572,22 @@ function SettingsPage() {
                                     cursor: 'pointer',
                                     alignSelf: 'flex-start'
                                 },
-                                children: "Cambiar Contraseña"
+                                children: t('changePassword')
                             }, void 0, false, {
                                 fileName: "[project]/app/settings/page.tsx",
-                                lineNumber: 278,
+                                lineNumber: 273,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 250,
+                        lineNumber: 245,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/settings/page.tsx",
-                lineNumber: 246,
+                lineNumber: 241,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -613,10 +608,10 @@ function SettingsPage() {
                             fontWeight: 'bold',
                             marginBottom: '8px'
                         },
-                        children: "Legal"
+                        children: t('legalSection')
                     }, void 0, false, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 304,
+                        lineNumber: 299,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -626,10 +621,13 @@ function SettingsPage() {
                             textDecoration: 'none',
                             fontSize: '14px'
                         },
-                        children: "📋 Términos de Servicio"
-                    }, void 0, false, {
+                        children: [
+                            "📋 ",
+                            t('termsOfService')
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 307,
+                        lineNumber: 302,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -639,10 +637,13 @@ function SettingsPage() {
                             textDecoration: 'none',
                             fontSize: '14px'
                         },
-                        children: "🔒 Política de Privacidad"
-                    }, void 0, false, {
+                        children: [
+                            "🔒 ",
+                            t('privacyPolicy')
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 310,
+                        lineNumber: 305,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -652,26 +653,29 @@ function SettingsPage() {
                             textDecoration: 'none',
                             fontSize: '14px'
                         },
-                        children: "⚖️ Términos Legales"
-                    }, void 0, false, {
+                        children: [
+                            "⚖️ ",
+                            t('legalTerms')
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/app/settings/page.tsx",
-                        lineNumber: 313,
+                        lineNumber: 308,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/settings/page.tsx",
-                lineNumber: 295,
+                lineNumber: 290,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/settings/page.tsx",
-        lineNumber: 44,
+        lineNumber: 39,
         columnNumber: 5
     }, this);
 }
-_s(SettingsPage, "vh7mJxTIkoeZWxPhgVJ+f89PR6I=", false, function() {
+_s(SettingsPage, "Of+7nwUgHZaI8n57668Z4zm/uTA=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$context$2f$LanguageContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLanguage"]
     ];

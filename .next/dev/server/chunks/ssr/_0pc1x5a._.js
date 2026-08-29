@@ -135,7 +135,8 @@ function DebtPlanPage() {
                                     style: styles.subtitle,
                                     children: [
                                         mockDebts.length,
-                                        " deudas activas"
+                                        " ",
+                                        t('activeDebts')
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/debt-plan/page.tsx",
@@ -156,7 +157,7 @@ function DebtPlanPage() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/debt-plan/page.tsx",
-                            lineNumber: 139,
+                            lineNumber: 141,
                             columnNumber: 11
                         }, this)
                     ]
@@ -183,7 +184,7 @@ function DebtPlanPage() {
                         bgColor: "rgba(239, 68, 68, 0.1)"
                     }, void 0, false, {
                         fileName: "[project]/app/debt-plan/page.tsx",
-                        lineNumber: 147,
+                        lineNumber: 149,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$Card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -194,18 +195,18 @@ function DebtPlanPage() {
                         bgColor: "rgba(245, 158, 11, 0.1)"
                     }, void 0, false, {
                         fileName: "[project]/app/debt-plan/page.tsx",
-                        lineNumber: 154,
+                        lineNumber: 156,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$Card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
-                        title: "Highest Interest Rate",
+                        title: t('highestInterestRate'),
                         value: `${highestRate}%`,
                         icon: "📊",
                         textColor: "#ef4444",
                         bgColor: "rgba(239, 68, 68, 0.1)"
                     }, void 0, false, {
                         fileName: "[project]/app/debt-plan/page.tsx",
-                        lineNumber: 161,
+                        lineNumber: 163,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$Card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -216,13 +217,13 @@ function DebtPlanPage() {
                         bgColor: "rgba(59, 130, 246, 0.1)"
                     }, void 0, false, {
                         fileName: "[project]/app/debt-plan/page.tsx",
-                        lineNumber: 168,
+                        lineNumber: 170,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/debt-plan/page.tsx",
-                lineNumber: 146,
+                lineNumber: 148,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -230,10 +231,10 @@ function DebtPlanPage() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                         style: styles.sectionTitle,
-                        children: "Elige tu Estrategia"
+                        children: t('chooseStrategy')
                     }, void 0, false, {
                         fileName: "[project]/app/debt-plan/page.tsx",
-                        lineNumber: 179,
+                        lineNumber: 181,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -250,7 +251,7 @@ function DebtPlanPage() {
                                         children: strategy.icon
                                     }, void 0, false, {
                                         fileName: "[project]/app/debt-plan/page.tsx",
-                                        lineNumber: 190,
+                                        lineNumber: 192,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -258,7 +259,7 @@ function DebtPlanPage() {
                                         children: strategy.label
                                     }, void 0, false, {
                                         fileName: "[project]/app/debt-plan/page.tsx",
-                                        lineNumber: 191,
+                                        lineNumber: 193,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -266,24 +267,24 @@ function DebtPlanPage() {
                                         children: strategy.description
                                     }, void 0, false, {
                                         fileName: "[project]/app/debt-plan/page.tsx",
-                                        lineNumber: 192,
+                                        lineNumber: 194,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, strategy.id, true, {
                                 fileName: "[project]/app/debt-plan/page.tsx",
-                                lineNumber: 182,
+                                lineNumber: 184,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/debt-plan/page.tsx",
-                        lineNumber: 180,
+                        lineNumber: 182,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/debt-plan/page.tsx",
-                lineNumber: 178,
+                lineNumber: 180,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -292,12 +293,13 @@ function DebtPlanPage() {
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                         style: styles.sectionTitle,
                         children: [
-                            "Detalles de ",
+                            t('strategyDetails'),
+                            " ",
                             currentStrategy.label
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/debt-plan/page.tsx",
-                        lineNumber: 200,
+                        lineNumber: 202,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -305,54 +307,54 @@ function DebtPlanPage() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StrategyDetailCard, {
                                 icon: "✨",
-                                title: "Ventaja",
+                                title: t('advantage'),
                                 content: currentStrategy.advantage,
                                 color: "#10b981"
                             }, void 0, false, {
                                 fileName: "[project]/app/debt-plan/page.tsx",
-                                lineNumber: 202,
+                                lineNumber: 204,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StrategyDetailCard, {
                                 icon: "⚠️",
-                                title: "Desventaja",
+                                title: t('disadvantage'),
                                 content: currentStrategy.disadvantage,
                                 color: "#f59e0b"
                             }, void 0, false, {
                                 fileName: "[project]/app/debt-plan/page.tsx",
-                                lineNumber: 208,
+                                lineNumber: 210,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StrategyDetailCard, {
                                 icon: "⏱️",
-                                title: "Tiempo para Pagar",
+                                title: t('timeToPayoff'),
                                 content: currentStrategy.timeToPayoff,
                                 color: "#06b6d4"
                             }, void 0, false, {
                                 fileName: "[project]/app/debt-plan/page.tsx",
-                                lineNumber: 214,
+                                lineNumber: 216,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StrategyDetailCard, {
                                 icon: "💸",
-                                title: "Interés Total Estimado",
+                                title: t('totalEstimatedInterest'),
                                 content: currentStrategy.totalInterest,
                                 color: "#ef4444"
                             }, void 0, false, {
                                 fileName: "[project]/app/debt-plan/page.tsx",
-                                lineNumber: 220,
+                                lineNumber: 222,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/debt-plan/page.tsx",
-                        lineNumber: 201,
+                        lineNumber: 203,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/debt-plan/page.tsx",
-                lineNumber: 199,
+                lineNumber: 201,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -361,13 +363,14 @@ function DebtPlanPage() {
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                         style: styles.sectionTitle,
                         children: [
-                            "Orden de Pago (",
+                            t('paymentOrder'),
+                            " (",
                             currentStrategy.label,
                             ")"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/debt-plan/page.tsx",
-                        lineNumber: 231,
+                        lineNumber: 233,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -384,29 +387,7 @@ function DebtPlanPage() {
                                                     ...styles.headerCell,
                                                     textAlign: 'left'
                                                 },
-                                                children: "Orden"
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/debt-plan/page.tsx",
-                                                lineNumber: 238,
-                                                columnNumber: 17
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                style: {
-                                                    ...styles.headerCell,
-                                                    textAlign: 'left'
-                                                },
-                                                children: "Deuda"
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/debt-plan/page.tsx",
-                                                lineNumber: 239,
-                                                columnNumber: 17
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                style: {
-                                                    ...styles.headerCell,
-                                                    textAlign: 'right'
-                                                },
-                                                children: "Balance"
+                                                children: t('order')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/debt-plan/page.tsx",
                                                 lineNumber: 240,
@@ -415,9 +396,9 @@ function DebtPlanPage() {
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                                 style: {
                                                     ...styles.headerCell,
-                                                    textAlign: 'right'
+                                                    textAlign: 'left'
                                                 },
-                                                children: "Tasa"
+                                                children: t('debt')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/debt-plan/page.tsx",
                                                 lineNumber: 241,
@@ -428,7 +409,7 @@ function DebtPlanPage() {
                                                     ...styles.headerCell,
                                                     textAlign: 'right'
                                                 },
-                                                children: "Pago Mensual"
+                                                children: t('balance')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/debt-plan/page.tsx",
                                                 lineNumber: 242,
@@ -437,23 +418,45 @@ function DebtPlanPage() {
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                                 style: {
                                                     ...styles.headerCell,
-                                                    textAlign: 'center'
+                                                    textAlign: 'right'
                                                 },
-                                                children: "Tiempo"
+                                                children: t('rate')
                                             }, void 0, false, {
                                                 fileName: "[project]/app/debt-plan/page.tsx",
                                                 lineNumber: 243,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                style: {
+                                                    ...styles.headerCell,
+                                                    textAlign: 'right'
+                                                },
+                                                children: t('monthlyPaymentHeader')
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/debt-plan/page.tsx",
+                                                lineNumber: 244,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                style: {
+                                                    ...styles.headerCell,
+                                                    textAlign: 'center'
+                                                },
+                                                children: t('timeHeader')
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/debt-plan/page.tsx",
+                                                lineNumber: 245,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/debt-plan/page.tsx",
-                                        lineNumber: 237,
+                                        lineNumber: 239,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/debt-plan/page.tsx",
-                                    lineNumber: 236,
+                                    lineNumber: 238,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -472,7 +475,7 @@ function DebtPlanPage() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/debt-plan/page.tsx",
-                                                    lineNumber: 249,
+                                                    lineNumber: 251,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -488,7 +491,7 @@ function DebtPlanPage() {
                                                                 children: debt.icon
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/debt-plan/page.tsx",
-                                                                lineNumber: 254,
+                                                                lineNumber: 256,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -498,18 +501,18 @@ function DebtPlanPage() {
                                                                 children: debt.name
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/debt-plan/page.tsx",
-                                                                lineNumber: 255,
+                                                                lineNumber: 257,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/debt-plan/page.tsx",
-                                                        lineNumber: 253,
+                                                        lineNumber: 255,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/debt-plan/page.tsx",
-                                                    lineNumber: 252,
+                                                    lineNumber: 254,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -527,7 +530,7 @@ function DebtPlanPage() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/debt-plan/page.tsx",
-                                                    lineNumber: 258,
+                                                    lineNumber: 260,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -542,7 +545,7 @@ function DebtPlanPage() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/debt-plan/page.tsx",
-                                                    lineNumber: 268,
+                                                    lineNumber: 270,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -557,7 +560,7 @@ function DebtPlanPage() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/debt-plan/page.tsx",
-                                                    lineNumber: 271,
+                                                    lineNumber: 273,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -570,39 +573,40 @@ function DebtPlanPage() {
                                                     children: [
                                                         "~",
                                                         Math.ceil(debt.balance / debt.minimumPayment / 12),
-                                                        " años"
+                                                        " ",
+                                                        t('years')
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/debt-plan/page.tsx",
-                                                    lineNumber: 274,
+                                                    lineNumber: 276,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, debt.id, true, {
                                             fileName: "[project]/app/debt-plan/page.tsx",
-                                            lineNumber: 248,
+                                            lineNumber: 250,
                                             columnNumber: 17
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/app/debt-plan/page.tsx",
-                                    lineNumber: 246,
+                                    lineNumber: 248,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/debt-plan/page.tsx",
-                            lineNumber: 235,
+                            lineNumber: 237,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/debt-plan/page.tsx",
-                        lineNumber: 234,
+                        lineNumber: 236,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/debt-plan/page.tsx",
-                lineNumber: 230,
+                lineNumber: 232,
                 columnNumber: 7
             }, this)
         ]
@@ -624,7 +628,7 @@ function StrategyDetailCard({ icon, title, content, color }) {
                 children: icon
             }, void 0, false, {
                 fileName: "[project]/app/debt-plan/page.tsx",
-                lineNumber: 307,
+                lineNumber: 309,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -632,7 +636,7 @@ function StrategyDetailCard({ icon, title, content, color }) {
                 children: title
             }, void 0, false, {
                 fileName: "[project]/app/debt-plan/page.tsx",
-                lineNumber: 308,
+                lineNumber: 310,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -640,13 +644,13 @@ function StrategyDetailCard({ icon, title, content, color }) {
                 children: content
             }, void 0, false, {
                 fileName: "[project]/app/debt-plan/page.tsx",
-                lineNumber: 309,
+                lineNumber: 311,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/debt-plan/page.tsx",
-        lineNumber: 306,
+        lineNumber: 308,
         columnNumber: 5
     }, this);
 }

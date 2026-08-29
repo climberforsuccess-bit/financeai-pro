@@ -2,6 +2,8 @@
   "/cards/page": "app/cards/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/debt-plan/page": "app/debt-plan/page.js",
+  "/scanner/page": "app/scanner/page.js",
+  "/settings/page": "app/settings/page.js",
   "/subscriptions/page": "app/subscriptions/page.js",
   "/transactions/page": "app/transactions/page.js"
 }
