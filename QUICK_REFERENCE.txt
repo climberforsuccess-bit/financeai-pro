@@ -1,0 +1,67 @@
+FINANCEAI PRO V2.0 - QUICK REFERENCE
+
+=== LOCAL DEVELOPMENT ===
+npm install
+npm run dev
+→ Opens http://localhost:3000
+
+=== GIT COMMANDS ===
+git add .
+git commit -m "message"
+git push origin main
+
+=== ENVIRONMENT VARIABLES NEEDED ===
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+OPENAI_API_KEY=
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=http://localhost:3000
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+=== FILE LOCATIONS ===
+Pages: app/*/page.tsx
+API Routes: app/api/*/route.ts
+Hooks: hooks/use*.ts
+Components: components/
+Context: context/
+Auth: middleware.ts
+
+=== KEY FILES ===
+Landing: app/landing/page.tsx
+Sign Up: app/auth/signup/page.tsx
+Sign In: app/auth/login/page.tsx
+Terms: app/legal/terms/page.tsx
+Privacy: app/legal/privacy/page.tsx
+Dashboard: app/dashboard/page.tsx
+
+=== BEFORE DEPLOYMENT ===
+1. Create Supabase project
+2. Create OpenAI API key
+3. Create Google OAuth credentials
+4. Fill .env.local
+5. Test: npm run dev
+6. Deploy to Vercel
+
+=== DEPLOY TO VERCEL ===
+1. Go to vercel.com
+2. Import GitHub repo
+3. Add environment variables
+4. Deploy (automatic)
+
+=== USEFUL LINKS ===
+GitHub: https://github.com/climberforsuccess-bit/financeai-pro
+Supabase: https://supabase.com
+OpenAI: https://platform.openai.com
+Vercel: https://vercel.com
+Google Cloud: https://console.cloud.google.com
+
+=== DOCUMENTATION ===
+README.md - Project overview
+API_GUIDE.md - API documentation
+QUICK_START.md - 5-minute setup
+DEPLOYMENT.md - Vercel deployment
+DEPLOYMENT_CHECKLIST.md - Step-by-step guide
+TODO.md - Remaining tasks
+FINAL_SUMMARY.md - Project delivery summary
