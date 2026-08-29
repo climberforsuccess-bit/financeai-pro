@@ -15,7 +15,7 @@ export async function GET(request: Request) {
       .from('goals')
       .select('*')
       .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
+      .order('deadline', { ascending: true })
 
     if (error) throw error
 
@@ -35,7 +35,14 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { name, target_amount, current_amount, category, deadline } = body
+    const { name, target_amount, deadline, category } = body
+
+    if (!name || !target_amount || !deadline) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      )
+    }
 
     const { data, error } = await supabase
       .from('goals')
@@ -44,9 +51,10 @@ export async function POST(request: Request) {
           user_id: user.id,
           name,
           target_amount,
-          current_amount: current_amount || 0,
-          category,
+          current_amount: 0,
           deadline,
+          category,
+          status: 'active',
         },
       ])
       .select()
@@ -54,6 +62,72 @@ export async function POST(request: Request) {
     if (error) throw error
 
     return NextResponse.json(data[0], { status: 201 })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies })
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 })
+    }
+
+    const body = await request.json()
+
+    const { data, error } = await supabase
+      .from('goals')
+      .update(body)
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+
+    if (error) throw error
+    if (!data?.length) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+
+    return NextResponse.json(data[0], { status: 200 })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies })
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 })
+    }
+
+    const { error } = await supabase
+      .from('goals')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) throw error
+
+    return NextResponse.json({ success: true }, { status: 200 })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
