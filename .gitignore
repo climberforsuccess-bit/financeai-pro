@@ -10,3 +10,4 @@ config.js
 .next/server/
 .next/build-manifest.json
 .next/middleware-build-manifest.js
+.env.local
