@@ -134,7 +134,9 @@ export default function DebtPlanPage() {
         <div style={styles.headerTop}>
           <div>
             <h1 style={styles.title}>{t('debtPlan')}</h1>
-            <p style={styles.subtitle}>{mockDebts.length} deudas activas</p>
+            <p style={styles.subtitle}>
+              {mockDebts.length} {t('activeDebts')}
+            </p>
           </div>
           <button style={styles.addDebtButton}>
             + {t('addDebt')}
@@ -159,7 +161,7 @@ export default function DebtPlanPage() {
           bgColor="rgba(245, 158, 11, 0.1)"
         />
         <Card
-          title="Highest Interest Rate"
+          title={t('highestInterestRate')}
           value={`${highestRate}%`}
           icon="📊"
           textColor="#ef4444"
@@ -176,7 +178,7 @@ export default function DebtPlanPage() {
 
       {/* STRATEGY SELECTION */}
       <div style={styles.strategySection}>
-        <h2 style={styles.sectionTitle}>Elige tu Estrategia</h2>
+        <h2 style={styles.sectionTitle}>{t('chooseStrategy')}</h2>
         <div style={styles.strategyGrid}>
           {strategies.map((strategy) => (
             <button
@@ -197,29 +199,29 @@ export default function DebtPlanPage() {
 
       {/* STRATEGY DETAILS */}
       <div style={styles.strategyDetailsSection}>
-        <h2 style={styles.sectionTitle}>Detalles de {currentStrategy.label}</h2>
+        <h2 style={styles.sectionTitle}>{t('strategyDetails')} {currentStrategy.label}</h2>
         <div style={styles.strategyDetailsGrid}>
           <StrategyDetailCard
             icon="✨"
-            title="Ventaja"
+            title={t('advantage')}
             content={currentStrategy.advantage}
             color="#10b981"
           />
           <StrategyDetailCard
             icon="⚠️"
-            title="Desventaja"
+            title={t('disadvantage')}
             content={currentStrategy.disadvantage}
             color="#f59e0b"
           />
           <StrategyDetailCard
             icon="⏱️"
-            title="Tiempo para Pagar"
+            title={t('timeToPayoff')}
             content={currentStrategy.timeToPayoff}
             color="#06b6d4"
           />
           <StrategyDetailCard
             icon="💸"
-            title="Interés Total Estimado"
+            title={t('totalEstimatedInterest')}
             content={currentStrategy.totalInterest}
             color="#ef4444"
           />
@@ -229,18 +231,18 @@ export default function DebtPlanPage() {
       {/* DEBTS TABLE - SORTED BY STRATEGY */}
       <div style={styles.debtsTableSection}>
         <h2 style={styles.sectionTitle}>
-          Orden de Pago ({currentStrategy.label})
+          {t('paymentOrder')} ({currentStrategy.label})
         </h2>
         <div style={styles.tableWrapper}>
           <table style={styles.table}>
             <thead>
               <tr style={styles.tableHeader}>
-                <th style={{ ...styles.headerCell, textAlign: 'left' }}>Orden</th>
-                <th style={{ ...styles.headerCell, textAlign: 'left' }}>Deuda</th>
-                <th style={{ ...styles.headerCell, textAlign: 'right' }}>Balance</th>
-                <th style={{ ...styles.headerCell, textAlign: 'right' }}>Tasa</th>
-                <th style={{ ...styles.headerCell, textAlign: 'right' }}>Pago Mensual</th>
-                <th style={{ ...styles.headerCell, textAlign: 'center' }}>Tiempo</th>
+                <th style={{ ...styles.headerCell, textAlign: 'left' }}>{t('order')}</th>
+                <th style={{ ...styles.headerCell, textAlign: 'left' }}>{t('debt')}</th>
+                <th style={{ ...styles.headerCell, textAlign: 'right' }}>{t('balance')}</th>
+                <th style={{ ...styles.headerCell, textAlign: 'right' }}>{t('rate')}</th>
+                <th style={{ ...styles.headerCell, textAlign: 'right' }}>{t('monthlyPaymentHeader')}</th>
+                <th style={{ ...styles.headerCell, textAlign: 'center' }}>{t('timeHeader')}</th>
               </tr>
             </thead>
             <tbody>
@@ -279,7 +281,7 @@ export default function DebtPlanPage() {
                       fontSize: '13px',
                     }}
                   >
-                    ~{Math.ceil(debt.balance / debt.minimumPayment / 12)} años
+                    ~{Math.ceil(debt.balance / debt.minimumPayment / 12)} {t('years')}
                   </td>
                 </tr>
               ))}

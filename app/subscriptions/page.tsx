@@ -126,7 +126,7 @@ export default function SubscriptionsPage() {
         <div>
           <h1 style={styles.title}>{t('subscriptions')}</h1>
           <p style={styles.subtitle}>
-            {subscriptions.length} {subscriptions.length === 1 ? 'suscripción activa' : 'suscripciones activas'}
+            {subscriptions.length} {subscriptions.length === 1 ? t('subscription_singular') : t('subscription_plural')}
           </p>
         </div>
       </div>
@@ -134,25 +134,25 @@ export default function SubscriptionsPage() {
       {/* STATS CARDS */}
       <div style={styles.statsGrid}>
         <Card
-          title="Costo Mensual"
+          title={t('monthlyCost')}
           value={`$${totalMonthly.toFixed(2)}`}
-          subtitle={`$${totalYearly.toFixed(2)}/año`}
+          subtitle={`$${totalYearly.toFixed(2)}${t('yearlyTotal')}`}
           icon="📅"
           textColor="#0ea5e9"
           bgColor="rgba(14, 165, 233, 0.1)"
         />
         <Card
-          title="Suscripciones Activas"
+          title={t('activeSubscriptions')}
           value={subscriptions.length.toString()}
-          subtitle={`${filtered.length} en ${selectedCategory}`}
+          subtitle={`${filtered.length} ${t('inCategory')} ${selectedCategory}`}
           icon="📊"
           textColor="#10b981"
           bgColor="rgba(16, 185, 129, 0.1)"
         />
         <Card
-          title="Ahorro Potencial"
+          title={t('potentialSavings')}
           value={`$${potentialSavings.toFixed(2)}`}
-          subtitle="Si cancelas entretenimiento"
+          subtitle={t('cancelEntertainment')}
           icon="💰"
           textColor="#f59e0b"
           bgColor="rgba(245, 158, 11, 0.1)"
@@ -161,7 +161,7 @@ export default function SubscriptionsPage() {
 
       {/* FILTERS */}
       <div style={styles.filterSection}>
-        <h3 style={styles.filterTitle}>Filtrar por categoría</h3>
+        <h3 style={styles.filterTitle}>{t('filterByCategory')}</h3>
         <div style={styles.filterButtons}>
           {categories.map((cat) => (
             <button
@@ -172,7 +172,7 @@ export default function SubscriptionsPage() {
                 ...(selectedCategory === cat && styles.filterButtonActive),
               }}
             >
-              {cat}
+              {cat === 'All' ? t('all') : cat}
             </button>
           ))}
         </div>
@@ -180,7 +180,7 @@ export default function SubscriptionsPage() {
 
       {/* SUBSCRIPTIONS GRID */}
       <div style={styles.gridSection}>
-        <h2 style={styles.sectionTitle}>Tus Suscripciones</h2>
+        <h2 style={styles.sectionTitle}>{t('yourSubscriptions')}</h2>
         <div style={styles.subscriptionsGrid}>
           {filtered.length > 0 ? (
             filtered.map((sub) => (
@@ -204,7 +204,7 @@ export default function SubscriptionsPage() {
                             : 'rgba(139, 92, 246, 0.2)',
                       }}
                     >
-                      {sub.billingCycle === 'monthly' ? 'Mensual' : 'Anual'}
+                      {sub.billingCycle === 'monthly' ? t('monthly') : t('yearly')}
                     </span>
                   </div>
                 </div>
@@ -216,7 +216,7 @@ export default function SubscriptionsPage() {
 
                 <div style={styles.cardFooter}>
                   <div style={styles.nextBilling}>
-                    <div style={styles.nextBillingLabel}>Próximo pago</div>
+                    <div style={styles.nextBillingLabel}>{t('nextPayment')}</div>
                     <div style={styles.nextBillingDate}>
                       {new Date(sub.nextBillingDate).toLocaleDateString(
                         language === 'es' ? 'es-ES' : 'en-US',
@@ -228,14 +228,14 @@ export default function SubscriptionsPage() {
                     onClick={() => handleCancel(sub.id)}
                     style={styles.cancelButton}
                   >
-                    Cancelar
+                    {t('cancel')}
                   </button>
                 </div>
               </div>
             ))
           ) : (
             <div style={styles.emptyState}>
-              No hay suscripciones en esta categoría
+              {t('noSubscriptionsCategory')}
             </div>
           )}
         </div>
@@ -243,25 +243,25 @@ export default function SubscriptionsPage() {
 
       {/* UPCOMING BILLING TABLE */}
       <div style={styles.tableSection}>
-        <h2 style={styles.sectionTitle}>Próximos Pagos</h2>
+        <h2 style={styles.sectionTitle}>{t('upcomingPayments')}</h2>
         <div style={styles.tableWrapper}>
           <table style={styles.table}>
             <thead>
               <tr style={styles.tableHeader}>
                 <th style={{ ...styles.headerCell, textAlign: 'left' }}>
-                  Suscripción
+                  {t('subscription')}
                 </th>
                 <th style={{ ...styles.headerCell, textAlign: 'left' }}>
-                  Categoría
+                  {t('category')}
                 </th>
                 <th style={{ ...styles.headerCell, textAlign: 'right' }}>
-                  Monto
+                  {t('amount')}
                 </th>
                 <th style={{ ...styles.headerCell, textAlign: 'right' }}>
-                  Próximo Pago
+                  {t('nextBillingDate')}
                 </th>
                 <th style={{ ...styles.headerCell, textAlign: 'center' }}>
-                  Acción
+                  {t('action')}
                 </th>
               </tr>
             </thead>
@@ -304,7 +304,7 @@ export default function SubscriptionsPage() {
                             : '#94a3b8',
                       }}
                     >
-                      En {daysUntilBilling} días
+                      {t('in')} {daysUntilBilling} {t('days')}
                     </td>
                     <td style={{ ...styles.cell, textAlign: 'center' }}>
                       <button
@@ -324,27 +324,27 @@ export default function SubscriptionsPage() {
 
       {/* AI RECOMMENDATIONS */}
       <div style={styles.recommendationsSection}>
-        <h2 style={styles.sectionTitle}>💡 Recomendaciones de IA</h2>
+        <h2 style={styles.sectionTitle}>💡 {t('aiRecommendations')}</h2>
         <div style={styles.recommendationsGrid}>
           <RecommendationCard
             icon="🎬"
-            title="Consolidar Streaming"
-            description="Detectamos que tienes 2 servicios de streaming. Considera usar solo uno para ahorrar $20/mes."
+            title={t('consolidateStreaming')}
+            description={t('consolidateStreamingDesc')}
             savings="$240/año"
             color="#ef4444"
           />
           <RecommendationCard
             icon="🎨"
-            title="Adobe Creative Cloud"
-            description="Es tu suscripción más cara. Considera alternativas como Figma o Canva."
+            title={t('adobeAlternative')}
+            description={t('adobeAlternativeDesc')}
             savings="$660/año"
             color="#f59e0b"
           />
           <RecommendationCard
             icon="📊"
-            title="Gasto Óptimo"
-            description={`Tu gasto total es $${totalMonthly.toFixed(2)}/mes (${((totalMonthly / 4200) * 100).toFixed(1)}% de ingresos)`}
-            savings="Está bajo control"
+            title={t('optimalSpending')}
+            description={t('optimalSpendingDesc').replace('{monthly}', `$${totalMonthly.toFixed(2)}`).replace('{percentage}', ((totalMonthly / 4200) * 100).toFixed(1))}
+            savings={t('underControl')}
             color="#10b981"
           />
         </div>

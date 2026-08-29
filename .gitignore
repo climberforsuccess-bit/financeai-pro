@@ -5,3 +5,8 @@ node_modules/
 config.js
 .vercel
 .env*
+.next/dev/
+.next/static/
+.next/server/
+.next/build-manifest.json
+.next/middleware-build-manifest.js

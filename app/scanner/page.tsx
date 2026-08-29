@@ -56,7 +56,7 @@ export default function ScannerPage() {
           {t('scannerReceipt')}
         </h1>
         <p style={{ color: '#94a3b8', fontSize: '14px' }}>
-          Escanea recibos para agregar transacciones automáticamente
+          {t('scanReceiptSubtitle')}
         </p>
       </div>
 
@@ -94,20 +94,20 @@ export default function ScannerPage() {
           <div>
             <div style={{ fontSize: '32px', marginBottom: '16px' }}>⏳</div>
             <div style={{ color: '#0ea5e9', fontSize: '16px', fontWeight: 'bold', marginBottom: '8px' }}>
-              Procesando recibo...
+              {t('processing')}
             </div>
             <div style={{ color: '#94a3b8', fontSize: '14px' }}>
-              Analizando imagen con OCR
+              {t('analyzingOCR')}
             </div>
           </div>
         ) : (
           <div>
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>📸</div>
             <div style={{ color: '#0ea5e9', fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
-              Haz clic para cargar un recibo
+              {t('clickToUpload')}
             </div>
             <div style={{ color: '#94a3b8', fontSize: '14px' }}>
-              O arrastra una imagen aquí (JPG, PNG, HEIC)
+              {t('dragOrUpload')}
             </div>
           </div>
         )}
@@ -117,7 +117,7 @@ export default function ScannerPage() {
       {scannedReceipts.length > 0 && (
         <div>
           <h2 style={{ color: '#0ea5e9', fontSize: '20px', fontWeight: 'bold', marginBottom: '20px' }}>
-            Recibos Escaneados ({scannedReceipts.length})
+            {t('scannedReceipts')} ({scannedReceipts.length})
           </h2>
           
           <div style={{
@@ -162,14 +162,14 @@ export default function ScannerPage() {
                       {receipt.merchantName}
                     </div>
                     <div style={{ color: '#94a3b8', fontSize: '12px' }}>
-                      {receipt.date} a las {receipt.time}
+                      {receipt.date} {t('at')} {receipt.time}
                     </div>
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
                     <div>
                       <div style={{ color: '#94a3b8', fontSize: '11px', marginBottom: '4px' }}>
-                        Monto
+                        {t('receiptAmount')}
                       </div>
                       <div style={{ color: '#10b981', fontSize: '18px', fontWeight: 'bold' }}>
                         ${receipt.amount.toFixed(2)}
@@ -177,7 +177,7 @@ export default function ScannerPage() {
                     </div>
                     <div>
                       <div style={{ color: '#94a3b8', fontSize: '11px', marginBottom: '4px' }}>
-                        Tarjeta
+                        {t('receiptCard')}
                       </div>
                       <div style={{ color: '#0ea5e9', fontSize: '14px', fontWeight: 'bold' }}>
                         •••• {receipt.lastFourDigits}
@@ -198,7 +198,7 @@ export default function ScannerPage() {
                         cursor: 'pointer',
                       }}
                     >
-                      Agregar
+                      {t('add')}
                     </button>
                     <button
                       onClick={() => setScannedReceipts(scannedReceipts.filter(r => r.id !== receipt.id))}
@@ -213,7 +213,7 @@ export default function ScannerPage() {
                         cursor: 'pointer',
                       }}
                     >
-                      Descartar
+                      {t('discard')}
                     </button>
                   </div>
                 </div>
@@ -232,14 +232,14 @@ export default function ScannerPage() {
           padding: '24px',
         }}>
           <h3 style={{ color: '#0ea5e9', fontSize: '16px', fontWeight: 'bold', marginBottom: '12px' }}>
-            ℹ️ Información
+            ℹ️ {t('info')}
           </h3>
           <ul style={{ color: '#94a3b8', fontSize: '14px', lineHeight: '1.8', listStyle: 'none', padding: 0 }}>
-            <li>✅ Soportamos JPG, PNG, HEIC y otros formatos de imagen</li>
-            <li>✅ Extrae automáticamente: comercio, monto, fecha y hora</li>
-            <li>✅ Detecta el último dígito de tu tarjeta</li>
-            <li>✅ Asigna categoría automáticamente</li>
-            <li>✅ Agregará la transacción a tu historial</li>
+            <li>✅ {t('supportsFormats')}</li>
+            <li>✅ {t('extractsAutomatically')}</li>
+            <li>✅ {t('detectsCardDigits')}</li>
+            <li>✅ {t('assignsCategory')}</li>
+            <li>✅ {t('addsTransaction')}</li>
           </ul>
         </div>
       )}

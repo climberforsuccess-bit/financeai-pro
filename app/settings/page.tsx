@@ -7,36 +7,31 @@ export default function SettingsPage() {
   const { language, setLanguage, t } = useLanguage();
   const [currentPlan, setCurrentPlan] = useState('pro');
   const [email, setEmail] = useState('juan.perez@example.com');
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: false,
-    sms: false,
-  });
 
   const plans = [
     {
       id: 'free',
-      name: 'Free',
+      name: t('planFree'),
       price: '$0',
-      features: ['Dashboard básico', '5 transacciones/mes', 'Sin IA'],
+      features: [t('featureBasicDashboard'), t('featureLimitedTx'), t('featureNoAI')],
     },
     {
       id: 'personal',
-      name: 'Personal',
+      name: t('planPersonal'),
       price: '$9.99',
-      features: ['Dashboard completo', 'Transacciones ilimitadas', 'Asistente IA básico', 'Scanner de recibos'],
+      features: [t('featureCompleteDashboard'), t('featureUnlimitedTx'), t('featureBasicAI'), t('featureScanReceipts')],
     },
     {
       id: 'pro',
-      name: 'Pro',
+      name: t('planPro'),
       price: '$19.99',
-      features: ['Todo de Personal', 'IA avanzada', 'Análisis de gastos', 'Exportación PDF/CSV'],
+      features: [t('featureEverythingPersonal'), t('featureAdvancedAI'), t('featureExpenseAnalysis'), t('featureExportPDF')],
     },
     {
       id: 'business',
-      name: 'Business',
+      name: t('planBusiness'),
       price: '$49.99',
-      features: ['Todo de Pro', '5 perfiles', 'Soporte prioritario', 'API access'],
+      features: [t('featureEverythingPro'), t('featureMultiProfiles'), t('featurePrioritySupport'), t('featureAPIAccess')],
     },
   ];
 
@@ -45,10 +40,10 @@ export default function SettingsPage() {
       {/* Header */}
       <div style={{ marginBottom: '40px' }}>
         <h1 style={{ fontSize: '32px', color: '#0ea5e9', marginBottom: '8px' }}>
-          Configuración
+          {t('settingsTitle')}
         </h1>
         <p style={{ color: '#94a3b8', fontSize: '14px' }}>
-          Administra tu cuenta y preferencias
+          {t('manageAccount')}
         </p>
       </div>
 
@@ -70,7 +65,7 @@ export default function SettingsPage() {
           cursor: 'pointer',
           borderBottom: '2px solid #0ea5e9',
         }}>
-          Cuenta
+          {t('accountTab')}
         </button>
         <button style={{
           padding: '8px 16px',
@@ -81,7 +76,7 @@ export default function SettingsPage() {
           fontWeight: 'bold',
           cursor: 'pointer',
         }}>
-          Notificaciones
+          {t('notificationsTab')}
         </button>
         <button style={{
           padding: '8px 16px',
@@ -92,14 +87,14 @@ export default function SettingsPage() {
           fontWeight: 'bold',
           cursor: 'pointer',
         }}>
-          Privacidad
+          {t('privacyTab')}
         </button>
       </div>
 
       {/* Current Plan Section */}
       <div style={{ marginBottom: '40px' }}>
         <h2 style={{ color: '#0ea5e9', fontSize: '20px', fontWeight: 'bold', marginBottom: '20px' }}>
-          Plan Actual
+          {t('currentPlan')}
         </h2>
         <div style={{
           background: '#1e293b',
@@ -112,13 +107,13 @@ export default function SettingsPage() {
         }}>
           <div>
             <div style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '4px' }}>
-              Tu plan actual
+              {t('yourCurrentPlan')}
             </div>
             <div style={{ color: '#0ea5e9', fontSize: '28px', fontWeight: 'bold' }}>
-              FinanceAI Pro
+              {t('financeAIProPlan')}
             </div>
             <div style={{ color: '#64748b', fontSize: '12px', marginTop: '8px' }}>
-              Renovación el 15 de septiembre, 2026
+              {t('renewalDate')}
             </div>
           </div>
           <button style={{
@@ -131,7 +126,7 @@ export default function SettingsPage() {
             fontWeight: 'bold',
             cursor: 'pointer',
           }}>
-            Cancelar Suscripción
+            {t('cancelSubscription')}
           </button>
         </div>
       </div>
@@ -139,7 +134,7 @@ export default function SettingsPage() {
       {/* Plans Section */}
       <div style={{ marginBottom: '40px' }}>
         <h2 style={{ color: '#0ea5e9', fontSize: '20px', fontWeight: 'bold', marginBottom: '20px' }}>
-          Cambiar Plan
+          {t('changePlan')}
         </h2>
         <div style={{
           display: 'grid',
@@ -177,7 +172,7 @@ export default function SettingsPage() {
                   {plan.price}
                 </div>
                 <div style={{ color: '#64748b', fontSize: '12px', marginTop: '4px' }}>
-                  /mes
+                  {t('perMonth')}
                 </div>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -202,7 +197,7 @@ export default function SettingsPage() {
                     cursor: 'pointer',
                   }}
                 >
-                  Plan Actual
+                  {t('currentPlanButton')}
                 </button>
               )}
             </div>
@@ -213,7 +208,7 @@ export default function SettingsPage() {
       {/* Language Section */}
       <div style={{ marginBottom: '40px' }}>
         <h2 style={{ color: '#0ea5e9', fontSize: '20px', fontWeight: 'bold', marginBottom: '20px' }}>
-          Idioma
+          {t('language')}
         </h2>
         <div style={{
           display: 'grid',
@@ -245,7 +240,7 @@ export default function SettingsPage() {
       {/* Account Section */}
       <div style={{ marginBottom: '40px' }}>
         <h2 style={{ color: '#0ea5e9', fontSize: '20px', fontWeight: 'bold', marginBottom: '20px' }}>
-          Cuenta
+          {t('accountSection')}
         </h2>
         <div style={{
           background: '#1e293b',
@@ -258,7 +253,7 @@ export default function SettingsPage() {
         }}>
           <div>
             <label style={{ color: '#94a3b8', fontSize: '12px', fontWeight: 'bold', marginBottom: '8px', display: 'block' }}>
-              Email
+              {t('emailLabel')}
             </label>
             <input
               type="email"
@@ -286,7 +281,7 @@ export default function SettingsPage() {
             cursor: 'pointer',
             alignSelf: 'flex-start',
           }}>
-            Cambiar Contraseña
+            {t('changePassword')}
           </button>
         </div>
       </div>
@@ -302,16 +297,16 @@ export default function SettingsPage() {
         gap: '12px',
       }}>
         <h3 style={{ color: '#0ea5e9', fontSize: '16px', fontWeight: 'bold', marginBottom: '8px' }}>
-          Legal
+          {t('legalSection')}
         </h3>
         <a href="#" style={{ color: '#0ea5e9', textDecoration: 'none', fontSize: '14px' }}>
-          📋 Términos de Servicio
+          📋 {t('termsOfService')}
         </a>
         <a href="#" style={{ color: '#0ea5e9', textDecoration: 'none', fontSize: '14px' }}>
-          🔒 Política de Privacidad
+          🔒 {t('privacyPolicy')}
         </a>
         <a href="#" style={{ color: '#0ea5e9', textDecoration: 'none', fontSize: '14px' }}>
-          ⚖️ Términos Legales
+          ⚖️ {t('legalTerms')}
         </a>
       </div>
     </div>

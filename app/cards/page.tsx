@@ -69,7 +69,7 @@ export default function MyCardsPage() {
           <div>
             <h1 style={styles.title}>{t('myCards')}</h1>
             <p style={styles.subtitle}>
-              {mockCards.length} {mockCards.length === 1 ? 'tarjeta' : 'tarjetas'}
+              {mockCards.length} {mockCards.length === 1 ? t('cards_singular') : t('cards_plural')}
             </p>
           </div>
           <button style={styles.addCardButton}>
@@ -82,19 +82,19 @@ export default function MyCardsPage() {
       <div style={styles.statsGrid}>
         <StatCard
           icon="💳"
-          label="Deuda Total (Crédito)"
+          label={t('totalCreditDebt')}
           value={`$${totalCreditDebt.toFixed(2)}`}
           color="#ef4444"
         />
         <StatCard
           icon="📊"
-          label="Límite Total"
+          label={t('totalLimit')}
           value={`$${totalCreditLimit.toFixed(2)}`}
           color="#94a3b8"
         />
         <StatCard
           icon="⚠️"
-          label="Utilización"
+          label={t('utilization')}
           value={`${utilizationRate.toFixed(1)}%`}
           color={utilizationRate > 70 ? '#ef4444' : utilizationRate > 50 ? '#f59e0b' : '#10b981'}
         />
@@ -102,7 +102,7 @@ export default function MyCardsPage() {
 
       {/* CARDS GRID */}
       <div style={styles.cardsGridSection}>
-        <h2 style={styles.sectionTitle}>Tus Tarjetas</h2>
+        <h2 style={styles.sectionTitle}>{t('yourCards')}</h2>
         <div style={styles.cardsGrid}>
           {mockCards.map((card) => (
             <div key={card.id} style={styles.cardWrapper}>
@@ -116,9 +116,9 @@ export default function MyCardsPage() {
                 type={card.type}
               />
               <div style={styles.cardActions}>
-                <button style={styles.actionButton}>Editar</button>
+                <button style={styles.actionButton}>{t('edit')}</button>
                 <button style={{ ...styles.actionButton, ...styles.actionButtonDanger }}>
-                  Eliminar
+                  {t('delete')}
                 </button>
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function MyCardsPage() {
 
       {/* CARD DETAILS TABLE */}
       <div style={styles.tableSection}>
-        <h2 style={styles.sectionTitle}>Detalles de Tarjetas</h2>
+        <h2 style={styles.sectionTitle}>{t('cardDetails')}</h2>
         <div style={styles.tableWrapper}>
           <table style={styles.table}>
             <thead>
@@ -149,7 +149,7 @@ export default function MyCardsPage() {
                   {t('limit')}
                 </th>
                 <th style={{ ...styles.headerCell, textAlign: 'right' }}>
-                  Utilización
+                  {t('utilizationHeader')}
                 </th>
               </tr>
             </thead>

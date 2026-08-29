@@ -17,8 +17,8 @@ const mockTransactions: Transaction[] = [
   {
     id: '1',
     date: '2026-08-28',
-    merchant: 'Amazon',
-    category: 'Shopping',
+    merchant: 'amazon',
+    category: 'shopping',
     amount: -45.99,
     card: '•••• 4242',
     icon: '🛍️',
@@ -26,8 +26,8 @@ const mockTransactions: Transaction[] = [
   {
     id: '2',
     date: '2026-08-27',
-    merchant: 'Starbucks',
-    category: 'Food & Drink',
+    merchant: 'starbucks',
+    category: 'foodDrink',
     amount: -5.50,
     card: '•••• 1234',
     icon: '☕',
@@ -35,8 +35,8 @@ const mockTransactions: Transaction[] = [
   {
     id: '3',
     date: '2026-08-26',
-    merchant: 'Salary Deposit',
-    category: 'Income',
+    merchant: 'salaryDeposit',
+    category: 'income',
     amount: 4200.00,
     card: '•••• 5678',
     icon: '💰',
@@ -44,8 +44,8 @@ const mockTransactions: Transaction[] = [
   {
     id: '4',
     date: '2026-08-25',
-    merchant: 'Netflix',
-    category: 'Subscriptions',
+    merchant: 'netflix',
+    category: 'subscriptions',
     amount: -14.99,
     card: '•••• 4242',
     icon: '📺',
@@ -53,8 +53,8 @@ const mockTransactions: Transaction[] = [
   {
     id: '5',
     date: '2026-08-24',
-    merchant: 'Whole Foods',
-    category: 'Groceries',
+    merchant: 'wholefiles',
+    category: 'groceries',
     amount: -87.32,
     card: '•••• 1234',
     icon: '🛒',
@@ -62,8 +62,8 @@ const mockTransactions: Transaction[] = [
   {
     id: '6',
     date: '2026-08-23',
-    merchant: 'Uber',
-    category: 'Transportation',
+    merchant: 'uber',
+    category: 'transportation',
     amount: -18.50,
     card: '•••• 4242',
     icon: '🚗',
@@ -71,8 +71,8 @@ const mockTransactions: Transaction[] = [
   {
     id: '7',
     date: '2026-08-22',
-    merchant: 'Gym Membership',
-    category: 'Health',
+    merchant: 'gymMembership',
+    category: 'health',
     amount: -49.99,
     card: '•••• 1234',
     icon: '💪',
@@ -80,25 +80,16 @@ const mockTransactions: Transaction[] = [
   {
     id: '8',
     date: '2026-08-21',
-    merchant: 'Restaurant',
-    category: 'Dining',
+    merchant: 'restaurant',
+    category: 'dining',
     amount: -65.80,
     card: '•••• 5678',
     icon: '🍽️',
   },
 ];
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString + 'T00:00:00');
-  return date.toLocaleDateString('es-ES', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  });
-}
-
 export default function TransactionsPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('08');
   const [selectedYear, setSelectedYear] = useState('2026');
@@ -110,11 +101,31 @@ export default function TransactionsPage() {
     setMounted(true);
   }, []);
 
-  const filteredTransactions = mockTransactions.filter((tx) =>
-    (tx.merchant.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tx.category.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    tx.date.includes(`${selectedYear}-${selectedMonth}`)
-  );
+  // Función para formatear fecha según idioma
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+  };
+
+  // Meses traducidos
+  const monthNames = {
+    es: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  };
+
+  const filteredTransactions = mockTransactions.filter((tx) => {
+    const merchantName = t(tx.merchant);
+    const categoryName = t(tx.category);
+    return (
+      (merchantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        categoryName.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      tx.date.includes(`${selectedYear}-${selectedMonth}`)
+    );
+  });
 
   const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
   const paginatedTransactions = filteredTransactions.slice(
@@ -134,6 +145,8 @@ export default function TransactionsPage() {
     return <div style={styles.loadingContainer}>Loading...</div>;
   }
 
+  const selectedMonthName = monthNames[language][parseInt(selectedMonth) - 1];
+
   return (
     <div style={styles.container}>
       {/* Header */}
@@ -141,7 +154,7 @@ export default function TransactionsPage() {
         <div>
           <h1 style={styles.title}>{t('transactions')}</h1>
           <p style={styles.subtitle}>
-            {t('month')}: August {selectedYear}
+            {t('month')}: {selectedMonthName} {selectedYear}
           </p>
         </div>
       </div>
@@ -150,19 +163,19 @@ export default function TransactionsPage() {
       <div style={styles.summaryGrid}>
         <SummaryCard
           icon="📈"
-          label="Ingresos"
+          label={t('incomeLabel')}
           value={`$${monthlyIncome.toFixed(2)}`}
           color="#10b981"
         />
         <SummaryCard
           icon="📉"
-          label="Gastos"
+          label={t('expensesLabel')}
           value={`$${monthlyExpenses.toFixed(2)}`}
           color="#ef4444"
         />
         <SummaryCard
           icon="💰"
-          label="Balance"
+          label={t('balanceLabel')}
           value={`$${(monthlyIncome - monthlyExpenses).toFixed(2)}`}
           color="#06b6d4"
         />
@@ -184,7 +197,7 @@ export default function TransactionsPage() {
         >
           {['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].map((m) => (
             <option key={m} value={m}>
-              {new Date(`2026-${m}-01`).toLocaleDateString('es-ES', { month: 'long' })}
+              {monthNames[language][parseInt(m) - 1]}
             </option>
           ))}
         </select>
@@ -225,9 +238,9 @@ export default function TransactionsPage() {
                 <tr key={tx.id} style={styles.tableRow}>
                   <td style={styles.cell}>{formatDate(tx.date)}</td>
                   <td style={{ ...styles.cell, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span>{tx.icon}</span> {tx.merchant}
+                    <span>{tx.icon}</span> {t(tx.merchant)}
                   </td>
-                  <td style={{ ...styles.cell, color: '#94a3b8' }}>{tx.category}</td>
+                  <td style={{ ...styles.cell, color: '#94a3b8' }}>{t(tx.category)}</td>
                   <td style={{ ...styles.cell, color: '#94a3b8', fontSize: '13px' }}>{tx.card}</td>
                   <td
                     style={{
@@ -260,17 +273,17 @@ export default function TransactionsPage() {
             disabled={currentPage === 1}
             style={{ ...styles.paginationButton, opacity: currentPage === 1 ? 0.5 : 1 }}
           >
-            ← Anterior
+            ← {t('previous')}
           </button>
           <span style={styles.pageInfo}>
-            Página {currentPage} de {totalPages}
+            {t('page')} {currentPage} {t('of')} {totalPages}
           </span>
           <button
             onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
             style={{ ...styles.paginationButton, opacity: currentPage === totalPages ? 0.5 : 1 }}
           >
-            Siguiente →
+            {t('next')} →
           </button>
         </div>
       )}
