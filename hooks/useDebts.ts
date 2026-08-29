@@ -5,8 +5,11 @@ interface Debt {
   user_id: string
   name: string
   amount: number
+  remaining: number
   interest_rate: number
   due_date: string
+  creditor?: string
+  status: 'active' | 'paid' | 'defaulted'
   created_at: string
 }
 
@@ -50,5 +53,43 @@ export function useDebts() {
     }
   }
 
-  return { debts, loading, error, fetchDebts, addDebt }
+  const updateDebt = async (id: string, updates: Partial<Debt>) => {
+    try {
+      const response = await fetch(`/api/debts?id=${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      })
+      if (!response.ok) throw new Error('Failed to update debt')
+      const updated = await response.json()
+      setDebts(debts.map(d => d.id === id ? updated : d))
+      return updated
+    } catch (err: any) {
+      setError(err.message)
+      throw err
+    }
+  }
+
+  const deleteDebt = async (id: string) => {
+    try {
+      const response = await fetch(`/api/debts?id=${id}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) throw new Error('Failed to delete debt')
+      setDebts(debts.filter(d => d.id !== id))
+    } catch (err: any) {
+      setError(err.message)
+      throw err
+    }
+  }
+
+  return { 
+    debts, 
+    loading, 
+    error, 
+    fetchDebts, 
+    addDebt,
+    updateDebt,
+    deleteDebt
+  }
 }

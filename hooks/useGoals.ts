@@ -6,8 +6,9 @@ interface Goal {
   name: string
   target_amount: number
   current_amount: number
-  category: string
   deadline: string
+  category?: string
+  status: 'active' | 'completed' | 'cancelled'
   created_at: string
 }
 
@@ -51,5 +52,43 @@ export function useGoals() {
     }
   }
 
-  return { goals, loading, error, fetchGoals, addGoal }
+  const updateGoal = async (id: string, updates: Partial<Goal>) => {
+    try {
+      const response = await fetch(`/api/goals?id=${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      })
+      if (!response.ok) throw new Error('Failed to update goal')
+      const updated = await response.json()
+      setGoals(goals.map(g => g.id === id ? updated : g))
+      return updated
+    } catch (err: any) {
+      setError(err.message)
+      throw err
+    }
+  }
+
+  const deleteGoal = async (id: string) => {
+    try {
+      const response = await fetch(`/api/goals?id=${id}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) throw new Error('Failed to delete goal')
+      setGoals(goals.filter(g => g.id !== id))
+    } catch (err: any) {
+      setError(err.message)
+      throw err
+    }
+  }
+
+  return { 
+    goals, 
+    loading, 
+    error, 
+    fetchGoals, 
+    addGoal,
+    updateGoal,
+    deleteGoal
+  }
 }

@@ -34,7 +34,7 @@ export function useCards() {
     }
   }
 
-  const addCard = async (card: Omit<Card, 'id' | 'user_id' | 'used' | 'created_at'>) => {
+  const addCard = async (card: Omit<Card, 'id' | 'user_id' | 'created_at'>) => {
     try {
       const response = await fetch('/api/cards', {
         method: 'POST',
@@ -51,5 +51,43 @@ export function useCards() {
     }
   }
 
-  return { cards, loading, error, fetchCards, addCard }
+  const updateCard = async (id: string, updates: Partial<Card>) => {
+    try {
+      const response = await fetch(`/api/cards?id=${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      })
+      if (!response.ok) throw new Error('Failed to update card')
+      const updated = await response.json()
+      setCards(cards.map(c => c.id === id ? updated : c))
+      return updated
+    } catch (err: any) {
+      setError(err.message)
+      throw err
+    }
+  }
+
+  const deleteCard = async (id: string) => {
+    try {
+      const response = await fetch(`/api/cards?id=${id}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) throw new Error('Failed to delete card')
+      setCards(cards.filter(c => c.id !== id))
+    } catch (err: any) {
+      setError(err.message)
+      throw err
+    }
+  }
+
+  return { 
+    cards, 
+    loading, 
+    error, 
+    fetchCards, 
+    addCard,
+    updateCard,
+    deleteCard
+  }
 }
