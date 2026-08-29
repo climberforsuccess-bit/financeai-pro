@@ -707,8 +707,6 @@ function TopBar() {
 __turbopack_context__.s([
     "LanguageProvider",
     ()=>LanguageProvider,
-    "translations",
-    ()=>translations,
     "useLanguage",
     ()=>useLanguage
 ]);
@@ -718,497 +716,488 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 ;
 ;
 const translations = {
-    es: {
-        dashboard: 'Dashboard',
-        transactions: 'Transacciones',
-        myCards: 'Mis Tarjetas',
-        debtPlan: 'Salir de Deudas',
-        subscriptions: 'Suscripciones',
-        recommendations: 'Recomendaciones',
-        aiAssistant: 'Asistente IA',
-        reports: 'Reportes',
-        settings: 'Configuración',
-        scannerReceipt: 'Escanear Recibo',
-        totalBalance: 'Balance Total',
-        monthlyIncome: 'Ingresos Mensuales',
-        monthlyExpenses: 'Gastos Mensuales',
-        totalDebt: 'Deuda Total',
-        savings: 'Ahorros',
-        recentTransactions: 'Transacciones Recientes',
-        addCard: 'Agregar Tarjeta',
-        viewAll: 'Ver Todo',
-        noTransactions: 'Sin transacciones',
-        date: 'Fecha',
-        merchant: 'Comercio',
-        category: 'Categoría',
-        amount: 'Monto',
-        card: 'Tarjeta',
-        exportPDF: 'Exportar PDF',
-        exportCSV: 'Exportar CSV',
-        search: 'Buscar',
-        filter: 'Filtrar',
-        month: 'Mes',
-        year: 'Año',
-        cardName: 'Nombre de Tarjeta',
-        bank: 'Banco',
-        type: 'Tipo',
-        balance: 'Balance',
-        limit: 'Límite',
-        paymentDueDate: 'Fecha de Pago',
-        debit: 'Débito',
-        credit: 'Crédito',
-        personal: 'Personal',
-        business: 'Negocio',
-        apr: 'APR',
-        noCards: 'Sin tarjetas',
-        totalDebtAmount: 'Deuda Total',
-        debtStrategy: 'Estrategia de Pago',
-        estimatedPayoffTime: 'Tiempo Estimado de Pago',
-        monthlyPayment: 'Pago Mensual',
-        interestRate: 'Tasa de Interés',
-        debtType: 'Tipo de Deuda',
-        mortgage: 'Hipoteca',
-        autoLoan: 'Préstamo de Auto',
-        creditCard: 'Tarjeta de Crédito',
-        personalLoan: 'Préstamo Personal',
-        other: 'Otro',
-        avalanche: 'Avalanche',
-        snowball: 'Snowball',
-        consolidation: 'Consolidación',
-        hybrid: 'Híbrido',
-        addDebt: 'Agregar Deuda',
-        thisMonth: 'Este Mes',
-        saved: 'Ahorrado',
-        variation: 'Variación',
-        food: 'Alimentos',
-        transport: 'Transporte',
-        income: 'Ingresos',
-        entertainment: 'Entretenimiento',
-        health: 'Salud',
-        salaryPayment: 'Pago de Salario',
-        wholeFoodsMarket: 'Whole Foods Market',
-        uber: 'Uber',
-        netflix: 'Netflix',
-        pharmacyCVS: 'Farmacia CVS',
-        incomeVsExpenses: 'Ingresos vs Gastos',
-        january: 'Ene',
-        february: 'Feb',
-        march: 'Mar',
-        april: 'Abr',
-        may: 'May',
-        expenses: 'Gastos',
-        activeDebt: 'Deuda Activa',
-        cards: 'Tarjetas',
-        averageInterest: 'Interés Promedio',
-        debtObjective: 'Objetivo de Deuda',
-        method: 'Método',
-        timeline: 'Tiempo',
-        months: 'meses',
-        incomeLabel: 'Ingresos',
-        expensesLabel: 'Gastos',
-        balanceLabel: 'Balance',
-        previous: 'Anterior',
-        next: 'Siguiente',
-        page: 'Página',
-        of: 'de',
-        shopping: 'Compras',
-        foodDrink: 'Comida y Bebida',
-        groceries: 'Abarrotes',
-        transportation: 'Transporte',
-        dining: 'Restaurantes',
-        gymMembership: 'Membresía de Gimnasio',
-        amazon: 'Amazon',
-        starbucks: 'Starbucks',
-        salaryDeposit: 'Depósito de Salario',
-        wholefiles: 'Whole Foods',
-        restaurant: 'Restaurante',
-        cards_singular: 'tarjeta',
-        cards_plural: 'tarjetas',
-        totalCreditDebt: 'Deuda Total (Crédito)',
-        totalLimit: 'Límite Total',
-        utilization: 'Utilización',
-        yourCards: 'Tus Tarjetas',
-        cardDetails: 'Detalles de Tarjetas',
-        edit: 'Editar',
-        delete: 'Eliminar',
-        utilizationHeader: 'Utilización',
-        activeDebts: 'deudas activas',
-        highestInterestRate: 'Tasa Más Alta',
-        chooseStrategy: 'Elige tu Estrategia',
-        strategyDetails: 'Detalles de',
-        advantage: 'Ventaja',
-        disadvantage: 'Desventaja',
-        timeToPayoff: 'Tiempo para Pagar',
-        totalEstimatedInterest: 'Interés Total Estimado',
-        paymentOrder: 'Orden de Pago',
-        order: 'Orden',
-        debt: 'Deuda',
-        rate: 'Tasa',
-        monthlyPaymentHeader: 'Pago Mensual',
-        timeHeader: 'Tiempo',
-        years: 'años',
-        subscription_singular: 'suscripción activa',
-        subscription_plural: 'suscripciones activas',
-        monthlyCost: 'Costo Mensual',
-        activeSubscriptions: 'Suscripciones Activas',
-        potentialSavings: 'Ahorro Potencial',
-        cancelEntertainment: 'Si cancelas entretenimiento',
-        filterByCategory: 'Filtrar por categoría',
-        yourSubscriptions: 'Tus Suscripciones',
-        monthly: 'Mensual',
-        yearly: 'Anual',
-        nextPayment: 'Próximo pago',
-        cancel: 'Cancelar',
-        noSubscriptionsCategory: 'No hay suscripciones en esta categoría',
-        upcomingPayments: 'Próximos Pagos',
-        subscription: 'Suscripción',
-        nextBillingDate: 'Próximo Pago',
-        action: 'Acción',
-        in: 'En',
-        days: 'días',
-        aiRecommendations: 'Recomendaciones de IA',
-        consolidateStreaming: 'Consolidar Streaming',
-        consolidateStreamingDesc: 'Detectamos que tienes 2 servicios de streaming. Considera usar solo uno para ahorrar $20/mes.',
-        adobeAlternative: 'Adobe Creative Cloud',
-        adobeAlternativeDesc: 'Es tu suscripción más cara. Considera alternativas como Figma o Canva.',
-        optimalSpending: 'Gasto Óptimo',
-        optimalSpendingDesc: 'Tu gasto total es {monthly}/mes ({percentage}% de ingresos)',
-        underControl: 'Está bajo control',
-        yearlyTotal: '/año',
-        inCategory: 'en',
-        all: 'Todos',
-        scanReceiptSubtitle: 'Escanea recibos para agregar transacciones automáticamente',
-        processing: 'Procesando recibo...',
-        analyzingOCR: 'Analizando imagen con OCR',
-        clickToUpload: 'Haz clic para cargar un recibo',
-        dragOrUpload: 'O arrastra una imagen aquí (JPG, PNG, HEIC)',
-        scannedReceipts: 'Recibos Escaneados',
-        receiptAmount: 'Monto',
-        receiptCard: 'Tarjeta',
-        add: 'Agregar',
-        discard: 'Descartar',
-        info: 'Información',
-        supportsFormats: 'Soportamos JPG, PNG, HEIC y otros formatos de imagen',
-        extractsAutomatically: 'Extrae automáticamente: comercio, monto, fecha y hora',
-        detectsCardDigits: 'Detecta el último dígito de tu tarjeta',
-        assignsCategory: 'Asigna categoría automáticamente',
-        addsTransaction: 'Agregará la transacción a tu historial',
-        at: 'a las',
-        settingsTitle: 'Configuración',
-        manageAccount: 'Administra tu cuenta y preferencias',
-        accountTab: 'Cuenta',
-        notificationsTab: 'Notificaciones',
-        privacyTab: 'Privacidad',
-        currentPlan: 'Plan Actual',
-        yourCurrentPlan: 'Tu plan actual',
-        financeAIProPlan: 'FinanceAI Pro',
-        renewalDate: 'Renovación el 15 de septiembre, 2026',
-        cancelSubscription: 'Cancelar Suscripción',
-        changePlan: 'Cambiar Plan',
-        perMonth: '/mes',
-        currentPlanButton: 'Plan Actual',
-        language: 'Idioma',
-        accountSection: 'Cuenta',
-        emailLabel: 'Email',
-        changePassword: 'Cambiar Contraseña',
-        legalSection: 'Legal',
-        termsOfService: 'Términos de Servicio',
-        privacyPolicy: 'Política de Privacidad',
-        legalTerms: 'Términos Legales',
-        planFree: 'Gratis',
-        planPersonal: 'Personal',
-        planPro: 'Pro',
-        planBusiness: 'Business',
-        featureBasicDashboard: 'Dashboard básico',
-        featureLimitedTx: '5 transacciones/mes',
-        featureNoAI: 'Sin IA',
-        featureCompleteDashboard: 'Dashboard completo',
-        featureUnlimitedTx: 'Transacciones ilimitadas',
-        featureBasicAI: 'Asistente IA básico',
-        featureScanReceipts: 'Scanner de recibos',
-        featureEverythingPersonal: 'Todo de Personal',
-        featureAdvancedAI: 'IA avanzada',
-        featureExpenseAnalysis: 'Análisis de gastos',
-        featureExportPDF: 'Exportación PDF/CSV',
-        featureEverythingPro: 'Todo de Pro',
-        featureMultiProfiles: '5 perfiles',
-        featurePrioritySupport: 'Soporte prioritario',
-        featureAPIAccess: 'API access'
+    // Navigation
+    dashboard: {
+        en: 'Dashboard',
+        es: 'Panel de Control'
     },
-    en: {
-        dashboard: 'Dashboard',
-        transactions: 'Transactions',
-        myCards: 'My Cards',
-        debtPlan: 'Debt Plan',
-        subscriptions: 'Subscriptions',
-        recommendations: 'Recommendations',
-        aiAssistant: 'AI Assistant',
-        reports: 'Reports',
-        settings: 'Settings',
-        scannerReceipt: 'Scan Receipt',
-        totalBalance: 'Total Balance',
-        monthlyIncome: 'Monthly Income',
-        monthlyExpenses: 'Monthly Expenses',
-        totalDebt: 'Total Debt',
-        savings: 'Savings',
-        recentTransactions: 'Recent Transactions',
-        addCard: 'Add Card',
-        viewAll: 'View All',
-        noTransactions: 'No transactions',
-        date: 'Date',
-        merchant: 'Merchant',
-        category: 'Category',
-        amount: 'Amount',
-        card: 'Card',
-        exportPDF: 'Export PDF',
-        exportCSV: 'Export CSV',
-        search: 'Search',
-        filter: 'Filter',
-        month: 'Month',
-        year: 'Year',
-        cardName: 'Card Name',
-        bank: 'Bank',
-        type: 'Type',
-        balance: 'Balance',
-        limit: 'Limit',
-        paymentDueDate: 'Payment Due Date',
-        debit: 'Debit',
-        credit: 'Credit',
-        personal: 'Personal',
-        business: 'Business',
-        apr: 'APR',
-        noCards: 'No cards',
-        totalDebtAmount: 'Total Debt',
-        debtStrategy: 'Payment Strategy',
-        estimatedPayoffTime: 'Estimated Payoff Time',
-        monthlyPayment: 'Monthly Payment',
-        interestRate: 'Interest Rate',
-        debtType: 'Debt Type',
-        mortgage: 'Mortgage',
-        autoLoan: 'Auto Loan',
-        creditCard: 'Credit Card',
-        personalLoan: 'Personal Loan',
-        other: 'Other',
-        avalanche: 'Avalanche',
-        snowball: 'Snowball',
-        consolidation: 'Consolidation',
-        hybrid: 'Hybrid',
-        addDebt: 'Add Debt',
-        thisMonth: 'This Month',
-        saved: 'Saved',
-        variation: 'Variation',
-        food: 'Food',
-        transport: 'Transport',
-        income: 'Income',
-        entertainment: 'Entertainment',
-        health: 'Health',
-        salaryPayment: 'Salary Payment',
-        wholeFoodsMarket: 'Whole Foods Market',
-        uber: 'Uber',
-        netflix: 'Netflix',
-        pharmacyCVS: 'Pharmacy CVS',
-        incomeVsExpenses: 'Income vs Expenses',
-        january: 'Jan',
-        february: 'Feb',
-        march: 'Mar',
-        april: 'Apr',
-        may: 'May',
-        expenses: 'Expenses',
-        activeDebt: 'Active Debt',
-        cards: 'Cards',
-        averageInterest: 'Average Interest',
-        debtObjective: 'Debt Objective',
-        method: 'Method',
-        timeline: 'Timeline',
-        months: 'months',
-        incomeLabel: 'Income',
-        expensesLabel: 'Expenses',
-        balanceLabel: 'Balance',
-        previous: 'Previous',
-        next: 'Next',
-        page: 'Page',
-        of: 'of',
-        shopping: 'Shopping',
-        foodDrink: 'Food & Drink',
-        groceries: 'Groceries',
-        transportation: 'Transportation',
-        dining: 'Dining',
-        gymMembership: 'Gym Membership',
-        amazon: 'Amazon',
-        starbucks: 'Starbucks',
-        salaryDeposit: 'Salary Deposit',
-        wholefiles: 'Whole Foods',
-        restaurant: 'Restaurant',
-        cards_singular: 'card',
-        cards_plural: 'cards',
-        totalCreditDebt: 'Total Credit Debt',
-        totalLimit: 'Total Limit',
-        utilization: 'Utilization',
-        yourCards: 'Your Cards',
-        cardDetails: 'Card Details',
-        edit: 'Edit',
-        delete: 'Delete',
-        utilizationHeader: 'Utilization',
-        activeDebts: 'active debts',
-        highestInterestRate: 'Highest Interest Rate',
-        chooseStrategy: 'Choose Your Strategy',
-        strategyDetails: 'Details of',
-        advantage: 'Advantage',
-        disadvantage: 'Disadvantage',
-        timeToPayoff: 'Time to Payoff',
-        totalEstimatedInterest: 'Total Estimated Interest',
-        paymentOrder: 'Payment Order',
-        order: 'Order',
-        debt: 'Debt',
-        rate: 'Rate',
-        monthlyPaymentHeader: 'Monthly Payment',
-        timeHeader: 'Time',
-        years: 'years',
-        subscription_singular: 'active subscription',
-        subscription_plural: 'active subscriptions',
-        monthlyCost: 'Monthly Cost',
-        activeSubscriptions: 'Active Subscriptions',
-        potentialSavings: 'Potential Savings',
-        cancelEntertainment: 'If you cancel entertainment',
-        filterByCategory: 'Filter by category',
-        yourSubscriptions: 'Your Subscriptions',
-        monthly: 'Monthly',
-        yearly: 'Yearly',
-        nextPayment: 'Next payment',
-        cancel: 'Cancel',
-        noSubscriptionsCategory: 'No subscriptions in this category',
-        upcomingPayments: 'Upcoming Payments',
-        subscription: 'Subscription',
-        nextBillingDate: 'Next Payment',
-        action: 'Action',
-        in: 'In',
-        days: 'days',
-        aiRecommendations: 'AI Recommendations',
-        consolidateStreaming: 'Consolidate Streaming',
-        consolidateStreamingDesc: 'We detected 2 streaming services. Consider using only one to save $20/month.',
-        adobeAlternative: 'Adobe Creative Cloud',
-        adobeAlternativeDesc: 'It\'s your most expensive subscription. Consider alternatives like Figma or Canva.',
-        optimalSpending: 'Optimal Spending',
-        optimalSpendingDesc: 'Your total spending is {monthly}/month ({percentage}% of income)',
-        underControl: 'Is under control',
-        yearlyTotal: '/year',
-        inCategory: 'in',
-        all: 'All',
-        scanReceiptSubtitle: 'Scan receipts to add transactions automatically',
-        processing: 'Processing receipt...',
-        analyzingOCR: 'Analyzing image with OCR',
-        clickToUpload: 'Click to upload a receipt',
-        dragOrUpload: 'Or drag an image here (JPG, PNG, HEIC)',
-        scannedReceipts: 'Scanned Receipts',
-        receiptAmount: 'Amount',
-        receiptCard: 'Card',
-        add: 'Add',
-        discard: 'Discard',
-        info: 'Information',
-        supportsFormats: 'We support JPG, PNG, HEIC and other image formats',
-        extractsAutomatically: 'Automatically extracts: merchant, amount, date and time',
-        detectsCardDigits: 'Detects the last digits of your card',
-        assignsCategory: 'Automatically assigns category',
-        addsTransaction: 'Will add the transaction to your history',
-        at: 'at',
-        settingsTitle: 'Settings',
-        manageAccount: 'Manage your account and preferences',
-        accountTab: 'Account',
-        notificationsTab: 'Notifications',
-        privacyTab: 'Privacy',
-        currentPlan: 'Current Plan',
-        yourCurrentPlan: 'Your current plan',
-        financeAIProPlan: 'FinanceAI Pro',
-        renewalDate: 'Renewal on September 15, 2026',
-        cancelSubscription: 'Cancel Subscription',
-        changePlan: 'Change Plan',
-        perMonth: '/month',
-        currentPlanButton: 'Current Plan',
-        language: 'Language',
-        accountSection: 'Account',
-        emailLabel: 'Email',
-        changePassword: 'Change Password',
-        legalSection: 'Legal',
-        termsOfService: 'Terms of Service',
-        privacyPolicy: 'Privacy Policy',
-        legalTerms: 'Legal Terms',
-        planFree: 'Free',
-        planPersonal: 'Personal',
-        planPro: 'Pro',
-        planBusiness: 'Business',
-        featureBasicDashboard: 'Basic dashboard',
-        featureLimitedTx: '5 transactions/month',
-        featureNoAI: 'No AI',
-        featureCompleteDashboard: 'Complete dashboard',
-        featureUnlimitedTx: 'Unlimited transactions',
-        featureBasicAI: 'Basic AI Assistant',
-        featureScanReceipts: 'Receipt scanner',
-        featureEverythingPersonal: 'Everything in Personal',
-        featureAdvancedAI: 'Advanced AI',
-        featureExpenseAnalysis: 'Expense analysis',
-        featureExportPDF: 'PDF/CSV export',
-        featureEverythingPro: 'Everything in Pro',
-        featureMultiProfiles: '5 profiles',
-        featurePrioritySupport: 'Priority support',
-        featureAPIAccess: 'API access'
+    transactions: {
+        en: 'Transactions',
+        es: 'Transacciones'
+    },
+    cards: {
+        en: 'Credit Cards',
+        es: 'Tarjetas de Crédito'
+    },
+    subscriptions: {
+        en: 'Subscriptions',
+        es: 'Suscripciones'
+    },
+    debt_plan: {
+        en: 'Debt Plan',
+        es: 'Plan de Deudas'
+    },
+    recommendations: {
+        en: 'Recommendations',
+        es: 'Recomendaciones'
+    },
+    reports: {
+        en: 'Reports',
+        es: 'Reportes'
+    },
+    settings: {
+        en: 'Settings',
+        es: 'Configuración'
+    },
+    receipt_scanner: {
+        en: 'Receipt Scanner',
+        es: 'Escáner de Recibos'
+    },
+    // Common Actions
+    add: {
+        en: 'Add',
+        es: 'Agregar'
+    },
+    save: {
+        en: 'Save',
+        es: 'Guardar'
+    },
+    delete: {
+        en: 'Delete',
+        es: 'Eliminar'
+    },
+    edit: {
+        en: 'Edit',
+        es: 'Editar'
+    },
+    cancel: {
+        en: 'Cancel',
+        es: 'Cancelar'
+    },
+    loading: {
+        en: 'Loading...',
+        es: 'Cargando...'
+    },
+    error: {
+        en: 'Error',
+        es: 'Error'
+    },
+    success: {
+        en: 'Success',
+        es: 'Éxito'
+    },
+    // Dashboard
+    welcome: {
+        en: 'Welcome',
+        es: 'Bienvenido'
+    },
+    total_balance: {
+        en: 'Total Balance',
+        es: 'Balance Total'
+    },
+    monthly_spending: {
+        en: 'Monthly Spending',
+        es: 'Gastos Mensuales'
+    },
+    upcoming_bills: {
+        en: 'Upcoming Bills',
+        es: 'Próximas Facturas'
+    },
+    financial_overview: {
+        en: 'Financial Overview',
+        es: 'Descripción Financiera'
+    },
+    manage_your_finances: {
+        en: 'Manage your finances',
+        es: 'Gestiona tus finanzas'
+    },
+    // Transactions
+    amount: {
+        en: 'Amount',
+        es: 'Monto'
+    },
+    type: {
+        en: 'Type',
+        es: 'Tipo'
+    },
+    category: {
+        en: 'Category',
+        es: 'Categoría'
+    },
+    date: {
+        en: 'Date',
+        es: 'Fecha'
+    },
+    description: {
+        en: 'Description',
+        es: 'Descripción'
+    },
+    income: {
+        en: 'Income',
+        es: 'Ingreso'
+    },
+    expense: {
+        en: 'Expense',
+        es: 'Gasto'
+    },
+    transfer: {
+        en: 'Transfer',
+        es: 'Transferencia'
+    },
+    expenses: {
+        en: 'Expenses',
+        es: 'Gastos'
+    },
+    balance: {
+        en: 'Balance',
+        es: 'Balance'
+    },
+    add_transaction: {
+        en: 'Add Transaction',
+        es: 'Agregar Transacción'
+    },
+    // Cards
+    credit_cards: {
+        en: 'Credit Cards',
+        es: 'Tarjetas de Crédito'
+    },
+    manage_your_cards: {
+        en: 'Manage your cards',
+        es: 'Gestiona tus tarjetas'
+    },
+    total_limit: {
+        en: 'Total Limit',
+        es: 'Límite Total'
+    },
+    total_used: {
+        en: 'Total Used',
+        es: 'Total Usado'
+    },
+    add_card: {
+        en: 'Add Card',
+        es: 'Agregar Tarjeta'
+    },
+    card_name: {
+        en: 'Card Name',
+        es: 'Nombre de la Tarjeta'
+    },
+    issuer: {
+        en: 'Issuer',
+        es: 'Emisor'
+    },
+    limit: {
+        en: 'Limit',
+        es: 'Límite'
+    },
+    used: {
+        en: 'Used',
+        es: 'Usado'
+    },
+    utilization: {
+        en: 'Utilization',
+        es: 'Utilización'
+    },
+    interest_rate: {
+        en: 'Interest Rate',
+        es: 'Tasa de Interés'
+    },
+    // Subscriptions
+    manage_recurring_payments: {
+        en: 'Manage recurring payments',
+        es: 'Gestiona pagos recurrentes'
+    },
+    monthly_total: {
+        en: 'Monthly Total',
+        es: 'Total Mensual'
+    },
+    add_subscription: {
+        en: 'Add Subscription',
+        es: 'Agregar Suscripción'
+    },
+    service_name: {
+        en: 'Service Name',
+        es: 'Nombre del Servicio'
+    },
+    daily: {
+        en: 'Daily',
+        es: 'Diario'
+    },
+    weekly: {
+        en: 'Weekly',
+        es: 'Semanal'
+    },
+    monthly: {
+        en: 'Monthly',
+        es: 'Mensual'
+    },
+    yearly: {
+        en: 'Yearly',
+        es: 'Anual'
+    },
+    next_billing: {
+        en: 'Next Billing',
+        es: 'Próxima Facturación'
+    },
+    active: {
+        en: 'Active',
+        es: 'Activo'
+    },
+    paused: {
+        en: 'Paused',
+        es: 'En Pausa'
+    },
+    cancelled: {
+        en: 'Cancelled',
+        es: 'Cancelado'
+    },
+    // Debt Plan
+    debt_plan: {
+        en: 'Debt Plan',
+        es: 'Plan de Deudas'
+    },
+    manage_your_debts: {
+        en: 'Manage your debts',
+        es: 'Gestiona tus deudas'
+    },
+    total_debt: {
+        en: 'Total Debt',
+        es: 'Deuda Total'
+    },
+    avg_interest_rate: {
+        en: 'Avg Interest Rate',
+        es: 'Tasa Promedio'
+    },
+    add_debt: {
+        en: 'Add Debt',
+        es: 'Agregar Deuda'
+    },
+    debt_name: {
+        en: 'Debt Name',
+        es: 'Nombre de la Deuda'
+    },
+    due_date: {
+        en: 'Due Date',
+        es: 'Fecha de Vencimiento'
+    },
+    // Scanner
+    upload_receipt_to_extract_data: {
+        en: 'Upload a receipt to extract transaction data',
+        es: 'Sube un recibo para extraer datos de transacciones'
+    },
+    drag_drop_or_click: {
+        en: 'Drag and drop or click to upload',
+        es: 'Arrastra y suelta o haz clic para cargar'
+    },
+    supported_formats: {
+        en: 'Supported formats',
+        es: 'Formatos soportados'
+    },
+    processing_receipt: {
+        en: 'Processing receipt...',
+        es: 'Procesando recibo...'
+    },
+    no_receipts_scanned_yet: {
+        en: 'No receipts scanned yet',
+        es: 'Sin recibos escaneados aún'
+    },
+    view_transaction: {
+        en: 'View Transaction',
+        es: 'Ver Transacción'
+    },
+    more: {
+        en: 'more',
+        es: 'más'
+    },
+    extracted_data: {
+        en: 'Extracted Data',
+        es: 'Datos Extraídos'
+    },
+    transaction_saved: {
+        en: 'Transaction Saved',
+        es: 'Transacción Guardada'
+    },
+    transaction_id: {
+        en: 'Transaction ID',
+        es: 'ID de Transacción'
+    },
+    vendor: {
+        en: 'Vendor',
+        es: 'Vendedor'
+    },
+    items: {
+        en: 'Items',
+        es: 'Artículos'
+    },
+    // Goals
+    goals: {
+        en: 'Goals',
+        es: 'Objetivos'
+    },
+    add_goal: {
+        en: 'Add Goal',
+        es: 'Agregar Objetivo'
+    },
+    target_amount: {
+        en: 'Target Amount',
+        es: 'Monto Objetivo'
+    },
+    current_amount: {
+        en: 'Current Amount',
+        es: 'Monto Actual'
+    },
+    deadline: {
+        en: 'Deadline',
+        es: 'Fecha Límite'
+    },
+    progress: {
+        en: 'Progress',
+        es: 'Progreso'
+    },
+    // Settings
+    language: {
+        en: 'Language',
+        es: 'Idioma'
+    },
+    theme: {
+        en: 'Theme',
+        es: 'Tema'
+    },
+    notifications: {
+        en: 'Notifications',
+        es: 'Notificaciones'
+    },
+    privacy: {
+        en: 'Privacy',
+        es: 'Privacidad'
+    },
+    logout: {
+        en: 'Logout',
+        es: 'Cerrar Sesión'
+    },
+    // Months
+    january: {
+        en: 'January',
+        es: 'Enero'
+    },
+    february: {
+        en: 'February',
+        es: 'Febrero'
+    },
+    march: {
+        en: 'March',
+        es: 'Marzo'
+    },
+    april: {
+        en: 'April',
+        es: 'Abril'
+    },
+    may: {
+        en: 'May',
+        es: 'Mayo'
+    },
+    june: {
+        en: 'June',
+        es: 'Junio'
+    },
+    july: {
+        en: 'July',
+        es: 'Julio'
+    },
+    august: {
+        en: 'August',
+        es: 'Agosto'
+    },
+    september: {
+        en: 'September',
+        es: 'Septiembre'
+    },
+    october: {
+        en: 'October',
+        es: 'Octubre'
+    },
+    november: {
+        en: 'November',
+        es: 'Noviembre'
+    },
+    december: {
+        en: 'December',
+        es: 'Diciembre'
+    },
+    // Days
+    monday: {
+        en: 'Monday',
+        es: 'Lunes'
+    },
+    tuesday: {
+        en: 'Tuesday',
+        es: 'Martes'
+    },
+    wednesday: {
+        en: 'Wednesday',
+        es: 'Miércoles'
+    },
+    thursday: {
+        en: 'Thursday',
+        es: 'Jueves'
+    },
+    friday: {
+        en: 'Friday',
+        es: 'Viernes'
+    },
+    saturday: {
+        en: 'Saturday',
+        es: 'Sábado'
+    },
+    sunday: {
+        en: 'Sunday',
+        es: 'Domingo'
     }
 };
 const LanguageContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createContext"])(undefined);
-const LanguageProvider = ({ children })=>{
-    const [language, setLanguageState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('es');
+function LanguageProvider({ children }) {
+    const [language, setLanguage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('en');
     const [mounted, setMounted] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        const stored = localStorage.getItem('language');
+        if (stored && (stored === 'en' || stored === 'es')) {
+            setLanguage(stored);
+        }
         setMounted(true);
-        try {
-            const saved = localStorage.getItem('financeai-lang');
-            if (saved && [
-                'es',
-                'en'
-            ].includes(saved)) {
-                setLanguageState(saved);
-            }
-        } catch  {}
     }, []);
-    const setLanguage = (lang)=>{
-        setLanguageState(lang);
-        try {
-            localStorage.setItem('financeai-lang', lang);
-        } catch  {}
+    const handleSetLanguage = (lang)=>{
+        setLanguage(lang);
+        localStorage.setItem('language', lang);
     };
     const t = (key)=>{
-        return translations[language][key] || key;
+        return translations[key]?.[language] || key;
     };
     if (!mounted) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
         children: children
     }, void 0, false, {
         fileName: "[project]/context/LanguageContext.tsx",
-        lineNumber: 477,
+        lineNumber: 175,
         columnNumber: 24
-    }, ("TURBOPACK compile-time value", void 0));
+    }, this);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(LanguageContext.Provider, {
         value: {
             language,
-            setLanguage,
+            setLanguage: handleSetLanguage,
             t
         },
         children: children
     }, void 0, false, {
         fileName: "[project]/context/LanguageContext.tsx",
-        lineNumber: 480,
+        lineNumber: 178,
         columnNumber: 5
-    }, ("TURBOPACK compile-time value", void 0));
-};
-const useLanguage = ()=>{
+    }, this);
+}
+function useLanguage() {
     const context = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useContext"])(LanguageContext);
     if (!context) {
-        return {
-            language: 'es',
-            setLanguage: ()=>{},
-            t: (key)=>key
-        };
+        throw new Error('useLanguage must be used within LanguageProvider');
     }
     return context;
-};
+}
 }),
 ];
 
