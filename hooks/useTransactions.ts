@@ -1,97 +1,57 @@
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/context/AuthContext'
+import { getSupabaseClient } from '@/lib/supabase'
 
 interface Transaction {
   id: string
   user_id: string
-  amount: number
-  type: 'income' | 'expense' | 'transfer'
   category: string
-  description: string
+  amount: number
   date: string
-  notes?: string
+  description: string
+  type: 'income' | 'expense'
   created_at: string
 }
 
-export function useTransactions(limit = 50, offset = 0) {
+export function useTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [count, setCount] = useState(0)
+  const { authenticated } = useAuth()
 
   useEffect(() => {
-    fetchTransactions()
-  }, [limit, offset])
+    if (authenticated) {
+      fetchTransactions()
+    } else if (!loading) {
+      setLoading(false)
+    }
+  }, [authenticated])
 
   const fetchTransactions = async () => {
     try {
-      setLoading(true)
-      const response = await fetch(`/api/transactions?limit=${limit}&offset=${offset}`)
-      if (!response.ok) throw new Error('Failed to fetch transactions')
-      const { data, count: total } = await response.json()
+      const supabase = getSupabaseClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token
+
+      if (!token) throw new Error('No access token')
+
+      const response = await fetch('/api/transactions', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) throw new Error(`API error: ${response.status}`)
+      const { data } = await response.json()
       setTransactions(data)
-      setCount(total)
-    } catch (err: any) {
-      setError(err.message)
+      setError(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch transactions')
+      setTransactions([])
     } finally {
       setLoading(false)
     }
   }
 
-  const addTransaction = async (transaction: Omit<Transaction, 'id' | 'user_id' | 'created_at'>) => {
-    try {
-      const response = await fetch('/api/transactions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(transaction),
-      })
-      if (!response.ok) throw new Error('Failed to add transaction')
-      const newTransaction = await response.json()
-      setTransactions([newTransaction, ...transactions])
-      return newTransaction
-    } catch (err: any) {
-      setError(err.message)
-      throw err
-    }
-  }
-
-  const updateTransaction = async (id: string, updates: Partial<Transaction>) => {
-    try {
-      const response = await fetch(`/api/transactions?id=${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates),
-      })
-      if (!response.ok) throw new Error('Failed to update transaction')
-      const updated = await response.json()
-      setTransactions(transactions.map(t => t.id === id ? updated : t))
-      return updated
-    } catch (err: any) {
-      setError(err.message)
-      throw err
-    }
-  }
-
-  const deleteTransaction = async (id: string) => {
-    try {
-      const response = await fetch(`/api/transactions?id=${id}`, {
-        method: 'DELETE',
-      })
-      if (!response.ok) throw new Error('Failed to delete transaction')
-      setTransactions(transactions.filter(t => t.id !== id))
-    } catch (err: any) {
-      setError(err.message)
-      throw err
-    }
-  }
-
-  return { 
-    transactions, 
-    loading, 
-    error, 
-    count,
-    fetchTransactions, 
-    addTransaction,
-    updateTransaction,
-    deleteTransaction
-  }
+  return { transactions, loading, error }
 }
