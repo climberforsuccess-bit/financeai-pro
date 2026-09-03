@@ -1,18 +1,22 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 
 export async function POST(request: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // Get FormData (not JSON)
     const formData = await request.formData()
     const file = formData.get('file') as File
 
@@ -51,18 +55,15 @@ export async function POST(request: Request) {
               },
               {
                 type: 'text',
-                text: `Extract receipt information from this image and return JSON only, no markdown:
+                text: `Extract receipt information from this image and return ONLY valid JSON, no markdown, no extra text:
 {
   "vendor": "store name",
   "amount": total amount as number,
   "date": "YYYY-MM-DD",
-  "category": "category from list",
+  "category": "one of: Food & Dining, Groceries, Gas & Fuel, Shopping, Utilities, Entertainment, Travel, Healthcare, Other",
   "items": ["item1", "item2"],
-  "tax": tax amount as number or 0,
-  "total": total as number
-}
-
-Categories: Food & Dining, Groceries, Gas & Fuel, Shopping, Utilities, Entertainment, Travel, Healthcare, Other`,
+  "tax": tax amount as number or 0
+}`,
               },
             ],
           },
@@ -83,49 +84,80 @@ Categories: Food & Dining, Groceries, Gas & Fuel, Shopping, Utilities, Entertain
     }
 
     // Parse JSON from response
-    const receiptData = JSON.parse(content)
+    let receiptData
+    try {
+      receiptData = JSON.parse(content)
+    } catch (e) {
+      throw new Error('Invalid JSON response from OpenAI')
+    }
+
+    // Validate required fields
+    if (!receiptData.vendor || !receiptData.amount || !receiptData.date) {
+      throw new Error('Missing required fields: vendor, amount, date')
+    }
 
     // Check for duplicates in last 24 hours
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
     const { data: duplicates } = await supabase
-      .from('receipts')
+      .from('transactions')
       .select('id')
       .eq('user_id', user.id)
-      .eq('vendor', receiptData.vendor)
+      .eq('description', receiptData.vendor)
       .eq('amount', receiptData.amount)
       .gte('created_at', yesterday)
       .limit(1)
 
     if (duplicates && duplicates.length > 0) {
       return NextResponse.json(
-        { error: 'Duplicate receipt detected', isDuplicate: true },
+        { 
+          error: 'Duplicate receipt detected',
+          isDuplicate: true,
+          data: receiptData 
+        },
         { status: 409 }
       )
     }
 
-    // Save to database
-    const { data: saved, error } = await supabase
-      .from('receipts')
+    // Map category to transaction category
+    const categoryMap: { [key: string]: string } = {
+      'Food & Dining': 'food',
+      'Groceries': 'groceries',
+      'Gas & Fuel': 'transport',
+      'Shopping': 'shopping',
+      'Utilities': 'utilities',
+      'Entertainment': 'entertainment',
+      'Travel': 'travel',
+      'Healthcare': 'health',
+      'Other': 'other',
+    }
+
+    const mappedCategory = categoryMap[receiptData.category] || 'other'
+
+    // Save to transactions table (not receipts)
+    const { data: saved, error: insertError } = await supabase
+      .from('transactions')
       .insert([
         {
           user_id: user.id,
-          vendor: receiptData.vendor,
+          description: receiptData.vendor,
           amount: receiptData.amount,
           date: receiptData.date,
-          category: receiptData.category,
-          items: receiptData.items,
-          tax: receiptData.tax,
-          total: receiptData.total,
+          category: mappedCategory,
+          type: 'expense',
+          expense_type: 'personal',
+          merchant: receiptData.vendor,
+          created_at: new Date().toISOString(),
         },
       ])
       .select()
 
-    if (error) throw error
+    if (insertError) throw insertError
 
     return NextResponse.json(
       {
         success: true,
-        receipt: saved[0],
+        message: 'Receipt processed successfully',
+        transaction: saved[0],
         data: receiptData,
       },
       { status: 201 }
@@ -133,7 +165,7 @@ Categories: Food & Dining, Groceries, Gas & Fuel, Shopping, Utilities, Entertain
   } catch (error: any) {
     console.error('Scanner error:', error)
     return NextResponse.json(
-      { error: error.message },
+      { error: error.message || 'Internal server error' },
       { status: 500 }
     )
   }
