@@ -47,6 +47,14 @@ const translations: Translations = {
   this_month: { en: 'This Month', es: 'Este Mes' },
   avg_daily: { en: 'Daily Average', es: 'Promedio Diario' },
   view_all: { en: 'View All', es: 'Ver Todo' },
+  today: { en: 'Today', es: 'Hoy' },
+  monthly_income: { en: 'Monthly Income', es: 'Ingresos Mensuales' },
+  monthly_expenses: { en: 'Monthly Expenses', es: 'Gastos Mensuales' },
+  total_debt: { en: 'Total Debt', es: 'Deuda Total' },
+  savings: { en: 'Savings', es: 'Ahorros' },
+  recent_transactions: { en: 'Recent Transactions', es: 'Transacciones Recientes' },
+  no_transactions: { en: 'No transactions recorded', es: 'No hay transacciones registradas' },
+  quick_actions: { en: '⚡ Quick Actions', es: '⚡ Acciones Rápidas' },
 
   // Transactions
   amount: { en: 'Amount', es: 'Monto' },
@@ -90,7 +98,6 @@ const translations: Translations = {
 
   // Debt Plan
   manage_your_debts: { en: 'Manage your debts', es: 'Gestiona tus deudas' },
-  total_debt: { en: 'Total Debt', es: 'Deuda Total' },
   avg_interest_rate: { en: 'Avg Interest Rate', es: 'Tasa Promedio' },
   add_debt: { en: 'Add Debt', es: 'Agregar Deuda' },
   debt_name: { en: 'Debt Name', es: 'Nombre de la Deuda' },
@@ -109,6 +116,8 @@ const translations: Translations = {
   transaction_id: { en: 'Transaction ID', es: 'ID de Transacción' },
   vendor: { en: 'Vendor', es: 'Vendedor' },
   items: { en: 'Items', es: 'Artículos' },
+  duplicate_receipt_detected: { en: 'Duplicate receipt detected', es: 'Recibo duplicado detectado' },
+  receipt_error: { en: 'Error processing receipt', es: 'Error al procesar recibo' },
 
   // Goals
   goals: { en: 'Goals', es: 'Objetivos' },
@@ -147,6 +156,14 @@ const translations: Translations = {
   friday: { en: 'Friday', es: 'Viernes' },
   saturday: { en: 'Saturday', es: 'Sábado' },
   sunday: { en: 'Sunday', es: 'Domingo' },
+
+  // LATAM-specific (New for regional markets)
+  select_country: { en: 'Select Country', es: 'Selecciona País' },
+  select_currency: { en: 'Select Currency', es: 'Selecciona Moneda' },
+  recommended_for_you: { en: 'Recommended for you', es: 'Recomendado para ti' },
+  local_subscriptions: { en: 'Popular subscriptions in your country', es: 'Suscripciones populares en tu país' },
+  optimize_spending: { en: 'Optimize your spending', es: 'Optimiza tus gastos' },
+  smart_recommendations: { en: 'Get AI-powered recommendations', es: 'Obtén recomendaciones impulsadas por IA' },
 }
 
 interface LanguageContextType {
@@ -158,15 +175,13 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>('en')
-  const [mounted, setMounted] = useState(false)
+  const [language, setLanguage] = useState<Language>('es')
 
   useEffect(() => {
     const stored = localStorage.getItem('language') as Language | null
     if (stored && (stored === 'en' || stored === 'es')) {
       setLanguage(stored)
     }
-    setMounted(true)
   }, [])
 
   const handleSetLanguage = (lang: Language) => {
@@ -177,8 +192,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const t = (key: string): string => {
     return translations[key]?.[language] || key
   }
-
-  if (!mounted) return <>{children}</>
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>

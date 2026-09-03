@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/context/AuthContext'
+import { getSupabaseClient } from '@/lib/supabase'
 
 interface Budget {
   id: string
@@ -6,29 +8,46 @@ interface Budget {
   category: string
   limit: number
   spent: number
-  month: string
+  period: 'monthly' | 'yearly'
   created_at: string
 }
 
-export function useBudgets(month?: string) {
+export function useBudgets() {
   const [budgets, setBudgets] = useState<Budget[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { authenticated } = useAuth()
 
   useEffect(() => {
-    fetchBudgets()
-  }, [month])
+    if (authenticated) {
+      fetchBudgets()
+    } else if (!loading) {
+      setLoading(false)
+    }
+  }, [authenticated])
 
   const fetchBudgets = async () => {
     try {
       setLoading(true)
-      const query = month ? `?month=${month}` : ''
-      const response = await fetch(`/api/budgets${query}`)
+      const supabase = getSupabaseClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token
+
+      if (!token) throw new Error('No access token')
+
+      const response = await fetch('/api/budgets', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
       if (!response.ok) throw new Error('Failed to fetch budgets')
       const { data } = await response.json()
       setBudgets(data)
+      setError(null)
     } catch (err: any) {
       setError(err.message)
+      setBudgets([])
     } finally {
       setLoading(false)
     }
@@ -36,58 +55,86 @@ export function useBudgets(month?: string) {
 
   const addBudget = async (budget: Omit<Budget, 'id' | 'user_id' | 'created_at'>) => {
     try {
+      const supabase = getSupabaseClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token
+
+      if (!token) throw new Error('Not authenticated')
+
       const response = await fetch('/api/budgets', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(budget),
       })
       if (!response.ok) throw new Error('Failed to add budget')
-      const newBudget = await response.json()
-      setBudgets([newBudget, ...budgets])
-      return newBudget
+      await fetchBudgets()
+      return true
     } catch (err: any) {
       setError(err.message)
-      throw err
+      return false
     }
   }
 
   const updateBudget = async (id: string, updates: Partial<Budget>) => {
     try {
+      const supabase = getSupabaseClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token
+
+      if (!token) throw new Error('Not authenticated')
+
       const response = await fetch(`/api/budgets?id=${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(updates),
       })
       if (!response.ok) throw new Error('Failed to update budget')
-      const updated = await response.json()
-      setBudgets(budgets.map(b => b.id === id ? updated : b))
-      return updated
+      await fetchBudgets()
+      return true
     } catch (err: any) {
       setError(err.message)
-      throw err
+      return false
     }
   }
 
   const deleteBudget = async (id: string) => {
     try {
+      const supabase = getSupabaseClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token
+
+      if (!token) throw new Error('Not authenticated')
+
       const response = await fetch(`/api/budgets?id=${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       })
       if (!response.ok) throw new Error('Failed to delete budget')
       setBudgets(budgets.filter(b => b.id !== id))
+      return true
     } catch (err: any) {
       setError(err.message)
-      throw err
+      return false
     }
   }
 
-  return { 
-    budgets, 
-    loading, 
-    error, 
-    fetchBudgets, 
+  return {
+    budgets,
+    loading,
+    error,
+    authenticated,
+    refetch: fetchBudgets,
     addBudget,
     updateBudget,
-    deleteBudget
+    deleteBudget,
   }
 }
