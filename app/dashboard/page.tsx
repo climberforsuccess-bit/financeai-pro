@@ -5,7 +5,6 @@ export const dynamic = 'force-dynamic'
 import { useLanguage } from '@/context/LanguageContext'
 import { Card } from '@/components/ui/Card'
 import { IncomeExpenseChart } from '@/components/charts/IncomeExpenseChart'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 interface DashboardStats {
@@ -23,9 +22,12 @@ interface StatCard {
 }
 
 export default function DashboardPage() {
-  const router = useRouter()
   const { t } = useLanguage()
-  const [mounted, setMounted] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const stats: DashboardStats = {
     balance: '$12,450.50',
@@ -34,12 +36,6 @@ export default function DashboardPage() {
     totalDebt: '$8,500.00',
     savings: '$3,150.50',
   }
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
 
   const statCards: StatCard[] = [
     {
@@ -72,6 +68,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
             {t('dashboard')}
@@ -79,6 +76,7 @@ export default function DashboardPage() {
           <p className="text-slate-400">{t('today')}</p>
         </div>
 
+        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           {statCards.map((card, idx) => (
             <Card
@@ -94,7 +92,9 @@ export default function DashboardPage() {
           ))}
         </div>
 
+        {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Chart Section */}
           <div className="lg:col-span-2">
             <Card className="p-6 bg-slate-800/50 border border-slate-700/50 rounded-lg">
               <h2 className="text-xl font-bold text-white mb-6">
@@ -104,6 +104,7 @@ export default function DashboardPage() {
             </Card>
           </div>
 
+          {/* Recent Transactions */}
           <Card className="p-6 bg-slate-800/50 border border-slate-700/50 rounded-lg">
             <h2 className="text-xl font-bold text-white mb-4">
               {t('recent_transactions')}
