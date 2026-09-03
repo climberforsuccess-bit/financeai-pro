@@ -21,7 +21,7 @@ interface MonthlyData {
 }
 
 export default function ReportsPage() {
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
   const [topCategories, setTopCategories] = useState<Array<[string, number]>>([]);
@@ -43,7 +43,6 @@ export default function ReportsPage() {
 
   const loadTransactions = async () => {
     try {
-      // TODO: Reemplazar con API real cuando esté lista
       const mockData: Transaction[] = [
         {
           id: '1',
@@ -103,12 +102,10 @@ export default function ReportsPage() {
   };
 
   const processData = () => {
-    // Filtrar por mes seleccionado
     const filtered = transactions.filter((t) =>
       t.date.startsWith(selectedMonth)
     );
 
-    // Calcular totales
     const income = filtered
       .filter((t) => t.type === 'income')
       .reduce((sum, t) => sum + t.amount, 0);
@@ -119,7 +116,6 @@ export default function ReportsPage() {
 
     setTotals({ income, expense, balance });
 
-    // Top categorías
     const cats: Record<string, number> = {};
     filtered
       .filter((t) => t.type === 'expense')
@@ -132,7 +128,6 @@ export default function ReportsPage() {
       .slice(0, 5);
     setTopCategories(sorted);
 
-    // Datos mensuales (últimos 6 meses)
     const monthlyMap: Record<string, MonthlyData> = {};
     transactions.forEach((t) => {
       const month = t.date.slice(0, 7);
@@ -174,66 +169,6 @@ export default function ReportsPage() {
     a.click();
   };
 
-  const exportPDF = () => {
-    const filtered = transactions.filter((t) => t.date.startsWith(selectedMonth));
-    let pdf = `%PDF-1.4\n`;
-    pdf += `1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n`;
-    pdf += `2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n`;
-
-    const content = `FinanceAI Pro - Monthly Report ${selectedMonth}\n\nTotal Income: $${totals.income.toFixed(2)}\nTotal Expense: $${totals.expense.toFixed(2)}\nBalance: $${totals.balance.toFixed(2)}\n\nTransactions:\n${filtered
-      .map(
-        (t) =>
-          `${t.date} | ${t.description} | ${t.category} | ${t.type} | $${t.amount}`
-      )
-      .join('\n')}`;
-
-    pdf += `3 0 obj\n<< /Type /Page /Parent 2 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n`;
-    pdf += `4 0 obj\n<< /Length ${content.length} >>\nstream\nBT\n/F1 12 Tf\n50 750 Td\n(${content.replace(
-      /[()]/g,
-      ''
-    )}) Tj\nET\nendstream\nendobj\n`;
-
-    const blob = new Blob([pdf], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `transactions-${selectedMonth}.pdf`;
-    a.click();
-  };
-
-  const content = {
-    es: {
-      title: 'Reportes',
-      subtitle: 'Análisis detallado de tus finanzas',
-      monthLabel: 'Período:',
-      totalIncome: 'Ingresos Totales',
-      totalExpense: 'Gastos Totales',
-      balance: 'Saldo',
-      transactions: 'Transacciones',
-      topCategories: 'Categorías Principales',
-      monthlyTrend: 'Tendencia Mensual',
-      exportCSV: 'Descargar CSV',
-      exportPDF: 'Descargar PDF',
-      noData: 'Sin transacciones en este período',
-    },
-    en: {
-      title: 'Reports',
-      subtitle: 'Detailed analysis of your finances',
-      monthLabel: 'Period:',
-      totalIncome: 'Total Income',
-      totalExpense: 'Total Expenses',
-      balance: 'Balance',
-      transactions: 'Transactions',
-      topCategories: 'Top Categories',
-      monthlyTrend: 'Monthly Trend',
-      exportCSV: 'Download CSV',
-      exportPDF: 'Download PDF',
-      noData: 'No transactions in this period',
-    },
-  };
-
-  const curr = content[language as keyof typeof content];
-
   if (loading) {
     return (
       <div style={styles.root}>
@@ -244,11 +179,10 @@ export default function ReportsPage() {
 
   return (
     <div style={styles.root}>
-      {/* HEADER */}
       <div style={styles.header}>
         <div>
-          <h1 style={styles.title}>{curr.title}</h1>
-          <p style={styles.subtitle}>{curr.subtitle}</p>
+          <h1 style={styles.title}>{t('reports')}</h1>
+          <p style={styles.subtitle}>{t('financial_analysis')}</p>
         </div>
         <div style={styles.controls}>
           <input
@@ -258,30 +192,26 @@ export default function ReportsPage() {
             style={styles.monthInput}
           />
           <button onClick={exportCSV} style={styles.exportBtn}>
-            📥 {curr.exportCSV}
-          </button>
-          <button onClick={exportPDF} style={styles.exportBtn}>
-            📄 {curr.exportPDF}
+            📥 {t('export_csv')}
           </button>
         </div>
       </div>
 
-      {/* KEY METRICS */}
       <div style={styles.metricsGrid}>
         <div style={styles.metricCard}>
-          <div style={styles.metricLabel}>{curr.totalIncome}</div>
+          <div style={styles.metricLabel}>{t('total_income')}</div>
           <div style={{ ...styles.metricValue, color: '#10b981' }}>
             ${totals.income.toFixed(2)}
           </div>
         </div>
         <div style={styles.metricCard}>
-          <div style={styles.metricLabel}>{curr.totalExpense}</div>
+          <div style={styles.metricLabel}>{t('total_expenses')}</div>
           <div style={{ ...styles.metricValue, color: '#ef4444' }}>
             ${totals.expense.toFixed(2)}
           </div>
         </div>
         <div style={styles.metricCard}>
-          <div style={styles.metricLabel}>{curr.balance}</div>
+          <div style={styles.metricLabel}>{t('balance')}</div>
           <div
             style={{
               ...styles.metricValue,
@@ -292,17 +222,16 @@ export default function ReportsPage() {
           </div>
         </div>
         <div style={styles.metricCard}>
-          <div style={styles.metricLabel}>{curr.transactions}</div>
+          <div style={styles.metricLabel}>{t('transactions')}</div>
           <div style={{ ...styles.metricValue, color: '#8b5cf6' }}>
             {transactions.filter((t) => t.date.startsWith(selectedMonth)).length}
           </div>
         </div>
       </div>
 
-      {/* TOP CATEGORIES */}
       {topCategories.length > 0 && (
         <div style={styles.section}>
-          <h2 style={styles.sectionTitle}>📊 {curr.topCategories}</h2>
+          <h2 style={styles.sectionTitle}>📊 {t('top_categories')}</h2>
           <div style={styles.categoriesContainer}>
             {topCategories.map(([cat, amount], idx) => {
               const max = topCategories[0][1];
@@ -326,10 +255,9 @@ export default function ReportsPage() {
         </div>
       )}
 
-      {/* MONTHLY TREND */}
       {monthlyData.length > 0 && (
         <div style={styles.section}>
-          <h2 style={styles.sectionTitle}>📈 {curr.monthlyTrend}</h2>
+          <h2 style={styles.sectionTitle}>📈 {t('monthly_trend')}</h2>
           <div style={styles.monthlyGrid}>
             {monthlyData.map((data, idx) => (
               <div key={idx} style={styles.monthlyCard}>
@@ -372,10 +300,9 @@ export default function ReportsPage() {
         </div>
       )}
 
-      {/* RECENT TRANSACTIONS */}
       <div style={styles.section}>
         <h2 style={styles.sectionTitle}>
-          💳 {curr.transactions} ({selectedMonth})
+          💳 {t('transactions')} ({selectedMonth})
         </h2>
         <div style={styles.transactionsTable}>
           {transactions
@@ -403,23 +330,20 @@ export default function ReportsPage() {
   );
 }
 
-const styles = {
+const styles: Record<string, React.CSSProperties> = {
   root: {
     background: '#0f172a',
     color: '#e2e8f0',
     minHeight: '100vh',
     padding: '32px',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  } as React.CSSProperties,
-
+  },
   skeleton: {
     height: '400px',
     background: 'linear-gradient(90deg, #1e293b, #334155, #1e293b)',
     backgroundSize: '200% 100%',
-    animation: 'loading 1.5s infinite',
     borderRadius: '12px',
-  } as React.CSSProperties,
-
+  },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -427,28 +351,24 @@ const styles = {
     marginBottom: '32px',
     flexWrap: 'wrap',
     gap: '20px',
-  } as React.CSSProperties,
-
+  },
   title: {
     fontSize: '32px',
     fontWeight: '800',
     margin: 0,
     marginBottom: '4px',
-  } as React.CSSProperties,
-
+  },
   subtitle: {
     fontSize: '14px',
     color: '#94a3b8',
     margin: 0,
-  } as React.CSSProperties,
-
+  },
   controls: {
     display: 'flex',
     gap: '12px',
     alignItems: 'center',
     flexWrap: 'wrap',
-  } as React.CSSProperties,
-
+  },
   monthInput: {
     background: '#1e293b',
     border: '1px solid #334155',
@@ -457,8 +377,7 @@ const styles = {
     padding: '8px 12px',
     fontSize: '13px',
     fontWeight: '600',
-  } as React.CSSProperties,
-
+  },
   exportBtn: {
     background: 'linear-gradient(135deg, #06b6d4, #0ea5e9)',
     border: 'none',
@@ -469,120 +388,101 @@ const styles = {
     fontWeight: '600',
     cursor: 'pointer',
     transition: 'all 0.2s',
-  } as React.CSSProperties,
-
+  },
   metricsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
     gap: '16px',
     marginBottom: '32px',
-  } as React.CSSProperties,
-
+  },
   metricCard: {
     background: '#1e293b',
     border: '1px solid #334155',
     borderRadius: '12px',
     padding: '20px',
-  } as React.CSSProperties,
-
+  },
   metricLabel: {
     fontSize: '12px',
     color: '#94a3b8',
     fontWeight: '600',
     textTransform: 'uppercase',
     marginBottom: '8px',
-  } as React.CSSProperties,
-
+  },
   metricValue: {
     fontSize: '28px',
     fontWeight: '700',
-  } as React.CSSProperties,
-
+  },
   section: {
     marginBottom: '32px',
-  } as React.CSSProperties,
-
+  },
   sectionTitle: {
     fontSize: '18px',
     fontWeight: '700',
     marginBottom: '16px',
-  } as React.CSSProperties,
-
+  },
   categoriesContainer: {
     display: 'flex',
     flexDirection: 'column',
     gap: '16px',
-  } as React.CSSProperties,
-
+  },
   categoryRow: {
     display: 'grid',
     gridTemplateColumns: '100px 1fr 100px',
     alignItems: 'center',
     gap: '12px',
-  } as React.CSSProperties,
-
+  },
   categoryLabel: {
     fontSize: '13px',
     fontWeight: '600',
-  } as React.CSSProperties,
-
+  },
   categoryBar: {
     height: '8px',
     background: '#334155',
     borderRadius: '4px',
     overflow: 'hidden',
-  } as React.CSSProperties,
-
+  },
   categoryBarFill: {
     height: '100%',
     background: 'linear-gradient(90deg, #06b6d4, #0ea5e9)',
-  } as React.CSSProperties,
-
+  },
   categoryAmount: {
     fontSize: '13px',
     fontWeight: '600',
     textAlign: 'right',
     color: '#ef4444',
-  } as React.CSSProperties,
-
+  },
   monthlyGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
     gap: '12px',
-  } as React.CSSProperties,
-
+  },
   monthlyCard: {
     background: '#1e293b',
     border: '1px solid #334155',
     borderRadius: '8px',
     padding: '12px',
-  } as React.CSSProperties,
-
+  },
   monthLabel: {
     fontSize: '12px',
     fontWeight: '700',
     color: '#06b6d4',
     marginBottom: '8px',
-  } as React.CSSProperties,
-
+  },
   monthStats: {
     display: 'flex',
     flexDirection: 'column',
     gap: '4px',
     fontSize: '11px',
-  } as React.CSSProperties,
-
+  },
   monthStatRow: {
     display: 'flex',
     justifyContent: 'space-between',
-  } as React.CSSProperties,
-
+  },
   transactionsTable: {
     display: 'flex',
     flexDirection: 'column',
     gap: '8px',
-  } as React.CSSProperties,
-
+  },
   transactionRow: {
     background: '#1e293b',
     border: '1px solid #334155',
@@ -591,25 +491,21 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-  } as React.CSSProperties,
-
+  },
   txInfo: {
     flex: 1,
-  } as React.CSSProperties,
-
+  },
   txDesc: {
     fontSize: '13px',
     fontWeight: '600',
     marginBottom: '2px',
-  } as React.CSSProperties,
-
+  },
   txCat: {
     fontSize: '11px',
     color: '#94a3b8',
-  } as React.CSSProperties,
-
+  },
   txAmount: {
     fontSize: '13px',
     fontWeight: '700',
-  } as React.CSSProperties,
+  },
 };
