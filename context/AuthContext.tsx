@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getSupabaseClient } from '@/lib/supabase'
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 
 // TYPE DEFINITIONS
 export interface User {
@@ -77,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
       console.log('🔄 Auth state changed:', event)
       
       if (session?.user) {
@@ -102,40 +103,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback(
     async (email: string, password: string) => {
       try {
-        setLoading(true)
         setError(null)
         const supabase = getSupabaseClient()
-
-        const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
+        
+        const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
 
-        if (supabaseError) {
-          const errorMsg = supabaseError.message || 'Login failed'
-          setError(errorMsg)
-          return { error: errorMsg }
+        if (error) {
+          setError(error.message)
+          return { error: error.message }
         }
 
-        if (data.user) {
-          setUser({
-            id: data.user.id,
-            email: data.user.email,
-            user_metadata: data.user.user_metadata,
-          })
-          setAuthenticated(true)
-          console.log('✅ Login successful:', email)
-          router.push('/dashboard')
-        }
-
+        router.push('/dashboard')
         return {}
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : 'Internal error'
-        setError(errorMsg)
-        console.error('❌ Login error:', err)
-        return { error: errorMsg }
-      } finally {
-        setLoading(false)
+        const message = err instanceof Error ? err.message : 'Login failed'
+        setError(message)
+        return { error: message }
       }
     },
     [router]
@@ -145,11 +131,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signup = useCallback(
     async (email: string, password: string, name: string) => {
       try {
-        setLoading(true)
         setError(null)
         const supabase = getSupabaseClient()
-
-        const { data, error: supabaseError } = await supabase.auth.signUp({
+        
+        const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -159,31 +144,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           },
         })
 
-        if (supabaseError) {
-          const errorMsg = supabaseError.message || 'Signup failed'
-          setError(errorMsg)
-          return { error: errorMsg }
+        if (error) {
+          setError(error.message)
+          return { error: error.message }
         }
 
-        if (data.user) {
-          setUser({
-            id: data.user.id,
-            email: data.user.email,
-            user_metadata: data.user.user_metadata,
-          })
-          setAuthenticated(true)
-          console.log('✅ Signup successful:', email)
-          router.push('/dashboard')
-        }
-
+        // Redirect to confirmation or login
+        router.push('/auth/login?registered=true')
         return {}
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : 'Internal error'
-        setError(errorMsg)
-        console.error('❌ Signup error:', err)
-        return { error: errorMsg }
-      } finally {
-        setLoading(false)
+        const message = err instanceof Error ? err.message : 'Signup failed'
+        setError(message)
+        return { error: message }
       }
     },
     [router]
@@ -192,26 +164,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // LOGOUT
   const logout = useCallback(async () => {
     try {
-      setLoading(true)
       const supabase = getSupabaseClient()
-      
-      const { error } = await supabase.auth.signOut()
-      
-      if (error) {
-        console.error('❌ Logout error:', error)
-        throw error
-      }
-
+      await supabase.auth.signOut()
       setUser(null)
       setAuthenticated(false)
-      setError(null)
-      console.log('✅ Logged out')
       router.push('/auth/login')
     } catch (err) {
-      console.error('❌ Logout failed:', err)
-      throw err
-    } finally {
-      setLoading(false)
+      console.error('Logout failed:', err)
     }
   }, [router])
 
@@ -234,11 +193,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-// CUSTOM HOOK
+// HOOK
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext)
   if (!context) {
-    throw new Error('useAuth debe estar dentro de AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider')
   }
   return context
 }
