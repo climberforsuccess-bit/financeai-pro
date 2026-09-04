@@ -3,10 +3,10 @@
 export const dynamic = 'force-dynamic'
 
 import { useLanguage } from '@/context/LanguageContext'
+import { useTransactions } from '@/hooks/useTransactions'
 import { Card } from '@/components/ui/Card'
 import { IncomeExpenseChart } from '@/components/charts/IncomeExpenseChart'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 
 interface DashboardStats {
   balance: string
@@ -23,23 +23,42 @@ interface StatCard {
 }
 
 export default function DashboardPage() {
-  const router = useRouter()
   const { t } = useLanguage()
-  const [mounted, setMounted] = useState(false)
+  const { transactions, loading } = useTransactions()
 
-  const stats: DashboardStats = {
-    balance: '$12,450.50',
-    monthlyIncome: '$4,200.00',
-    monthlyExpenses: '$2,800.00',
-    totalDebt: '$8,500.00',
-    savings: '$3,150.50',
-  }
+  // Calcular stats en tiempo real
+  const stats: DashboardStats = useMemo(() => {
+    const now = new Date()
+    const currentMonth = now.getMonth()
+    const currentYear = now.getFullYear()
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+    const monthTransactions = transactions.filter(tx => {
+      const txDate = new Date(tx.date)
+      return txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear
+    })
 
-  if (!mounted) return null
+    const monthlyIncome = monthTransactions
+      .filter(tx => tx.type === 'income')
+      .reduce((sum, tx) => sum + tx.amount, 0)
+
+    const monthlyExpenses = monthTransactions
+      .filter(tx => tx.type === 'expense')
+      .reduce((sum, tx) => sum + tx.amount, 0)
+
+    const balance = transactions.reduce((sum, tx) => {
+      return sum + (tx.type === 'income' ? tx.amount : -tx.amount)
+    }, 0)
+
+    const savings = balance - monthlyExpenses
+
+    return {
+      balance: `$${balance.toFixed(2)}`,
+      monthlyIncome: `$${monthlyIncome.toFixed(2)}`,
+      monthlyExpenses: `$${monthlyExpenses.toFixed(2)}`,
+      totalDebt: '$0.00',
+      savings: `$${savings.toFixed(2)}`,
+    }
+  }, [transactions])
 
   const statCards: StatCard[] = [
     {
@@ -79,6 +98,12 @@ export default function DashboardPage() {
           <p className="text-slate-400">{t('today')}</p>
         </div>
 
+        {loading && (
+          <div className="mb-4 p-4 bg-cyan-500/10 border border-cyan-500/30 rounded-lg text-cyan-400">
+            Cargando datos...
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           {statCards.map((card, idx) => (
             <Card
@@ -100,7 +125,7 @@ export default function DashboardPage() {
               <h2 className="text-xl font-bold text-white mb-6">
                 {t('financial_overview')}
               </h2>
-              <IncomeExpenseChart />
+              <IncomeExpenseChart transactions={transactions} />
             </Card>
           </div>
 
@@ -109,44 +134,25 @@ export default function DashboardPage() {
               {t('recent_transactions')}
             </h2>
             <div className="space-y-3">
-              <div className="p-3 bg-slate-700/30 rounded-lg border border-slate-700/50">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">🍕</span>
-                    <div>
-                      <p className="text-sm font-medium text-white">Pizza Hut</p>
-                      <p className="text-xs text-slate-500">Today</p>
+              {transactions.slice(0, 3).map((tx) => (
+                <div key={tx.id} className="p-3 bg-slate-700/30 rounded-lg border border-slate-700/50">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">{tx.type === 'income' ? '💼' : '🛒'}</span>
+                      <div>
+                        <p className="text-sm font-medium text-white">{tx.description}</p>
+                        <p className="text-xs text-slate-500">{new Date(tx.date).toLocaleDateString()}</p>
+                      </div>
                     </div>
+                    <p className={`text-sm font-semibold ${tx.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
+                      {tx.type === 'income' ? '+' : '-'}${tx.amount.toFixed(2)}
+                    </p>
                   </div>
-                  <p className="text-sm font-semibold text-red-400">-$25.50</p>
                 </div>
-              </div>
-
-              <div className="p-3 bg-slate-700/30 rounded-lg border border-slate-700/50">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">💼</span>
-                    <div>
-                      <p className="text-sm font-medium text-white">Salary</p>
-                      <p className="text-xs text-slate-500">Yesterday</p>
-                    </div>
-                  </div>
-                  <p className="text-sm font-semibold text-green-400">+$4,200</p>
-                </div>
-              </div>
-
-              <div className="p-3 bg-slate-700/30 rounded-lg border border-slate-700/50">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">⚡</span>
-                    <div>
-                      <p className="text-sm font-medium text-white">Electricity</p>
-                      <p className="text-xs text-slate-500">3 days ago</p>
-                    </div>
-                  </div>
-                  <p className="text-sm font-semibold text-yellow-400">-$120</p>
-                </div>
-              </div>
+              ))}
+              {transactions.length === 0 && (
+                <p className="text-sm text-slate-400">No hay transacciones</p>
+              )}
             </div>
             <button className="w-full mt-4 py-2 px-4 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 text-sm font-medium rounded-lg transition border border-cyan-500/30">
               {t('view_all')}

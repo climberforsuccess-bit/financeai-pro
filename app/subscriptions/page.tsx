@@ -21,7 +21,7 @@ export default function SubscriptionsPage() {
       await addSubscription({
         name: formData.name,
         amount: parseFloat(formData.amount),
-        frequency: formData.frequency as 'daily' | 'weekly' | 'monthly' | 'yearly',
+        frequency: formData.frequency as 'monthly' | 'yearly',
         category: formData.category,
         next_billing_date: formData.next_billing_date,
       })

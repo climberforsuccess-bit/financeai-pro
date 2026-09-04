@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { AuthProvider } from '@/context/AuthContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TopBar } from '@/components/layout/TopBar';
@@ -63,25 +64,27 @@ export default function RootLayout({
         <title>FinanceAI Pro - Finanzas con IA</title>
       </head>
       <body>
-        <LanguageProvider>
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-            <TopBar />
-            <div style={{ display: 'flex', flex: 1 }}>
-              <Sidebar />
-              <main
-                style={{
-                  marginLeft: '0',
-                  width: '100%',
-                  minHeight: 'calc(100vh - 57px)',
-                  overflowY: 'auto',
-                  paddingBottom: 'env(safe-area-inset-bottom)',
-                }}
-              >
-                {children}
-              </main>
+        <AuthProvider>
+          <LanguageProvider>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+              <TopBar />
+              <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+                <Sidebar />
+                <main
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
+                    paddingBottom: 'env(safe-area-inset-bottom)',
+                  }}
+                >
+                  {children}
+                </main>
+              </div>
             </div>
-          </div>
-        </LanguageProvider>
+          </LanguageProvider>
+        </AuthProvider>
       </body>
     </html>
   );

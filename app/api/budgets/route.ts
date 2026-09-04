@@ -1,10 +1,12 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -31,7 +33,10 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -71,7 +76,10 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -107,7 +115,10 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {

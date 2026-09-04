@@ -1,14 +1,30 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized: Missing token' }, { status: 401 })
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      }
+    )
+
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
@@ -33,106 +49,40 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
-    const { data: { user } } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized: Missing token' }, { status: 401 })
     }
 
-    const body = await request.json()
-    const { name, amount, frequency, next_billing_date } = body
-
-    if (!name || !amount || !frequency) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
-    }
-
-    const { data, error } = await supabase
-      .from('subscriptions')
-      .insert([
-        {
-          user_id: user.id,
-          name,
-          amount,
-          frequency,
-          status: 'active',
-          next_billing_date,
+    const token = authHeader.replace('Bearer ', '')
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      ])
-      .select()
+      }
+    )
 
-    if (error) throw error
-
-    return NextResponse.json(data[0], { status: 201 })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
-}
-
-export async function PUT(request: Request) {
-  try {
-    const supabase = createRouteHandlerClient({ cookies })
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
-
-    if (!id) {
-      return NextResponse.json({ error: 'ID is required' }, { status: 400 })
+      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 })
     }
 
     const body = await request.json()
 
     const { data, error } = await supabase
       .from('subscriptions')
-      .update(body)
-      .eq('id', id)
-      .eq('user_id', user.id)
+      .insert([{ ...body, user_id: user.id }])
       .select()
 
     if (error) throw error
-    if (!data?.length) {
-      return NextResponse.json({ error: 'Not found' }, { status: 404 })
-    }
 
-    return NextResponse.json(data[0], { status: 200 })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
-}
-
-export async function DELETE(request: Request) {
-  try {
-    const supabase = createRouteHandlerClient({ cookies })
-    const { data: { user } } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
-
-    if (!id) {
-      return NextResponse.json({ error: 'ID is required' }, { status: 400 })
-    }
-
-    const { error } = await supabase
-      .from('subscriptions')
-      .delete()
-      .eq('id', id)
-      .eq('user_id', user.id)
-
-    if (error) throw error
-
-    return NextResponse.json({ success: true }, { status: 200 })
+    return NextResponse.json({ data }, { status: 201 })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

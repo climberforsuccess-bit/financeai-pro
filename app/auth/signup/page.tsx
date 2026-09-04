@@ -1,183 +1,236 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
-export default function SignUpPage() {
+export default function SignupPage() {
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const { signup, loading, error, clearError, authenticated } = useAuth()
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [agreeTerms, setAgreeTerms] = useState(false)
+  const [localError, setLocalError] = useState('')
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  useEffect(() => {
+    if (authenticated) {
+      router.push('/dashboard')
+    }
+  }, [authenticated, router])
+
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    setLocalError('')
+    clearError()
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
+    if (!name || !email || !password) {
+      setLocalError('Todos los campos son requeridos')
       return
     }
 
-    if (!agreeTerms) {
-      setError('Please agree to Terms of Service')
+    if (password !== confirmPassword) {
+      setLocalError('Las contraseñas no coinciden')
       return
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters')
+      setLocalError('La contraseña debe tener al menos 6 caracteres')
       return
     }
 
-    setLoading(true)
-
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      })
-
-      if (error) {
-        setError(error.message)
-      } else {
-        router.push('/auth/verify-email')
-      }
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleGoogleSignUp = async () => {
-    setLoading(true)
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      })
-
-      if (error) {
-        setError(error.message)
-      }
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
+    const { error } = await signup(email, password, name)
+    if (error) {
+      setLocalError(error)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">FinanceAI Pro</h1>
-          <p className="text-slate-400">Create your account</p>
-        </div>
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <h1 style={styles.title}>FinanceAI Pro</h1>
+        <p style={styles.subtitle}>Crea tu cuenta</p>
 
-        <div className="bg-slate-800 rounded-lg p-8 border border-slate-700">
-          {error && (
-            <div className="mb-4 p-3 bg-red-900 text-red-100 rounded-lg text-sm">
-              {error}
+        <form onSubmit={handleSignup} style={styles.form}>
+          {(localError || error) && (
+            <div style={styles.errorBox}>
+              {localError || error}
             </div>
           )}
 
-          <form onSubmit={handleSignUp} className="space-y-4">
-            <div>
-              <label className="block text-slate-300 text-sm font-medium mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                placeholder="you@example.com"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-slate-300 text-sm font-medium mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-slate-300 text-sm font-medium mb-2">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={agreeTerms}
-                onChange={(e) => setAgreeTerms(e.target.checked)}
-                className="mr-2"
-              />
-              <label className="text-slate-400 text-sm">
-                I agree to Terms and Privacy
-              </label>
-            </div>
-
-            <button
-              type="submit"
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Nombre</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               disabled={loading}
-              className="w-full py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 text-white font-semibold rounded-lg transition"
-            >
-              {loading ? 'Creating...' : 'Sign Up'}
-            </button>
-          </form>
+              style={styles.input}
+            />
+          </div>
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-600"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-slate-800 text-slate-400">Or</span>
-            </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Contraseña</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Confirmar Contraseña</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={loading}
+              style={styles.input}
+            />
           </div>
 
           <button
-            onClick={handleGoogleSignUp}
+            type="submit"
             disabled={loading}
-            className="w-full py-2 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition"
+            style={{
+              ...styles.button,
+              opacity: loading ? 0.6 : 1,
+              cursor: loading ? 'not-allowed' : 'pointer',
+            }}
           >
-            Google Sign Up
+            {loading ? 'Creando cuenta...' : 'Registrarse'}
           </button>
+        </form>
 
-          <p className="text-center text-slate-400 text-sm mt-6">
-            Have an account? <Link href="/auth/login" className="text-blue-400">Sign in</Link>
-          </p>
-        </div>
+        <div style={styles.divider} />
+
+        <p style={styles.loginText}>
+          ¿Ya tienes cuenta?{' '}
+          <Link href="/auth/login" style={styles.link}>
+            Inicia sesión aquí
+          </Link>
+        </p>
       </div>
     </div>
   )
+}
+
+const styles = {
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+    padding: '20px',
+  } as React.CSSProperties,
+
+  card: {
+    background: '#1e293b',
+    borderRadius: '16px',
+    padding: '40px',
+    border: '1px solid #334155',
+    width: '100%',
+    maxWidth: '400px',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+  } as React.CSSProperties,
+
+  title: {
+    fontSize: '28px',
+    fontWeight: '800',
+    color: '#0ea5e9',
+    margin: '0 0 8px 0',
+    textAlign: 'center',
+  } as React.CSSProperties,
+
+  subtitle: {
+    fontSize: '14px',
+    color: '#94a3b8',
+    textAlign: 'center',
+    margin: '0 0 32px 0',
+  } as React.CSSProperties,
+
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+  } as React.CSSProperties,
+
+  errorBox: {
+    background: 'rgba(239, 68, 68, 0.1)',
+    border: '1px solid #ef4444',
+    borderRadius: '8px',
+    padding: '12px 16px',
+    color: '#fca5a5',
+    fontSize: '14px',
+  } as React.CSSProperties,
+
+  formGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+  } as React.CSSProperties,
+
+  label: {
+    fontSize: '14px',
+    fontWeight: '600',
+    color: '#e2e8f0',
+  } as React.CSSProperties,
+
+  input: {
+    background: '#0f172a',
+    border: '1px solid #334155',
+    borderRadius: '8px',
+    padding: '12px 16px',
+    fontSize: '14px',
+    color: '#e2e8f0',
+    outline: 'none',
+    transition: 'border-color 0.2s',
+  } as React.CSSProperties,
+
+  button: {
+    background: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
+    border: 'none',
+    borderRadius: '8px',
+    padding: '12px 16px',
+    fontSize: '16px',
+    fontWeight: '600',
+    color: '#fff',
+    cursor: 'pointer',
+    transition: 'all 0.3s',
+  } as React.CSSProperties,
+
+  divider: {
+    height: '1px',
+    background: '#334155',
+    margin: '24px 0',
+  } as React.CSSProperties,
+
+  loginText: {
+    fontSize: '14px',
+    color: '#94a3b8',
+    textAlign: 'center',
+    margin: 0,
+  } as React.CSSProperties,
+
+  link: {
+    color: '#0ea5e9',
+    textDecoration: 'none',
+    fontWeight: '600',
+    transition: 'color 0.2s',
+  } as React.CSSProperties,
 }

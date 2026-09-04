@@ -19,7 +19,7 @@ export default function TransactionsPage() {
     try {
       await addTransaction({
         amount: parseFloat(formData.amount),
-        type: formData.type as 'income' | 'expense' | 'transfer',
+        type: formData.type as 'income' | 'expense',
         category: formData.category,
         description: formData.description,
         date: new Date().toISOString(),

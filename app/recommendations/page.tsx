@@ -1,21 +1,81 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { useLanguage } from '@/context/LanguageContext';
+export const dynamic = 'force-dynamic'
+
+import { useState, useEffect, useMemo } from 'react'
+import { useLanguage } from '@/context/LanguageContext'
+
+// TYPE DEFINITIONS
+interface Card {
+  nombre: string
+  tipo: string
+  beneficio: string
+  uso: string
+  estimado: string
+  emisor: string
+}
+
+interface CountryData {
+  cards: Card[]
+  banks: string[]
+}
+
+interface Recommendation {
+  id: string
+  icon: string
+  titulo: string
+  descripcion: string
+  ahorro: string
+  detalle: string
+  accion: string
+  prioridad: 'alta' | 'media' | 'baja'
+}
+
+interface Stat {
+  label: string
+  value: string
+}
+
+interface ContentLanguage {
+  title: string
+  subtitle: string
+  countryLabel: string
+  ahorroTotal: string
+  recomendaciones: Recommendation[]
+  stats: Stat[]
+  sectionCardStrategy: string
+  sectionBanks: string
+  cardStrategyNote: string
+  viewMore: string
+}
+
+// HELPERS
+const getCountryFromStorage = (): string => {
+  if (typeof window === 'undefined') return 'US'
+  try {
+    return localStorage.getItem('selectedCountry') || 'US'
+  } catch {
+    return 'US'
+  }
+}
+
+const getPriorityColor = (prioridad: 'alta' | 'media' | 'baja'): string => {
+  const colors: Record<string, string> = {
+    alta: '#ef4444',
+    media: '#f59e0b',
+    baja: '#10b981',
+  }
+  return colors[prioridad] || '#6b7280'
+}
 
 export default function RecommendationsPage() {
-  const { language } = useLanguage();
-  const [country, setCountry] = useState<string>('US');
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Get country from localStorage (set in Settings)
-    const savedCountry = localStorage.getItem('selectedCountry') || 'US';
-    setCountry(savedCountry);
-  }, []);
+  const { language } = useLanguage()
+  const [country, setCountry] = useState<string>('US')
+  const [expandedCard, setExpandedCard] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
 
   // COUNTRY-SPECIFIC DATA
-  const countryData = {
+  const countryData: Record<string, CountryData> = {
     US: {
       cards: [
         {
@@ -161,9 +221,9 @@ export default function RecommendationsPage() {
       ],
       banks: ['Banco de Bogotá', 'BBVA Colombia', 'Scotiabank Colpatria', 'Banco Popular', 'Bancolombia', 'HSBC', 'Citibank'],
     },
-  };
+  }
 
-  const content = {
+  const content: Record<string, ContentLanguage> = {
     es: {
       title: 'Recomendaciones Inteligentes',
       subtitle: 'Basadas en tu país y patrones de consumo',
@@ -320,24 +380,31 @@ export default function RecommendationsPage() {
       cardStrategyNote: 'These cards are optimized for your country and offer the best available benefits.',
       viewMore: 'View more cards in Comparator',
     },
-  };
+  }
 
-  const curr = content[language as keyof typeof content];
-  const cards = (countryData[country as keyof typeof countryData] || countryData.US).cards;
-  const banks = (countryData[country as keyof typeof countryData] || countryData.US).banks;
+  useEffect(() => {
+    setMounted(true)
+    const savedCountry = getCountryFromStorage()
+    setCountry(savedCountry)
+  }, [])
 
-  const getPriorityColor = (prioridad: string) => {
-    switch (prioridad) {
-      case 'alta':
-        return '#ef4444';
-      case 'media':
-        return '#f59e0b';
-      case 'baja':
-        return '#10b981';
-      default:
-        return '#6b7280';
-    }
-  };
+  // MEMOIZED SELECTORS
+  const curr = useMemo(
+    () => content[language as keyof typeof content] || content.en,
+    [language]
+  )
+
+  const cards = useMemo(
+    () => (countryData[country] || countryData.US).cards,
+    [country]
+  )
+
+  const banks = useMemo(
+    () => (countryData[country] || countryData.US).banks,
+    [country]
+  )
+
+  if (!mounted) return null
 
   return (
     <div style={styles.root}>
@@ -364,7 +431,9 @@ export default function RecommendationsPage() {
 
       {/* RECOMENDACIONES */}
       <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>💡 {language === 'es' ? 'Recomendaciones Personalizadas' : 'Personalized Recommendations'}</h2>
+        <h2 style={styles.sectionTitle}>
+          💡 {language === 'es' ? 'Recomendaciones Personalizadas' : 'Personalized Recommendations'}
+        </h2>
         <div style={styles.cardsGrid}>
           {curr.recomendaciones.map((rec) => (
             <div
@@ -429,7 +498,9 @@ export default function RecommendationsPage() {
 
       {/* AVAILABLE BANKS */}
       <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>🏦 {curr.sectionBanks} {country}</h2>
+        <h2 style={styles.sectionTitle}>
+          🏦 {curr.sectionBanks} {country}
+        </h2>
         <div style={styles.banksContainer}>
           {banks.map((bank, idx) => (
             <span key={idx} style={styles.bankBadge}>
@@ -442,9 +513,7 @@ export default function RecommendationsPage() {
       {/* CTA */}
       <div style={styles.ctaSection}>
         <h3 style={styles.ctaTitle}>
-          {language === 'es'
-            ? '¿Listo para optimizar tus gastos?'
-            : 'Ready to optimize your spending?'}
+          {language === 'es' ? '¿Listo para optimizar tus gastos?' : 'Ready to optimize your spending?'}
         </h3>
         <p style={styles.ctaDesc}>
           {language === 'es'
@@ -456,7 +525,7 @@ export default function RecommendationsPage() {
         </button>
       </div>
     </div>
-  );
+  )
 }
 
 const styles = {
@@ -762,4 +831,4 @@ const styles = {
     cursor: 'pointer',
     transition: 'all 0.3s ease',
   } as React.CSSProperties,
-};
+}

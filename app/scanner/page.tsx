@@ -17,9 +17,10 @@ interface ScannedReceipt {
 
 export default function ScannerPage() {
   const { t, language } = useLanguage()
-  const { processReceipt, loading, error, result } = useScanner()
+  const { processReceipt, loading, error, authenticated } = useScanner()
   const [scannedReceipts, setScannedReceipts] = useState<ScannedReceipt[]>([])
   const [dragActive, setDragActive] = useState(false)
+  const [processingError, setProcessingError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleDrag = (e: React.DragEvent) => {
@@ -52,37 +53,52 @@ export default function ScannerPage() {
 
   const handleFileProcess = async (file: File) => {
     try {
-      const data = await processReceipt(file)
+      setProcessingError(null)
       
-      // Create preview
+      // Convert file to base64
       const reader = new FileReader()
-      reader.onload = (e) => {
-        const receipt: ScannedReceipt = {
-          id: data.transaction.id,
-          merchantName: data.extracted.vendor,
-          amount: data.extracted.total,
-          date: new Date(data.extracted.date).toLocaleDateString(language),
-          time: new Date(data.extracted.date).toLocaleTimeString(language),
-          category: data.extracted.category,
-          imagePreview: e.target?.result as string,
-          items: data.extracted.items,
+      reader.onload = async (e) => {
+        const imageData = e.target?.result as string
+        
+        // Process receipt
+        const data = await processReceipt(imageData)
+        
+        if (data) {
+          const receipt: ScannedReceipt = {
+            id: Math.random().toString(36).substr(2, 9),
+            merchantName: data.merchant,
+            amount: data.amount,
+            date: new Date(data.date).toLocaleDateString(language),
+            time: new Date(data.date).toLocaleTimeString(language),
+            category: 'Expense',
+            imagePreview: imageData,
+            items: data.items,
+          }
+          setScannedReceipts([receipt, ...scannedReceipts])
+        } else {
+          setProcessingError(error || 'Failed to process receipt')
         }
-        setScannedReceipts([receipt, ...scannedReceipts])
       }
       reader.readAsDataURL(file)
-    } catch (err) {
-      console.error(err)
+    } catch (err: any) {
+      setProcessingError(err.message || 'An error occurred')
     }
+  }
+
+  if (!authenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 flex items-center justify-center">
+        <div className="text-white text-center">
+          <p className="text-xl mb-4">Please log in to use the receipt scanner</p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">{t('receipt_scanner')}</h1>
-          <p className="text-slate-400">{t('upload_receipt_to_extract_data')}</p>
-        </div>
+        <h1 className="text-3xl font-bold text-white mb-8">Receipt Scanner</h1>
 
         {/* Upload Area */}
         <div
@@ -90,114 +106,80 @@ export default function ScannerPage() {
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-lg p-12 text-center transition-all cursor-pointer mb-8 ${
+          className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors ${
             dragActive
               ? 'border-blue-500 bg-blue-500/10'
-              : 'border-slate-600 bg-slate-800/50 hover:border-slate-500'
+              : 'border-slate-600 hover:border-slate-500'
           }`}
           onClick={() => fileInputRef.current?.click()}
         >
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/*,.heic"
             onChange={handleFileSelect}
             className="hidden"
           />
-
-          <div className="mb-4">
-            <svg
-              className="w-16 h-16 mx-auto text-slate-400 mb-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
+          <div className="text-slate-300">
+            <p className="text-lg mb-2">Drag and drop your receipt here</p>
+            <p className="text-sm text-slate-400">or click to select (supports JPEG, PNG, HEIC)</p>
           </div>
-
-          <p className="text-white font-semibold mb-2">{t('drag_drop_or_click')}</p>
-          <p className="text-slate-400 text-sm">{t('supported_formats')}: JPG, PNG</p>
-
-          {loading && (
-            <div className="mt-4">
-              <div className="inline-block">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-              </div>
-              <p className="text-blue-400 text-sm mt-2">{t('processing_receipt')}</p>
-            </div>
-          )}
         </div>
 
-        {error && (
-          <div className="mb-8 bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-            <p className="text-red-400 text-sm">{t('error')}: {error}</p>
+        {/* Error Display */}
+        {(error || processingError) && (
+          <div className="mt-6 p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-200">
+            {error || processingError}
           </div>
         )}
 
-        {/* Scanned Receipts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {scannedReceipts.map((receipt) => (
-            <div key={receipt.id} className="bg-slate-800/50 border border-slate-700/50 rounded-lg overflow-hidden hover:border-slate-600 transition-all backdrop-blur-sm">
-              {/* Image Preview */}
-              {receipt.imagePreview && (
-                <div className="w-full h-48 bg-slate-700/50 overflow-hidden">
-                  <img
-                    src={receipt.imagePreview}
-                    alt={receipt.merchantName}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
+        {/* Loading State */}
+        {loading && (
+          <div className="mt-6 p-4 bg-blue-500/20 border border-blue-500 rounded-lg text-blue-200">
+            Processing receipt...
+          </div>
+        )}
 
-              {/* Receipt Details */}
-              <div className="p-4">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="text-lg font-semibold text-white">{receipt.merchantName}</h3>
-                    <p className="text-sm text-slate-400">{receipt.date} at {receipt.time}</p>
-                  </div>
-                  <span className="text-2xl font-bold text-emerald-400">${receipt.amount.toFixed(2)}</span>
-                </div>
-
-                <div className="mb-3">
-                  <span className="inline-block px-3 py-1 rounded-full bg-slate-700/50 text-slate-200 text-xs font-semibold">
-                    {receipt.category}
-                  </span>
-                </div>
-
-                {receipt.items && receipt.items.length > 0 && (
-                  <div className="mb-3 pb-3 border-t border-slate-700">
-                    <p className="text-xs text-slate-400 mb-2 font-semibold">{t('items')}:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {receipt.items.slice(0, 3).map((item, idx) => (
-                        <span key={idx} className="text-xs bg-slate-700/30 text-slate-300 px-2 py-1 rounded">
-                          {item}
-                        </span>
-                      ))}
-                      {receipt.items.length > 3 && (
-                        <span className="text-xs text-slate-400">+{receipt.items.length - 3} {t('more')}</span>
+        {/* Scanned Receipts */}
+        {scannedReceipts.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold text-white mb-6">Scanned Receipts</h2>
+            <div className="grid gap-6">
+              {scannedReceipts.map((receipt) => (
+                <div key={receipt.id} className="bg-slate-800 rounded-lg p-6 text-white">
+                  <div className="flex gap-6">
+                    <img
+                      src={receipt.imagePreview}
+                      alt={receipt.merchantName}
+                      className="w-32 h-32 object-cover rounded"
+                    />
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold mb-2">{receipt.merchantName}</h3>
+                      <p className="text-2xl font-bold text-green-400 mb-2">${receipt.amount.toFixed(2)}</p>
+                      <p className="text-sm text-slate-400">
+                        {receipt.date} at {receipt.time}
+                      </p>
+                      {receipt.items && receipt.items.length > 0 && (
+                        <div className="mt-4">
+                          <p className="text-sm font-semibold mb-2">Items:</p>
+                          <ul className="text-sm text-slate-300 space-y-1">
+                            {receipt.items.map((item, idx) => (
+                              <li key={idx}>• {item}</li>
+                            ))}
+                          </ul>
+                        </div>
                       )}
                     </div>
                   </div>
-                )}
-
-                <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-semibold rounded px-4 py-2 transition-all">
-                  {t('view_transaction')}
-                </button>
-              </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
 
         {scannedReceipts.length === 0 && !loading && (
-          <div className="text-center py-12">
-            <p className="text-slate-400">{t('no_receipts_scanned_yet')}</p>
+          <div className="mt-12 text-center text-slate-400">
+            <p>No receipts scanned yet. Start by uploading an image above.</p>
           </div>
         )}
       </div>
