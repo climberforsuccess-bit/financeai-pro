@@ -323,3 +323,32 @@ export interface LanguageContextType {
   setLanguage: (lang: 'es' | 'en') => void
   t: (key: string) => string
 }
+
+// ============================================
+// ALIAS FOR COMPATIBILITY
+// ============================================
+
+// Use Card as the source of truth, but export as CreditCard for backward compatibility
+export type CreditCard = Card
+
+
+// ============================================
+// RECEIPTS
+// ============================================
+export interface Receipt {
+  id: string
+  user_id: string
+  transaction_id?: string
+  image_url: string
+  file_name: string
+  extracted_data?: {
+    merchant?: string
+    total?: number
+    date?: string
+    items?: string[]
+  }
+  hash?: string
+  created_at: string
+  updated_at: string
+}
+

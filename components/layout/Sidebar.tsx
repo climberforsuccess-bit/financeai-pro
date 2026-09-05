@@ -16,12 +16,12 @@ export function Sidebar() {
 
   const menuItems = [
     { href: '/dashboard', label: t('dashboard'), icon: '📊' },
-    { href: '/transactions', label: t('transactions'), icon: '💰' },
-    { href: '/cards', label: t('myCards'), icon: '💳' },
-    { href: '/debt-plan', label: t('debtPlan'), icon: '📉' },
-    { href: '/subscriptions', label: t('subscriptions'), icon: '🔄' },
-    { href: '/scanner', label: t('scannerReceipt'), icon: '📸' },
-    { href: '/settings', label: t('settings'), icon: '⚙️' },
+    { href: '/dashboard/transactions', label: t('transactions'), icon: '💰' },
+    { href: '/dashboard/cards', label: t('myCards'), icon: '💳' },
+    { href: '/dashboard/debt-plan', label: t('debtPlan'), icon: '📉' },
+    { href: '/dashboard/subscriptions', label: t('subscriptions'), icon: '🔄' },
+    { href: '/dashboard/scanner', label: t('scannerReceipt'), icon: '📸' },
+    { href: '/dashboard/settings', label: t('settings'), icon: '⚙️' },
   ];
 
   const isActive = (href: string) => pathname === href;

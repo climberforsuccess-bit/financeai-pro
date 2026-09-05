@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 type Language = 'en' | 'es'
 
@@ -16,12 +16,16 @@ const translations: Translations = {
   dashboard: { en: 'Dashboard', es: 'Panel de Control' },
   transactions: { en: 'Transactions', es: 'Transacciones' },
   cards: { en: 'Credit Cards', es: 'Tarjetas de Crédito' },
+  myCards: { en: 'My Cards', es: 'Mis Tarjetas' },
   subscriptions: { en: 'Subscriptions', es: 'Suscripciones' },
   debt_plan: { en: 'Debt Plan', es: 'Plan de Deudas' },
+  debtPlan: { en: 'Debt Plan', es: 'Plan de Deudas' },
   recommendations: { en: 'Recommendations', es: 'Recomendaciones' },
   reports: { en: 'Reports', es: 'Reportes' },
   settings: { en: 'Settings', es: 'Configuración' },
   receipt_scanner: { en: 'Receipt Scanner', es: 'Escáner de Recibos' },
+  scannerReceipt: { en: 'Scanner Receipt', es: 'Escanear Recibo' },
+  underConstruction: { en: 'Feature under construction', es: 'Funcionalidad en construcción' },
 
   // Common Actions
   add: { en: 'Add', es: 'Agregar' },
@@ -56,13 +60,35 @@ const translations: Translations = {
   no_transactions: { en: 'No transactions recorded', es: 'No hay transacciones registradas' },
   quick_actions: { en: '⚡ Quick Actions', es: '⚡ Acciones Rápidas' },
 
-  // Transactions
+  // Transactions Page
+  'transactions.title': { en: 'Transactions', es: 'Transacciones' },
+  'transactions.subtitle': { en: 'Manage and analyze all your transactions', es: 'Gestiona y analiza todas tus transacciones' },
+  'transactions.totalIncome': { en: 'Total Income', es: 'Ingresos Totales' },
+  'transactions.totalExpense': { en: 'Total Expenses', es: 'Gastos Totales' },
+  'transactions.balance': { en: 'Balance', es: 'Balance' },
+  'transactions.search': { en: 'Search transactions...', es: 'Buscar transacciones...' },
+  'transactions.allTypes': { en: 'All Types', es: 'Todos los tipos' },
+  'transactions.income': { en: 'Income', es: 'Ingreso' },
+  'transactions.expense': { en: 'Expense', es: 'Gasto' },
+  'transactions.allCategories': { en: 'All Categories', es: 'Todas las categorías' },
+  'transactions.export': { en: 'Export', es: 'Exportar' },
+  'transactions.noResults': { en: 'No transactions found', es: 'No hay transacciones' },
+  'transactions.recurring': { en: 'Recurring', es: 'Recurrente' },
+
+  // Transaction Categories
+  'categories.food': { en: 'Food', es: 'Comida' },
+  'categories.transport': { en: 'Transport', es: 'Transporte' },
+  'categories.entertainment': { en: 'Entertainment', es: 'Entretenimiento' },
+  'categories.utilities': { en: 'Utilities', es: 'Utilidades' },
+  'categories.healthcare': { en: 'Healthcare', es: 'Salud' },
+  'categories.other': { en: 'Other', es: 'Otro' },
+
+  // Transactions (Original keys kept for compatibility)
   amount: { en: 'Amount', es: 'Monto' },
   type: { en: 'Type', es: 'Tipo' },
   category: { en: 'Category', es: 'Categoría' },
   date: { en: 'Date', es: 'Fecha' },
   description: { en: 'Description', es: 'Descripción' },
-  income: { en: 'Income', es: 'Ingreso' },
   expense: { en: 'Expense', es: 'Gasto' },
   transfer: { en: 'Transfer', es: 'Transferencia' },
   expenses: { en: 'Expenses', es: 'Gastos' },
@@ -157,7 +183,7 @@ const translations: Translations = {
   saturday: { en: 'Saturday', es: 'Sábado' },
   sunday: { en: 'Sunday', es: 'Domingo' },
 
-  // LATAM-specific (New for regional markets)
+  // LATAM-specific
   select_country: { en: 'Select Country', es: 'Selecciona País' },
   select_currency: { en: 'Select Currency', es: 'Selecciona Moneda' },
   recommended_for_you: { en: 'Recommended for you', es: 'Recomendado para ti' },
@@ -165,7 +191,7 @@ const translations: Translations = {
   optimize_spending: { en: 'Optimize your spending', es: 'Optimiza tus gastos' },
   smart_recommendations: { en: 'Get AI-powered recommendations', es: 'Obtén recomendaciones impulsadas por IA' },
 
-  // LANDING PAGE KEYS (NEW)
+  // LANDING PAGE
   features: { en: 'Features', es: 'Características' },
   pricing: { en: 'Pricing', es: 'Precios' },
   about: { en: 'About', es: 'Acerca de' },
@@ -190,36 +216,6 @@ const translations: Translations = {
   savings_goals_desc: { en: 'Set financial objectives and receive personalized alerts to stay on track.', es: 'Define objetivos financieros y recibe alertas personalizadas para mantener el rumbo.' },
   pricing_title: { en: 'Simple and Transparent Plans', es: 'Planes Simples y Transparentes' },
   plan_free: { en: 'Free', es: 'Free' },
-  plan_personal: { en: 'Personal', es: 'Personal' },
-  plan_pro: { en: 'Pro', es: 'Pro' },
-  plan_business: { en: 'Business', es: 'Business' },
-  price_free: { en: '0', es: '0' },
-  price_personal: { en: '9.99', es: '9.99' },
-  price_pro: { en: '19.99', es: '19.99' },
-  price_business: { en: '49.99', es: '49.99' },
-  per_month: { en: '/month', es: '/mes' },
-  plan_free_desc: { en: 'Perfect to start', es: 'Perfecto para comenzar' },
-  plan_personal_desc: { en: 'For individual users', es: 'Para usuarios individuales' },
-  plan_pro_desc: { en: 'Full AI power', es: 'Poder total de IA' },
-  plan_business_desc: { en: 'For teams and enterprises', es: 'Para equipos y empresas' },
-  features_free: { en: '✓ Basic dashboard|✓ 5 transactions/month|✓ Manual categorization', es: '✓ Dashboard básico|✓ 5 transacciones/mes|✓ Categorización manual' },
-  features_personal: { en: '✓ Full dashboard|✓ Unlimited transactions|✓ AI Receipt Scanner|✓ Basic recommendations', es: '✓ Dashboard completo|✓ Transacciones ilimitadas|✓ Escáner de Recibos IA|✓ Recomendaciones básicas' },
-  features_pro: { en: '✓ Everything in Personal|✓ Premium Scanner|✓ Debt Analysis|✓ PDF/CSV Reports', es: '✓ Todo de Personal|✓ Escáner Premium|✓ Análisis de Deudas|✓ Reportes PDF/CSV' },
-  features_business: { en: '✓ Everything in Pro|✓ Multiple users|✓ API Access|✓ Priority support', es: '✓ Todo de Pro|✓ Múltiples usuarios|✓ Acceso API|✓ Soporte prioritario' },
-  subscribe: { en: 'Subscribe', es: 'Suscribirse' },
-  ready_to_start: { en: 'Ready to Take Control of Your Finances?', es: '¿Listo para Controlar tus Finanzas?' },
-  cta_description: { en: 'Join thousands of users already saving money and making better financial decisions.', es: 'Únete a miles de usuarios que ya están ahorrando dinero y tomando mejores decisiones financieras.' },
-  terms: { en: 'Terms', es: 'Términos' },
-  all_rights_reserved: { en: 'All rights reserved', es: 'Todos los derechos reservados' },
-
-  // REPORTS PAGE KEYS (NEW)
-  financial_analysis: { en: 'Detailed analysis of your finances', es: 'Análisis detallado de tus finanzas' },
-  export_csv: { en: 'Download CSV', es: 'Descargar CSV' },
-  export_pdf: { en: 'Download PDF', es: 'Descargar PDF' },
-  total_income: { en: 'Total Income', es: 'Ingresos Totales' },
-  total_expenses: { en: 'Total Expenses', es: 'Gastos Totales' },
-  top_categories: { en: 'Top Categories', es: 'Categorías Principales' },
-  monthly_trend: { en: 'Monthly Trend', es: 'Tendencia Mensual' },
 }
 
 interface LanguageContextType {
@@ -231,26 +227,29 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>('es')
+  const [language, setLanguageState] = useState<Language>('es')
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem('language') as Language | null
-    if (stored && (stored === 'en' || stored === 'es')) {
-      setLanguage(stored)
+    setMounted(true)
+    const saved = localStorage.getItem('language') as Language | null
+    if (saved && (saved === 'en' || saved === 'es')) {
+      setLanguageState(saved)
     }
   }, [])
 
-  const handleSetLanguage = (lang: Language) => {
-    setLanguage(lang)
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang)
     localStorage.setItem('language', lang)
   }
 
   const t = (key: string): string => {
+    if (!mounted) return key
     return translations[key]?.[language] || key
   }
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   )

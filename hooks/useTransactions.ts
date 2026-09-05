@@ -1,17 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { getSupabaseClient } from '@/lib/supabase'
-
-interface Transaction {
-  id: string
-  user_id: string
-  category: string
-  amount: number
-  date: string
-  description: string
-  type: 'income' | 'expense'
-  created_at: string
-}
+import type { Transaction } from '@/types'
 
 export function useTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -33,18 +23,26 @@ export function useTransactions() {
       const { data: { session } } = await supabase.auth.getSession()
       const token = session?.access_token
 
-      if (!token) throw new Error('No access token')
+      if (!token) {
+        setError('No authentication token')
+        setLoading(false)
+        return
+      }
 
       const response = await fetch('/api/transactions', {
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
       })
 
-      if (!response.ok) throw new Error(`API error: ${response.status}`)
-      const { data } = await response.json()
-      setTransactions(data)
-      setError(null)
+      if (!response.ok) {
+        throw new Error('Failed to fetch transactions')
+      }
+
+      const json = await response.json()
+      // El endpoint retorna { data, count }, extraer el array
+      const transactionsArray = json.data || []
+      setTransactions(Array.isArray(transactionsArray) ? transactionsArray : [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch transactions')
       setTransactions([])
@@ -53,5 +51,10 @@ export function useTransactions() {
     }
   }
 
-  return { transactions, loading, error }
+  return {
+    transactions,
+    loading,
+    error,
+    refetch: fetchTransactions,
+  }
 }
