@@ -1,43 +1,36 @@
-import { createClient } from '@supabase/supabase-js'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-)
-
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await req.json()
+    const { email, password } = await request.json();
 
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      )
+    // TODO: Validar contra base de datos real
+    if (email === "test@example.com" && password === "password123") {
+      // Crear respuesta con cookie de sesión
+      const response = NextResponse.json(
+        { message: "Login successful", user: { id: "1", email } },
+        { status: 200 }
+      );
+
+      // Agregar cookie de sesión (temporal, en producción usar JWT)
+      response.cookies.set("auth_token", "dummy_token_123", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7, // 7 días
+      });
+
+      return response;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 401 }
-      )
-    }
-
-    return NextResponse.json({
-      user: data.user,
-      session: data.session,
-    })
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Internal server error'
     return NextResponse.json(
-      { error: message },
+      { message: "Invalid email or password" },
+      { status: 401 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Internal server error" },
       { status: 500 }
-    )
+    );
   }
 }
