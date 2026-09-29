@@ -1,22 +1,15 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { ReactNode } from 'react'
 
 export const metadata: Metadata = {
-  title: "FinanceAI Pro V2.0",
-  description: "La plataforma premium de finanzas personales con IA contextual para LATAM",
-  icons: {
-    icon: "/favicon.svg",
-  },
-};
+  title: 'FinanceAI Pro',
+  description: 'Platform de finanzas personales con IA',
+}
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body>{children}</body>
     </html>
-  );
+  )
 }
