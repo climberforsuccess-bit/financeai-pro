@@ -29,6 +29,19 @@ export default function Dashboard() {
     loadDashboard()
   }, [user?.email])
 
+  // Función para traducir tipos de deuda
+  const getDebtTypeLabel = (type: string): string => {
+    const debtTypeMap: { [key: string]: string } = {
+      credit_card: 'Tarjeta de Crédito',
+      personal_loan: 'Préstamo Personal',
+      student_loan: 'Préstamo de Estudiante',
+      mortgage: 'Hipoteca',
+      auto_loan: 'Préstamo de Auto',
+      medical: 'Deuda Médica',
+    }
+    return debtTypeMap[type] || type
+  }
+
   if (loading) return <div className="p-8">Cargando...</div>
   if (error) return <div className="p-8 text-red-600">Error: {error}</div>
   if (!data) return <div className="p-8">No hay datos</div>
@@ -75,7 +88,7 @@ export default function Dashboard() {
               {debts.map((debt: any) => (
                 <tr key={debt.id} className="border-b hover:bg-gray-50">
                   <td className="py-2">{debt.name}</td>
-                  <td className="py-2">{debt.debt_type}</td>
+                  <td className="py-2">{getDebtTypeLabel(debt.debt_type)}</td>
                   <td className="text-right py-2 font-semibold">${debt.current_balance?.toFixed(2) || '0.00'}</td>
                 </tr>
               ))}
