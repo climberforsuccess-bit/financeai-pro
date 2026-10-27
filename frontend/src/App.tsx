@@ -11,6 +11,7 @@ import Subscriptions from './pages/Subscriptions'
 import Reports from './pages/Reports'
 import AIAssistant from './pages/AIAssistant'
 import Settings from './pages/Settings'
+import { useEffect } from 'react'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuthStore()
@@ -18,7 +19,22 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { user } = useAuthStore()
+  const { user, loading, initAuth } = useAuthStore()
+
+  useEffect(() => {
+    initAuth()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Cargando...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <Router>

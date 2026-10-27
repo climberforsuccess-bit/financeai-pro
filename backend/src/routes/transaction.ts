@@ -1,158 +1,138 @@
 import { Router, Response } from 'express'
-import { AuthRequest } from '../middleware/auth.js'
-import { getSupabase } from '../utils/supabase.js'
+import { supabase } from '../lib/supabase'
+import { AuthRequest } from '../types/auth'
 
 const router = Router()
 
-// Función auxiliar para obtener profile_id por email
-const getProfileIdByEmail = async (email: string) => {
-  const supabase = getSupabase()
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('email', email)
-    .single()
+console.log('🔄 Loading transaction routes')
 
-  if (error) throw error
-  return data?.id
-}
-
-// GET all transactions
+// GET - Obtener transacciones del usuario
 router.get('/', async (req: AuthRequest, res: Response) => {
   try {
-    const supabase = getSupabase()
-    const { email } = req.query
-
-    if (!email) {
-      return res.status(400).json({ error: 'Email is required' })
+    console.log('📥 GET /transaction - User:', req.user?.id)
+    
+    if (!req.user?.id) {
+      return res.status(401).json({ error: 'Unauthorized' })
     }
-
-    const profileId = await getProfileIdByEmail(email as string)
 
     const { data, error } = await supabase
       .from('transactions')
       .select('*')
-      .eq('profile_id', profileId)
+      .eq('profile_id', req.user.id)
       .order('date', { ascending: false })
 
     if (error) throw error
 
-    res.json({ success: true, data })
+    res.json({ data })
   } catch (error: any) {
-    console.error('Transaction GET error:', error)
+    console.error('Error fetching transactions:', error)
     res.status(500).json({ error: error.message })
   }
 })
 
-// POST new transaction
+// POST - Crear transacción
 router.post('/', async (req: AuthRequest, res: Response) => {
   try {
-    const supabase = getSupabase()
-    const { email, amount, category, description, date, type, merchant, payment_method, notes } = req.body
-
-    if (!email) {
-      return res.status(400).json({ error: 'Email is required' })
+    console.log('📤 POST /transaction - User:', req.user?.id, 'Body:', req.body)
+    
+    if (!req.user?.id) {
+      return res.status(401).json({ error: 'Unauthorized' })
     }
 
-    if (!amount || !category || !type) {
-      return res.status(400).json({ error: 'amount, category, type required' })
-    }
+    const { description, amount, type, category, date, merchant, payment_method, notes } = req.body
 
-    const profileId = await getProfileIdByEmail(email)
+    if (!description || !amount || !type || !category || !date) {
+      return res.status(400).json({ error: 'Missing required fields' })
+    }
 
     const { data, error } = await supabase
       .from('transactions')
-      .insert([{
-        profile_id: profileId,
-        amount: parseFloat(amount),
-        category,
-        description: description || '',
-        date: date || new Date().toISOString().split('T')[0],
-        type,
-        merchant: merchant || null,
-        payment_method: payment_method || 'credit_card',
-        notes: notes || null,
-        status: 'completed',
-        currency: 'USD',
-      }])
+      .insert([
+        {
+          profile_id: req.user.id,
+          description,
+          amount: parseFloat(amount),
+          type,
+          category,
+          date,
+          merchant: merchant || null,
+          payment_method: payment_method || null,
+          notes: notes || null,
+        },
+      ])
       .select()
-      .single()
 
     if (error) throw error
 
-    res.status(201).json({ success: true, data })
+    res.status(201).json({ data: data?.[0] })
   } catch (error: any) {
-    console.error('Transaction POST error:', error)
+    console.error('Error creating transaction:', error)
     res.status(500).json({ error: error.message })
   }
 })
 
-// PUT update transaction
+// PUT - Actualizar transacción
 router.put('/:id', async (req: AuthRequest, res: Response) => {
   try {
-    const supabase = getSupabase()
-    const { id } = req.params
-    const { email, amount, category, description, date, type, merchant, payment_method, notes } = req.body
-
-    if (!email) {
-      return res.status(400).json({ error: 'Email is required' })
+    console.log('🔄 PUT /transaction/:id - User:', req.user?.id, 'ID:', req.params.id)
+    
+    if (!req.user?.id) {
+      return res.status(401).json({ error: 'Unauthorized' })
     }
 
-    const profileId = await getProfileIdByEmail(email)
+    const { id } = req.params
+    const { description, amount, type, category, date, merchant, payment_method, notes } = req.body
 
     const { data, error } = await supabase
       .from('transactions')
       .update({
+        description,
         amount: parseFloat(amount),
-        category,
-        description: description || '',
-        date: date || new Date().toISOString().split('T')[0],
         type,
+        category,
+        date,
         merchant: merchant || null,
-        payment_method: payment_method || 'credit_card',
+        payment_method: payment_method || null,
         notes: notes || null,
       })
       .eq('id', id)
-      .eq('profile_id', profileId)
+      .eq('profile_id', req.user.id)
       .select()
-      .single()
 
     if (error) throw error
-    if (!data) {
+    if (!data || data.length === 0) {
       return res.status(404).json({ error: 'Transaction not found' })
     }
 
-    res.json({ success: true, data })
+    res.json({ data: data[0] })
   } catch (error: any) {
-    console.error('Transaction PUT error:', error)
+    console.error('Error updating transaction:', error)
     res.status(500).json({ error: error.message })
   }
 })
 
-// DELETE transaction
+// DELETE - Eliminar transacción
 router.delete('/:id', async (req: AuthRequest, res: Response) => {
   try {
-    const supabase = getSupabase()
-    const { id } = req.params
-    const { email } = req.query
-
-    if (!email) {
-      return res.status(400).json({ error: 'Email is required' })
+    console.log('🗑️ DELETE /transaction/:id - User:', req.user?.id, 'ID:', req.params.id)
+    
+    if (!req.user?.id) {
+      return res.status(401).json({ error: 'Unauthorized' })
     }
 
-    const profileId = await getProfileIdByEmail(email as string)
+    const { id } = req.params
 
     const { error } = await supabase
       .from('transactions')
       .delete()
       .eq('id', id)
-      .eq('profile_id', profileId)
+      .eq('profile_id', req.user.id)
 
     if (error) throw error
 
-    res.json({ success: true, message: 'Transaction deleted' })
+    res.json({ success: true })
   } catch (error: any) {
-    console.error('Transaction DELETE error:', error)
+    console.error('Error deleting transaction:', error)
     res.status(500).json({ error: error.message })
   }
 })

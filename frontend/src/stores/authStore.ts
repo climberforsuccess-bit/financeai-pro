@@ -13,6 +13,7 @@ interface User {
 interface AuthStore {
   user: User | null
   session: any
+  loading: boolean
   setUser: (user: User) => void
   setSession: (session: any) => void
   logout: () => void
@@ -23,6 +24,7 @@ interface AuthStore {
 export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
   session: null,
+  loading: true,
 
   setUser: (user: User) => set({ user }),
 
@@ -66,6 +68,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   initAuth: async () => {
     try {
+      set({ loading: true })
+      
       const { data, error } = await supabase.auth.getSession()
       if (error) throw error
 
@@ -82,18 +86,24 @@ export const useAuthStore = create<AuthStore>((set) => ({
         if (profileError) {
           // Si el perfil no existe, crearlo
           if (profileError.code === 'PGRST116') {
+            const newProfile = {
+              id: data.session.user.id,
+              email: data.session.user.email,
+              full_name: data.session.user.user_metadata?.full_name || '',
+              currency: 'USD',
+              country: '',
+            }
+            
             const { error: insertError } = await supabase
               .from('profiles')
-              .insert([
-                {
-                  id: data.session.user.id,
-                  email: data.session.user.email,
-                  full_name: data.session.user.user_metadata?.full_name || '',
-                  currency: 'USD',
-                  country: '',
-                },
-              ])
+              .insert([newProfile])
+            
             if (insertError) throw insertError
+            
+            set({
+              user: newProfile,
+              loading: false,
+            })
           } else {
             throw profileError
           }
@@ -107,12 +117,15 @@ export const useAuthStore = create<AuthStore>((set) => ({
               currency: profile.currency || 'USD',
               country: profile.country || '',
             },
+            loading: false,
           })
         }
+      } else {
+        set({ user: null, session: null, loading: false })
       }
     } catch (error) {
       console.error('Error initializing auth:', error)
-      set({ user: null, session: null })
+      set({ user: null, session: null, loading: false })
     }
   },
 }))

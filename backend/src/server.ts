@@ -1,13 +1,13 @@
 import 'dotenv/config'
 import express, { Express, Request, Response } from 'express'
 import cors from 'cors'
-import dashboardRoutes from './routes/dashboard.js'
-import debtRoutes from './routes/debt.js'
-import transactionRoutes from './routes/transaction.js'
-import authRoutes from './routes/auth.js'
-import { initializeSupabase } from './utils/supabase.js'
-import { authMiddleware } from './middleware/auth.js'
-import { errorHandler } from './middleware/errorHandler.js'
+import dashboardRoutes from './routes/dashboard'
+import debtRoutes from './routes/debt'
+import transactionRoutes from './routes/transaction'
+import authRoutes from './routes/auth'
+import { initializeSupabase } from './utils/supabase'
+import { authMiddleware } from './middleware/auth'
+import { errorHandler } from './middleware/errorHandler'
 
 const app: Express = express()
 const PORT = process.env.PORT || 3001
