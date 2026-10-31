@@ -14,7 +14,6 @@ const apiClient = axios.create({
 // Interceptor para agregar token JWT de Supabase
 apiClient.interceptors.request.use((config) => {
   const session = useAuthStore.getState().session
-  const user = useAuthStore.getState().user
   
   console.log('=== API Request ===')
   console.log('Full URL:', `${config.baseURL}${config.url}`)

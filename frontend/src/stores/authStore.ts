@@ -1,131 +1,161 @@
 import { create } from 'zustand'
 import { supabase } from '../lib/supabase'
 
-interface User {
+export interface User {
   id: string
   email: string
-  full_name?: string
-  avatar_url?: string
+  full_name: string
   currency: string
   country: string
 }
 
-interface AuthStore {
-  user: User | null
-  session: any
-  loading: boolean
-  setUser: (user: User) => void
-  setSession: (session: any) => void
-  logout: () => void
-  initAuth: () => Promise<void>
-  signup: (email: string, password: string, fullName?: string) => Promise<void>
+export interface Session {
+  access_token: string
+  refresh_token: string
+  user: {
+    id: string
+    email: string
+  }
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
+interface AuthState {
+  user: User | null
+  session: Session | null
+  loading: boolean
+  error: string | null
+  initAuth: () => Promise<void>
+  login: (email: string, password: string) => Promise<void>
+  signup: (email: string, password: string, fullName: string) => Promise<void>
+  logout: () => Promise<void>
+}
+
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   session: null,
   loading: true,
-
-  setUser: (user: User) => set({ user }),
-
-  setSession: (session: any) => set({ session }),
-
-  logout: async () => {
-    await supabase.auth.signOut()
-    set({ user: null, session: null })
-  },
-
-  signup: async (email: string, password: string, fullName?: string) => {
-    // Registrar en Auth
-    const { data: authData, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName || '',
-        },
-      },
-    })
-
-    if (signUpError) throw signUpError
-    if (!authData.user) throw new Error('No user returned from signup')
-
-    // Crear perfil manualmente
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert([
-        {
-          id: authData.user.id,
-          email: email,
-          full_name: fullName || '',
-          currency: 'USD',
-          country: '',
-        },
-      ])
-
-    if (profileError) throw profileError
-  },
+  error: null,
 
   initAuth: async () => {
     try {
-      set({ loading: true })
-      
-      const { data, error } = await supabase.auth.getSession()
-      if (error) throw error
+      const { data: { session } } = await supabase.auth.getSession()
 
-      if (data.session) {
-        set({ session: data.session })
-        
-        // Obtener perfil del usuario
-        const { data: profile, error: profileError } = await supabase
+      if (session?.user?.id) {
+        const { data: profile } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', data.session.user.id)
+          .eq('id', session.user.id)
           .single()
 
-        if (profileError) {
-          // Si el perfil no existe, crearlo
-          if (profileError.code === 'PGRST116') {
-            const newProfile = {
-              id: data.session.user.id,
-              email: data.session.user.email,
-              full_name: data.session.user.user_metadata?.full_name || '',
-              currency: 'USD',
-              country: '',
-            }
-            
-            const { error: insertError } = await supabase
-              .from('profiles')
-              .insert([newProfile])
-            
-            if (insertError) throw insertError
-            
-            set({
-              user: newProfile,
-              loading: false,
-            })
-          } else {
-            throw profileError
-          }
-        } else {
-          set({
+        set({
+          session: {
+            access_token: session.access_token,
+            refresh_token: session.refresh_token || '',
             user: {
-              id: profile.id,
-              email: profile.email,
-              full_name: profile.full_name,
-              avatar_url: profile.avatar_url,
-              currency: profile.currency || 'USD',
-              country: profile.country || '',
+              id: session.user.id,
+              email: session.user.email || '',
             },
-            loading: false,
-          })
-        }
+          },
+          user: profile || null,
+          loading: false,
+        })
       } else {
-        set({ user: null, session: null, loading: false })
+        set({ loading: false })
       }
     } catch (error) {
-      console.error('Error initializing auth:', error)
-      set({ user: null, session: null, loading: false })
+      console.error('Auth init error:', error)
+      set({ loading: false })
+    }
+  },
+
+  login: async (email: string, password: string) => {
+    try {
+      set({ error: null })
+
+      const { data: { session }, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (error) throw error
+
+      if (session?.user?.id) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single()
+
+        set({
+          session: {
+            access_token: session.access_token,
+            refresh_token: session.refresh_token || '',
+            user: {
+              id: session.user.id,
+              email: session.user.email || '',
+            },
+          },
+          user: profile || null,
+        })
+      }
+    } catch (error: any) {
+      set({ error: error.message })
+      throw error
+    }
+  },
+
+  signup: async (email: string, password: string, fullName: string) => {
+    try {
+      set({ error: null })
+
+      const { data: { user }, error } = await supabase.auth.signUp({
+        email,
+        password,
+      })
+
+      if (error) throw error
+      if (!user?.id) throw new Error('No user created')
+
+      const { data: newProfile, error: profileError } = await supabase
+        .from('profiles')
+        .insert([{
+          id: user.id,
+          email: email || '',
+          full_name: fullName,
+          currency: 'USD',
+          country: 'US',
+        }])
+        .select()
+        .single()
+
+      if (profileError) throw profileError
+
+      const { data: { session } } = await supabase.auth.getSession()
+
+      if (session) {
+        set({
+          session: {
+            access_token: session.access_token,
+            refresh_token: session.refresh_token || '',
+            user: {
+              id: session.user.id,
+              email: session.user.email || '',
+            },
+          },
+          user: newProfile,
+        })
+      }
+    } catch (error: any) {
+      set({ error: error.message })
+      throw error
+    }
+  },
+
+  logout: async () => {
+    try {
+      await supabase.auth.signOut()
+      set({ user: null, session: null })
+    } catch (error: any) {
+      set({ error: error.message })
     }
   },
 }))

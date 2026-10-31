@@ -76,7 +76,7 @@ export default function Transactions() {
     try {
       setLoading(true)
       setError(null)
-      const response = await apiClient.get('/api/transaction')
+      const response = await apiClient.get('/api/transactions')
       setTransactions(response.data.data || response.data || [])
     } catch (err: any) {
       console.error('Error loading transactions:', err)
@@ -100,7 +100,7 @@ export default function Transactions() {
       if (editingId) {
         await apiClient.put(`/api/transaction/${editingId}`, payload)
       } else {
-        await apiClient.post('/api/transaction', payload)
+        await apiClient.post('/api/transactions', payload)
       }
 
       await loadTransactions()
