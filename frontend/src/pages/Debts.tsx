@@ -2,47 +2,86 @@ import { useEffect, useState } from 'react'
 import { useAuthStore } from '../stores/authStore'
 import { useLanguage } from '../context/LanguageContext'
 import LanguageToggle from '../components/LanguageToggle'
+import DebtDetailModal from '../components/DebtDetailModal'
 import apiClient from '../services/apiClient'
 
 interface Debt {
   id: string
   name: string
+  total_amount: number
   current_balance: number
+  amount_paid: number
   interest_rate: number
   debt_type: string
   status: string
   is_card?: boolean
   bank?: string
+  due_date?: string
+  minimum_payment?: number
+  interest_accrued?: number
+  payment_frequency?: string
+  currency?: string
+  card_id?: string | null
+}
+
+interface Card {
+  id: string
+  name: string
+  card_type: 'credit' | 'debit'
+  card_number: string
+  bank: string
+  balance: number
+  limit_amount?: number
+  apr?: number
+  utilization_ratio?: number
 }
 
 export default function Debts() {
   const { session } = useAuthStore()
   const { t } = useLanguage()
   const [debts, setDebts] = useState<Debt[]>([])
+  const [cards, setCards] = useState<Card[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [selectedDebt, setSelectedDebt] = useState<Debt | null>(null)
   const [formData, setFormData] = useState({
     name: '',
+    total_amount: '',
     current_balance: '',
+    amount_paid: '',
     interest_rate: '',
     debt_type: 'personal_loan',
   })
 
   useEffect(() => {
-    if (!session?.access_token) return
-    loadDebts()
-  }, [session?.access_token, t])
+    if (!session?.access_token) {
+      console.log('No token yet, waiting...')
+      return
+    }
+    console.log('Token found, loading data...')
+    loadData()
+  }, [session?.access_token])
 
-  const loadDebts = async () => {
+  const loadData = async () => {
     try {
       setError(null)
-      const response = await apiClient.get('/api/debt')
-      setDebts(response.data.data || [])
+      console.log('Fetching debts and cards...')
+      
+      const [debtsRes, cardsRes] = await Promise.all([
+        apiClient.get('/api/debt'),
+        apiClient.get('/api/cards')
+      ])
+      
+      console.log('Debts response:', debtsRes.data)
+      console.log('Cards response:', cardsRes.data)
+      
+      setDebts(debtsRes.data.data || [])
+      setCards(cardsRes.data.data || [])
     } catch (err: any) {
-      console.error('Debts error:', err)
-      setError(err.response?.data?.error || err.message || t('debts.error'))
+      console.error('Load data error:', err)
+      setError(err.response?.data?.error || err.message || 'Error loading data')
     } finally {
       setLoading(false)
     }
@@ -55,14 +94,23 @@ export default function Debts() {
     try {
       await apiClient.post('/api/debt', {
         name: formData.name,
+        total_amount: parseFloat(formData.total_amount),
         current_balance: parseFloat(formData.current_balance),
+        amount_paid: parseFloat(formData.amount_paid) || 0,
         interest_rate: parseFloat(formData.interest_rate) || 0,
         debt_type: formData.debt_type,
       })
 
-      setFormData({ name: '', current_balance: '', interest_rate: '', debt_type: 'personal_loan' })
+      setFormData({ 
+        name: '', 
+        total_amount: '', 
+        current_balance: '', 
+        amount_paid: '', 
+        interest_rate: '', 
+        debt_type: 'personal_loan' 
+      })
       setShowForm(false)
-      await loadDebts()
+      await loadData()
     } catch (err: any) {
       console.error('Submit error:', err)
       setError(err.response?.data?.error || err.message)
@@ -89,30 +137,86 @@ export default function Debts() {
       inactive: t('debts.status.inactive'),
       paid: t('debts.status.paid'),
     }
-    return statusMap[status] || 'Active'
+    return statusMap[status] || t('debts.status.active')
   }
 
-  const getDebtNameLabel = (name: string, debtType?: string, bank?: string): string => {
-    if (debtType === 'credit_card' && bank) {
-      return bank
+  const getPaymentProgress = (debt: any, isCard: boolean = false): number => {
+    if (isCard) {
+      const limit = Number(debt.limit_amount) || 1
+      const balance = Number(debt.balance) || 0
+      const available = limit - balance
+      const progress = (available / limit) * 100
+      
+      return Math.min(progress, 100)
+    }
+    
+    const total = Number(debt.total_amount) || 0
+    let paid = Number(debt.amount_paid) || 0
+    const balance = Number(debt.current_balance) || 0
+
+    if (paid === 0 && balance > 0 && total > 0) {
+      paid = total - balance
     }
 
-    const nameLower = name.toLowerCase().trim()
-    
-    const nameMap: { [key: string]: string } = {
-      'carro': t('debtNames.carro'),
-      'auto': t('debtNames.carro'),
-      'prestamo': t('debtNames.prestamo'),
-      'loan': t('debtNames.prestamo'),
-      'casa': t('debtNames.casa'),
-      'home': t('debtNames.casa'),
-      'tarjeta': t('debtNames.tarjeta'),
-      'card': t('debtNames.tarjeta'),
-    }
-    
-    return nameMap[nameLower] || name
+    return total > 0 ? (paid / total) * 100 : 0
   }
 
+  const getProgressColor = (progress: number): string => {
+    if (progress < 25) return 'bg-red-500'
+    if (progress < 50) return 'bg-yellow-500'
+    if (progress < 75) return 'bg-blue-500'
+    return 'bg-green-500'
+  }
+
+  const manualDebts = debts.filter(debt => {
+    const total = Number(debt.total_amount) || 0
+    const hasNoCard = !debt.card_id || debt.card_id === null
+    return total > 0 && hasNoCard
+  })
+
+  const creditCards = cards.filter(card => card.card_type === 'credit' && Number(card.balance) > 0)
+
+  console.log('Manual debts:', manualDebts)
+  console.log('Credit cards:', creditCards)
+
+  const allDebts = [
+    ...manualDebts.map(d => ({ ...d, isCard: false })),
+    ...creditCards.map(c => ({
+      id: c.id,
+      name: c.bank,
+      total_amount: c.limit_amount || 0,
+      current_balance: c.balance,
+      amount_paid: (c.limit_amount || 0) - c.balance,
+      interest_rate: c.apr || 0,
+      debt_type: 'credit_card',
+      status: 'active',
+      isCard: true,
+      bank: c.bank,
+      card_name: c.name,
+      limit_amount: c.limit_amount,
+      balance: c.balance,
+    }))
+  ]
+
+  const totalDebt = allDebts.reduce((sum, d) => sum + Number(d.current_balance), 0)
+
+  // 🔧 FIX: Actualizar selectedDebt cuando cambia la lista de deudas
+  useEffect(() => {
+    if (selectedDebt) {
+      const updatedDebt = allDebts.find(d => d.id === selectedDebt.id)
+      if (updatedDebt) {
+        console.log('✅ Updating selectedDebt:', updatedDebt)
+        setSelectedDebt(updatedDebt)
+      }
+    }
+  }, [debts, cards])
+
+  const handlePaymentSuccess = async () => {
+    console.log('💰 Payment registered, reloading data...')
+    await loadData()
+  }
+
+  if (!session?.access_token) return <div className="p-8">{t('debts.loading')}</div>
   if (loading) return <div className="p-8">{t('debts.loading')}</div>
   if (error) return <div className="p-8 text-red-600">{t('debts.error')}: {error}</div>
 
@@ -121,7 +225,7 @@ export default function Debts() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-4xl font-bold text-gray-900">{t('debts.title')}</h1>
-          <p className="text-gray-600 mt-2">Total: ${debts.reduce((sum, d) => sum + d.current_balance, 0).toFixed(2)}</p>
+          <p className="text-gray-600 mt-2">Total: ${totalDebt.toFixed(2)}</p>
         </div>
         <div className="flex gap-4">
           <LanguageToggle />
@@ -152,7 +256,20 @@ export default function Debts() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('debts.balance')} *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Total Deuda *</label>
+                <input
+                  type="number"
+                  value={formData.total_amount}
+                  onChange={(e) => setFormData({ ...formData, total_amount: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="0.00"
+                  step="0.01"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Balance Actual *</label>
                 <input
                   type="number"
                   value={formData.current_balance}
@@ -161,6 +278,20 @@ export default function Debts() {
                   placeholder="0.00"
                   step="0.01"
                   required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Ya Pagado</label>
+                <input
+                  type="number"
+                  value={formData.amount_paid}
+                  onChange={(e) => setFormData({ ...formData, amount_paid: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="0.00"
+                  step="0.01"
                 />
               </div>
 
@@ -214,37 +345,59 @@ export default function Debts() {
       )}
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">
-        {debts.length > 0 ? (
+        {allDebts.length > 0 ? (
           <table className="w-full text-sm">
             <thead className="border-b bg-gray-50">
               <tr>
                 <th className="text-left py-3 px-4 font-medium text-gray-700">{t('debts.name')}</th>
                 <th className="text-left py-3 px-4 font-medium text-gray-700">{t('debts.type')}</th>
-                <th className="text-right py-3 px-4 font-medium text-gray-700">{t('debts.balance')}</th>
-                <th className="text-right py-3 px-4 font-medium text-gray-700">{t('debts.interestRate')}</th>
+                <th className="text-right py-3 px-4 font-medium text-gray-700">Total / Límite</th>
+                <th className="text-right py-3 px-4 font-medium text-gray-700">Pagado / Disponible</th>
+                <th className="text-right py-3 px-4 font-medium text-gray-700">Falta / Balance</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-700">Progreso</th>
                 <th className="text-left py-3 px-4 font-medium text-gray-700">{t('debts.status')}</th>
               </tr>
             </thead>
             <tbody>
-              {debts.map((debt: Debt) => (
-                <tr key={debt.id} className="border-b hover:bg-gray-50 transition">
-                  <td className="py-3 px-4 font-medium">
-                    {getDebtNameLabel(debt.name, debt.debt_type, debt.bank)}
-                  </td>
-                  <td className="py-3 px-4">{getDebtTypeLabel(debt.debt_type)}</td>
-                  <td className="text-right py-3 px-4 font-semibold text-red-600">${debt.current_balance?.toFixed(2) || '0.00'}</td>
-                  <td className="text-right py-3 px-4">{debt.interest_rate?.toFixed(2) || '0.00'}%</td>
-                  <td className="py-3 px-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      debt.status === 'active' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {getStatusLabel(debt.status)}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {allDebts.map((debt: any) => {
+                const progress = getPaymentProgress(debt, debt.isCard)
+                const progressColor = getProgressColor(progress)
+                const debtType = debt.isCard ? 'credit_card' : debt.debt_type
+                const totalAmount = debt.amount_paid + debt.current_balance
+                const paidAmount = debt.amount_paid
+                
+                return (
+                  <tr 
+                    key={debt.id} 
+                    className="border-b hover:bg-blue-50 transition cursor-pointer"
+                    onClick={() => !debt.isCard && setSelectedDebt(debt)}
+                  >
+                    <td className="py-3 px-4 font-medium">
+                      {debt.name}
+                    </td>
+                    <td className="py-3 px-4">{getDebtTypeLabel(debtType)}</td>
+                    <td className="text-right py-3 px-4 font-semibold">${totalAmount?.toFixed(2) || '0.00'}</td>
+                    <td className="text-right py-3 px-4 font-semibold text-green-600">${paidAmount?.toFixed(2) || '0.00'}</td>
+                    <td className="text-right py-3 px-4 font-semibold text-red-600">${debt.current_balance?.toFixed(2) || '0.00'}</td>
+                    <td className="text-center py-3 px-4">
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div
+                            className={`h-full ${progressColor} rounded-full transition-all`}
+                            style={{ width: `${Math.min(progress, 100)}%` }}
+                          />
+                        </div>
+                        <span className="text-xs font-semibold text-gray-700 w-8">{progress.toFixed(0)}%</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        {getStatusLabel(debt.status)}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         ) : (
@@ -253,6 +406,14 @@ export default function Debts() {
           </div>
         )}
       </div>
+
+      {selectedDebt && !selectedDebt.is_card && (
+        <DebtDetailModal 
+          debt={selectedDebt} 
+          onClose={() => setSelectedDebt(null)}
+          onPaymentSuccess={handlePaymentSuccess}
+        />
+      )}
     </div>
   )
 }

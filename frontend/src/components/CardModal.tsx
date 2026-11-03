@@ -1,41 +1,26 @@
-import { useState, useEffect, useRef } from 'react'
-import { useLanguage } from '../context/LanguageContext'
+import { useState, useEffect } from 'react'
+
+interface Card {
+  id: string
+  name: string
+  bank: string
+  balance: number
+  limit_amount: number
+  apr: number
+  color?: string
+  last_four?: string
+  card_type?: 'credit' | 'debit'
+}
 
 interface CardModalProps {
   onClose: () => void
-  onSave: (data: any) => void
-  isLoading?: boolean
-  initialData?: any
-  availableColors?: Record<string, string>
+  onSave: (cardData: any) => Promise<void>
+  isLoading: boolean
+  initialData: Card | null
+  availableColors: { [key: string]: string }
 }
 
-const DEFAULT_COLORS = {
-  blue: '#0066FF',
-  purple: '#9D00FF',
-  green: '#00D084',
-  cyan: '#00D9FF',
-  indigo: '#5B4FFF',
-  pink: '#FF1B9C',
-  teal: '#00C9A7',
-  black: '#1A1A1A',
-  gold: '#FFC300',
-  yellow: '#FFEB3B',
-  silver: '#E8E8E8',
-  lime: '#00FF41',
-}
-
-export default function CardModal({
-  onClose,
-  onSave,
-  isLoading = false,
-  initialData = null,
-  availableColors = DEFAULT_COLORS,
-}: CardModalProps) {
-  const { t } = useLanguage()
-  const modalRef = useRef<HTMLDivElement>(null)
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
-  const [position, setPosition] = useState({ x: 0, y: 0 })
+export default function CardModal({ onClose, onSave, isLoading, initialData, availableColors }: CardModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     bank: '',
@@ -43,9 +28,10 @@ export default function CardModal({
     limit_amount: 0,
     apr: 0,
     color: '#0066FF',
-    card_type: 'credit',
     last_four: '',
+    card_type: 'credit' as 'credit' | 'debit',
   })
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (initialData) {
@@ -56,258 +42,183 @@ export default function CardModal({
         limit_amount: initialData.limit_amount || 0,
         apr: initialData.apr || 0,
         color: initialData.color || '#0066FF',
-        card_type: initialData.card_type || 'credit',
         last_four: initialData.last_four || '',
+        card_type: initialData.card_type || 'credit',
       })
     }
   }, [initialData])
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if ((e.target as HTMLElement).closest('button, input, select, [data-no-drag]')) {
-      return
-    }
-    setIsDragging(true)
-    setDragOffset({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    })
-  }
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging) return
-      setPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y,
-      })
-    }
-
-    const handleMouseUp = () => {
-      setIsDragging(false)
-    }
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [isDragging, dragOffset])
-
-  const handleChange = (e: any) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: name === 'balance' || name === 'limit_amount' || name === 'apr' 
-        ? parseFloat(value) || 0 
-        : value,
-    })
-  }
-
-  const handleColorChange = (color: string) => {
-    setFormData({ ...formData, color })
-  }
-
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('📤 Enviando card_type:', formData.card_type)
-    onSave(formData)
+    setError(null)
+
+    try {
+      await onSave(formData)
+    } catch (err: any) {
+      setError(err.message || 'Error saving card')
+    }
   }
 
-  const colorsToDisplay = { ...availableColors }
-  if (formData.color && !Object.values(availableColors).includes(formData.color)) {
-    colorsToDisplay['current'] = formData.color
-  }
-
-  const isCredit = formData.card_type === 'credit'
+  const colorEntries = Object.entries(availableColors || {})
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div
-        ref={modalRef}
-        className="bg-gray-800 rounded-lg p-8 max-w-md w-full mx-4 shadow-xl max-h-[90vh] overflow-y-auto"
-        style={{
-          transform: `translate(${position.x}px, ${position.y}px)`,
-          cursor: isDragging ? 'grabbing' : 'grab',
-        }}
-      >
-        <div
-          onMouseDown={handleMouseDown}
-          className="flex justify-between items-center mb-6 cursor-grab active:cursor-grabbing select-none"
-        >
-          <h2 className="text-2xl font-bold text-white">
-            {initialData ? t('cards.editCard') : t('cards.addCard')}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white transition"
-            data-no-drag="true"
-          >
-            ✕
-          </button>
-        </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-lg max-w-md w-full mx-4 p-6">
+        <h2 className="text-xl font-bold mb-4">
+          {initialData ? 'Edit Card' : 'Add Card'}
+        </h2>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              {t('cards.cardName')}
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Card Name *
             </label>
             <input
               type="text"
-              name="name"
               value={formData.name}
-              onChange={handleChange}
-              placeholder="American Express"
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="My Visa"
               required
-              data-no-drag="true"
+              disabled={isLoading}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              {t('cards.bank')}
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Bank *
             </label>
             <input
               type="text"
-              name="bank"
               value={formData.bank}
-              onChange={handleChange}
-              placeholder="Chase, Capital One..."
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+              onChange={(e) => setFormData({ ...formData, bank: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="Chase"
               required
-              data-no-drag="true"
+              disabled={isLoading}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Last 4 Digits
             </label>
             <input
               type="text"
-              name="last_four"
               value={formData.last_four}
-              onChange={handleChange}
+              onChange={(e) => setFormData({ ...formData, last_four: e.target.value.slice(0, 4) })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="1234"
-              maxLength="4"
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-              data-no-drag="true"
+              maxLength={4}
+              disabled={isLoading}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              {t('cards.type') || 'Card Type'}
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Card Type
             </label>
             <select
-              name="card_type"
               value={formData.card_type}
-              onChange={handleChange}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
-              data-no-drag="true"
+              onChange={(e) => setFormData({ ...formData, card_type: e.target.value as 'credit' | 'debit' })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              disabled={isLoading}
             >
-              <option value="credit">Credit Card</option>
-              <option value="debit">Debit Card</option>
+              <option value="credit">Credit</option>
+              <option value="debit">Debit</option>
             </select>
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Balance *
+              </label>
+              <input
+                type="number"
+                value={formData.balance}
+                onChange={(e) => setFormData({ ...formData, balance: parseFloat(e.target.value) || 0 })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="0.00"
+                step="0.01"
+                required
+                disabled={isLoading}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Limit
+              </label>
+              <input
+                type="number"
+                value={formData.limit_amount}
+                onChange={(e) => setFormData({ ...formData, limit_amount: parseFloat(e.target.value) || 0 })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="0.00"
+                step="0.01"
+                disabled={isLoading}
+              />
+            </div>
+          </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              {isCredit ? t('cards.balance') : 'Account Balance'}
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              APR (%)
             </label>
             <input
               type="number"
-              name="balance"
-              value={formData.balance}
-              onChange={handleChange}
+              value={formData.apr}
+              onChange={(e) => setFormData({ ...formData, apr: parseFloat(e.target.value) || 0 })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="0.00"
               step="0.01"
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-              required
-              data-no-drag="true"
+              disabled={isLoading}
             />
           </div>
 
-          {isCredit && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('cards.limit')}
-                </label>
-                <input
-                  type="number"
-                  name="limit_amount"
-                  value={formData.limit_amount}
-                  onChange={handleChange}
-                  placeholder="0.00"
-                  step="0.01"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-                  required
-                  data-no-drag="true"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('cards.apr')}
-                </label>
-                <input
-                  type="number"
-                  name="apr"
-                  value={formData.apr}
-                  onChange={handleChange}
-                  placeholder="0.00"
-                  step="0.01"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-                  required
-                  data-no-drag="true"
-                />
-              </div>
-            </>
-          )}
-
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              {t('cards.color')}
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Card Color
             </label>
-            <div className="grid grid-cols-5 gap-2" data-no-drag="true">
-              {Object.entries(colorsToDisplay).map(([name, color]) => (
+            <div className="flex flex-wrap gap-2">
+              {colorEntries.map(([colorName, colorValue]) => (
                 <button
-                  key={name}
+                  key={colorName}
                   type="button"
-                  onClick={() => handleColorChange(color)}
-                  className={`w-10 h-10 rounded-lg transition border-2 ${
-                    formData.color === color 
-                      ? 'border-white shadow-lg scale-110' 
-                      : 'border-gray-600 hover:border-gray-400'
+                  onClick={() => setFormData({ ...formData, color: colorValue })}
+                  className={`w-8 h-8 rounded-lg border-2 transition ${
+                    formData.color === colorValue ? 'border-black' : 'border-gray-300'
                   }`}
-                  style={{ backgroundColor: color }}
-                  title={name}
-                  data-no-drag="true"
+                  style={{ backgroundColor: colorValue }}
+                  title={colorName}
+                  disabled={isLoading}
                 />
               ))}
             </div>
           </div>
 
-          <div className="flex gap-3 pt-6" data-no-drag="true">
+          <div className="flex gap-4">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+            >
+              {isLoading ? 'Saving...' : 'Save'}
+            </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition"
               disabled={isLoading}
+              className="flex-1 bg-gray-300 text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-400 disabled:opacity-50"
             >
-              {t('common.cancel')}
-            </button>
-            <button
-              type="submit"
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition disabled:opacity-50"
-              disabled={isLoading}
-            >
-              {isLoading ? t('common.saving') : t('common.save')}
+              Cancel
             </button>
           </div>
         </form>

@@ -173,6 +173,135 @@ router.put('/:id', async (req: AuthRequest, res: Response) => {
   }
 })
 
+// GET payment history for a debt
+router.get('/:id/payments', async (req: AuthRequest, res: Response) => {
+  try {
+    const supabase = getSupabase()
+    const profileId = req.user?.profile_id
+    const debtId = req.params.id
+
+    if (!profileId) {
+      return res.status(401).json({ error: 'Profile ID not found' })
+    }
+
+    console.log(`📥 GET /:id/payments - debtId: ${debtId}, profileId: ${profileId}`)
+
+    // Verify debt belongs to user
+    const { data: debt, error: debtError } = await supabase
+      .from('debts')
+      .select('id, profile_id')
+      .eq('id', debtId)
+      .eq('profile_id', profileId)
+      .single()
+
+    if (debtError || !debt) {
+      console.error('❌ Debt not found:', debtError)
+      return res.status(404).json({ error: 'Debt not found or unauthorized' })
+    }
+
+    // Get payment history
+    const { data: payments, error: paymentsError } = await supabase
+      .from('debt_payments')
+      .select('id, amount, payment_date, created_at, notes, payment_method')
+      .eq('debt_id', debtId)
+      .order('created_at', { ascending: false })
+
+    if (paymentsError) {
+      console.error('❌ Error fetching payments:', paymentsError)
+      throw paymentsError
+    }
+
+    console.log(`✅ Payments found: ${payments?.length || 0}`)
+    res.json({ success: true, data: payments || [] })
+  } catch (error: any) {
+    console.error('Debt payments GET error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// POST register a payment for a debt
+router.post('/:id/payments', async (req: AuthRequest, res: Response) => {
+  try {
+    const supabase = getSupabase()
+    const profileId = req.user?.profile_id
+    const debtId = req.params.id
+    const { amount, notes, payment_method } = req.body
+
+    if (!profileId) {
+      return res.status(401).json({ error: 'Profile ID not found' })
+    }
+
+    console.log(`📤 POST /:id/payments - debtId: ${debtId}, amount: ${amount}`)
+
+    // Validate amount
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid amount' })
+    }
+
+    // Verify debt belongs to user and get current balance
+    const { data: debt, error: debtError } = await supabase
+      .from('debts')
+      .select('id, profile_id, current_balance, amount_paid')
+      .eq('id', debtId)
+      .eq('profile_id', profileId)
+      .single()
+
+    if (debtError || !debt) {
+      console.error('❌ Debt not found:', debtError)
+      return res.status(404).json({ error: 'Debt not found or unauthorized' })
+    }
+
+    // Validate amount doesn't exceed balance
+    if (amount > debt.current_balance) {
+      return res.status(400).json({ error: 'Amount exceeds remaining balance' })
+    }
+
+    // Insert payment record
+    const { data: payment, error: paymentError } = await supabase
+      .from('debt_payments')
+      .insert([{
+        debt_id: debtId,
+        profile_id: profileId,
+        amount,
+        payment_date: new Date().toISOString(),
+        notes: notes || null,
+        payment_method: payment_method || 'manual',
+        created_at: new Date().toISOString(),
+      }])
+      .select()
+      .single()
+
+    if (paymentError) {
+      console.error('❌ Error creating payment:', paymentError)
+      throw paymentError
+    }
+
+    // Update debt balance and amount_paid
+    const newBalance = debt.current_balance - amount
+    const newPaid = (debt.amount_paid || 0) + amount
+
+    const { error: updateError } = await supabase
+      .from('debts')
+      .update({
+        current_balance: newBalance,
+        amount_paid: newPaid,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', debtId)
+
+    if (updateError) {
+      console.error('❌ Error updating debt:', updateError)
+      throw updateError
+    }
+
+    console.log(`✅ Payment registered: $${amount}, new balance: $${newBalance}`)
+    res.status(201).json({ success: true, data: payment })
+  } catch (error: any) {
+    console.error('Debt payment POST error:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
 // DELETE debt
 router.delete('/:id', async (req: AuthRequest, res: Response) => {
   try {
