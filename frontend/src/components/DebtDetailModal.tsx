@@ -113,10 +113,9 @@ export default function DebtDetailModal({ debt, onClose, onPaymentSuccess }: Deb
 
   // Valores por defecto seguros
   const total = Number(debt.total_amount) || 0
-  let paid = Number(debt.amount_paid) || 0
   const balance = Number(debt.current_balance) || 0
+  const paid = Math.max(0, total - balance)
   const interest = Number(debt.interest_rate) || 0
-
   
 
   const progress = total > 0 ? (paid / total) * 100 : 0
@@ -199,7 +198,6 @@ export default function DebtDetailModal({ debt, onClose, onPaymentSuccess }: Deb
       return dateString
     }
   }
-
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 pointer-events-auto">
       <div 

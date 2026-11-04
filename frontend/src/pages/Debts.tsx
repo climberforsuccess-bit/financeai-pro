@@ -151,14 +151,11 @@ export default function Debts() {
     }
     
     const total = Number(debt.total_amount) || 0
-    let paid = Number(debt.amount_paid) || 0
     const balance = Number(debt.current_balance) || 0
+    const paid = Math.max(0, total - balance)
+    const progress = total > 0 ? (paid / total) * 100 : 0
 
-    if (paid === 0 && balance > 0 && total > 0) {
-      paid = total - balance
-    }
-
-    return total > 0 ? (paid / total) * 100 : 0
+    return Math.min(progress, 100)
   }
 
   const getProgressColor = (progress: number): string => {
@@ -363,9 +360,8 @@ export default function Debts() {
                 const progress = getPaymentProgress(debt, debt.isCard)
                 const progressColor = getProgressColor(progress)
                 const debtType = debt.isCard ? 'credit_card' : debt.debt_type
-                const totalAmount = debt.amount_paid + debt.current_balance
-                const paidAmount = debt.amount_paid
-                
+                const totalAmount = debt.total_amount || 0
+                const paidAmount = Math.max(0, totalAmount - Number(debt.current_balance || 0))
                 return (
                   <tr 
                     key={debt.id} 
