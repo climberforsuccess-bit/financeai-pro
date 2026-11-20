@@ -139,9 +139,7 @@ export default function Dashboard() {
                 <tr key={tx.id} className="border-b hover:bg-gray-50">
                   <td className="py-2">{tx.description}</td>
                   <td className="py-2">{tx.type === 'income' ? t('transactions.income') : t('transactions.expense')}</td>
-                  <td className={`text-right py-2 font-semibold ${tx.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                    ${tx.amount.toFixed(2)}
-                  </td>
+                  <td className="text-right py-2 font-semibold">${tx.amount.toFixed(2)}</td>
                   <td className="py-2 text-gray-500">{new Date(tx.date).toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US')}</td>
                 </tr>
               ))}

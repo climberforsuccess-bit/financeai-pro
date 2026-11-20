@@ -70,7 +70,7 @@ export default function Debts() {
       console.log('Fetching debts and cards...')
       
       const [debtsRes, cardsRes] = await Promise.all([
-        apiClient.get('/api/debt'),
+        apiClient.get('/api/debts'),
         apiClient.get('/api/cards')
       ])
       
@@ -92,7 +92,7 @@ export default function Debts() {
     setSubmitting(true)
 
     try {
-      await apiClient.post('/api/debt', {
+      await apiClient.post('/api/debts', {
         name: formData.name,
         total_amount: parseFloat(formData.total_amount),
         current_balance: parseFloat(formData.current_balance),

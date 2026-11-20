@@ -1,40 +1,43 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import { initializeSupabase } from './utils/supabase.js'
-import authRoutes from './routes/auth.js'
 import dashboardRoutes from './routes/dashboard.js'
-import debtRoutes from './routes/debt.js'
-import transactionRoutes from './routes/transactions.js'
+import debtsRoutes from './routes/debts.js'
+import transactionsRoutes from './routes/transactions.js'
 import cardsRoutes from './routes/cards.js'
+import reportsRoutes from './routes/reports.js'
 import { authMiddleware } from './middleware/auth.js'
+import { initializeSupabase } from './utils/supabase.js'
 
 dotenv.config()
 
 const app = express()
 const PORT = process.env.PORT || 3001
 
-app.use(cors())
+const corsOptions = {
+  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}
+
+app.use(cors(corsOptions))
 app.use(express.json())
 
-// Public routes
-app.use('/api/auth', authRoutes)
-
-// Protected routes
-app.use('/api/dashboard', authMiddleware, dashboardRoutes)
-app.use('/api/debt', authMiddleware, debtRoutes)
-app.use('/api/transactions', authMiddleware, transactionRoutes)
-app.use('/api/cards', authMiddleware, cardsRoutes)
-
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK' })
-})
-
-// Initialize Supabase before starting server
-async function start() {
+;(async () => {
   try {
     await initializeSupabase()
+
+    app.use('/api/dashboard', authMiddleware, dashboardRoutes)
+    app.use('/api/debts', authMiddleware, debtsRoutes)
+    app.use('/api/transactions', authMiddleware, transactionsRoutes)
+    app.use('/api/cards', authMiddleware, cardsRoutes)
+    app.use('/api/reports', authMiddleware, reportsRoutes)
+
+    app.get('/health', (req, res) => {
+      res.json({ status: 'OK' })
+    })
+
     app.listen(PORT, () => {
       console.log(`🚀 Backend running at http://localhost:${PORT}`)
     })
@@ -42,6 +45,4 @@ async function start() {
     console.error('❌ Failed to start server:', error)
     process.exit(1)
   }
-}
-
-start()
+})()
