@@ -125,26 +125,32 @@ export default function Dashboard() {
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-bold mb-4">{t('dashboard.recentTransactions')}</h2>
         {lastTransactions.length > 0 ? (
-          <table className="w-full text-sm">
-            <thead className="border-b">
-              <tr>
-                <th className="text-left py-2 font-medium">{t('dashboard.description')}</th>
-                <th className="text-left py-2 font-medium">{t('dashboard.type')}</th>
-                <th className="text-right py-2 font-medium">{t('dashboard.amount')}</th>
-                <th className="text-left py-2 font-medium">{t('dashboard.date')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {lastTransactions.map((tx: Transaction) => (
-                <tr key={tx.id} className="border-b hover:bg-gray-50">
-                  <td className="py-2">{tx.description}</td>
-                  <td className="py-2">{tx.type === 'income' ? t('transactions.income') : t('transactions.expense')}</td>
-                  <td className="text-right py-2 font-semibold">${tx.amount.toFixed(2)}</td>
-                  <td className="py-2 text-gray-500">{new Date(tx.date).toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US')}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="border-b bg-gray-50">
+                <tr>
+                  <th className="text-left py-3 px-2 font-medium text-gray-700">{t('dashboard.description')}</th>
+                  <th className="text-left py-3 px-2 font-medium text-gray-700">{t('dashboard.type')}</th>
+                  <th className="text-right py-3 px-2 font-medium text-gray-700">{t('dashboard.amount')}</th>
+                  <th className="text-left py-3 px-2 font-medium text-gray-700">{t('dashboard.date')}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {lastTransactions.map((tx: Transaction) => (
+                  <tr key={tx.id} className="border-b hover:bg-gray-50">
+                    <td className="py-3 px-2">{tx.description}</td>
+                    <td className="py-3 px-2 text-xs">
+                      <span className={`px-2 py-1 rounded ${tx.type === 'income' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                        {tx.type === 'income' ? t('transactions.income') : t('transactions.expense')}
+                      </span>
+                    </td>
+                    <td className="py-3 px-2 text-right font-semibold">${tx.amount.toFixed(2)}</td>
+                    <td className="py-3 px-2 text-gray-500 text-xs">{new Date(tx.date).toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US')}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <p className="text-gray-500">{t('dashboard.noTransactions')}</p>
         )}
